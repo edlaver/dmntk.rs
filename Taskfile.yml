@@ -63,7 +63,7 @@ tasks:
     desc: Runs code coverage using tarpaulin and opens the coverage report in browser
     cmds:
       - cmd: cargo tarpaulin {{.CLI_ARGS}} --out Html --output-dir ./target/tarpaulin
-      - cmd: echo -e '#!/usr/bin/env bash\n\nfirefox ./target/tarpaulin/tarpaulin-report.html &' > ./target/tarpaulin/open-report.sh
+      - cmd: echo -e '#!/usr/bin/env bash\n \n firefox ./target/tarpaulin/tarpaulin-report.html &' > ./target/tarpaulin/open-report.sh
       - cmd: chmod +x ./target/tarpaulin/open-report.sh
       - cmd: ./target/tarpaulin/open-report.sh
 
@@ -92,7 +92,7 @@ tasks:
     cmds:
       - cmd: cargo uninstall dmntk > /dev/null 2>&1
         ignore_error: true
-      - cmd: rm ~/.cargo/bin/dmntl > /dev/null 2>&1
+      - cmd: rm ~/.cargo/bin/dmntk > /dev/null 2>&1
         ignore_error: true
       - cmd: cargo build --release
       - cmd: cp ./target/release/dmntk ~/.cargo/bin/
