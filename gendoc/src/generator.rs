@@ -36,6 +36,7 @@ use dmntk_model::model::*;
 
 use crate::decision_table::generate_decision_table;
 use crate::svg::*;
+use std::fmt::Write as _;
 
 const DMN_MODEL_TEMPLATE: &str = include_str!("templates/dmn-model.html");
 const SVG_CONTENT: &str = "#SVG_CONTENT#";
@@ -57,7 +58,7 @@ fn add_svg_content(html: &str, definitions: &Definitions) -> String {
       let mut svg_content = String::new();
       // prepare the name of the diagram
       svg_content.push_str(r#"<section>"#);
-      svg_content.push_str(&format!(r#"<h2>{}</h2>"#, diagram.name));
+      let _ = write!(svg_content, r#"<h2>{}</h2>"#, diagram.name);
       // prepare diagram graphics
       svg_content.push_str(&svg_begin(indent, &diagram.size));
       svg_content.push_str(&styles);
@@ -113,7 +114,7 @@ fn svg_edge_solid_with_black_arrow(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  svg_content.push_str(&format!(r#"<polyline points="{}" stroke="black"/>"#, points));
+  let _ = write!(svg_content, r#"<polyline points="{}" stroke="black"/>"#, points);
   // prepare arrow
   let start_point = &way_points[way_points.len() - 2];
   let end_point = &way_points[way_points.len() - 1];
@@ -127,10 +128,11 @@ fn svg_edge_solid_with_black_arrow(way_points: &[DcPoint]) -> String {
     end_point.y + 4.0
   );
   let angle = get_angle(start_point, end_point);
-  svg_content.push_str(&format!(
+  let _ = write!(
+    svg_content,
     r#"<polygon points="{}" transform="rotate({},{},{})" fill="black" stroke="none"/>"#,
     points_ending, angle, end_point.x, end_point.y
-  ));
+  );
   svg_content
 }
 
@@ -139,7 +141,7 @@ fn svg_edge_dashed_with_thin_arrow(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  svg_content.push_str(&format!(r#"<polyline points="{}" stroke-dasharray="5 3"/>"#, points));
+  let _ = write!(svg_content, r#"<polyline points="{}" stroke-dasharray="5 3"/>"#, points);
   // prepare arrow
   let start_point = &way_points[way_points.len() - 2];
   let end_point = &way_points[way_points.len() - 1];
@@ -148,10 +150,11 @@ fn svg_edge_dashed_with_thin_arrow(way_points: &[DcPoint]) -> String {
     end_point.x, end_point.y, 12.0, -4.0, end_point.x, end_point.y, 12.0, 4.0
   );
   let angle = get_angle(start_point, end_point);
-  svg_content.push_str(&format!(
+  let _ = write!(
+    svg_content,
     r#"<path d="{}" transform="rotate({},{},{})" fill="none" stroke="black"/>"#,
     path, angle, end_point.x, end_point.y
-  ));
+  );
   svg_content
 }
 
@@ -160,12 +163,13 @@ fn svg_edge_dashed_with_end_point(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  svg_content.push_str(&format!(r#"<polyline points="{}" stroke="black" stroke-dasharray="5 3"/>"#, points));
+  let _ = write!(svg_content, r#"<polyline points="{}" stroke="black" stroke-dasharray="5 3"/>"#, points);
   let end_point = &way_points[way_points.len() - 1];
-  svg_content.push_str(&format!(
+  let _ = write!(
+    svg_content,
     r#"<circle cx="{}" cy="{}" r="4" fill="black" stroke="none"/>"#,
     end_point.x, end_point.y
-  ));
+  );
   svg_content
 }
 

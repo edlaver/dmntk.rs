@@ -33,6 +33,7 @@
 //! decision_tree utilities.
 
 use dmntk_model::model::{BuiltinAggregator, DecisionTable, DecisionTableOrientation, HitPolicy};
+use std::fmt::Write as _;
 
 pub fn generate_decision_table(decision_table: &DecisionTable) -> String {
   let mut decision_table_html = String::new();
@@ -42,9 +43,7 @@ pub fn generate_decision_table(decision_table: &DecisionTable) -> String {
       let tr_information_item_name = get_information_item_name(decision_table);
       let table_header = get_table_header(decision_table);
       let mut rules = get_rules(decision_table);
-      let mut table_content = vec![tr_information_item_name,
-                                   table_header.0,
-                                   table_header.1];
+      let mut table_content = vec![tr_information_item_name, table_header.0, table_header.1];
       table_content.append(&mut rules);
       let html_role_as_row = table("decision-table", table_content.as_mut_slice());
 
@@ -81,70 +80,53 @@ fn write_element(element_name: &str, class: &str, other_attributes: &str, conten
   for c in content {
     str.push_str(c);
   }
-  str.push_str(&format!("</{}>", element_name));
+  let _ = write!(str, "</{}>", element_name);
   str
 }
 
 fn get_hit_policy(hit_policy: &HitPolicy) -> String {
   match hit_policy {
-    HitPolicy::Unique => {
-      String::from("U")
-    }
-    HitPolicy::Any => {
-      String::from("A")
-    }
-    HitPolicy::Priority => {
-      String::from("P")
-    }
-    HitPolicy::First => {
-      String::from("F")
-    }
-    HitPolicy::Collect(builtin_aggregator) => {
-      match builtin_aggregator {
-        BuiltinAggregator::List => {
-          String::from("C")
-        }
-        BuiltinAggregator::Count => {
-          String::from("C#")
-        }
-        BuiltinAggregator::Sum => {
-          String::from("C+")
-        }
-        BuiltinAggregator::Min => {
-          String::from("C<")
-        }
-        BuiltinAggregator::Max => {
-          String::from("C>")
-        }
-      }
-    }
-    HitPolicy::OutputOrder => {
-      String::from("O")
-    }
-    HitPolicy::RuleOrder => {
-      String::from("R")
-    }
+    HitPolicy::Unique => String::from("U"),
+    HitPolicy::Any => String::from("A"),
+    HitPolicy::Priority => String::from("P"),
+    HitPolicy::First => String::from("F"),
+    HitPolicy::Collect(builtin_aggregator) => match builtin_aggregator {
+      BuiltinAggregator::List => String::from("C"),
+      BuiltinAggregator::Count => String::from("C#"),
+      BuiltinAggregator::Sum => String::from("C+"),
+      BuiltinAggregator::Min => String::from("C<"),
+      BuiltinAggregator::Max => String::from("C>"),
+    },
+    HitPolicy::OutputOrder => String::from("O"),
+    HitPolicy::RuleOrder => String::from("R"),
   }
 }
 
 fn get_information_item_name(decision_table: &DecisionTable) -> String {
   if let Some(item_information_name) = &decision_table.information_item_name {
-    tr("", &[
-      td("information-item", format!("colspan=\"{}\"", decision_table.input_clauses.len() + decision_table.output_clauses.len()).as_str(), &[
-        div("information-item-name-container", &[
-          div("information-item-name", &[
-            // "information-item-name".to_string()
-            item_information_name.clone()
-          ])
-        ])
-      ])
-    ])
+    tr(
+      "",
+      &[td(
+        "information-item",
+        format!("colspan=\"{}\"", decision_table.input_clauses.len() + decision_table.output_clauses.len()).as_str(),
+        &[div(
+          "information-item-name-container",
+          &[div(
+            "information-item-name",
+            &[
+              // "information-item-name".to_string()
+              item_information_name.clone(),
+            ],
+          )],
+        )],
+      )],
+    )
   } else {
     String::new()
   }
 }
 
-fn get_table_header(decision_table: &DecisionTable) -> (String,String) {
+fn get_table_header(decision_table: &DecisionTable) -> (String, String) {
   let mut tds1 = vec![td("hit-policy", "rowspan=\"2\"", &[get_hit_policy(&decision_table.hit_policy)])];
   let mut tds2 = Vec::new();
   for input_clause in &decision_table.input_clauses {
@@ -167,18 +149,17 @@ fn get_table_header(decision_table: &DecisionTable) -> (String,String) {
 
   if let Some(label) = &decision_table.output_label {
     tds1.push(td("output-label", "", &[label.clone()]));
-  }
-  else {
+  } else {
     tds1.push(td("output-label", "", &[String::new()]));
   }
 
   for output_clause in &decision_table.output_clauses {
     // if decision_table.output_clauses.len() - 1 < tds1.len() {
-      if let Some(output_values) = &output_clause.output_values {
-        tds2.push(td("output-value-last", "", &[output_values.clone()]))
-      } else {
-        tds2.push(td("output-value-last", "", &[String::new()]))
-      }
+    if let Some(output_values) = &output_clause.output_values {
+      tds2.push(td("output-value-last", "", &[output_values.clone()]))
+    } else {
+      tds2.push(td("output-value-last", "", &[String::new()]))
+    }
     // }
   }
 
@@ -192,7 +173,7 @@ fn get_rules(decision_table: &DecisionTable) -> Vec<String> {
   let mut trs_rules = vec![];
   let mut i = 1;
   for rule in &decision_table.rules {
-    if decision_table.rules.len() -1 > trs_rules.len() {
+    if decision_table.rules.len() - 1 > trs_rules.len() {
       let mut tds_rules = vec![td("rule-number", "", &[i.to_string()])];
 
       for input_entry in &rule.input_entries {
@@ -212,28 +193,27 @@ fn get_rules(decision_table: &DecisionTable) -> Vec<String> {
       let tr_rule = tr("", tds_rules.as_mut_slice());
       trs_rules.push(tr_rule);
       i += 1;
-    }
-   else {
-     let mut tds_rules = vec![td("rule-number-last", "", &[i.to_string()])];
+    } else {
+      let mut tds_rules = vec![td("rule-number-last", "", &[i.to_string()])];
 
-     for input_entry in &rule.input_entries {
-       if rule.input_entries.len() > tds_rules.len() {
-         tds_rules.push(td("input-entry-bottom", "", &[input_entry.text.clone()]));
-       } else {
-         tds_rules.push(td("input-entry-bottom-last", "", &[input_entry.text.clone()]));
-       }
-     }
-     for output_entry in &rule.output_entries {
-       if rule.input_entries.len() + rule.output_entries.len() > tds_rules.len() {
-         tds_rules.push(td("output-entry-bottom", "", &[output_entry.text.clone()]));
-       } else {
-         tds_rules.push(td("output-entry-bottom-last", "", &[output_entry.text.clone()]));
-       }
-     }
-     let tr_rule = tr("", tds_rules.as_mut_slice());
-     trs_rules.push(tr_rule);
-     i += 1;
-   }
+      for input_entry in &rule.input_entries {
+        if rule.input_entries.len() > tds_rules.len() {
+          tds_rules.push(td("input-entry-bottom", "", &[input_entry.text.clone()]));
+        } else {
+          tds_rules.push(td("input-entry-bottom-last", "", &[input_entry.text.clone()]));
+        }
+      }
+      for output_entry in &rule.output_entries {
+        if rule.input_entries.len() + rule.output_entries.len() > tds_rules.len() {
+          tds_rules.push(td("output-entry-bottom", "", &[output_entry.text.clone()]));
+        } else {
+          tds_rules.push(td("output-entry-bottom-last", "", &[output_entry.text.clone()]));
+        }
+      }
+      let tr_rule = tr("", tds_rules.as_mut_slice());
+      trs_rules.push(tr_rule);
+      i += 1;
+    }
   }
 
   trs_rules

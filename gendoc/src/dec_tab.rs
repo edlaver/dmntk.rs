@@ -32,6 +32,7 @@
 
 use crate::{INDENT, INDENT_2, INDENT_3, NL, WS};
 use dmntk_model::model::{DecisionTable, DecisionTableOrientation};
+use std::fmt::Write as _;
 
 const DECISION_TABLE_HTML_TEMPLATE: &str = include_str!("templates/decision-table.html");
 const DECISION_TABLE_CSS_TEMPLATE: &str = include_str!("templates/decision-table.css");
@@ -157,11 +158,11 @@ impl Row {
   /// Writes a row to HTML output when contains any cells
   fn write(&self, html: &mut String, indent: usize) {
     if !self.cells.is_empty() {
-      html.push_str(&format!(r#"{:i$}<tr>{}"#, WS, NL, i = indent));
+      let _ = write!(html, r#"{:i$}<tr>{}"#, WS, NL, i = indent);
       for cell in &self.cells {
         cell.write(html, indent + INDENT);
       }
-      html.push_str(&format!(r#"{:i$}</tr>{}"#, WS, NL, i = indent));
+      let _ = write!(html, r#"{:i$}</tr>{}"#, WS, NL, i = indent);
     }
   }
 }
@@ -177,7 +178,8 @@ struct Cell {
 impl Cell {
   /// Writes the cell to HTML output.
   fn write(&self, html: &mut String, indent: usize) {
-    html.push_str(&format!(
+    let _ = write!(
+      html,
       r#"{:i$}<td{}{}{}>{}</td>{}"#,
       WS,
       if !self.class.is_empty() {
@@ -198,7 +200,7 @@ impl Cell {
       self.content,
       NL,
       i = indent
-    ));
+    );
   }
 }
 
@@ -224,15 +226,15 @@ pub fn decision_table_to_html(decision_table: &DecisionTable) -> String {
 /// Returns HTML code containing the definition of decision table.
 fn get_decision_table_html(decision_table: &DecisionTable, decision_table_attr: &DecisionTableAttr) -> String {
   let mut html = String::new();
-  html.push_str(&format!(r#"<table class="decision-table horizontal">{}"#, NL));
-  html.push_str(&format!(r#"  <tbody>{}"#, NL));
+  let _ = write!(html, r#"<table class="decision-table horizontal">{}"#, NL);
+  let _ = write!(html, r#"  <tbody>{}"#, NL);
   match decision_table.preferred_orientation {
     DecisionTableOrientation::RuleAsRow => write_horizontal_decision_table(INDENT, &mut html, decision_table, decision_table_attr),
     DecisionTableOrientation::RuleAsColumn => {}
     DecisionTableOrientation::CrossTable => {}
   }
-  html.push_str(&format!(r#"  </tbody>{}"#, NL));
-  html.push_str(&format!(r#"</table>{}"#, NL));
+  let _ = write!(html, r#"  </tbody>{}"#, NL);
+  let _ = write!(html, r#"</table>{}"#, NL);
   html
 }
 
@@ -392,30 +394,27 @@ fn write_horizontal_decision_table(indent: usize, html: &mut String, decision_ta
 /// Returns HTML code containing a row with information item name.
 fn get_information_item_name_html(indent: usize, content: &str, colspan: usize) -> String {
   let mut html = String::new();
-  html.push_str(&format!(r#"{:i$}<tr>{}"#, WS, NL, i = indent));
-  html.push_str(&format!(
+  let _ = write!(html, r#"{:i$}<tr>{}"#, WS, NL, i = indent);
+  let _ = write!(
+    html,
     r#"{:i$}<td colspan="{}" class="information-item">{}"#,
     WS,
     colspan,
     NL,
     i = indent + INDENT
-  ));
-  html.push_str(&format!(
-    r#"{:i$}<div class="information-item-name-container">{}"#,
-    WS,
-    NL,
-    i = indent + INDENT_2
-  ));
-  html.push_str(&format!(
+  );
+  let _ = write!(html, r#"{:i$}<div class="information-item-name-container">{}"#, WS, NL, i = indent + INDENT_2);
+  let _ = write!(
+    html,
     r#"{:i$}<div class="information-item-name">{}</div>{}"#,
     WS,
     content.trim(),
     NL,
     i = indent + INDENT_3
-  ));
-  html.push_str(&format!(r#"{:i$}</div>{}"#, WS, NL, i = indent + INDENT_2));
-  html.push_str(&format!(r#"{:i$}</td>{}"#, WS, NL, i = indent + INDENT));
-  html.push_str(&format!(r#"{:i$}</tr>{}"#, WS, NL, i = indent));
+  );
+  let _ = write!(html, r#"{:i$}</div>{}"#, WS, NL, i = indent + INDENT_2);
+  let _ = write!(html, r#"{:i$}</td>{}"#, WS, NL, i = indent + INDENT);
+  let _ = write!(html, r#"{:i$}</tr>{}"#, WS, NL, i = indent);
   html
 }
 
@@ -671,7 +670,7 @@ fn indent_content(content: &str) -> String {
       indented_content.push('\n');
     }
     first = false;
-    indented_content.push_str(&format!("    {}", line));
+    let _ = write!(indented_content, "    {}", line);
   }
   indented_content
 }
