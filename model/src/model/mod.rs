@@ -119,12 +119,12 @@ pub trait BusinessContextElement: NamedElement {
 }
 
 /// [Element] represents an element from another metamodel.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Element;
 
 /// The [ExtensionElement] element is a container to aggregate elements
 /// from other metamodels inside any [DmnElement].
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionElement {
   pub elements: Vec<Element>,
 }
@@ -132,7 +132,7 @@ pub struct ExtensionElement {
 /// The [ExtensionAttribute] element contains an [Element] or a reference
 /// to an [Element] from another metamodel. An [ExtensionAttribute] also has a name
 /// to define the role or purpose of the associated element.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionAttribute {
   /// The name of the extension attribute.
   pub name: String,
@@ -827,7 +827,7 @@ impl NamedElement for InputData {
 /// either DMN [DRGElement](DrgElement) or [ItemDefinition] instances contained
 /// in other [Definitions] elements, or non-DMN elements,
 /// such as an XML Schema or a PMML file.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Import {
   /// Optional identifier of this this [Import].
   id: Option<String>,
@@ -945,7 +945,7 @@ pub struct ContextEntry {
 
 /// [LiteralExpression] is used to model a value expression whose value
 /// is specified by text in some specified expression language.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LiteralExpression {
   /// Optional identifier of this this [LiteralExpression].
   id: Option<String>,
@@ -1765,7 +1765,7 @@ impl FunctionItem {
 
 /// Defines the type of the [FunctionDefinition].
 /// The default value is `FEEL`. Supported values also include `Java` and `PMML`.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FunctionKind {
   Feel,
   Java,
@@ -1960,7 +1960,7 @@ impl Expression for List {
 }
 
 /// Decision table.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecisionTable {
   /// Information item name, for which the decision table is its value expression.
   /// This is usually the name of the decision or the name of business knowledge model for
@@ -2016,7 +2016,7 @@ impl std::fmt::Display for DecisionTable {
 }
 
 /// Orientation of the decision table.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DecisionTableOrientation {
   /// Decision table is presented horizontally, rules are presented as rows.
   RuleAsRow,
@@ -2051,7 +2051,7 @@ impl TryFrom<&str> for DecisionTableOrientation {
 }
 
 /// Hit policy.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum HitPolicy {
   /// `UNIQUE` hit policy. No overlapping rules are allowed, only single rule can be matched.
   /// This is the default value for hit policy (DMN 1.2 clause 8.2.10).
@@ -2113,7 +2113,7 @@ impl TryFrom<&str> for HitPolicy {
 }
 
 /// Aggregator function for `COLLECT` hit policy.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum BuiltinAggregator {
   /// The result of the decision table is a list of output entries.
   List,
@@ -2145,7 +2145,7 @@ impl std::fmt::Display for BuiltinAggregator {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputClause {
   /// The subject of this input clause, text representation of unary tests.
   pub input_expression: String,
@@ -2154,7 +2154,7 @@ pub struct InputClause {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OutputClause {
   /// Type reference may specify the type to be used as decision table's output when more than one output clause is present.
   pub type_ref: Option<String>,
@@ -2167,14 +2167,14 @@ pub struct OutputClause {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuleAnnotationClause {
   /// Name that is used as the name of the rule annotation column of the containing decision table.
   pub name: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecisionRule {
   /// Ordered list of input entries that compose this decision rule.
   pub input_entries: Vec<InputEntry>,
@@ -2185,21 +2185,21 @@ pub struct DecisionRule {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputEntry {
   /// Text representation of unary test that composes this input entry.
   pub text: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OutputEntry {
   /// Text representation of literal expression that composes this output entry.
   pub text: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AnnotationEntry {
   /// Text representing this rule annotation.
   pub text: String,
@@ -2446,7 +2446,7 @@ mod errors {
   use dmntk_common::DmntkError;
 
   /// Errors related to the model.
-  #[derive(Debug, PartialEq)]
+  #[derive(Debug, PartialEq, Eq)]
   pub enum ModelError {
     InvalidDecisionTableOrientation(String),
     InvalidDecisionTableHitPolicy(String),

@@ -96,7 +96,7 @@ impl Cell {
 }
 
 /// Placement of the hit policy marker in plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum HitPolicyPlacement {
   /// Hit policy marker is placed in the top-left corner of the plane.
   /// This placement is valid for horizontal decision tables (rules as rows).
