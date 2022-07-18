@@ -36,7 +36,7 @@ use crate::Name;
 use std::ops::Deref;
 
 /// FEEL `QualifiedName`.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QualifiedName(Vec<Name>);
 
 impl QualifiedName {

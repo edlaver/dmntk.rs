@@ -383,7 +383,7 @@ impl FeelType {
   }
   ///
   pub fn is_equivalent(&self, other: &FeelType) -> bool {
-    return match other {
+    match other {
       FeelType::Any => matches!(self, FeelType::Any),
       FeelType::Boolean => matches!(self, FeelType::Boolean),
       FeelType::Context(entries_other) => {
@@ -441,7 +441,7 @@ impl FeelType {
       FeelType::String => matches!(self, FeelType::String),
       FeelType::Time => matches!(self, FeelType::Time),
       FeelType::YearsAndMonthsDuration => matches!(self, FeelType::YearsAndMonthsDuration),
-    };
+    }
   }
   ///
   pub fn is_conformant(&self, other: &FeelType) -> bool {
@@ -507,7 +507,7 @@ mod errors {
   use dmntk_common::DmntkError;
 
   /// Definition of errors raised in `types` module.
-  #[derive(Debug, PartialEq)]
+  #[derive(Debug, PartialEq, Eq)]
   pub enum TypesError {
     /// Error raised when the specified text is not a valid `FEEL` type name.
     InvalidFeelTypeName(String),

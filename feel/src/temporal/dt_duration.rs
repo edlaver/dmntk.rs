@@ -56,7 +56,7 @@ lazy_static! {
 
 /// FEEL days and time duration.
 #[must_use]
-#[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
 pub struct FeelDaysAndTimeDuration(i64);
 
 impl FeelDaysAndTimeDuration {

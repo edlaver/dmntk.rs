@@ -229,7 +229,7 @@ impl FeelDate {
 
 ///
 pub fn is_valid_date(year: Year, month: Month, day: Day) -> bool {
-  if year >= -999_999_999 && year <= 999_999_999 {
+  if (-999_999_999..=999_999_999).contains(&year) {
     if let Some(last_day_of_month) = last_day_of_month(year, month) {
       return day <= last_day_of_month;
     }

@@ -36,7 +36,7 @@ use regex::Captures;
 use std::ops::{Div, Rem};
 
 /// FEEL time zone.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FeelZone {
   /// UTC time zone.
   Utc,

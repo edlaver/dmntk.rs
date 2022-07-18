@@ -35,7 +35,7 @@
 use dmntk_common::DmntkError;
 use std::str::FromStr;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Bif {
   Abs,
   After,
@@ -221,7 +221,7 @@ pub mod errors {
   use dmntk_common::DmntkError;
 
   /// Built-in functions errors.
-  #[derive(Debug, PartialEq)]
+  #[derive(Debug, PartialEq, Eq)]
   pub enum BifError {
     /// Raised when the specified name is not a built-in function.
     UnknownFunctionName(String),
