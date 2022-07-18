@@ -42,7 +42,7 @@ use std::convert::TryFrom;
 use std::str::FromStr;
 
 /// Cell on the plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Cell {
   /// Rectangular region with unique number, bounded by coordinates defined in **Rect**
   /// and containing the text taken from original decision table source file.
@@ -135,7 +135,7 @@ impl HitPolicyPlacement {
 }
 
 /// Placement of the rules in plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum RuleNumbersPlacement {
   /// In horizontal decision tables (rules as rows), rule numbers are placed
   /// in the first column of the plane, on the left edge, below horizontal double

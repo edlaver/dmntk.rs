@@ -34,7 +34,7 @@ use crate::point::Point;
 use crate::rect::Rect;
 use dmntk_common::DmntkError;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum RecognizerError {
   CanvasExpectedCharactersNotFound(Vec<char>),
   CanvasCharacterIsNotAllowed(char, Vec<char>),

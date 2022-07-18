@@ -39,7 +39,7 @@ pub const POINT_ZERO: Point = Point { x: 0, y: 0 };
 pub type Points = Vec<Point>;
 
 /// Point.
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Point {
   pub x: usize,
   pub y: usize,
