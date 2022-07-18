@@ -218,7 +218,8 @@ async fn get_system_info() -> std::io::Result<Json<ResultDto<SystemInfoDto>>> {
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_clear_definitions(&mut workspace) {
+    let result = do_clear_definitions(&mut workspace);
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -231,7 +232,8 @@ async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Re
 #[post("/definitions/add")]
 async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<AddDefinitionsResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_add_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_add_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -244,7 +246,8 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
 #[post("/definitions/replace")]
 async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_replace_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_replace_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -257,7 +260,8 @@ async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: 
 #[post("/definitions/remove")]
 async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_remove_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_remove_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -270,7 +274,8 @@ async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: we
 #[post("/definitions/deploy")]
 async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_deploy_definitions(&mut workspace) {
+    let result = do_deploy_definitions(&mut workspace);
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -308,7 +313,8 @@ async fn post_tck_evaluate() -> std::io::Result<Json<ResultDto<()>>> {
 #[post("/evaluate/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   if let Ok(workspace) = data.workspace.read() {
-    match do_evaluate(&workspace, &params.into_inner(), &request_body) {
+    let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
+    match result {
       Ok(value) => HttpResponse::Ok()
         .content_type("application/json")
         .body(format!("{{\"data\":{}}}", value.jsonify())),
