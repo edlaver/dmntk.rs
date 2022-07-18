@@ -36,7 +36,7 @@
 pub type Result<T, E = DmntkError> = std::result::Result<T, E>;
 
 /// Common error definition used by all `DMNTK` components.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct DmntkError(String);
 
 impl std::fmt::Display for DmntkError {
