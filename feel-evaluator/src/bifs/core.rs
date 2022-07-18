@@ -990,7 +990,7 @@ pub fn max(values: &[Value]) -> Value {
   if values.is_empty() {
     return value_null!();
   }
-  return match &values[0] {
+  match &values[0] {
     Value::Number(n) => {
       let mut max = *n;
       for value in values.iter().skip(1) {
@@ -1021,8 +1021,8 @@ pub fn max(values: &[Value]) -> Value {
       }
       Value::String(max)
     }
-    other => return invalid_argument_type!("max", "number, string", other.type_of()),
-  };
+    other => invalid_argument_type!("max", "number, string", other.type_of()),
+  }
 }
 
 /// Returns the mean of numbers.
@@ -1172,7 +1172,7 @@ pub fn min(values: &[Value]) -> Value {
   if values.is_empty() {
     return value_null!();
   }
-  return match &values[0] {
+  match &values[0] {
     Value::Number(n) => {
       let mut min = *n;
       for value in values.iter().skip(1) {
@@ -1200,7 +1200,7 @@ pub fn min(values: &[Value]) -> Value {
       Value::String(min)
     }
     other => invalid_argument_type!("min", "number, string", other.type_of()),
-  };
+  }
 }
 
 /// Returns the mode of numbers.
