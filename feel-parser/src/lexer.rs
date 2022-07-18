@@ -707,7 +707,7 @@ impl<'lexer> Lexer<'lexer> {
   /// Consumes a HEX digit from input or reports an error.
   fn consume_hex_digit(&mut self) -> Result<u64> {
     if let Some(ch) = self.char_at(0) {
-      if is_hex_digit(ch) {
+      if ch.is_ascii_hexdigit() {
         self.position += 1;
         Ok(hex_to_decimal(ch))
       } else {
@@ -960,11 +960,6 @@ fn is_separator(ch: char) -> bool {
 /// Returns **true** when the specified character is an ASCII digit.
 fn is_digit(ch: char) -> bool {
   ch.is_ascii_digit()
-}
-
-/// Returns **true** when the specified character is a hexadecimal digit.
-fn is_hex_digit(ch: char) -> bool {
-  ch.is_digit(16)
 }
 
 /// Returns `true` when the specified character is a keyword `not` separator,
