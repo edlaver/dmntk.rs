@@ -75,11 +75,19 @@ mod tests {
 
   #[test]
   fn test_equal() {
-    assert!((DmntkError::new("ParserError", "unexpected end of file") == DmntkError::new("ParserError", "unexpected end of file")));
+    let err1 = DmntkError::new("ParserError", "unexpected end of file");
+    let err2 = DmntkError::new("ParserError", "unexpected end of file");
+    assert!((err1 == err2));
   }
 
   #[test]
   fn test_not_equal() {
     assert!((DmntkError::new("ParserError", "unexpected end of files") != DmntkError::new("ParserError", "unexpected end of file")));
+  }
+
+  #[test]
+  fn test_total_eq() {
+    let err1 = DmntkError::new("ParserError", "unexpected end of file");
+    err1.assert_receiver_is_total_eq();
   }
 }
