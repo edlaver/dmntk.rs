@@ -155,7 +155,8 @@ impl ModelEvaluator {
   /// Evaluates an invocable with specified name.
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     if let Ok(invocable_by_name) = self.invocable_by_name.read() {
-      match invocable_by_name.get(invocable_name) {
+      let invocable = invocable_by_name.get(invocable_name);
+      match invocable {
         Some(InvocableType::Decision(id)) => {
           // evaluate decision
           self.evaluate_decision(id, input_data)
