@@ -9,7 +9,6 @@ license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [dependencies]
-serde = "1.0.130"
-serde_derive = "1.0.130"
-serde_yaml = "0.8.21"
-uriparse = "0.6.3"
+serde = { version = "1.0.139", features = ["derive"] }
+serde_yaml = "0.8.26"
+uriparse = "0.6.4"

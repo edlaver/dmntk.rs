@@ -13,9 +13,9 @@ default = []
 tck = []
 
 [dependencies]
-actix-web = "3.3.2"
+actix-web = "4.1.0"
 base64 = "0.13.0"
-clap = { version = "3.0.10", features = ["cargo"] }
+clap = { version = "3.2.12", features = ["cargo"] }
 difference = "2.0.0"
 dmntk-common = { path = "../common" }
 dmntk-evaluator = { path = "../evaluator" }
@@ -26,7 +26,6 @@ dmntk-model = { path = "../model" }
 dmntk-recognizer = { path = "../recognizer" }
 dmntk-server = { path = "../server" }
 dmntk-workspace = { path = "../workspace" }
-serde = "1.0.130"
-serde_derive = "1.0.130"
-serde_yaml = "0.8.21"
+serde = { version = "1.0.139", features = ["derive"] }
+serde_yaml = "0.8.26"
 thiserror = "1.0.30"
