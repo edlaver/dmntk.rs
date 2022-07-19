@@ -127,7 +127,7 @@ tasks:
   clippy:
     desc: Runs clippy for all targets
     cmds:
-      - cmd: cargo clippy --all-targets
+      - cmd: cargo clippy --workspace --all-targets
 
   fmt:
     desc: Runs code formatter
