@@ -378,15 +378,15 @@ fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
             Ok(result) => {
               println!("{}", result);
             }
-            Err(reason) => println!("evaluating expression failed with reason: {}", reason),
+            Err(reason) => eprintln!("evaluating expression failed with reason: {}", reason),
           },
-          Err(reason) => println!("parsing expression failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
         },
-        Err(reason) => println!("evaluating context failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating context failed with reason: {}", reason),
       },
-      Err(reason) => println!("loading context file `{}` failed with reason: {:?}", ctx_file_name, reason),
+      Err(reason) => eprintln!("loading context file `{}` failed with reason: {}", ctx_file_name, reason),
     },
-    Err(reason) => println!("loading expression file `{}` failed with reason: {:?}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
   }
 }
 
@@ -403,18 +403,18 @@ fn test_feel_expression(test_file_name: &str, feel_file_name: &str, summary_only
             match dmntk_feel_parser::parse_expression(&scope, &feel_file_content, false) {
               Ok(node) => match dmntk_evaluator::evaluate(&scope, &node) {
                 Ok(actual) => display_test_case_result(&actual, expected, &test_no, &mut passed, &mut failed, summary_only, color),
-                Err(reason) => println!("evaluating expression failed with reason: {}", reason),
+                Err(reason) => eprintln!("evaluating expression failed with reason: {}", reason),
               },
-              Err(reason) => println!("parsing expression failed with reason: {}", reason),
+              Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
             }
           }
           display_test_summary(passed, failed, summary_only, color);
         }
-        Err(reason) => println!("evaluation of test cases failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluation of test cases failed with reason: {}", reason),
       },
-      Err(reason) => println!("loading test file `{}` failed with reason: {:?}", test_file_name, reason),
+      Err(reason) => eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason),
     },
-    Err(reason) => println!("loading expression file `{}` failed with reason: {:?}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
   }
 }
 
