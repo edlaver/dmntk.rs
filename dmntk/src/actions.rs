@@ -358,13 +358,13 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
           Ok(ast_root_node) => {
             println!("    AST:{}", ast_root_node.to_string().trim_end());
           }
-          Err(reason) => println!("parsing expression failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
         },
-        Err(reason) => println!("evaluating context failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating context failed with reason: {}", reason),
       },
-      Err(reason) => println!("loading context file `{}` failed with reason: {:?}", ctx_file_name, reason),
+      Err(reason) => eprintln!("loading context file `{}` failed with reason: {}", ctx_file_name, reason),
     },
-    Err(reason) => println!("loading expression file `{}` failed with reason: {:?}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
   }
 }
 
