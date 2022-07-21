@@ -434,12 +434,12 @@ fn parse_decision_table(dectab_file_name: &str) {
         canvas.display_grid_layer();
         match canvas.plane() {
           Ok(plane) => println!("PLANE\n{}", plane),
-          Err(reason) => println!("ERROR: {}", reason),
+          Err(reason) => eprintln!("ERROR: {}", reason),
         };
       }
-      Err(reason) => println!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {}", reason),
     },
-    Err(reason) => println!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
   }
 }
 
@@ -448,28 +448,28 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
   let input_file_content = match std::fs::read_to_string(input_file_name) {
     Ok(input_file_content) => input_file_content,
     Err(reason) => {
-      println!("loading input file `{}` failed with reason: {}", input_file_name, reason);
+      eprintln!("loading input file `{}` failed with reason: {}", input_file_name, reason);
       return;
     }
   };
   let input_data = match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
     Ok(input_data) => input_data,
     Err(reason) => {
-      println!("evaluating input data failed with reason: {}", reason);
+      eprintln!("evaluating input data failed with reason: {}", reason);
       return;
     }
   };
   let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
-      println!("loading input file `{}` failed with reason: {}", dectab_file_name, reason);
+      eprintln!("loading input file `{}` failed with reason: {}", dectab_file_name, reason);
       return;
     }
   };
   let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
-      println!("building decision table failed with reason: {}", reason);
+      eprintln!("building decision table failed with reason: {}", reason);
       return;
     }
   };
@@ -477,7 +477,7 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
   let evaluator = match dmntk_evaluator::build_decision_table_evaluator(&scope, &decision_table) {
     Ok(evaluator) => evaluator,
     Err(reason) => {
-      println!("building decision table evaluator failed with reason: {}", reason);
+      eprintln!("building decision table evaluator failed with reason: {}", reason);
       return;
     }
   };
@@ -490,28 +490,28 @@ fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_onl
   let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
-      println!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason);
+      eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason);
       return;
     }
   };
   let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
-      println!("building decision table failed with reason: {}", reason);
+      eprintln!("building decision table failed with reason: {}", reason);
       return;
     }
   };
   let test_file_content = match std::fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
-      println!("loading test file `{}` failed with reason: {}", test_file_name, reason);
+      eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason);
       return;
     }
   };
   let test_cases = match dmntk_evaluator::evaluate_test_cases(&test_file_content) {
     Ok(test_cases) => test_cases,
     Err(reason) => {
-      println!("evaluating test file failed with reason: {}", reason);
+      eprintln!("evaluating test file failed with reason: {}", reason);
       return;
     }
   };
@@ -522,7 +522,7 @@ fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_onl
     let evaluator = match dmntk_evaluator::build_decision_table_evaluator(&scope, &decision_table) {
       Ok(evaluator) => evaluator,
       Err(reason) => {
-        println!("building decision table evaluator failed with reason: {}", reason);
+        eprintln!("building decision table evaluator failed with reason: {}", reason);
         return;
       }
     };
@@ -542,9 +542,9 @@ fn export_decision_table(dectab_file_name: &str, html_file_name: &str) {
           println!("writing output HTML file `{}` failed with reason: {}", html_file_name, reason)
         }
       }
-      Err(reason) => println!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {}", reason),
     },
-    Err(reason) => println!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
   }
 }
 
@@ -555,9 +555,9 @@ fn recognize_decision_table(dtb_file_name: &str) {
       Ok(recognizer) => {
         recognizer.trace();
       }
-      Err(reason) => println!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {}", reason),
     },
-    Err(reason) => println!("loading decision table file `{}` failed with reason: {}", dtb_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dtb_file_name, reason),
   }
 }
 
@@ -617,9 +617,9 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
         // more...
         print!("\n{}MORE DETAILS WILL BE IMPLEMENTED...{}\n\n", color_e, color_r);
       }
-      Err(reason) => println!("parsing model file failed with reason: {}", reason),
+      Err(reason) => eprintln!("parsing model file failed with reason: {}", reason),
     },
-    Err(reason) => println!("loading model file `{}` failed with reason: {:?}", dmn_file_name, reason),
+    Err(reason) => eprintln!("loading model file `{}` failed with reason: {:?}", dmn_file_name, reason),
   }
 }
 
@@ -634,15 +634,15 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
               let result = model_evaluator.evaluate_invocable(invocable_name, &input_data);
               println!("{}", result.jsonify())
             }
-            Err(reason) => println!("evaluating invocable {} failed with reason: {}", invocable_name, reason),
+            Err(reason) => eprintln!("evaluating invocable {} failed with reason: {}", invocable_name, reason),
           },
-          Err(reason) => println!("parsing model failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing model failed with reason: {}", reason),
         },
-        Err(reason) => println!("evaluating input data failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating input data failed with reason: {}", reason),
       },
-      Err(reason) => println!("loading input data file `{}` failed with reason: {:?}", input_file_name, reason),
+      Err(reason) => eprintln!("loading input data file `{}` failed with reason: {}", input_file_name, reason),
     },
-    Err(reason) => println!("loading model file `{}` failed with reason: {:?}", dmn_file_name, reason),
+    Err(reason) => eprintln!("loading model file `{}` failed with reason: {}", dmn_file_name, reason),
   }
 }
 
@@ -651,35 +651,35 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   let dmn_file_content = match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => dmn_file_content,
     Err(reason) => {
-      println!("loading model file `{}` failed with reason: {}", dmn_file_name, reason);
+      eprintln!("loading model file `{}` failed with reason: {}", dmn_file_name, reason);
       return;
     }
   };
   let definitions = match dmntk_model::parse(&dmn_file_content) {
     Ok(definitions) => definitions,
     Err(reason) => {
-      println!("parsing model file failed with reason: {}", reason);
+      eprintln!("parsing model file failed with reason: {}", reason);
       return;
     }
   };
   let model_evaluator = match dmntk_evaluator::ModelEvaluator::new(&definitions) {
     Ok(model_evaluator) => model_evaluator,
     Err(reason) => {
-      println!("preparing model evaluator failed with reason: {}", reason);
+      eprintln!("preparing model evaluator failed with reason: {}", reason);
       return;
     }
   };
   let test_file_content = match std::fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
-      println!("loading test file `{}` failed with reason: {}", test_file_name, reason);
+      eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason);
       return;
     }
   };
   let test_cases = match dmntk_evaluator::evaluate_test_cases(&test_file_content) {
     Ok(test_cases) => test_cases,
     Err(reason) => {
-      println!("evaluating test file failed with reason: {}", reason);
+      eprintln!("evaluating test file failed with reason: {}", reason);
       return;
     }
   };
