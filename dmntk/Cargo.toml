@@ -26,6 +26,6 @@ dmntk-model = { path = "../model" }
 dmntk-recognizer = { path = "../recognizer" }
 dmntk-server = { path = "../server" }
 dmntk-workspace = { path = "../workspace" }
-serde = { version = "1.0.139", features = ["derive"] }
+serde = { version = "1.0.140", features = ["derive"] }
 serde_yaml = "0.8.26"
 thiserror = "1.0.30"
