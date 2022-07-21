@@ -735,12 +735,15 @@ fn display_test_case_result(actual: &Value, expected: &Value, test_no: &usize, p
       println!("test {} ... {}FAILED{}", test_no + 1, color_red, color_reset);
       println!("    {}expected{}: {}", color_green, color_reset, expected);
       println!("      {}actual{}: {}", color_red, color_reset, actual);
-      println!(
-        "  {}difference{}: {}",
-        color_magenta,
-        color_reset,
-        Changeset::new(&expected.jsonify(), &actual.jsonify(), "")
-      );
+      if use_color {
+        // showing the difference is reasonable only with colors enabled
+        println!(
+          "  {}difference{}: {}",
+          color_magenta,
+          color_reset,
+          Changeset::new(&expected.jsonify(), &actual.jsonify(), "")
+        );
+      }
     }
   }
 }
