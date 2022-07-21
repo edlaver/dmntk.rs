@@ -66,7 +66,7 @@
 //! % { Customer:"Government", Order:  10.00 }, null
 //! ```
 
-use dmntk_common::Result;
+use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{AstNode, Scope};
@@ -77,14 +77,25 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
   if let Some(separator) = detect_separator(input) {
     let scope = Scope::default();
     for unary_tests in split_test_cases(input, &separator) {
-      if let Ok(AstNode::ExpressionList(nodes)) = dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
-        if nodes.len() == 2 {
-          if let Ok(input_data) = dmntk_feel_evaluator::evaluate_context_node(&scope, &nodes[0]) {
-            if let Ok(expected_result) = dmntk_feel_evaluator::evaluate(&scope, &nodes[1]) {
-              test_cases.push((input_data, expected_result));
+      match dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
+        Ok(ast_node) => match ast_node {
+          AstNode::ExpressionList(nodes) => {
+            if nodes.len() == 2 {
+              if let Ok(input_data) = dmntk_feel_evaluator::evaluate_context_node(&scope, &nodes[0]) {
+                if let Ok(expected_result) = dmntk_feel_evaluator::evaluate(&scope, &nodes[1]) {
+                  test_cases.push((input_data, expected_result));
+                }
+              }
             }
           }
-        }
+          other => {
+            return Err(DmntkError::new(
+              "Evaluator",
+              &format!("expected expression list, but found '{}'", other.to_string()),
+            ))
+          }
+        },
+        Err(reason) => return Err(reason),
       }
     }
   }
