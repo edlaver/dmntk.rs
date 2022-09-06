@@ -15,5 +15,5 @@ fn test_add_002() {
 
 #[test]
 fn test_add_003() {
-  eqs("2.00", FeelNumber::new(123, 2) + FeelNumber::new(77, 2));
+  eqs("8.93", FeelNumber::new(123, 2) + FeelNumber::new(77, 1));
 }
