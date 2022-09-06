@@ -83,12 +83,12 @@ tasks:
       - cmd: cargo doc --no-deps --open
 
   doc-priv:
-    desc: Generates documentation
+    desc: Generates documentation with private items
     cmds:
       - cmd: cargo doc --no-deps --document-private-items
 
   doc-priv-open:
-    desc: Generates documentation and opens it in browser
+    desc: Generates documentation with private items and opens it in browser
     cmds:
       - cmd: cargo doc --no-deps --open --document-private-items
 
@@ -110,14 +110,17 @@ tasks:
   release:
     desc: Builds in release mode
     cmds:
-      - cmd: cargo clean
       - cmd: cargo +stable build --release
 
   run:
     desc: Runs the server in release mode
     cmds:
-      - cmd: cargo clean
-      - cmd: cargo +stable run --release -- run -p 12000
+      - cmd: cargo +stable run --release -- srv -P 22022
+
+  run-tck:
+    desc: Runs the server in release mode
+    cmds:
+      - cmd: cargo +stable run --features=tck --release -- srv -P 22022
 
   test:
     desc: Runs tests in debug mode
