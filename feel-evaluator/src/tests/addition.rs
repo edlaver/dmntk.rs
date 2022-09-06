@@ -108,3 +108,14 @@ fn test_0013() {
     "Hello John Doe, you are EMPLOYED",
   );
 }
+
+#[test]
+fn test_0014() {
+  let scope = &te_scope(r#"{}"#);
+  te_null(
+    false,
+    scope,
+    r#"1.25 + "alfa""#,
+    r#"incompatible types in addition: 1.25(number) + "alfa"(string)"#,
+  );
+}
