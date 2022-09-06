@@ -63,7 +63,7 @@ struct DecContext {
 }
 
 #[repr(C)]
-#[derive(Default, Debug, Copy, Clone)]
+#[derive(Default, Copy, Clone)]
 pub struct DecNumber {
   digits: i32,
   exponent: i32,
