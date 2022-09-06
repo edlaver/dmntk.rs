@@ -39,6 +39,11 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-common
 
+  cov-feel-number:
+    desc: Runs code coverage using grcov for dmntk-feel-number
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-number
+
   cov-feel:
     desc: Runs code coverage using grcov for dmntk-feel
     cmds:
