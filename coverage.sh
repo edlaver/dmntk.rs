@@ -16,7 +16,7 @@ if [ -n "$1" ]; then
   # run tests for specified package
   cargo test -p "$1"
 else
-  # run all tests
+  # run all tests including manual tests
   cargo test
   # run building feel-parser with features, after reformatting, no changes in source code are expected
   cargo build -p dmntk-feel-parser --features=parsing-tables
