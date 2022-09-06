@@ -540,16 +540,6 @@ mod tests {
   }
 
   #[test]
-  fn test_abs() {
-    assert_eq!("0", FeelNumber::new(0, 0).abs().to_string());
-    assert_eq!("0", FeelNumber::new(-0, 0).abs().to_string());
-    assert_eq!("1", FeelNumber::new(1, 0).abs().to_string());
-    assert_eq!("1", FeelNumber::new(-1, 0).abs().to_string());
-    assert_eq!("0.123456", FeelNumber::new(123456, 6).abs().to_string());
-    assert_eq!("0.123456", FeelNumber::new(-123456, 6).abs().to_string());
-  }
-
-  #[test]
   fn test_add() {
     assert_eq!("2", (FeelNumber::new(123, 2) + FeelNumber::new(77, 2)).to_string());
   }
