@@ -17,3 +17,24 @@ fn test_add_002() {
 fn test_add_003() {
   eqs("8.93", FeelNumber::new(123, 2) + FeelNumber::new(77, 1));
 }
+
+#[test]
+fn test_add_004() {
+  let mut x = FeelNumber::new(1, 1);
+  x += FeelNumber::new(3, 1);
+  eqs("0.4", x);
+}
+
+#[test]
+fn test_add_005() {
+  let mut x = FeelNumber::new(12345, 2);
+  x += FeelNumber::new(3847847, 7);
+  eqs("123.8347847", x);
+}
+
+#[test]
+fn test_add_006() {
+  let mut x = FeelNumber::new(123, 2);
+  x += FeelNumber::new(77, 1);
+  eqs("8.93", x);
+}

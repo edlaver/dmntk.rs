@@ -272,7 +272,7 @@ impl std::ops::Add<FeelNumber> for FeelNumber {
 impl std::ops::AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
-    self.0 = dec_reduce(&dec_add(&self.0, &rhs.0));
+    self.0 = dec_add(&self.0, &rhs.0);
   }
 }
 
@@ -537,13 +537,6 @@ mod tests {
   fn test_debug() {
     assert_eq!("49", format!("{:?}", FeelNumber::new(49, 0)));
     assert_eq!("1.23456789", format!("{:?}", FeelNumber::new(123456789, 8)));
-  }
-
-  #[test]
-  fn test_add_assign() {
-    let mut x = FeelNumber::new(123, 2);
-    x += FeelNumber::new(77, 2);
-    assert_eq!("2", x.to_string());
   }
 
   #[test]
