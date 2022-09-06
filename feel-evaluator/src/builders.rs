@@ -137,7 +137,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Number(lh + rh),
         value @ Value::Null(_) => value,
-        _ => value_null!("addition err 1"),
+        _ => value_null!("incompatible types in addition: {}({}) + {}({})", lhv, lhv.type_of(), rhv, rhv.type_of()),
       },
       Value::String(mut lh) => {
         if let Value::String(rh) = rhv {
