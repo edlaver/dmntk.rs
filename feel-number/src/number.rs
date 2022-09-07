@@ -119,7 +119,7 @@ impl FeelNumber {
     Self(dec_reduce(&dec_floor(&self.0)))
   }
   ///
-  pub fn fract(&self) -> Self {
+  pub fn frac(&self) -> Self {
     Self(dec_fract(&self.0))
   }
   ///

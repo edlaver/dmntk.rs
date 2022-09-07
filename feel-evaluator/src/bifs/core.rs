@@ -1810,7 +1810,7 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.fract() * FeelNumber::nano()).trunc();
+          let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
           if let Some(feel_time) = FeelTime::new_hms_opt(
             hour.to_u8().unwrap(),
             minute.to_u8().unwrap(),
@@ -1833,7 +1833,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.fract() * FeelNumber::nano()).trunc();
+          let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
           match duration_value {
             Value::DaysAndTimeDuration(duration) => {
               if let Some(feel_time) = FeelTime::new_hmso_opt(
