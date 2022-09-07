@@ -186,14 +186,6 @@ impl FeelNumber {
     Self(dec_trunc(&self.0))
   }
   ///
-  pub fn to_u8(&self) -> Option<u8> {
-    u8::try_from(self).ok()
-  }
-  ///
-  pub fn to_u64(&self) -> Option<u64> {
-    u64::try_from(self).ok()
-  }
-  ///
   pub fn to_isize(&self) -> Option<isize> {
     isize::try_from(self).ok()
   }
@@ -415,13 +407,6 @@ impl From<i32> for FeelNumber {
   }
 }
 
-impl From<FeelNumber> for i32 {
-  ///
-  fn from(value: FeelNumber) -> i32 {
-    dec_to_i32(&value.0)
-  }
-}
-
 impl From<u32> for FeelNumber {
   ///
   fn from(value: u32) -> Self {
@@ -453,6 +438,7 @@ impl From<usize> for FeelNumber {
 from_feel_number_into!(isize);
 from_feel_number_into!(usize);
 from_feel_number_into!(u64);
+from_feel_number_into!(i32);
 //from_feel_number_into!(u32);
 
 /// Converts a string in scientific notation into digits without exponent.
@@ -826,6 +812,6 @@ mod tests {
     assert!(u64::try_from(FeelNumber::from_i128(i128::MAX)).is_err());
     assert!(u64::try_from(FeelNumber::from_i128(i128::MIN)).is_err());
     assert!(u64::try_from(FeelNumber::from_i128(-1)).is_err());
-    assert_eq!(Some(300_000_000), FeelNumber::from_i128(300_000_000).to_u64());
+    assert_eq!(300_000_000_u64, u64::try_from(FeelNumber::from_i128(300_000_000)).unwrap());
   }
 }

@@ -86,7 +86,7 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
   type Error = DmntkError;
   /// Converts a tuple of numbers into [FeelDate].
   fn try_from(value: (FeelNumber, FeelNumber, FeelNumber)) -> Result<Self, Self::Error> {
-    let year = value.0.into();
+    let year = value.0.try_into()?;
     if value.1 > FeelNumber::zero() && value.2 > FeelNumber::zero() {
       let month: u32 = value.1.into();
       let day = value.2.into();
@@ -94,7 +94,7 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
         return Ok(Self(year, month, day));
       }
     }
-    Err(err_invalid_date(value.0.into(), value.1.into(), value.2.into()))
+    Err(err_invalid_date(value.0, value.1, value.2))
   }
 }
 

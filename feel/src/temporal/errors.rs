@@ -33,6 +33,7 @@
 //! Implementation of FEEL temporal errors.
 
 use dmntk_common::DmntkError;
+use dmntk_feel_number::FeelNumber;
 
 /// FEEL temporal error.
 struct TemporalError(String);
@@ -44,7 +45,7 @@ impl From<TemporalError> for DmntkError {
   }
 }
 
-pub fn err_invalid_date(y: i32, m: u8, d: u8) -> DmntkError {
+pub fn err_invalid_date(y: FeelNumber, m: FeelNumber, d: FeelNumber) -> DmntkError {
   TemporalError(format!("invalid date {}-{}-{}", y, m, d)).into()
 }
 
