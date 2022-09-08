@@ -533,6 +533,8 @@ mod tests {
     assert!((FeelNumber::new(123456, 3) < FeelNumber::new(123456, 2)));
     assert!((FeelNumber::new(123456, 2) <= FeelNumber::new(123456, 2)));
     assert!((FeelNumber::new(123456, 2) >= FeelNumber::new(123456, 2)));
+    assert!((11_isize > FeelNumber::new(10, 0)));
+    assert!((FeelNumber::new(11, 0) > 10));
     assert!((-6111..6176).contains(&FeelNumber::from_i128(0)));
     assert!((0..6176).contains(&FeelNumber::from_i128(6175)));
     assert!((-3..2).contains(&FeelNumber::from_i128(-3)));
