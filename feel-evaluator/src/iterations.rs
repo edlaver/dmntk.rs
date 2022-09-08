@@ -190,8 +190,8 @@ impl ForExpressionEvaluator {
   pub fn add_range(&mut self, name: Name, range_start: Value, range_end: Value) {
     if let Value::Number(start) = range_start {
       if let Value::Number(end) = range_end {
-        if let Some(i_start) = start.to_isize() {
-          if let Some(i_end) = end.to_isize() {
+        if let Ok(i_start) = start.try_into() {
+          if let Ok(i_end) = end.try_into() {
             self.feel_iterator.add_range(name, i_start, i_end);
           }
         }

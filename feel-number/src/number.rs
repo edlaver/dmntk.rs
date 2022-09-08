@@ -185,14 +185,6 @@ impl FeelNumber {
   pub fn trunc(&self) -> Self {
     Self(dec_trunc(&self.0))
   }
-  ///
-  pub fn to_isize(&self) -> Option<isize> {
-    isize::try_from(self).ok()
-  }
-  ///
-  pub fn to_usize(&self) -> Option<usize> {
-    usize::try_from(self).ok()
-  }
 }
 
 impl PartialEq<FeelNumber> for FeelNumber {
@@ -790,15 +782,11 @@ mod tests {
     assert!(usize::try_from(FeelNumber::from_i128(i128::MAX)).is_err());
     assert!(usize::try_from(FeelNumber::from_i128(i128::MIN)).is_err());
     assert!(usize::try_from(FeelNumber::from_i128(-1)).is_err());
-    assert_eq!(Some(0), FeelNumber::from_i128(0).to_usize());
-    assert_eq!(Some(2), FeelNumber::from_i128(2).to_usize());
-    assert_eq!(Some(usize::MAX), FeelNumber::from_usize(usize::MAX).to_usize());
-    assert_eq!(Some(usize::MIN), FeelNumber::from_usize(usize::MIN).to_usize());
-    assert_eq!(Some(usize::MAX / 2), FeelNumber::from_isize(isize::MAX).to_usize());
-    assert_eq!(None, FeelNumber::from_isize(isize::MIN).to_usize());
-    assert_eq!(None, FeelNumber::from_i128(i128::MAX).to_usize());
-    assert_eq!(None, FeelNumber::from_i128(i128::MIN).to_usize());
-    assert_eq!(None, FeelNumber::from_i128(-1).to_usize());
+    assert_eq!(0, usize::try_from(FeelNumber::from_i128(0)).unwrap());
+    assert_eq!(2, usize::try_from(FeelNumber::from_i128(2)).unwrap());
+    assert_eq!(usize::MAX, usize::try_from(FeelNumber::from_usize(usize::MAX)).unwrap());
+    assert_eq!(usize::MIN, usize::try_from(FeelNumber::from_usize(usize::MIN)).unwrap());
+    assert_eq!(usize::MAX / 2, usize::try_from(FeelNumber::from_isize(isize::MAX)).unwrap());
   }
 
   #[test]

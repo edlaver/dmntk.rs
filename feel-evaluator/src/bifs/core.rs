@@ -513,12 +513,7 @@ pub fn date_3(year_value: &Value, month_value: &Value, day_value: &Value) -> Val
         if let Ok(date) = FeelDate::try_from((*year, *month, *day)) {
           Value::Date(date)
         } else {
-          value_null!(
-            "[core::date] invalid date '{:04}-{:02}-{:02}'",
-            year.try_into().unwrap_or(0),
-            month.try_into().unwrap_or(0),
-            day.try_into().unwrap_or(0)
-          )
+          value_null!("[core::date_3] invalid date y={} m={} d={}", year, month, day)
         }
       } else {
         invalid_argument_type!("date", "number (day)", day_value.type_of())
@@ -894,7 +889,7 @@ pub fn insert_before(list: &Value, position_value: &Value, new_item_value: &Valu
   if let Value::List(mut items) = list.clone() {
     if let Value::Number(position) = position_value {
       if position.is_positive() {
-        if let Some(i) = position.to_usize() {
+        if let Ok(i) = <&FeelNumber as TryInto<usize>>::try_into(position) {
           if i <= items.len() {
             items.insert(i - 1, new_item_value.clone());
             return Value::List(items);
@@ -902,7 +897,7 @@ pub fn insert_before(list: &Value, position_value: &Value, new_item_value: &Valu
         }
       }
       if position.is_negative() {
-        if let Some(i) = position.abs().to_usize() {
+        if let Ok(i) = <FeelNumber as TryInto<usize>>::try_into(position.abs()) {
           if i <= items.as_vec().len() {
             items.insert(items.len() - i, new_item_value.clone());
             return Value::List(items);
@@ -1395,7 +1390,7 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
   if let Value::List(mut items) = list.clone() {
     if let Value::Number(position_number) = position_value {
       if position_number.is_positive() {
-        if let Some(mut index) = position_number.to_usize() {
+        if let Ok(mut index) = position_number.try_into() {
           index -= 1;
           if index < items.as_vec().len() {
             items.remove(index);
@@ -1404,7 +1399,7 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
         }
       }
       if position_number.is_negative() {
-        if let Some(index) = position_number.abs().to_usize() {
+        if let Ok(index) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
           if index <= items.len() {
             items.remove(items.len() - index);
             return Value::List(items);
@@ -1646,7 +1641,7 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(position_number) = position_value {
       if position_number.is_positive() {
-        if let Some(position) = position_number.to_usize() {
+        if let Ok(position) = <&FeelNumber as TryInto<usize>>::try_into(position_number) {
           let index = position - 1;
           if index < items.len() {
             return Value::List(Values::new(items.as_vec()[index..].to_vec()));
@@ -1654,7 +1649,7 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
         }
       }
       if position_number.is_negative() {
-        if let Some(position) = position_number.abs().to_usize() {
+        if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
           let index = position;
           if index <= items.len() {
             return Value::List(Values::new(items.as_vec()[items.len() - index..].to_vec()));
@@ -1670,10 +1665,10 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
 pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(length_number) = length_value {
-      if let Some(length) = length_number.to_usize() {
+      if let Ok(length) = <&FeelNumber as TryInto<usize>>::try_into(length_number) {
         if let Value::Number(position_number) = position_value {
           if position_number.is_positive() {
-            if let Some(position) = position_number.to_usize() {
+            if let Ok(position) = <&FeelNumber as TryInto<usize>>::try_into(position_number) {
               let first = position - 1;
               let last = first + length;
               if first < items.len() && last <= items.len() {
@@ -1682,7 +1677,7 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
             }
           }
           if position_number.is_negative() {
-            if let Some(position) = position_number.abs().to_usize() {
+            if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
               let first = items.len() - position;
               let last = first + length;
               if first < items.len() && last <= items.len() {
@@ -1702,8 +1697,8 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
 pub fn substring(input_string_value: &Value, start_position_value: &Value, length_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::Number(start_position) = start_position_value {
-      let start = if let Some(start_isize) = start_position.to_isize() {
-        start_isize
+      let start: isize = if let Ok(sp) = start_position.try_into() {
+        sp
       } else {
         return value_null!("start position is out of range of isize '{}'", start_position.to_string());
       };
@@ -1713,8 +1708,8 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
           if *length < FeelNumber::one() {
             return value_null!();
           }
-          let count = if let Some(length_usize) = length.trunc().to_usize() {
-            length_usize
+          let count: usize = if let Ok(l) = length.trunc().try_into() {
+            l
           } else {
             return value_null!("length is out of range of usize '{}'", length.to_string());
           };
