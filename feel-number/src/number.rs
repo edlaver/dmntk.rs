@@ -38,7 +38,7 @@ use dmntk_common::{DmntkError, Jsonify};
 use std::cmp::Ordering;
 use std::str::FromStr;
 
-macro_rules! from_feel_number_into {
+macro_rules! try_from_feel_number {
   ($l:tt) => {
     impl TryFrom<FeelNumber> for $l {
       type Error = DmntkError;
@@ -409,12 +409,12 @@ impl From<usize> for FeelNumber {
   }
 }
 
-from_feel_number_into!(isize);
-from_feel_number_into!(usize);
-from_feel_number_into!(u64);
-from_feel_number_into!(u32);
-from_feel_number_into!(i32);
-from_feel_number_into!(u8);
+try_from_feel_number!(isize);
+try_from_feel_number!(usize);
+try_from_feel_number!(u64);
+try_from_feel_number!(u32);
+try_from_feel_number!(i32);
+try_from_feel_number!(u8);
 
 /// Converts a string in scientific notation into digits without exponent.
 fn scientific_to_plain(s: String) -> String {
