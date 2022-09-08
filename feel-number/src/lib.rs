@@ -34,6 +34,7 @@ extern crate lazy_static;
 extern crate libc;
 
 pub mod dec;
+mod errors;
 mod number;
 
 pub use number::FeelNumber;
