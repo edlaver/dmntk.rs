@@ -1100,7 +1100,7 @@ pub fn median(values: &[Value]) -> Value {
       return value_null!("median");
     }
   }
-  list.sort_by(|x, y| x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal));
+  list.sort_by(|x, y| x.partial_cmp(y).unwrap_or(Ordering::Equal));
   let index = values.len() / 2;
   if list.len() % 2 == 0 {
     Value::Number((list[index - 1] + list[index]) / FeelNumber::two())
@@ -1212,7 +1212,7 @@ pub fn mode(values: &[Value]) -> Value {
     }
   }
   // sort values in ascending order
-  list.sort_by(|x, y| x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal));
+  list.sort_by(|x, y| x.partial_cmp(y).unwrap_or(Ordering::Equal));
   // calculate the frequencies of the numbers
   let mut mode: Vec<(usize, FeelNumber)> = vec![];
   for x in list {
@@ -1229,7 +1229,7 @@ pub fn mode(values: &[Value]) -> Value {
   }
   // sort frequencies in descending order, and when equal then by number in ascending order
   mode.sort_by(|x, y| match x.0.cmp(&y.0).reverse() {
-    std::cmp::Ordering::Equal => x.1.partial_cmp(&y.1).unwrap_or(std::cmp::Ordering::Equal),
+    Ordering::Equal => x.1.partial_cmp(&y.1).unwrap_or(Ordering::Equal),
     other => other,
   });
   // there is minimum one element in the list, so unwrap is ok
