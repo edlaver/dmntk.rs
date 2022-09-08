@@ -66,15 +66,11 @@ impl FeelNumber {
     Self(dec_scale_b(&dec_from_string(&format!("{}", n)), &dec_from_string(&format!("{}", -s))))
   }
   /// Creates a new [FeelNumber] from [isize].
-  pub fn from_isize(n: isize) -> Self {
-    Self(dec_from_string(&format!("{}", n)))
-  }
-  /// Creates a new [FeelNumber] from [usize].
-  pub fn from_usize(n: usize) -> Self {
+  fn from_isize(n: isize) -> Self {
     Self(dec_from_string(&format!("{}", n)))
   }
   /// Creates a new [FeelNumber] from [i128].
-  pub fn from_i128(n: i128) -> Self {
+  fn from_i128(n: i128) -> Self {
     Self(dec_from_string(&format!("{}", n)))
   }
   /// Creates a new [FeelNumber] from [String].
@@ -367,6 +363,13 @@ impl FromStr for FeelNumber {
 impl From<u8> for FeelNumber {
   ///
   fn from(value: u8) -> Self {
+    Self(dec_from_u32(value as u32))
+  }
+}
+
+impl From<u16> for FeelNumber {
+  ///
+  fn from(value: u16) -> Self {
     Self(dec_from_u32(value as u32))
   }
 }

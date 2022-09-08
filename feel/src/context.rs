@@ -325,7 +325,7 @@ mod tests {
   use crate::names::Name;
   use crate::qualified_names::QualifiedName;
   use crate::values::Value;
-  use crate::{value_number, FeelNumber, ToFeelString};
+  use crate::{value_number, ToFeelString};
   use dmntk_common::Jsonify;
 
   #[test]

@@ -72,7 +72,7 @@ impl FunctionBody {
 #[cfg(test)]
 mod tests {
   use crate::values::Value;
-  use crate::{value_number, FeelNumber, FunctionBody, Scope};
+  use crate::{value_number, FunctionBody, Scope};
   use std::sync::Arc;
 
   #[test]

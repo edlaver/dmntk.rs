@@ -82,7 +82,7 @@ macro_rules! value_null {
 #[macro_export]
 macro_rules! value_number {
   ($n:expr) => {{
-    Value::Number(FeelNumber::from_i128($n))
+    Value::Number($n.into())
   }};
   ($n:expr, $s:expr) => {
     Value::Number(FeelNumber::new($n, $s))

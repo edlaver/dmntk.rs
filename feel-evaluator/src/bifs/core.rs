@@ -581,7 +581,7 @@ pub fn day_of_week(value: &Value) -> Value {
 pub fn day_of_year(value: &Value) -> Value {
   fn gregorian_day_of_year(opt_day_of_year: Option<DayOfYear>) -> Value {
     if let Some(day_of_year) = opt_day_of_year {
-      value_number!(day_of_year as i128)
+      value_number!(day_of_year)
     } else {
       value_null!("[day of year] no day of year")
     }
@@ -1890,7 +1890,7 @@ pub fn upper_case(input_string_value: &Value) -> Value {
 pub fn week_of_year(value: &Value) -> Value {
   fn iso_week_of_year(opt_week_of_year: Option<WeekOfYear>) -> Value {
     if let Some(week_of_year) = opt_week_of_year {
-      value_number!(week_of_year as i128)
+      value_number!(week_of_year)
     } else {
       value_null!("[week of year] no week of year")
     }
@@ -1929,35 +1929,35 @@ pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value 
 mod tests {
   use crate::bifs::core::substring;
   use dmntk_feel::values::Value;
-  use dmntk_feel::{value_null, value_number, FeelNumber};
+  use dmntk_feel::{value_null, value_number};
 
   #[test]
   fn bif_substring() {
     // *** utility functions ***
 
     ///
-    fn eq_substring(expected: &str, input_string: &str, start_position: i128) {
+    fn eq_substring(expected: &str, input_string: &str, start_position: i32) {
       assert_eq!(
         Value::String(expected.to_string()),
         substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
       );
     }
     ///
-    fn eq_substring_null(input_string: &str, start_position: i128) {
+    fn eq_substring_null(input_string: &str, start_position: i32) {
       assert_eq!(
         value_null!(),
         substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
       );
     }
     ///
-    fn eq_substring_len(expected: &str, input_string: &str, start_position: i128, length: i128) {
+    fn eq_substring_len(expected: &str, input_string: &str, start_position: i32, length: u32) {
       assert_eq!(
         Value::String(expected.to_string()),
         substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
       );
     }
     ///
-    fn eq_substring_len_null(input_string: &str, start_position: i128, length: i128) {
+    fn eq_substring_len_null(input_string: &str, start_position: i32, length: u32) {
       assert_eq!(
         value_null!(),
         substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
