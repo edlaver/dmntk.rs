@@ -34,7 +34,6 @@
 
 use crate::evaluate_equals;
 use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value::YearsAndMonthsDuration;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{
   value_null, value_number, value_string, DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime,
@@ -1906,19 +1905,19 @@ pub fn week_of_year(value: &Value) -> Value {
 pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value {
   if let Value::Date(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return YearsAndMonthsDuration(to.ym_duration_1(from));
+      return Value::YearsAndMonthsDuration(to.ym_duration_1(from));
     }
     if let Value::Date(to) = to_value {
-      return YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(to.ym_duration(from));
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }
   if let Value::DateTime(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(to.ym_duration(from));
     }
     if let Value::Date(to) = to_value {
-      return YearsAndMonthsDuration(to.ym_duration(&from.date()));
+      return Value::YearsAndMonthsDuration(to.ym_duration(&from.date()));
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }
