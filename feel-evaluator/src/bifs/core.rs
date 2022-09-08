@@ -1806,8 +1806,16 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
           let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
-          if let Some(feel_time) = FeelTime::new_hms_opt(hour.into(), minute.into(), seconds.into(), nanoseconds.try_into().unwrap()) {
-            return Value::Time(feel_time);
+          if let Ok(h) = hour.try_into() {
+            if let Ok(m) = minute.try_into() {
+              if let Ok(s) = seconds.try_into() {
+                if let Ok(n) = nanoseconds.try_into() {
+                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
+                    return Value::Time(feel_time);
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1824,24 +1832,26 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
           let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
-          match duration_value {
-            Value::DaysAndTimeDuration(duration) => {
-              if let Some(feel_time) = FeelTime::new_hmso_opt(
-                hour.into(),
-                minute.into(),
-                seconds.into(),
-                nanoseconds.try_into().unwrap(),
-                duration.as_seconds() as i32,
-              ) {
-                return Value::Time(feel_time);
+          if let Ok(h) = hour.try_into() {
+            if let Ok(m) = minute.try_into() {
+              if let Ok(s) = seconds.try_into() {
+                if let Ok(n) = nanoseconds.try_into() {
+                  match duration_value {
+                    Value::DaysAndTimeDuration(duration) => {
+                      if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
+                        return Value::Time(feel_time);
+                      }
+                    }
+                    Value::Null(_) => {
+                      if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
+                        return Value::Time(feel_time);
+                      }
+                    }
+                    _ => {}
+                  }
+                }
               }
             }
-            Value::Null(_) => {
-              if let Some(feel_time) = FeelTime::new_hms_opt(hour.into(), minute.into(), seconds.into(), nanoseconds.try_into().unwrap()) {
-                return Value::Time(feel_time);
-              }
-            }
-            _ => {}
           }
         }
       }

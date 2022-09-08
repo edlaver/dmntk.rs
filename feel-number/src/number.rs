@@ -371,27 +371,6 @@ impl From<u8> for FeelNumber {
   }
 }
 
-impl From<FeelNumber> for u8 {
-  ///
-  fn from(value: FeelNumber) -> Self {
-    dec_to_u32(&value.0) as u8
-  }
-}
-
-impl From<&FeelNumber> for u8 {
-  ///
-  fn from(value: &FeelNumber) -> Self {
-    dec_to_u32(&value.0) as u8
-  }
-}
-
-impl From<FeelNumber> for u32 {
-  ///
-  fn from(value: FeelNumber) -> Self {
-    dec_to_u32(&value.0)
-  }
-}
-
 impl From<i32> for FeelNumber {
   ///
   fn from(value: i32) -> Self {
@@ -430,8 +409,9 @@ impl From<usize> for FeelNumber {
 from_feel_number_into!(isize);
 from_feel_number_into!(usize);
 from_feel_number_into!(u64);
+from_feel_number_into!(u32);
 from_feel_number_into!(i32);
-//from_feel_number_into!(u32);
+from_feel_number_into!(u8);
 
 /// Converts a string in scientific notation into digits without exponent.
 fn scientific_to_plain(s: String) -> String {

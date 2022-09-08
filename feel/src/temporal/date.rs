@@ -88,8 +88,8 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
   fn try_from(value: (FeelNumber, FeelNumber, FeelNumber)) -> Result<Self, Self::Error> {
     let year = value.0.try_into()?;
     if value.1 > FeelNumber::zero() && value.2 > FeelNumber::zero() {
-      let month: u32 = value.1.into();
-      let day = value.2.into();
+      let month = value.1.try_into()?;
+      let day = value.2.try_into()?;
       if is_valid_date(year, month, day) {
         return Ok(Self(year, month, day));
       }
