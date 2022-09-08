@@ -11,6 +11,7 @@ fn test_copy_001() {
 }
 
 #[test]
+#[allow(clippy::clone_on_copy)]
 fn test_clone_001() {
   let x = FeelNumber::new(12345, 2);
   let y = x.clone();
