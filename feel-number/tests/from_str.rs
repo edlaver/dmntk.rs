@@ -20,3 +20,18 @@ fn test_from_str_003() {
     "1234a5".parse::<FeelNumber>().unwrap_err().to_string()
   );
 }
+
+#[test]
+fn test_from_str_004() {
+  eqs("12300", "1.23E+4".parse::<FeelNumber>().unwrap());
+}
+
+#[test]
+fn test_from_str_005() {
+  eqs("0.00000000000000000000001", "1E-23".parse::<FeelNumber>().unwrap());
+}
+
+#[test]
+fn test_from_str_006() {
+  eqs("0.00000000000000001234567", "1.234567E-17".parse::<FeelNumber>().unwrap());
+}
