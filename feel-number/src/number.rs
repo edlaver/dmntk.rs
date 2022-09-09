@@ -41,24 +41,6 @@ use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign};
 use std::str::FromStr;
 
-macro_rules! try_from_feel_number {
-  ($l:tt) => {
-    impl TryFrom<FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-        $l::try_from(&value)
-      }
-    }
-
-    impl TryFrom<&FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-        return value.to_string().parse::<$l>().map_err(|_| err_number_conversion_failed());
-      }
-    }
-  };
-}
-
 /// FEEL number.
 #[derive(Copy, Clone)]
 pub struct FeelNumber(DecQuad);
@@ -454,6 +436,24 @@ impl From<usize> for FeelNumber {
   fn from(value: usize) -> Self {
     Self::from_i128(value as i128)
   }
+}
+
+macro_rules! try_from_feel_number {
+  ($l:tt) => {
+    impl TryFrom<FeelNumber> for $l {
+      type Error = DmntkError;
+      fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+        $l::try_from(&value)
+      }
+    }
+
+    impl TryFrom<&FeelNumber> for $l {
+      type Error = DmntkError;
+      fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+        return value.to_string().parse::<$l>().map_err(|_| err_number_conversion_failed());
+      }
+    }
+  };
 }
 
 try_from_feel_number!(isize);
