@@ -73,10 +73,6 @@ impl FeelNumber {
   fn from_i128(n: i128) -> Self {
     Self(dec_from_string(&format!("{}", n)))
   }
-  /// Creates a new [FeelNumber] from [String].
-  pub fn from_string(s: &str) -> Self {
-    Self(dec_from_string(s))
-  }
   ///
   pub fn zero() -> Self {
     Self(*DEC_ZERO)

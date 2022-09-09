@@ -1,8 +1,11 @@
+mod common;
+
+use crate::common::eqs;
 use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_stringify() {
-  assert_eq!("49", FeelNumber::new(49, 0).to_string());
+  eqs("49", num!(49));
   //assert_eq!("49", FeelNumber::from_i128(49).to_string());
   assert_eq!("49.0", FeelNumber::new(490, 1).to_string());
   assert_eq!("4900", FeelNumber::new(4900, 0).to_string());
@@ -104,12 +107,12 @@ fn test_exp() {
 
 #[test]
 fn test_from_string() {
-  assert_eq!("0", FeelNumber::from_string("0").to_string());
-  assert_eq!("-0", FeelNumber::from_string("-0").to_string());
-  assert_eq!("1", FeelNumber::from_string("1").to_string());
-  assert_eq!("-1", FeelNumber::from_string("-1").to_string());
-  assert_eq!("1.23456789", FeelNumber::from_string("1.23456789").to_string());
-  assert_eq!("-1.23456789", FeelNumber::from_string("-1.23456789").to_string());
+  eqs("0", num!(0));
+  assert_eq!("-0", num!(-0).to_string());
+  assert_eq!("1", num!(1).to_string());
+  assert_eq!("-1", num!(-1).to_string());
+  assert_eq!("1.23456789", num!(1.23456789).to_string());
+  assert_eq!("-1.23456789", num!(-1.23456789).to_string());
 }
 
 #[test]
@@ -239,11 +242,8 @@ fn test_sqrt() {
 
 #[test]
 fn test_square() {
-  assert_eq!("4", FeelNumber::from_string("2").square().unwrap().to_string());
-  assert_eq!("25", FeelNumber::from_string("5").square().unwrap().to_string());
-  assert_eq!(None, FeelNumber::from_string("NaN").square());
-  assert_eq!(None, FeelNumber::from_string("Inf").square());
-  assert_eq!(None, FeelNumber::from_string("-Inf").square());
+  eqs("4", num!(2).square().unwrap());
+  eqs("25", num!(5).square().unwrap());
 }
 
 #[test]
