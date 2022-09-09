@@ -127,9 +127,7 @@ pub fn dec_quad_from_string(s: &str) -> DecQuad {
   let c_s = CString::new(s).unwrap();
   let mut value = DecQuad::default();
   unsafe {
-    let mut context = DEFAULT_CONTEXT.clone();
-    decQuadFromString(&mut value, c_s.as_ptr(), &mut context);
-    println!("{:?}", context);
+    decQuadFromString(&mut value, c_s.as_ptr(), &mut DEFAULT_CONTEXT.clone());
   }
   value
 }
