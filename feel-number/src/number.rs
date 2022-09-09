@@ -333,7 +333,7 @@ impl Debug for FeelNumber {
 }
 
 impl Display for FeelNumber {
-  /// Converts [FeelNumber] to its textual representation.
+  /// Converts [FeelNumber] to string.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let s = dec_quad_to_string(&self.0);
     let zeroes: String;
@@ -374,7 +374,7 @@ impl Display for FeelNumber {
 }
 
 impl Jsonify for FeelNumber {
-  /// Converts [FeelNumber] to its JSON representation.
+  /// Converts [FeelNumber] to JSON string.
   fn jsonify(&self) -> String {
     format!("{}", self)
   }
