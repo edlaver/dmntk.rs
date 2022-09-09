@@ -36,6 +36,9 @@ use crate::dec::*;
 use crate::errors::*;
 use dmntk_common::{DmntkError, Jsonify};
 use std::cmp::Ordering;
+use std::fmt;
+use std::fmt::{Debug, Display};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign};
 use std::str::FromStr;
 
 macro_rules! try_from_feel_number {
@@ -63,15 +66,15 @@ pub struct FeelNumber(DecQuad);
 impl FeelNumber {
   /// Creates a new [FeelNumber] from integer value and scale.
   pub fn new(n: i128, s: i32) -> Self {
-    Self(dec_scale_b(&dec_from_string(&format!("{}", n)), &dec_from_string(&format!("{}", -s))))
+    Self(dec_scale_b(&dec_quad_from_string(&format!("{}", n)), &dec_quad_from_string(&format!("{}", -s))))
   }
   /// Creates a new [FeelNumber] from [isize].
   fn from_isize(n: isize) -> Self {
-    Self(dec_from_string(&format!("{}", n)))
+    Self(dec_quad_from_string(&format!("{}", n)))
   }
   /// Creates a new [FeelNumber] from [i128].
   fn from_i128(n: i128) -> Self {
-    Self(dec_from_string(&format!("{}", n)))
+    Self(dec_quad_from_string(&format!("{}", n)))
   }
   ///
   pub fn zero() -> Self {
@@ -91,7 +94,7 @@ impl FeelNumber {
   }
   ///
   pub fn abs(&self) -> Self {
-    Self(dec_abs(&self.0))
+    Self(dec_quad_abs(&self.0))
   }
   ///
   pub fn ceiling(&self) -> Self {
@@ -236,7 +239,7 @@ impl PartialOrd<isize> for FeelNumber {
   }
 }
 
-impl std::ops::Add<FeelNumber> for FeelNumber {
+impl Add<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn add(self, rhs: Self) -> Self::Output {
@@ -244,14 +247,14 @@ impl std::ops::Add<FeelNumber> for FeelNumber {
   }
 }
 
-impl std::ops::AddAssign<FeelNumber> for FeelNumber {
+impl AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
     self.0 = dec_add(&self.0, &rhs.0);
   }
 }
 
-impl std::ops::Sub<FeelNumber> for FeelNumber {
+impl Sub<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn sub(self, rhs: Self) -> Self::Output {
@@ -259,14 +262,14 @@ impl std::ops::Sub<FeelNumber> for FeelNumber {
   }
 }
 
-impl std::ops::SubAssign<FeelNumber> for FeelNumber {
+impl SubAssign<FeelNumber> for FeelNumber {
   ///
   fn sub_assign(&mut self, rhs: Self) {
     self.0 = dec_reduce(&dec_subtract(&self.0, &rhs.0));
   }
 }
 
-impl std::ops::Mul<FeelNumber> for FeelNumber {
+impl Mul<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn mul(self, rhs: Self) -> Self::Output {
@@ -274,14 +277,14 @@ impl std::ops::Mul<FeelNumber> for FeelNumber {
   }
 }
 
-impl std::ops::MulAssign<FeelNumber> for FeelNumber {
+impl MulAssign<FeelNumber> for FeelNumber {
   ///
   fn mul_assign(&mut self, rhs: Self) {
     self.0 = dec_reduce(&dec_multiply(&self.0, &rhs.0));
   }
 }
 
-impl std::ops::Div<FeelNumber> for FeelNumber {
+impl Div<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn div(self, rhs: Self) -> Self::Output {
@@ -289,14 +292,14 @@ impl std::ops::Div<FeelNumber> for FeelNumber {
   }
 }
 
-impl std::ops::DivAssign<FeelNumber> for FeelNumber {
+impl DivAssign<FeelNumber> for FeelNumber {
   ///
   fn div_assign(&mut self, rhs: Self) {
     self.0 = dec_reduce(&dec_divide(&self.0, &rhs.0));
   }
 }
 
-impl std::ops::Rem<FeelNumber> for FeelNumber {
+impl Rem<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn rem(self, rhs: Self) -> Self::Output {
@@ -307,7 +310,14 @@ impl std::ops::Rem<FeelNumber> for FeelNumber {
   }
 }
 
-impl std::ops::Neg for FeelNumber {
+impl RemAssign<FeelNumber> for FeelNumber {
+  ///
+  fn rem_assign(&mut self, rhs: Self) {
+    self.0 = dec_reduce(&dec_subtract(&self.0, &dec_multiply(&rhs.0, &dec_floor(&dec_divide(&self.0, &rhs.0)))));
+  }
+}
+
+impl Neg for FeelNumber {
   type Output = Self;
   ///
   fn neg(self) -> Self::Output {
@@ -315,31 +325,58 @@ impl std::ops::Neg for FeelNumber {
   }
 }
 
-impl std::ops::RemAssign<FeelNumber> for FeelNumber {
+impl Debug for FeelNumber {
   ///
-  fn rem_assign(&mut self, rhs: Self) {
-    self.0 = dec_reduce(&dec_subtract(&self.0, &dec_multiply(&rhs.0, &dec_floor(&dec_divide(&self.0, &rhs.0)))));
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{}", dec_quad_to_string(&self.0))
   }
 }
 
-impl std::fmt::Debug for FeelNumber {
-  ///
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "{}", dec_to_string(&dec_reduce(&self.0)))
-  }
-}
-
-impl std::fmt::Display for FeelNumber {
+impl Display for FeelNumber {
   /// Converts [FeelNumber] to its textual representation.
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "{}", scientific_to_plain(dec_to_string(&self.0)))
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    let s = dec_quad_to_string(&self.0);
+    let zeroes: String;
+    if s.contains("E+") {
+      let mut split1 = s.split("E+");
+      let before_exponent = split1.next().unwrap();
+      let after_exponent = split1.next().unwrap();
+      let exponent_digits = usize::from_str(after_exponent).unwrap();
+      if before_exponent.contains('.') {
+        let mut split2 = before_exponent.split('.');
+        let before_decimal = split2.next().unwrap();
+        let after_decimal = split2.next().unwrap();
+        zeroes = (0..(exponent_digits - after_decimal.len())).map(|_| "0").collect();
+        write!(f, "{}{}{}", before_decimal, after_decimal, zeroes)
+      } else {
+        zeroes = (0..exponent_digits).map(|_| "0").collect();
+        write!(f, "{}{}", before_exponent, zeroes)
+      }
+    } else if s.contains("E-") {
+      let mut split1 = s.split("E-");
+      let before_exponent = split1.next().unwrap();
+      let after_exponent = split1.next().unwrap();
+      let exponent_digits = usize::from_str(after_exponent).unwrap();
+      if before_exponent.contains('.') {
+        let mut split2 = before_exponent.split('.');
+        let before_decimal = split2.next().unwrap();
+        let after_decimal = split2.next().unwrap();
+        zeroes = (1..exponent_digits).map(|_| "0").collect();
+        write!(f, "0.{}{}{}", zeroes, before_decimal, after_decimal)
+      } else {
+        zeroes = (1..exponent_digits).map(|_| "0").collect();
+        write!(f, "0.{}{}", zeroes, before_exponent)
+      }
+    } else {
+      write!(f, "{}", s)
+    }
   }
 }
 
 impl Jsonify for FeelNumber {
-  /// Converts [FeelNumber] to its `JSON` representation.
+  /// Converts [FeelNumber] to its JSON representation.
   fn jsonify(&self) -> String {
-    scientific_to_plain(dec_to_string(&self.0))
+    format!("{}", self)
   }
 }
 
@@ -347,7 +384,7 @@ impl FromStr for FeelNumber {
   type Err = DmntkError;
   ///
   fn from_str(s: &str) -> Result<Self, Self::Err> {
-    let n = dec_from_string(s);
+    let n = dec_quad_from_string(s);
     if dec_is_finite(&n) {
       Ok(Self(n))
     } else {
@@ -359,28 +396,42 @@ impl FromStr for FeelNumber {
 impl From<u8> for FeelNumber {
   ///
   fn from(value: u8) -> Self {
-    Self(dec_from_u32(value as u32))
+    Self(dec_quad_from_u32(value as u32))
+  }
+}
+
+impl From<i8> for FeelNumber {
+  ///
+  fn from(value: i8) -> Self {
+    Self(dec_quad_from_i32(value as i32))
   }
 }
 
 impl From<u16> for FeelNumber {
   ///
   fn from(value: u16) -> Self {
-    Self(dec_from_u32(value as u32))
+    Self(dec_quad_from_u32(value as u32))
   }
 }
 
-impl From<i32> for FeelNumber {
+impl From<i16> for FeelNumber {
   ///
-  fn from(value: i32) -> Self {
-    Self(dec_from_i32(value))
+  fn from(value: i16) -> Self {
+    Self(dec_quad_from_i32(value as i32))
   }
 }
 
 impl From<u32> for FeelNumber {
   ///
   fn from(value: u32) -> Self {
-    Self(dec_from_u32(value))
+    Self(dec_quad_from_u32(value))
+  }
+}
+
+impl From<i32> for FeelNumber {
+  ///
+  fn from(value: i32) -> Self {
+    Self(dec_quad_from_i32(value))
   }
 }
 
@@ -411,40 +462,3 @@ try_from_feel_number!(u64);
 try_from_feel_number!(u32);
 try_from_feel_number!(i32);
 try_from_feel_number!(u8);
-
-/// Converts a string in scientific notation into digits without exponent.
-fn scientific_to_plain(s: String) -> String {
-  if s.contains("E+") {
-    let mut split1 = s.split("E+");
-    let before_exponent = split1.next().unwrap();
-    let after_exponent = split1.next().unwrap();
-    let exponent_digits = usize::from_str(after_exponent).unwrap();
-    if before_exponent.contains('.') {
-      let mut split2 = before_exponent.split('.');
-      let before_decimal = split2.next().unwrap();
-      let after_decimal = split2.next().unwrap();
-      let zeroes = (0..(exponent_digits - after_decimal.len())).map(|_| "0").collect::<String>();
-      format!("{}{}{}", before_decimal, after_decimal, zeroes)
-    } else {
-      let zeroes = (0..exponent_digits).map(|_| "0").collect::<String>();
-      format!("{}{}", before_exponent, zeroes)
-    }
-  } else if s.contains("E-") {
-    let mut split1 = s.split("E-");
-    let before_exponent = split1.next().unwrap();
-    let after_exponent = split1.next().unwrap();
-    let exponent_digits = usize::from_str(after_exponent).unwrap();
-    if before_exponent.contains('.') {
-      let mut split2 = before_exponent.split('.');
-      let before_decimal = split2.next().unwrap();
-      let after_decimal = split2.next().unwrap();
-      let zeroes = (1..exponent_digits).map(|_| "0").collect::<String>();
-      format!("0.{}{}{}", zeroes, before_decimal, after_decimal)
-    } else {
-      let zeroes = (1..exponent_digits).map(|_| "0").collect::<String>();
-      format!("0.{}{}", zeroes, before_exponent)
-    }
-  } else {
-    s
-  }
-}
