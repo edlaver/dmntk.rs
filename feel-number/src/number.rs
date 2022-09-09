@@ -58,6 +58,10 @@ impl FeelNumber {
   fn from_i128(n: i128) -> Self {
     Self(dec_quad_from_string(&format!("{}", n)))
   }
+  /// Creates a new [FeelNumber] from [u128].
+  fn from_u128(n: u128) -> Self {
+    Self(dec_quad_from_string(&format!("{}", n)))
+  }
   ///
   pub fn zero() -> Self {
     Self(*DEC_ZERO)
@@ -417,6 +421,13 @@ impl From<i32> for FeelNumber {
   }
 }
 
+impl From<u64> for FeelNumber {
+  ///
+  fn from(value: u64) -> Self {
+    Self::from_u128(value as u128)
+  }
+}
+
 impl From<i64> for FeelNumber {
   ///
   fn from(value: i64) -> Self {
@@ -434,7 +445,7 @@ impl From<isize> for FeelNumber {
 impl From<usize> for FeelNumber {
   ///
   fn from(value: usize) -> Self {
-    Self::from_i128(value as i128)
+    Self::from_u128(value as u128)
   }
 }
 

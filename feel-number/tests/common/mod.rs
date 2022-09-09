@@ -9,6 +9,7 @@ macro_rules! num {
 }
 
 /// Utility function for testing the expected number value based on string representation.
+#[allow(dead_code)]
 pub fn eqs(expected: &str, actual: FeelNumber) {
   assert_eq!(expected, actual.to_string());
 }

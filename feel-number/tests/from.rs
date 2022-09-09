@@ -5,8 +5,26 @@ use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_from_001() {
-  let x: FeelNumber = 12_u8.into();
-  eqs("12", x);
+  let x: FeelNumber = u8::MAX.into();
+  eqs("255", x);
+}
+
+#[test]
+fn test_from_001_() {
+  let x: FeelNumber = i8::MIN.into();
+  eqs("-128", x);
+}
+
+#[test]
+fn test_from_0011() {
+  let x: FeelNumber = u16::MAX.into();
+  eqs("65535", x);
+}
+
+#[test]
+fn test_from_001_1() {
+  let x: FeelNumber = i16::MIN.into();
+  eqs("-32768", x);
 }
 
 #[test]
@@ -19,6 +37,12 @@ fn test_from_002() {
 fn test_from_003() {
   let x: FeelNumber = u32::MAX.into();
   eqs("4294967295", x);
+}
+
+#[test]
+fn test_from_004_() {
+  let x: FeelNumber = u64::MAX.into();
+  eqs("18446744073709551615", x);
 }
 
 #[test]
