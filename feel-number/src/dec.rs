@@ -51,7 +51,7 @@ lazy_static! {
 }
 
 #[repr(C)]
-#[derive(Default, Clone)]
+#[derive(Debug, Default, Clone)]
 struct DecContext {
   digits: i32,
   emax: i32,
@@ -127,7 +127,9 @@ pub fn dec_quad_from_string(s: &str) -> DecQuad {
   let c_s = CString::new(s).unwrap();
   let mut value = DecQuad::default();
   unsafe {
-    decQuadFromString(&mut value, c_s.as_ptr(), &mut DEFAULT_CONTEXT.clone());
+    let mut context = DEFAULT_CONTEXT.clone();
+    decQuadFromString(&mut value, c_s.as_ptr(), &mut context);
+    println!("{:?}", context);
   }
   value
 }

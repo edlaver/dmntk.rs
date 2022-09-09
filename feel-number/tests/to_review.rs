@@ -150,15 +150,6 @@ fn test_is_positive() {
 }
 
 #[test]
-fn test_ln() {
-  assert!(FeelNumber::new(-1, 0).ln().is_none());
-  // assert!(FeelNumber::from_i128(0).ln().is_none());
-  // assert_eq!("0", FeelNumber::from_i128(1).ln().unwrap().to_string());
-  // assert_eq!("1.386294361119890618834464242916353", FeelNumber::from_i128(4).ln().unwrap().to_string());
-  // assert_eq!("2.302585092994045684017991454684364", FeelNumber::from_i128(10).ln().unwrap().to_string());
-}
-
-#[test]
 fn test_minus_zero() {
   assert_eq!("0", FeelNumber::new(-0, 0).to_string());
 }
@@ -197,15 +188,6 @@ fn test_odd() {
 }
 
 #[test]
-fn test_pow() {
-  //assert!(FeelNumber::from_i128(0).pow(&FeelNumber::from_i128(0)).is_none());
-  assert_eq!(
-    "41959.85737359436186095331070746801",
-    FeelNumber::new(122384283, 7).pow(&FeelNumber::new(425, 2)).unwrap().to_string()
-  );
-}
-
-#[test]
 fn test_rem() {
   assert_eq!("2", (FeelNumber::new(12, 0) % FeelNumber::new(5, 0)).to_string());
   assert_eq!("3", (FeelNumber::new(-12, 0) % FeelNumber::new(5, 0)).to_string());
@@ -222,28 +204,6 @@ fn test_rem_assign() {
   let mut x = FeelNumber::new(101, 1);
   x %= FeelNumber::new(-45, 1);
   assert_eq!("-3.4", x.to_string());
-}
-
-#[test]
-fn test_round() {
-  // assert_eq!("123.46", FeelNumber::new(1234567, 4).round(&FeelNumber::from_i128(2)).to_string());
-  // assert_eq!("123.45", FeelNumber::new(1234547, 4).round(&FeelNumber::from_i128(2)).to_string());
-  // assert_eq!("100", FeelNumber::new(1234567, 4).round(&FeelNumber::from_i128(-2)).to_string());
-  // assert_eq!("200", FeelNumber::new(1634567, 4).round(&FeelNumber::from_i128(-2)).to_string());
-}
-
-#[test]
-fn test_sqrt() {
-  // assert!(FeelNumber::from_i128(-1).sqrt().is_none());
-  // assert_eq!("0", FeelNumber::from_i128(0).sqrt().unwrap().to_string());
-  // assert_eq!("1", FeelNumber::from_i128(1).sqrt().unwrap().to_string());
-  // assert_eq!("1.414213562373095048801688724209698", FeelNumber::from_i128(2).sqrt().unwrap().to_string());
-}
-
-#[test]
-fn test_square() {
-  eqs("4", num!(2).square().unwrap());
-  eqs("25", num!(5).square().unwrap());
 }
 
 #[test]
