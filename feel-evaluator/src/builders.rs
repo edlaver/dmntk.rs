@@ -1564,7 +1564,7 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
       _ => {}
     }
-    value_null!("[subtraction] incompatible types: {} - {}", lhe(scope), rhe(scope))
+    value_null!("[subtraction] incompatible types: {} - {}", lhe(scope) as Value, rhe(scope) as Value)
   }))
 }
 
