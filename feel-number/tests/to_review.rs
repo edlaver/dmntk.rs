@@ -49,21 +49,6 @@ fn test_div_assign() {
 }
 
 #[test]
-fn test_even() {
-  assert!(num!(-4).even());
-  assert!(!num!(-3).even());
-  assert!(num!(-2).even());
-  assert!(!num!(-1).even());
-  assert!(num!(-0).even());
-  assert!(num!(0).even());
-  assert!(!num!(1).even());
-  assert!(num!(2).even());
-  assert!(!num!(3).even());
-  assert!(num!(4).even());
-  assert!(!FeelNumber::new(41, 1).even());
-}
-
-#[test]
 fn test_exp() {
   assert_eq!("2.718281828459045235360287471352662", FeelNumber::new(1, 0).exp().to_string());
   assert_eq!("54.59815003314423907811026120286088", FeelNumber::new(4, 0).exp().to_string());

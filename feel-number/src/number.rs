@@ -102,13 +102,9 @@ impl FeelNumber {
   ///
   pub fn even(&self) -> bool {
     unsafe {
-      if decQuadIsInteger(&self.0) == 1 {
-        let mut dq = DecQuad::default();
-        decQuadRemainder(&mut dq, &self.0, &DEC_QUAD_TWO, ctx!());
-        decQuadIsZero(&dq) == 1
-      } else {
-        false
-      }
+      let mut dq = DecQuad::default();
+      decQuadRemainder(&mut dq, &self.0, &DEC_QUAD_TWO, ctx!());
+      decQuadIsZero(&dq) == 1
     }
   }
   ///
