@@ -33,7 +33,7 @@ fn test_constants() {
   assert_eq!("0", FeelNumber::zero().to_string());
   assert_eq!("1", FeelNumber::one().to_string());
   assert_eq!("2", FeelNumber::two().to_string());
-  assert_eq!("1000000000", FeelNumber::nano().to_string());
+  assert_eq!("1000000000", FeelNumber::billion().to_string());
 }
 
 #[test]
@@ -149,37 +149,6 @@ fn test_odd() {
   assert!(num!(3).odd());
   assert!(!num!(4).odd());
   assert!(!FeelNumber::new(31, 1).odd());
-}
-
-#[test]
-fn test_rem() {
-  assert_eq!("2", (FeelNumber::new(12, 0) % FeelNumber::new(5, 0)).to_string());
-  assert_eq!("3", (FeelNumber::new(-12, 0) % FeelNumber::new(5, 0)).to_string());
-  assert_eq!("-3", (FeelNumber::new(12, 0) % FeelNumber::new(-5, 0)).to_string());
-  assert_eq!("-2", (FeelNumber::new(-12, 0) % FeelNumber::new(-5, 0)).to_string());
-  assert_eq!("1.1", (FeelNumber::new(101, 1) % FeelNumber::new(45, 1)).to_string());
-  assert_eq!("3.4", (FeelNumber::new(-101, 1) % FeelNumber::new(45, 1)).to_string());
-  assert_eq!("-3.4", (FeelNumber::new(101, 1) % FeelNumber::new(-45, 1)).to_string());
-  assert_eq!("-1.1", (FeelNumber::new(-101, 1) % FeelNumber::new(-45, 1)).to_string());
-}
-
-#[test]
-fn test_rem_assign() {
-  let mut x = FeelNumber::new(101, 1);
-  x %= FeelNumber::new(-45, 1);
-  assert_eq!("-3.4", x.to_string());
-}
-
-#[test]
-fn test_sub() {
-  assert_eq!("1", (FeelNumber::new(123, 2) - FeelNumber::new(23, 2)).to_string());
-}
-
-#[test]
-fn test_sub_assign() {
-  let mut x = FeelNumber::new(123, 2);
-  x -= FeelNumber::new(23, 2);
-  assert_eq!("1", x.to_string());
 }
 
 #[test]

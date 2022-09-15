@@ -1804,7 +1804,7 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
+          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
           if let Ok(h) = hour.try_into() {
             if let Ok(m) = minute.try_into() {
               if let Ok(s) = seconds.try_into() {
@@ -1830,7 +1830,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::nano()).trunc();
+          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
           if let Ok(h) = hour.try_into() {
             if let Ok(m) = minute.try_into() {
               if let Ok(s) = seconds.try_into() {

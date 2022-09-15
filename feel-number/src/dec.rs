@@ -47,7 +47,7 @@ lazy_static! {
   pub static ref DEC_ZERO: DecQuad = dec_zero();
   pub static ref DEC_ONE: DecQuad = dec_quad_from_string("1");
   pub static ref DEC_TWO: DecQuad = dec_quad_from_string("2");
-  pub static ref DEC_NANO: DecQuad = dec_quad_from_string("1000000000");
+  pub static ref DEC_BILLION: DecQuad = dec_quad_from_string("1000000000");
 }
 
 #[repr(C)]

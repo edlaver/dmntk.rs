@@ -75,8 +75,8 @@ impl FeelNumber {
     Self(*DEC_TWO)
   }
   ///
-  pub fn nano() -> Self {
-    Self(*DEC_NANO)
+  pub fn billion() -> Self {
+    Self(*DEC_BILLION)
   }
   ///
   pub fn abs(&self) -> Self {
