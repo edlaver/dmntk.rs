@@ -35,4 +35,4 @@ extern crate dec_number_sys;
 mod errors;
 mod number;
 
-pub use number::FeelNumber;
+pub use number::{FeelNumber, FEEL_NUMBER_BILLION, FEEL_NUMBER_ONE, FEEL_NUMBER_TWO, FEEL_NUMBER_ZERO};

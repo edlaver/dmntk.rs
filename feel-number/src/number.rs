@@ -47,6 +47,18 @@ macro_rules! ctx {
   };
 }
 
+/// [FeelNumber] value 0 (zero).
+pub const FEEL_NUMBER_ZERO: FeelNumber = FeelNumber(DEC_QUAD_ZERO);
+
+/// [FeelNumber] value 1 (one).
+pub const FEEL_NUMBER_ONE: FeelNumber = FeelNumber(DEC_QUAD_ONE);
+
+/// [FeelNumber] value 2 (two).
+pub const FEEL_NUMBER_TWO: FeelNumber = FeelNumber(DEC_QUAD_TWO);
+
+/// [FeelNumber] value 1000000000 (billion).
+pub const FEEL_NUMBER_BILLION: FeelNumber = FeelNumber(DEC_QUAD_BILLION);
+
 /// FEEL number.
 #[derive(Copy, Clone)]
 pub struct FeelNumber(DecQuad);
@@ -71,22 +83,6 @@ impl FeelNumber {
   /// Creates a new [FeelNumber] from [u128].
   fn from_u128(n: u128) -> Self {
     Self(dec_quad_from_string(&format!("{}", n), ctx!()))
-  }
-  ///
-  pub fn zero() -> Self {
-    Self(DEC_QUAD_ZERO)
-  }
-  ///
-  pub fn one() -> Self {
-    Self(DEC_QUAD_ONE)
-  }
-  ///
-  pub fn two() -> Self {
-    Self(DEC_QUAD_TWO)
-  }
-  ///
-  pub fn billion() -> Self {
-    Self(DEC_QUAD_BILLION)
   }
   ///
   pub fn abs(&self) -> Self {

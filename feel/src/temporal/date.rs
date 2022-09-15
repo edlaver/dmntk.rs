@@ -39,6 +39,7 @@ use crate::temporal::{DayOfWeek, MonthOfYear};
 use crate::{DayOfYear, FeelNumber, WeekOfYear};
 use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveDate, Weekday};
 use dmntk_common::DmntkError;
+use dmntk_feel_number::FEEL_NUMBER_ZERO;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
 use std::str::FromStr;
@@ -87,7 +88,7 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
   /// Converts a tuple of numbers into [FeelDate].
   fn try_from(value: (FeelNumber, FeelNumber, FeelNumber)) -> Result<Self, Self::Error> {
     let year = value.0.try_into()?;
-    if value.1 > FeelNumber::zero() && value.2 > FeelNumber::zero() {
+    if value.1 > FEEL_NUMBER_ZERO && value.2 > FEEL_NUMBER_ZERO {
       let month = value.1.try_into()?;
       let day = value.2.try_into()?;
       if is_valid_date(year, month, day) {

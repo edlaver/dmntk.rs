@@ -7,7 +7,7 @@ fn test_is_one_001() {
 
 #[test]
 fn test_is_one_002() {
-  assert!(FeelNumber::one().is_one());
+  assert!(FEEL_NUMBER_ONE().is_one());
 }
 
 #[test]

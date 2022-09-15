@@ -31,8 +31,8 @@ fn test_ceiling() {
 #[test]
 fn test_constants() {
   assert_eq!("0", FeelNumber::zero().to_string());
-  assert_eq!("1", FeelNumber::one().to_string());
-  assert_eq!("2", FeelNumber::two().to_string());
+  assert_eq!("1", FEEL_NUMBER_ONE().to_string());
+  assert_eq!("2", FEEL_NUMBER_TWO().to_string());
   assert_eq!("1000000000", FeelNumber::billion().to_string());
 }
 

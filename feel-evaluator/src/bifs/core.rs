@@ -37,7 +37,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{
   value_null, value_number, value_string, DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime,
-  FeelYearsAndMonthsDuration, MonthOfYear, Name, Scope, ToFeelString, WeekOfYear,
+  FeelYearsAndMonthsDuration, MonthOfYear, Name, Scope, ToFeelString, WeekOfYear, FEEL_NUMBER_BILLION, FEEL_NUMBER_ONE, FEEL_NUMBER_TWO, FEEL_NUMBER_ZERO,
 };
 use regex::Regex;
 use std::borrow::Borrow;
@@ -945,7 +945,7 @@ pub fn list_contains(list: &Value, element: &Value) -> Value {
 /// Returns the natural logarithm (base **e**) of the number parameter.
 pub fn log(number: &Value) -> Value {
   if let Value::Number(num) = number {
-    if *num > FeelNumber::zero() {
+    if *num > FEEL_NUMBER_ZERO {
       if let Some(num_log) = num.ln() {
         return Value::Number(num_log);
       }
@@ -1024,7 +1024,7 @@ pub fn mean(values: &[Value]) -> Value {
   if values.is_empty() {
     return value_null!();
   }
-  let mut sum = FeelNumber::zero();
+  let mut sum = FEEL_NUMBER_ZERO;
   for value in values {
     if let Value::Number(n) = value {
       sum += *n;
@@ -1103,7 +1103,7 @@ pub fn median(values: &[Value]) -> Value {
   list.sort_by(|x, y| x.partial_cmp(y).unwrap_or(Ordering::Equal));
   let index = values.len() / 2;
   if list.len() % 2 == 0 {
-    Value::Number((list[index - 1] + list[index]) / FeelNumber::two())
+    Value::Number((list[index - 1] + list[index]) / FEEL_NUMBER_TWO)
   } else {
     Value::Number(list[index])
   }
@@ -1247,7 +1247,7 @@ pub fn mode(values: &[Value]) -> Value {
 pub fn modulo(dividend_value: &Value, divisor_value: &Value) -> Value {
   if let Value::Number(dividend) = *dividend_value {
     if let Value::Number(divisor) = *divisor_value {
-      if divisor.abs() == FeelNumber::zero() {
+      if divisor.abs() == FEEL_NUMBER_ZERO {
         value_null!("[core::modulo] division by zero")
       } else {
         Value::Number(dividend - divisor * (dividend / divisor).floor())
@@ -1381,7 +1381,7 @@ pub fn product(values: &[Value]) -> Value {
       return invalid_argument_type!("product", "number", value.type_of());
     }
   }
-  Value::Number(list.iter().fold(FeelNumber::one(), |acc, n| acc * (*n)))
+  Value::Number(list.iter().fold(FEEL_NUMBER_ONE, |acc, n| acc * (*n)))
 }
 
 /// ???
@@ -1528,7 +1528,7 @@ pub fn split(input_string_value: &Value, delimiter_string_value: &Value) -> Valu
 /// When the given number is negative, this function returns [Value::Null].
 pub fn sqrt(value: &Value) -> Value {
   if let Value::Number(v) = value {
-    if *v >= FeelNumber::zero() {
+    if *v >= FEEL_NUMBER_ZERO {
       if let Some(result) = v.sqrt() {
         Value::Number(result)
       } else {
@@ -1570,7 +1570,7 @@ pub fn stddev(values: &[Value]) -> Value {
   if values.len() < 2 {
     return value_null!();
   }
-  let mut sum = FeelNumber::zero();
+  let mut sum = FEEL_NUMBER_ZERO;
   let mut numbers = vec![];
   for value in values {
     if let Value::Number(x) = *value {
@@ -1582,7 +1582,7 @@ pub fn stddev(values: &[Value]) -> Value {
   }
   let n: FeelNumber = numbers.len().into();
   let avg = sum / n;
-  let mut sum2 = FeelNumber::zero();
+  let mut sum2 = FEEL_NUMBER_ZERO;
   for number in numbers {
     if let Some(square) = (number - avg).square() {
       sum2 += square;
@@ -1590,7 +1590,7 @@ pub fn stddev(values: &[Value]) -> Value {
       return value_null!("stddev: square error");
     }
   }
-  if let Some(stddev) = (sum2 / (n - FeelNumber::one())).sqrt() {
+  if let Some(stddev) = (sum2 / (n - FEEL_NUMBER_ONE)).sqrt() {
     Value::Number(stddev)
   } else {
     value_null!("stddev")
@@ -1704,7 +1704,7 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
       let input_string_len = input_string.chars().count();
       match length_value {
         Value::Number(length) => {
-          if *length < FeelNumber::one() {
+          if *length < FEEL_NUMBER_ONE {
             return value_null!();
           }
           let count: usize = if let Ok(l) = length.trunc().try_into() {
@@ -1804,7 +1804,7 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
+          let nanoseconds = (second.frac() * FEEL_NUMBER_BILLION).trunc();
           if let Ok(h) = hour.try_into() {
             if let Ok(m) = minute.try_into() {
               if let Ok(s) = seconds.try_into() {
@@ -1830,7 +1830,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
       if let Value::Number(second) = second_value {
         if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
           let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
+          let nanoseconds = (second.frac() * FEEL_NUMBER_BILLION).trunc();
           if let Ok(h) = hour.try_into() {
             if let Ok(m) = minute.try_into() {
               if let Ok(s) = seconds.try_into() {
