@@ -10,8 +10,4 @@ edition = "2021"
 
 [dependencies]
 dmntk-common = { path = "../common" }
-libc = "0.2.112"
-lazy_static = "1.4.0"
-
-[build-dependencies]
-cc = "1.0.72"
+dec-number-sys = "0.0.20"

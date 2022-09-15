@@ -30,10 +30,8 @@
  * limitations under the License.
  */
 
-extern crate lazy_static;
-extern crate libc;
+extern crate dec_number_sys;
 
-pub mod dec;
 mod errors;
 mod number;
 
