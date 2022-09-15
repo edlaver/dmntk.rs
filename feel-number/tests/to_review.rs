@@ -1,7 +1,7 @@
 mod common;
 
 use crate::common::eqs;
-use dmntk_feel_number::FeelNumber;
+use dmntk_feel_number::{FeelNumber, FEEL_NUMBER_BILLION, FEEL_NUMBER_ONE, FEEL_NUMBER_TWO, FEEL_NUMBER_ZERO};
 
 #[test]
 fn test_stringify() {
@@ -30,10 +30,10 @@ fn test_ceiling() {
 
 #[test]
 fn test_constants() {
-  assert_eq!("0", FeelNumber::zero().to_string());
-  assert_eq!("1", FEEL_NUMBER_ONE().to_string());
-  assert_eq!("2", FEEL_NUMBER_TWO().to_string());
-  assert_eq!("1000000000", FeelNumber::billion().to_string());
+  assert_eq!("0", FEEL_NUMBER_ZERO.to_string());
+  assert_eq!("1", FEEL_NUMBER_ONE.to_string());
+  assert_eq!("2", FEEL_NUMBER_TWO.to_string());
+  assert_eq!("1000000000", FEEL_NUMBER_BILLION.to_string());
 }
 
 #[test]
