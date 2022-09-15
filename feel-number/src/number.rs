@@ -460,7 +460,7 @@ impl FromStr for FeelNumber {
   type Err = DmntkError;
   ///
   fn from_str(s: &str) -> Result<Self, Self::Err> {
-    let n = dec_quad_from_string(s, &mut ctx!());
+    let n = dec_quad_from_string(s, ctx!());
     if dec_quad_is_finite(&n) {
       Ok(Self(n))
     } else {
