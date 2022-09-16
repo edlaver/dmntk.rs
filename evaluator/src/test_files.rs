@@ -103,7 +103,6 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
 }
 
 /// Splits test cases from input test file using specified separator.
-#[inline(always)]
 fn split_test_cases<'a>(input: &'a str, separator: &'a str) -> Vec<&'a str> {
   let split = input.split(&separator);
   split
@@ -119,7 +118,6 @@ fn split_test_cases<'a>(input: &'a str, separator: &'a str) -> Vec<&'a str> {
 }
 
 /// Detects the separator used in test file.
-#[inline(always)]
 fn detect_separator(input: &str) -> Option<String> {
   let mut separator = String::with_capacity(80);
   let mut found = false;
@@ -142,11 +140,10 @@ fn detect_separator(input: &str) -> Option<String> {
   }
 }
 
-/// Returns `true` when specified character is a separator character.
+/// Returns `true` when specified character is a test case separator character.
 ///
 /// Valid separator characters are: `~` , `!` , `@` , `#` , `$` , `%` , `^` , `&` , `|`.
 ///
-#[inline(always)]
 fn is_separator_character(ch: char) -> bool {
   matches!(ch, '~' | '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|')
 }
@@ -173,6 +170,15 @@ mod tests {
       % { Customer:"Government", Order:  10.00 }, null
     "#;
     assert_eq!(8, evaluate_test_cases(input).unwrap().len())
+  }
+
+  #[test]
+  #[should_panic(expected = r#"DmntkError("Evaluator: expected expression list, but found '\n       Irrelevant\n    '"#)]
+  fn test_evaluate_invalid_test_file() {
+    let input = r#"
+      % -
+    "#;
+    evaluate_test_cases(input).unwrap();
   }
 
   #[test]
