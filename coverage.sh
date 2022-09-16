@@ -18,8 +18,9 @@ if [ -n "$1" ]; then
 else
   # run all tests including manual tests
   cargo test
-  # run building feel-parser with features, after reformatting, no changes in source code are expected
+  # run building feel-parser with features, after reformatting
   cargo build -p dmntk-feel-parser --features=parsing-tables
+  # no changes in source code are expected after reformatting
   cargo fmt -p dmntk-feel-parser
   # build the whole binary before running manual tests
   cargo build
