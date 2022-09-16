@@ -177,7 +177,7 @@ fn build_at(text: &str) -> Result<Evaluator> {
   if let Ok(dt_duration) = FeelDaysAndTimeDuration::try_from(text) {
     return Ok(Box::new(move |_: &Scope| Value::DaysAndTimeDuration(dt_duration.clone())));
   }
-  Ok(Box::new(move |_: &Scope| value_null!("eval_at_literal: expected string literal")))
+  Err(err_invalid_at_literal(text))
 }
 
 ///

@@ -45,6 +45,8 @@ pub enum FeelEvaluatorError {
   ExpectedAstNode(String, String),
   #[error("unexpected AST node in evaluator builder {0}")]
   UnexpectedAstNode(String),
+  #[error("invalid at (@) literal '{0}'")]
+  InvalidAtLiteral(String),
 }
 
 impl From<FeelEvaluatorError> for DmntkError {
@@ -71,4 +73,8 @@ pub fn err_expected_ast_node(expected: &str, actual: &str) -> DmntkError {
 
 pub fn err_unexpected_ast_node(s: &str) -> DmntkError {
   FeelEvaluatorError::UnexpectedAstNode(s.to_string()).into()
+}
+
+pub fn err_invalid_at_literal(s: &str) -> DmntkError {
+  FeelEvaluatorError::InvalidAtLiteral(s.to_string()).into()
 }
