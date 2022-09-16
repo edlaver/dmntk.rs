@@ -166,10 +166,7 @@ pub async fn do_action() -> std::io::Result<()> {
       Ok(())
     }
     Action::StartService(opt_host, opt_port, opt_dir) => dmntk_server::start_server(opt_host, opt_port, opt_dir).await,
-    Action::GenerateExamples => {
-      generate_examples();
-      Ok(())
-    }
+    Action::GenerateExamples => generate_examples(),
     Action::DoNothing => Ok(()),
   }
 }
@@ -698,23 +695,26 @@ fn export_dmn_model(_dmn_file_name: &str, html_file_name: &str) {
 }
 
 /// Generates examples in current directory.
-fn generate_examples() {
-  let create_dir = |path| {
-    std::fs::create_dir_all(path).unwrap_or_else(|_| panic!("creating '{}' directory failed", path));
+fn generate_examples() -> std::io::Result<()> {
+  let create_dir = |path| -> std::io::Result<()> {
+    std::fs::create_dir_all(path)?;
+    Ok(())
   };
-  let write_file = |path, contents| {
-    std::fs::write(path, contents).unwrap_or_else(|_| panic!("saving example file '{}' failed", path));
+  let write_file = |path, contents| -> std::io::Result<()> {
+    std::fs::write(path, contents)?;
+    Ok(())
   };
-  create_dir("examples");
-  create_dir("examples/e1");
-  write_file("./examples/e1/e1.ctx", E1_CTX);
-  write_file("./examples/e1/e1.feel", E1_FEEL);
-  create_dir("examples/e2");
-  write_file("./examples/e2/e2.ctx", E2_CTX);
-  write_file("./examples/e2/e2.dmn", E2_DMN);
-  create_dir("examples/e3");
-  write_file("./examples/e3/e3.ctx", E3_CTX);
-  write_file("./examples/e3/e3.dtb", E3_DTB);
+  create_dir("examples")?;
+  create_dir("examples/e1")?;
+  write_file("./examples/e1/e1.ctx", E1_CTX)?;
+  write_file("./examples/e1/e1.feel", E1_FEEL)?;
+  create_dir("examples/e2")?;
+  write_file("./examples/e2/e2.ctx", E2_CTX)?;
+  write_file("./examples/e2/e2.dmn", E2_DMN)?;
+  create_dir("examples/e3")?;
+  write_file("./examples/e3/e3.ctx", E3_CTX)?;
+  write_file("./examples/e3/e3.dtb", E3_DTB)?;
+  Ok(())
 }
 
 /// Utility function for displaying test case result.
