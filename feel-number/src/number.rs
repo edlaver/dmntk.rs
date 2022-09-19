@@ -84,60 +84,76 @@ impl FeelNumber {
   fn from_u128(n: u128) -> Self {
     Self(dec_quad_from_string(&format!("{}", n), ctx!()))
   }
-  ///
+  /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
-    Self(dec_quad_abs(&self.0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadAbs(&mut dq, &self.0, ctx!());
+    }
+    Self(dq)
   }
   ///
   pub fn ceiling(&self) -> Self {
-    Self(dec_quad_plus(
-      &dec_quad_reduce(&dec_quad_to_integral_value(&self.0, ctx!(), DEC_ROUND_CEILING), ctx!()),
-      ctx!(),
-    ))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadToIntegralValue(&mut dq, &self.0, ctx!(), DEC_ROUND_CEILING);
+      decQuadReduce(&mut dq, &dq, ctx!());
+      decQuadPlus(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
   ///
   pub fn even(&self) -> bool {
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dq = DecQuad::default();
       decQuadRemainder(&mut dq, &self.0, &DEC_QUAD_TWO, ctx!());
       decQuadIsZero(&dq) == 1
     }
   }
   ///
   pub fn exp(&self) -> Self {
+    let mut dn = DecNumber::default();
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut n_res = DecNumber::default();
-      let mut dq_res = DecQuad::default();
-      decimal128ToNumber(&self.0, &mut n_res);
-      decNumberExp(&mut n_res, &n_res, ctx!());
-      decimal128FromNumber(&mut dq_res, &n_res, ctx!());
-      Self(dq_res)
+      decimal128ToNumber(&self.0, &mut dn);
+      decNumberExp(&mut dn, &dn, ctx!());
+      decimal128FromNumber(&mut dq, &dn, ctx!());
     }
+    Self(dq)
   }
   ///
   pub fn floor(&self) -> Self {
-    Self(dec_quad_reduce(&dec_quad_to_integral_value(&self.0, ctx!(), DEC_ROUND_FLOOR), ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadToIntegralValue(&mut dq, &self.0, ctx!(), DEC_ROUND_FLOOR);
+      decQuadReduce(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
   ///
   pub fn frac(&self) -> Self {
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dq_res = DecQuad::default();
-      decQuadToIntegralValue(&mut dq_res, &self.0, ctx!(), DEC_ROUND_DOWN);
-      decQuadSubtract(&mut dq_res, &self.0, &dq_res, ctx!());
-      Self(dq_res)
+      decQuadToIntegralValue(&mut dq, &self.0, ctx!(), DEC_ROUND_DOWN);
+      decQuadSubtract(&mut dq, &self.0, &dq, ctx!());
     }
+    Self(dq)
   }
   ///
   pub fn is_integer(&self) -> bool {
-    dec_quad_is_integer(&self.0)
+    unsafe { decQuadIsInteger(&self.0) == 1 }
   }
   ///
   pub fn is_one(&self) -> bool {
-    dec_quad_is_zero(&dec_quad_compare(&self.0, &DEC_QUAD_ONE, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &self.0, &DEC_QUAD_ONE, ctx!());
+      decQuadIsZero(&dq) == 1
+    }
   }
   ///
   pub fn is_negative(&self) -> bool {
-    dec_quad_is_negative(&self.0)
+    unsafe { decQuadIsNegative(&self.0) == 1 }
   }
   ///
   pub fn is_positive(&self) -> bool {
@@ -145,9 +161,9 @@ impl FeelNumber {
   }
   ///
   pub fn ln(&self) -> Option<Self> {
+    let mut dn = DecNumber::default();
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dn = DecNumber::default();
-      let mut dq = DecQuad::default();
       decimal128ToNumber(&self.0, &mut dn);
       decNumberLn(&mut dn, &dn, ctx!());
       decimal128FromNumber(&mut dq, &dn, ctx!());
@@ -173,10 +189,10 @@ impl FeelNumber {
   }
   ///
   pub fn pow(&self, rhs: &FeelNumber) -> Option<Self> {
+    let mut n1 = DecNumber::default();
+    let mut n2 = DecNumber::default();
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut n1 = DecNumber::default();
-      let mut n2 = DecNumber::default();
-      let mut dq = DecQuad::default();
       decimal128ToNumber(&self.0, &mut n1);
       decimal128ToNumber(&rhs.0, &mut n2);
       decNumberPower(&mut n1, &n1, &n2, ctx!());
@@ -191,19 +207,19 @@ impl FeelNumber {
   }
   ///
   pub fn round(&self, rhs: &FeelNumber) -> Self {
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dq = DecQuad::default();
       decQuadMinus(&mut dq, &rhs.0, ctx!());
       decQuadScaleB(&mut dq, &DEC_QUAD_ONE, &dq, ctx!());
       decQuadQuantize(&mut dq, &self.0, &dq, ctx!());
-      Self(dq)
     }
+    Self(dq)
   }
   ///
   pub fn sqrt(&self) -> Option<Self> {
+    let mut dn = DecNumber::default();
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dn = DecNumber::default();
-      let mut dq = DecQuad::default();
       decimal128ToNumber(&self.0, &mut dn);
       decNumberSquareRoot(&mut dn, &dn, ctx!());
       decimal128FromNumber(&mut dq, &dn, ctx!());
@@ -217,9 +233,9 @@ impl FeelNumber {
   }
   ///
   pub fn square(&self) -> Option<Self> {
+    let mut dn = DecNumber::default();
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dn = DecNumber::default();
-      let mut dq = DecQuad::default();
       decimal128ToNumber(&self.0, &mut dn);
       decNumberPower(&mut dn, &dn, &DEC_NUMBER_TWO, ctx!());
       decimal128FromNumber(&mut dq, &dn, ctx!());
@@ -233,52 +249,67 @@ impl FeelNumber {
   }
   ///
   pub fn trunc(&self) -> Self {
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dq = DecQuad::default();
       decQuadToIntegralValue(&mut dq, &self.0, ctx!(), DEC_ROUND_DOWN);
-      Self(dq)
     }
+    Self(dq)
   }
   /// Calculates the remainder of the division.
   fn remainder(&self, rhs: &DecQuad) -> DecQuad {
+    let mut dq = DecQuad::default();
     unsafe {
-      let mut dq = DecQuad::default();
       decQuadDivide(&mut dq, &self.0, rhs, ctx!());
       decQuadToIntegralValue(&mut dq, &dq, ctx!(), DEC_ROUND_FLOOR);
       decQuadMultiply(&mut dq, rhs, &dq, ctx!());
       decQuadSubtract(&mut dq, &self.0, &dq, ctx!());
       decQuadReduce(&mut dq, &dq, ctx!());
-      dq
     }
+    dq
   }
 }
 
 impl PartialEq<FeelNumber> for FeelNumber {
   fn eq(&self, rhs: &Self) -> bool {
-    dec_quad_is_zero(&dec_quad_compare(&self.0, &rhs.0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &self.0, &rhs.0, ctx!());
+      decQuadIsZero(&dq) == 1
+    }
   }
 }
 
 impl PartialEq<FeelNumber> for isize {
   fn eq(&self, rhs: &FeelNumber) -> bool {
-    dec_quad_is_zero(&dec_quad_compare(&FeelNumber::from_isize(*self).0, &rhs.0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &FeelNumber::from_isize(*self).0, &rhs.0, ctx!());
+      decQuadIsZero(&dq) == 1
+    }
   }
 }
 
 impl PartialEq<isize> for FeelNumber {
   fn eq(&self, rhs: &isize) -> bool {
-    dec_quad_is_zero(&dec_quad_compare(&self.0, &FeelNumber::from_isize(*rhs).0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &self.0, &FeelNumber::from_isize(*rhs).0, ctx!());
+      decQuadIsZero(&dq) == 1
+    }
   }
 }
 
 impl PartialOrd<FeelNumber> for FeelNumber {
   fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
-    let flag = dec_quad_compare(&self.0, &rhs.0, ctx!());
-    if dec_quad_is_zero(&flag) {
-      return Some(Ordering::Equal);
-    }
-    if dec_quad_is_positive(&flag) {
-      return Some(Ordering::Greater);
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &self.0, &rhs.0, ctx!());
+      if decQuadIsZero(&dq) == 1 {
+        return Some(Ordering::Equal);
+      }
+      if decQuadIsPositive(&dq) == 1 {
+        return Some(Ordering::Greater);
+      }
     }
     Some(Ordering::Less)
   }
@@ -286,12 +317,15 @@ impl PartialOrd<FeelNumber> for FeelNumber {
 
 impl PartialOrd<FeelNumber> for isize {
   fn partial_cmp(&self, rhs: &FeelNumber) -> Option<Ordering> {
-    let flag = dec_quad_compare(&FeelNumber::from_isize(*self).0, &rhs.0, ctx!());
-    if dec_quad_is_zero(&flag) {
-      return Some(Ordering::Equal);
-    }
-    if dec_quad_is_positive(&flag) {
-      return Some(Ordering::Greater);
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &FeelNumber::from_isize(*self).0, &rhs.0, ctx!());
+      if decQuadIsZero(&dq) == 1 {
+        return Some(Ordering::Equal);
+      }
+      if decQuadIsPositive(&dq) == 1 {
+        return Some(Ordering::Greater);
+      }
     }
     Some(Ordering::Less)
   }
@@ -299,12 +333,15 @@ impl PartialOrd<FeelNumber> for isize {
 
 impl PartialOrd<isize> for FeelNumber {
   fn partial_cmp(&self, rhs: &isize) -> Option<Ordering> {
-    let flag = dec_quad_compare(&self.0, &FeelNumber::from_isize(*rhs).0, ctx!());
-    if dec_quad_is_zero(&flag) {
-      return Some(Ordering::Equal);
-    }
-    if dec_quad_is_positive(&flag) {
-      return Some(Ordering::Greater);
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadCompare(&mut dq, &self.0, &FeelNumber::from_isize(*rhs).0, ctx!());
+      if decQuadIsZero(&dq) == 1 {
+        return Some(Ordering::Equal);
+      }
+      if decQuadIsPositive(&dq) == 1 {
+        return Some(Ordering::Greater);
+      }
     }
     Some(Ordering::Less)
   }
@@ -314,14 +351,22 @@ impl Add<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn add(self, rhs: Self) -> Self::Output {
-    Self(dec_quad_add(&self.0, &rhs.0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadAdd(&mut dq, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
 }
 
 impl AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
-    self.0 = dec_quad_add(&self.0, &rhs.0, ctx!());
+    unsafe {
+      decQuadAdd(&mut self.0, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut self.0, &self.0, ctx!());
+    }
   }
 }
 
