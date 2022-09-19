@@ -1,5 +1,3 @@
-mod common;
-
 use dmntk_feel_number::FeelNumber;
 
 #[test]

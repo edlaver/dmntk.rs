@@ -1,66 +1,63 @@
-mod common;
-
-use crate::common::eqs;
-use dmntk_feel_number::FeelNumber;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_from_001() {
   let x: FeelNumber = u8::MAX.into();
-  eqs("255", x);
+  assert_eq!("255", x);
 }
 
 #[test]
 fn test_from_0002() {
   let x: FeelNumber = i8::MIN.into();
-  eqs("-128", x);
+  assert_eq!("-128", x);
 }
 
 #[test]
 fn test_from_0003() {
   let x: FeelNumber = u16::MAX.into();
-  eqs("65535", x);
+  assert_eq!("65535", x);
 }
 
 #[test]
 fn test_from_0004() {
   let x: FeelNumber = i16::MIN.into();
-  eqs("-32768", x);
+  assert_eq!("-32768", x);
 }
 
 #[test]
 fn test_from_0005() {
   let x: FeelNumber = i32::MIN.into();
-  eqs("-2147483648", x);
+  assert_eq!("-2147483648", x);
 }
 
 #[test]
 fn test_from_0006() {
   let x: FeelNumber = u32::MAX.into();
-  eqs("4294967295", x);
+  assert_eq!("4294967295", x);
 }
 
 #[test]
 fn test_from_0007() {
   let x: FeelNumber = u64::MAX.into();
-  eqs("18446744073709551615", x);
+  assert_eq!("18446744073709551615", x);
 }
 
 #[test]
 fn test_from_0008() {
   let x: FeelNumber = i64::MIN.into();
-  eqs("-9223372036854775808", x);
+  assert_eq!("-9223372036854775808", x);
 }
 
 #[test]
 fn test_from_0009() {
   let x: FeelNumber = isize::MIN.into();
-  eqs("-9223372036854775808", x);
+  assert_eq!("-9223372036854775808", x);
 }
 
 #[test]
 fn test_from_0010() {
   let x: FeelNumber = usize::MAX.into();
-  eqs("18446744073709551615", x);
+  assert_eq!("18446744073709551615", x);
 }
 
 #[test]

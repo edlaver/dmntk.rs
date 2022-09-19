@@ -31,6 +31,7 @@
  */
 
 use super::*;
+use dmntk_feel::num;
 
 #[test]
 fn test_0001() {
@@ -71,7 +72,7 @@ fn test_0006() {
 #[test]
 fn test_0007() {
   let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "1/3", 3333333333333333333333333333333333, 34);
+  te_number_x(false, scope, "1/3", num!(0.3333333333333333333333333333333333));
 }
 
 #[test]

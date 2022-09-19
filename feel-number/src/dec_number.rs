@@ -44,6 +44,13 @@ use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign};
 use std::str::FromStr;
 
+#[macro_export]
+macro_rules! num {
+  ($n:expr) => {{
+    stringify!($n).parse::<FeelNumber>().unwrap()
+  }};
+}
+
 macro_rules! ctx {
   () => {
     &mut dec_context_128()
@@ -84,7 +91,7 @@ impl FeelNumber {
     FEEL_NUMBER_BILLION
   }
   /// Creates a new [FeelNumber] from integer value and scale.
-  pub fn new(n: i128, s: i32) -> Self {
+  pub fn new(n: i64, s: i32) -> Self {
     Self(dec_quad_scale_b(
       &dec_quad_from_string(&format!("{}", n), ctx!()),
       &dec_quad_from_string(&format!("{}", -s), ctx!()),
@@ -315,6 +322,19 @@ impl PartialEq<isize> for FeelNumber {
       decQuadCompare(&mut dq, &self.0, &FeelNumber::from_isize(*rhs).0, ctx!());
       decQuadIsZero(&dq) == 1
     }
+  }
+}
+
+impl PartialEq<FeelNumber> for &str {
+  fn eq(&self, rhs: &FeelNumber) -> bool {
+    let mut dq = DecQuad::default();
+    if let Ok(lhs) = self.parse::<FeelNumber>() {
+      unsafe {
+        decQuadCompare(&mut dq, &lhs.0, &rhs.0, ctx!());
+        return decQuadIsZero(&dq) == 1;
+      }
+    }
+    false
   }
 }
 

@@ -31,6 +31,7 @@
  */
 
 use super::*;
+use dmntk_feel::num;
 
 #[test]
 fn test_0001() {
@@ -119,8 +120,7 @@ fn test_0014() {
 #[test]
 fn test_0015() {
   let scope = &te_scope("{}");
-  te_number(false, scope, "3 ** (4 ** 5)", 3733918487410200435329597541848666, -455);
-  //te_null(false, scope, "3 ** (4 ** 5)", r#"exponentiation result is not a finite number"#);
+  te_number_x(false, scope, "3 ** (4 ** 5)", num!(3.733918487410200435329597541848666E+488));
 }
 
 #[test]

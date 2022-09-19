@@ -1,6 +1,4 @@
-mod common;
-
-use crate::common::eqs;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_pow_001() {
@@ -9,5 +7,5 @@ fn test_pow_001() {
 
 #[test]
 fn test_pow_002() {
-  eqs("41959.85737359436186095331070746801", num!(12.2384283).pow(&num!(4.25)).unwrap());
+  assert_eq!("41959.85737359436186095331070746801", num!(12.2384283).pow(&num!(4.25)).unwrap());
 }

@@ -1,23 +1,21 @@
-mod common;
-
-use crate::common::eqs;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_ceiling_001() {
-  eqs("2", num!(1.5).ceiling());
+  assert_eq!("2", num!(1.5).ceiling());
 }
 
 #[test]
 fn test_ceiling_002() {
-  eqs("-1", num!(-1.5).ceiling());
+  assert_eq!("-1", num!(-1.5).ceiling());
 }
 
 #[test]
 fn test_ceiling_003() {
-  eqs("1", num!(0.3333).ceiling());
+  assert_eq!("1", num!(0.3333).ceiling());
 }
 
 #[test]
 fn test_ceiling_004() {
-  eqs("0", num!(-0.3333).ceiling());
+  assert_eq!("0", num!(-0.3333).ceiling());
 }

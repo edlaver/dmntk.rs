@@ -1,4 +1,4 @@
-mod common;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_odd_001() {

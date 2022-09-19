@@ -1,11 +1,8 @@
-mod common;
-
-use crate::common::eqs;
-use dmntk_feel_number::FeelNumber;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_to_string_001() {
-  eqs("49", num!(49));
+  assert_eq!("49", num!(49));
 }
 
 #[test]
@@ -25,7 +22,7 @@ fn test_to_string_004() {
 
 #[test]
 fn test_to_string_005() {
-  eqs("50", num!(50));
+  assert_eq!("50", num!(50));
 }
 
 #[test]

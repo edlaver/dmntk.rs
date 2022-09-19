@@ -1,6 +1,4 @@
-mod common;
-
-use crate::common::eqs;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_sqrt_001() {
@@ -9,15 +7,15 @@ fn test_sqrt_001() {
 
 #[test]
 fn test_sqrt_002() {
-  eqs("0", num!(0).sqrt().unwrap());
+  assert_eq!("0", num!(0).sqrt().unwrap());
 }
 
 #[test]
 fn test_sqrt_003() {
-  eqs("1", num!(1).sqrt().unwrap());
+  assert_eq!("1", num!(1).sqrt().unwrap());
 }
 
 #[test]
 fn test_sqrt_004() {
-  eqs("1.414213562373095048801688724209698", num!(2).sqrt().unwrap());
+  assert_eq!("1.414213562373095048801688724209698", num!(2).sqrt().unwrap());
 }

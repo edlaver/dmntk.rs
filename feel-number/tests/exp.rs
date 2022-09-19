@@ -1,13 +1,11 @@
-mod common;
-
-use crate::common::eqs;
+use dmntk_feel_number::{num, FeelNumber};
 
 #[test]
 fn test_exp_001() {
-  eqs("2.718281828459045235360287471352662", num!(1).exp());
+  assert_eq!("2.718281828459045235360287471352662", num!(1).exp());
 }
 
 #[test]
 fn test_exp_002() {
-  eqs("54.59815003314423907811026120286088", num!(4).exp());
+  assert_eq!("54.59815003314423907811026120286088", num!(4).exp());
 }
