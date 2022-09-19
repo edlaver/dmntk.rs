@@ -5,9 +5,16 @@ fn test_to_string_001() {
   assert_eq!("49", num!(49));
 }
 
+#[cfg(feature = "dec")]
 #[test]
 fn test_to_string_002() {
   assert_eq!("49.0", FeelNumber::new(490, 1).to_string());
+}
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_to_string_002() {
+  assert_eq!("49", FeelNumber::new(490, 1).to_string());
 }
 
 #[test]
@@ -30,7 +37,14 @@ fn test_to_string_006() {
   assert_eq!("50.5", FeelNumber::new(505, 1).to_string());
 }
 
+#[cfg(feature = "dec")]
 #[test]
 fn test_to_string_007() {
   assert_eq!("50.50", FeelNumber::new(5050, 2).to_string());
+}
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_to_string_007() {
+  assert_eq!("50.5", FeelNumber::new(5050, 2).to_string());
 }
