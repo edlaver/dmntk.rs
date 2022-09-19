@@ -374,14 +374,22 @@ impl Sub<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn sub(self, rhs: Self) -> Self::Output {
-    Self(dec_quad_reduce(&dec_quad_subtract(&self.0, &rhs.0, ctx!()), ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadSubtract(&mut dq, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
 }
 
 impl SubAssign<FeelNumber> for FeelNumber {
   ///
   fn sub_assign(&mut self, rhs: Self) {
-    self.0 = dec_quad_reduce(&dec_quad_subtract(&self.0, &rhs.0, ctx!()), ctx!());
+    unsafe {
+      decQuadSubtract(&mut self.0, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut self.0, &self.0, ctx!());
+    }
   }
 }
 
@@ -389,14 +397,22 @@ impl Mul<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn mul(self, rhs: Self) -> Self::Output {
-    Self(dec_quad_reduce(&dec_quad_multiply(&self.0, &rhs.0, ctx!()), ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadMultiply(&mut dq, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
 }
 
 impl MulAssign<FeelNumber> for FeelNumber {
   ///
   fn mul_assign(&mut self, rhs: Self) {
-    self.0 = dec_quad_reduce(&dec_quad_multiply(&self.0, &rhs.0, ctx!()), ctx!());
+    unsafe {
+      decQuadMultiply(&mut self.0, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut self.0, &self.0, ctx!());
+    }
   }
 }
 
@@ -404,14 +420,22 @@ impl Div<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn div(self, rhs: Self) -> Self::Output {
-    Self(dec_quad_reduce(&dec_quad_divide(&self.0, &rhs.0, ctx!()), ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadDivide(&mut dq, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut dq, &dq, ctx!());
+    }
+    Self(dq)
   }
 }
 
 impl DivAssign<FeelNumber> for FeelNumber {
   ///
   fn div_assign(&mut self, rhs: Self) {
-    self.0 = dec_quad_reduce(&dec_quad_divide(&self.0, &rhs.0, ctx!()), ctx!());
+    unsafe {
+      decQuadDivide(&mut self.0, &self.0, &rhs.0, ctx!());
+      decQuadReduce(&mut self.0, &self.0, ctx!());
+    }
   }
 }
 
@@ -434,7 +458,11 @@ impl Neg for FeelNumber {
   type Output = Self;
   ///
   fn neg(self) -> Self::Output {
-    Self(dec_quad_minus(&self.0, ctx!()))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadMinus(&mut dq, &self.0, ctx!());
+    }
+    Self(dq)
   }
 }
 
@@ -498,10 +526,12 @@ impl FromStr for FeelNumber {
   ///
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     let n = dec_quad_from_string(s, ctx!());
-    if dec_quad_is_finite(&n) {
-      Ok(Self(n))
-    } else {
-      Err(err_invalid_number_literal(s))
+    unsafe {
+      if decQuadIsFinite(&n) == 1 {
+        Ok(Self(n))
+      } else {
+        Err(err_invalid_number_literal(s))
+      }
     }
   }
 }
@@ -509,42 +539,66 @@ impl FromStr for FeelNumber {
 impl From<u8> for FeelNumber {
   ///
   fn from(value: u8) -> Self {
-    Self(dec_quad_from_u32(value as u32))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromUInt32(&mut dq, value as u32);
+    }
+    Self(dq)
   }
 }
 
 impl From<i8> for FeelNumber {
   ///
   fn from(value: i8) -> Self {
-    Self(dec_quad_from_i32(value as i32))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromInt32(&mut dq, value as i32);
+    }
+    Self(dq)
   }
 }
 
 impl From<u16> for FeelNumber {
   ///
   fn from(value: u16) -> Self {
-    Self(dec_quad_from_u32(value as u32))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromUInt32(&mut dq, value as u32);
+    }
+    Self(dq)
   }
 }
 
 impl From<i16> for FeelNumber {
   ///
   fn from(value: i16) -> Self {
-    Self(dec_quad_from_i32(value as i32))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromInt32(&mut dq, value as i32);
+    }
+    Self(dq)
   }
 }
 
 impl From<u32> for FeelNumber {
   ///
   fn from(value: u32) -> Self {
-    Self(dec_quad_from_u32(value))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromUInt32(&mut dq, value as u32);
+    }
+    Self(dq)
   }
 }
 
 impl From<i32> for FeelNumber {
   ///
   fn from(value: i32) -> Self {
-    Self(dec_quad_from_i32(value))
+    let mut dq = DecQuad::default();
+    unsafe {
+      decQuadFromInt32(&mut dq, value as i32);
+    }
+    Self(dq)
   }
 }
 
