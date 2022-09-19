@@ -10,4 +10,10 @@ edition = "2021"
 
 [dependencies]
 dmntk-common = { path = "../common" }
-dec-number-sys = "0.0.22"
+dec-number-sys = { version = "0.0.22", optional = true }
+dfp-number-sys = { version = "0.0.3", optional = true }
+
+[features]
+default = ["dec"]
+dec = ["dec-number-sys"]
+dfp = ["dfp-number-sys"]

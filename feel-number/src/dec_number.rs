@@ -31,6 +31,9 @@
  */
 
 //! `FEEL` number type.
+//!
+//! Implementation of the `FEEL` number based on
+//! **The decNumber C library by IBM Fellow Mike Cowlishaw**.
 
 use crate::errors::*;
 use dec_number_sys::*;
