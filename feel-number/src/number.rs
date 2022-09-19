@@ -48,22 +48,38 @@ macro_rules! ctx {
 }
 
 /// [FeelNumber] value 0 (zero).
-pub const FEEL_NUMBER_ZERO: FeelNumber = FeelNumber(DEC_QUAD_ZERO);
+const FEEL_NUMBER_ZERO: FeelNumber = FeelNumber(DEC_QUAD_ZERO);
 
 /// [FeelNumber] value 1 (one).
-pub const FEEL_NUMBER_ONE: FeelNumber = FeelNumber(DEC_QUAD_ONE);
+const FEEL_NUMBER_ONE: FeelNumber = FeelNumber(DEC_QUAD_ONE);
 
 /// [FeelNumber] value 2 (two).
-pub const FEEL_NUMBER_TWO: FeelNumber = FeelNumber(DEC_QUAD_TWO);
+const FEEL_NUMBER_TWO: FeelNumber = FeelNumber(DEC_QUAD_TWO);
 
 /// [FeelNumber] value 1000000000 (billion).
-pub const FEEL_NUMBER_BILLION: FeelNumber = FeelNumber(DEC_QUAD_BILLION);
+const FEEL_NUMBER_BILLION: FeelNumber = FeelNumber(DEC_QUAD_BILLION);
 
 /// FEEL number.
 #[derive(Copy, Clone)]
 pub struct FeelNumber(DecQuad);
 
 impl FeelNumber {
+  /// Returns [FeelNumber] value 0 (zero).
+  pub fn zero() -> FeelNumber {
+    FEEL_NUMBER_ZERO
+  }
+  /// Returns [FeelNumber] value 1 (one).
+  pub fn one() -> FeelNumber {
+    FEEL_NUMBER_ONE
+  }
+  /// Returns [FeelNumber] value 2 (two).
+  pub fn two() -> FeelNumber {
+    FEEL_NUMBER_TWO
+  }
+  /// Returns [FeelNumber] value 1000000000 (billion).
+  pub fn billion() -> FeelNumber {
+    FEEL_NUMBER_BILLION
+  }
   /// Creates a new [FeelNumber] from integer value and scale.
   pub fn new(n: i128, s: i32) -> Self {
     Self(dec_quad_scale_b(

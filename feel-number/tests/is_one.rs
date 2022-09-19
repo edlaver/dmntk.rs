@@ -1,4 +1,4 @@
-use dmntk_feel_number::{FeelNumber, FEEL_NUMBER_ONE};
+use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_is_one_001() {
@@ -7,7 +7,7 @@ fn test_is_one_001() {
 
 #[test]
 fn test_is_one_002() {
-  assert!(FEEL_NUMBER_ONE.is_one());
+  assert!(FeelNumber::one().is_one());
 }
 
 #[test]

@@ -39,7 +39,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{
   subtract, value_null, AstNode, Evaluator, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelType, FeelYearsAndMonthsDuration,
-  FunctionBody, Name, Scope, FEEL_NUMBER_ZERO,
+  FunctionBody, Name, Scope,
 };
 use std::borrow::Borrow;
 use std::cmp::Ordering;
@@ -420,7 +420,7 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => {
-          if rh.abs() == FEEL_NUMBER_ZERO {
+          if rh.abs() == FeelNumber::zero() {
             value_null!("[division] division by zero")
           } else {
             Value::Number(lh / rh)
