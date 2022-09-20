@@ -21,3 +21,8 @@ fn test_round_003() {
 fn test_round_004() {
   eqs!("200", num!(163.4567).round(&num!(-2)));
 }
+
+#[test]
+fn test_round_005() {
+  eqs!("0.0", num!(0.0).round(&num!(1)));
+}

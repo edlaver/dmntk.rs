@@ -60,55 +60,52 @@ macro_rules! round {
 
 /// FEEL number.
 #[derive(Copy, Clone)]
-pub struct FeelNumber(BID128);
+pub struct FeelNumber(BID128, bool);
 
 impl FeelNumber {
   /// Returns [FeelNumber] value 0 (zero).
   pub fn zero() -> FeelNumber {
-    Self(bid128_from_uint64(0))
+    Self(bid128_from_uint64(0), false)
   }
   /// Returns [FeelNumber] value 1 (one).
   pub fn one() -> FeelNumber {
-    Self(bid128_from_uint64(1))
+    Self(bid128_from_uint64(1), false)
   }
   /// Returns [FeelNumber] value 2 (two).
   pub fn two() -> FeelNumber {
-    Self(bid128_from_uint64(2))
+    Self(bid128_from_uint64(2), false)
   }
   /// Returns [FeelNumber] value 1000000000 (billion).
   pub fn billion() -> FeelNumber {
-    Self(bid128_from_uint64(1_000_000_000))
+    Self(bid128_from_uint64(1_000_000_000), false)
   }
   /// Creates a new [FeelNumber] from integer value and a scale.
   pub fn new(n: i64, s: i32) -> Self {
-    Self(bid128_scalbn(bid128_from_int64(n), -s))
+    Self(bid128_scalbn(bid128_from_int64(n), -s), false)
   }
   /// Creates a new [FeelNumber] from [isize].
   fn from_isize(n: isize) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()))
+    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
   }
   /// Creates a new [FeelNumber] from [i128].
   fn from_i128(n: i128) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()))
+    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
   }
   /// Creates a new [FeelNumber] from [u128].
   fn from_u128(n: u128) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()))
+    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
   }
   /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
-    Self(bid128_abs(self.0))
+    Self(bid128_abs(self.0), false)
   }
   /// Returns a nearest integer greater than this [FeelNumber].
   pub fn ceiling(&self) -> Self {
     let bid = bid128_round_integral_positive(self.0, flags!());
-    // when the rounding comes from the left side of zero,
-    // the result is -0, but for FEEL number only positive zero is valid,
-    // so when the result is +/- zero, always return positive zero
     if bid128_is_zero(bid) {
       Self::zero()
     } else {
-      Self(bid)
+      Self(bid, false)
     }
   }
   ///
@@ -117,15 +114,15 @@ impl FeelNumber {
   }
   ///
   pub fn exp(&self) -> Self {
-    Self(bid128_exp(self.0, round!(), flags!()))
+    Self(bid128_exp(self.0, round!(), flags!()), true)
   }
   ///
   pub fn floor(&self) -> Self {
-    Self(bid128_round_integral_negative(self.0, flags!()))
+    Self(bid128_round_integral_negative(self.0, flags!()), false)
   }
   ///
   pub fn frac(&self) -> Self {
-    Self(bid128_sub(self.0, bid128_round_integral_zero(self.0, flags!()), round!(), flags!()))
+    Self(bid128_sub(self.0, bid128_round_integral_zero(self.0, flags!()), round!(), flags!()), true)
   }
   ///
   pub fn is_integer(&self) -> bool {
@@ -147,7 +144,7 @@ impl FeelNumber {
   pub fn ln(&self) -> Option<Self> {
     let n = bid128_log(self.0, round!(), flags!());
     if bid128_is_finite(n) {
-      Some(Self(n))
+      Some(Self(n, true))
     } else {
       None
     }
@@ -164,7 +161,7 @@ impl FeelNumber {
   pub fn pow(&self, rhs: &FeelNumber) -> Option<Self> {
     let n = bid128_pow(self.0, rhs.0, round!(), flags!());
     if bid128_is_finite(n) {
-      Some(Self(n))
+      Some(Self(n, true))
     } else {
       None
     }
@@ -174,13 +171,13 @@ impl FeelNumber {
     let r = bid128_negate(rhs.0);
     let n = bid128_to_int32_int(r, flags!());
     let q = bid128_scalbn(Self::one().0, n);
-    Self(bid128_quantize(self.0, q, round!(), flags!()))
+    Self(bid128_quantize(self.0, q, round!(), flags!()), false)
   }
   ///
   pub fn sqrt(&self) -> Option<Self> {
     let n = bid128_sqrt(self.0, round!(), flags!());
     if bid128_is_finite(n) {
-      Some(Self(n))
+      Some(Self(n, true))
     } else {
       None
     }
@@ -189,14 +186,14 @@ impl FeelNumber {
   pub fn square(&self) -> Option<Self> {
     let n = bid128_pow(self.0, Self::two().0, round!(), flags!());
     if bid128_is_finite(n) {
-      Some(Self(n))
+      Some(Self(n, true))
     } else {
       None
     }
   }
   ///
   pub fn trunc(&self) -> Self {
-    Self(bid128_round_integral_zero(self.0, flags!()))
+    Self(bid128_round_integral_zero(self.0, flags!()), false)
   }
   /// Calculates the remainder of the division.
   fn remainder(&self, rhs: BID128) -> BID128 {
@@ -267,7 +264,7 @@ impl Add<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn add(self, rhs: Self) -> Self::Output {
-    Self(bid128_add(self.0, rhs.0, round!(), flags!()))
+    Self(bid128_add(self.0, rhs.0, round!(), flags!()), self.1 | rhs.1)
   }
 }
 
@@ -275,6 +272,7 @@ impl AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
     self.0 = bid128_add(self.0, rhs.0, round!(), flags!());
+    self.1 |= rhs.1;
   }
 }
 
@@ -282,7 +280,7 @@ impl Sub<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn sub(self, rhs: Self) -> Self::Output {
-    Self(bid128_sub(self.0, rhs.0, round!(), flags!()))
+    Self(bid128_sub(self.0, rhs.0, round!(), flags!()), self.1 | rhs.1)
   }
 }
 
@@ -290,6 +288,7 @@ impl SubAssign<FeelNumber> for FeelNumber {
   ///
   fn sub_assign(&mut self, rhs: Self) {
     self.0 = bid128_sub(self.0, rhs.0, round!(), flags!());
+    self.1 |= rhs.1;
   }
 }
 
@@ -297,7 +296,7 @@ impl Mul<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn mul(self, rhs: Self) -> Self::Output {
-    Self(bid128_mul(self.0, rhs.0, round!(), flags!()))
+    Self(bid128_mul(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
@@ -305,6 +304,7 @@ impl MulAssign<FeelNumber> for FeelNumber {
   ///
   fn mul_assign(&mut self, rhs: Self) {
     self.0 = bid128_mul(self.0, rhs.0, round!(), flags!());
+    self.1 = true;
   }
 }
 
@@ -312,7 +312,7 @@ impl Div<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn div(self, rhs: Self) -> Self::Output {
-    Self(bid128_div(self.0, rhs.0, round!(), flags!()))
+    Self(bid128_div(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
@@ -320,6 +320,7 @@ impl DivAssign<FeelNumber> for FeelNumber {
   ///
   fn div_assign(&mut self, rhs: Self) {
     self.0 = bid128_div(self.0, rhs.0, round!(), flags!());
+    self.1 = true;
   }
 }
 
@@ -327,7 +328,7 @@ impl Rem<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn rem(self, rhs: Self) -> Self::Output {
-    Self(self.remainder(rhs.0))
+    Self(self.remainder(rhs.0), false)
   }
 }
 
@@ -342,7 +343,7 @@ impl Neg for FeelNumber {
   type Output = Self;
   ///
   fn neg(self) -> Self::Output {
-    Self(bid128_negate(self.0))
+    Self(bid128_negate(self.0), false)
   }
 }
 
@@ -367,11 +368,19 @@ impl Display for FeelNumber {
           if digit_count <= decimal_points {
             let before = "0".to_string();
             let mut after = "0".repeat(decimal_points - digit_count);
-            after.push_str(sb.trim_end_matches('0'));
+            if self.1 {
+              after.push_str(sb.trim_end_matches('0'));
+            } else {
+              after.push_str(sb);
+            }
             (before, after)
           } else {
             let before = sb[..digit_count - decimal_points].to_string();
-            let after = sb[digit_count - decimal_points..].trim_end_matches('0').to_string();
+            let after = if self.1 {
+              sb[digit_count - decimal_points..].trim_end_matches('0').to_string()
+            } else {
+              sb[digit_count - decimal_points..].to_string()
+            };
             (before, after)
           }
         } else {
@@ -411,7 +420,7 @@ impl FromStr for FeelNumber {
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     let n = bid128_from_string(s, round!(), flags!());
     if bid128_is_finite(n) {
-      Ok(Self(n))
+      Ok(Self(n, false))
     } else {
       Err(err_invalid_number_literal(s))
     }
@@ -421,42 +430,42 @@ impl FromStr for FeelNumber {
 impl From<u8> for FeelNumber {
   ///
   fn from(value: u8) -> Self {
-    Self(bid128_from_uint32(value as u32))
+    Self(bid128_from_uint32(value as u32), false)
   }
 }
 
 impl From<i8> for FeelNumber {
   ///
   fn from(value: i8) -> Self {
-    Self(bid128_from_int32(value as i32))
+    Self(bid128_from_int32(value as i32), false)
   }
 }
 
 impl From<u16> for FeelNumber {
   ///
   fn from(value: u16) -> Self {
-    Self(bid128_from_uint32(value as u32))
+    Self(bid128_from_uint32(value as u32), false)
   }
 }
 
 impl From<i16> for FeelNumber {
   ///
   fn from(value: i16) -> Self {
-    Self(bid128_from_int32(value as i32))
+    Self(bid128_from_int32(value as i32), false)
   }
 }
 
 impl From<u32> for FeelNumber {
   ///
   fn from(value: u32) -> Self {
-    Self(bid128_from_uint32(value))
+    Self(bid128_from_uint32(value), false)
   }
 }
 
 impl From<i32> for FeelNumber {
   ///
   fn from(value: i32) -> Self {
-    Self(bid128_from_int32(value))
+    Self(bid128_from_int32(value), false)
   }
 }
 

@@ -16,7 +16,7 @@ fn test_to_string_002() {
 #[cfg(feature = "dfp")]
 #[test]
 fn test_to_string_002() {
-  eqs!("49", FeelNumber::new(490, 1).to_string());
+  eqs!("49.0", FeelNumber::new(490, 1).to_string());
 }
 
 #[test]
@@ -48,5 +48,5 @@ fn test_to_string_007() {
 #[cfg(feature = "dfp")]
 #[test]
 fn test_to_string_007() {
-  eqs!("50.5", FeelNumber::new(5050, 2).to_string());
+  eqs!("50.50", FeelNumber::new(5050, 2).to_string());
 }
