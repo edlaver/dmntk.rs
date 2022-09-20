@@ -1,15 +1,15 @@
-use dmntk_feel_number::num;
+mod common;
 
 use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_square_001() {
-  assert_eq!("4", num!(2).square().unwrap());
+  eqs!("4", num!(2).square().unwrap());
 }
 
 #[test]
 fn test_square_002() {
-  assert_eq!("25", num!(5).square().unwrap());
+  eqs!("25", num!(5).square().unwrap());
 }
 
 #[test]

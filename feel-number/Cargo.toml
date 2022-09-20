@@ -11,7 +11,7 @@ edition = "2021"
 [dependencies]
 dmntk-common = { path = "../common" }
 dec-number-sys = { version = "0.0.22", optional = true }
-dfp-number-sys = { version = "0.0.8", optional = true }
+dfp-number-sys = { version = "0.0.9", optional = true }
 
 [features]
 default = ["dfp"]

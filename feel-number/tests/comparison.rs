@@ -1,8 +1,10 @@
-use dmntk_feel_number::{num, FeelNumber};
+mod common;
+
+use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_comparison_001() {
-  assert_eq!(num!(120000), num!(120000));
+  assert!((num!(120000) == num!(120000)));
 }
 
 #[test]

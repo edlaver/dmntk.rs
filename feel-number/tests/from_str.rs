@@ -1,8 +1,10 @@
+mod common;
+
 use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_from_str_001() {
-  assert_eq!("12345.6789", "12345.6789".parse::<FeelNumber>().unwrap());
+  eqs!("12345.6789", "12345.6789".parse::<FeelNumber>().unwrap());
 }
 
 #[test]
@@ -12,7 +14,7 @@ fn test_from_str_002() {
 
 #[test]
 fn test_from_str_003() {
-  assert_eq!(
+  eqs!(
     "FeelNumberError: invalid number literal '1234a5'",
     "1234a5".parse::<FeelNumber>().unwrap_err().to_string()
   );
@@ -20,15 +22,15 @@ fn test_from_str_003() {
 
 #[test]
 fn test_from_str_004() {
-  assert_eq!("12300", "1.23E+4".parse::<FeelNumber>().unwrap());
+  eqs!("12300", "1.23E+4".parse::<FeelNumber>().unwrap());
 }
 
 #[test]
 fn test_from_str_005() {
-  assert_eq!("0.00000000000000000000001", "1E-23".parse::<FeelNumber>().unwrap());
+  eqs!("0.00000000000000000000001", "1E-23".parse::<FeelNumber>().unwrap());
 }
 
 #[test]
 fn test_from_str_006() {
-  assert_eq!("0.00000000000000001234567", "1.234567E-17".parse::<FeelNumber>().unwrap());
+  eqs!("0.00000000000000001234567", "1.234567E-17".parse::<FeelNumber>().unwrap());
 }

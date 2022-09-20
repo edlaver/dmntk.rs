@@ -136,8 +136,8 @@ pub fn te_number(trace: bool, scope: &Scope, s: &str, num: i64, scale: i32) {
 }
 
 /// Utility function that tests evaluation of numeric values.
-pub fn te_number_x(trace: bool, scope: &Scope, s: &str, num: FeelNumber) {
-  textual_expression(trace, scope, s, Value::Number(num));
+pub fn te_number_x(trace: bool, scope: &Scope, s: &str, num: &str) {
+  textual_expression(trace, scope, s, Value::Number(num.parse::<FeelNumber>().unwrap()));
 }
 
 /// Utility function that tests evaluation to null value.

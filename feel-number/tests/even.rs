@@ -1,4 +1,6 @@
-use dmntk_feel_number::{num, FeelNumber};
+mod common;
+
+use dmntk_feel_number::FeelNumber;
 
 #[test]
 fn test_even_001() {

@@ -44,7 +44,7 @@ extern crate lazy_static;
 extern crate regex;
 
 pub use ast::{AstNode, OptAstNode};
-pub use dmntk_feel_number::{num, FeelNumber};
+pub use dmntk_feel_number::FeelNumber;
 pub use evaluator::Evaluator;
 pub use function::FunctionBody;
 pub use names::Name;
