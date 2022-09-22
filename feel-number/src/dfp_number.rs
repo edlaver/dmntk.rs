@@ -205,24 +205,28 @@ impl FeelNumber {
 }
 
 impl PartialEq<FeelNumber> for FeelNumber {
+  ///
   fn eq(&self, rhs: &Self) -> bool {
     bid128_quiet_equal(self.0, rhs.0, flags!())
   }
 }
 
 impl PartialEq<FeelNumber> for isize {
+  ///
   fn eq(&self, rhs: &FeelNumber) -> bool {
     bid128_quiet_equal(FeelNumber::from_isize(*self).0, rhs.0, flags!())
   }
 }
 
 impl PartialEq<isize> for FeelNumber {
+  ///
   fn eq(&self, rhs: &isize) -> bool {
     bid128_quiet_equal(self.0, FeelNumber::from_isize(*rhs).0, flags!())
   }
 }
 
 impl PartialOrd<FeelNumber> for FeelNumber {
+  ///
   fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
     if bid128_quiet_equal(self.0, rhs.0, flags!()) {
       return Some(Ordering::Equal);
@@ -232,9 +236,26 @@ impl PartialOrd<FeelNumber> for FeelNumber {
     }
     Some(Ordering::Less)
   }
+  ///
+  fn lt(&self, rhs: &FeelNumber) -> bool {
+    bid128_quiet_less(self.0, rhs.0, flags!())
+  }
+  ///
+  fn le(&self, rhs: &FeelNumber) -> bool {
+    bid128_quiet_less_equal(self.0, rhs.0, flags!())
+  }
+  ///
+  fn gt(&self, rhs: &FeelNumber) -> bool {
+    bid128_quiet_greater(self.0, rhs.0, flags!())
+  }
+  ///
+  fn ge(&self, rhs: &FeelNumber) -> bool {
+    bid128_quiet_greater_equal(self.0, rhs.0, flags!())
+  }
 }
 
 impl PartialOrd<FeelNumber> for isize {
+  ///
   fn partial_cmp(&self, rhs: &FeelNumber) -> Option<Ordering> {
     let n = FeelNumber::from_isize(*self).0;
     if bid128_quiet_equal(n, rhs.0, flags!()) {
@@ -248,6 +269,7 @@ impl PartialOrd<FeelNumber> for isize {
 }
 
 impl PartialOrd<isize> for FeelNumber {
+  ///
   fn partial_cmp(&self, rhs: &isize) -> Option<Ordering> {
     let n = FeelNumber::from_isize(*rhs).0;
     if bid128_quiet_equal(self.0, n, flags!()) {
