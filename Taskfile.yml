@@ -59,6 +59,11 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-feel-evaluator
 
+  cov-feel-grammar:
+    desc: Runs code coverage using grcov for dmntk-feel-grammar
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-grammar
+
   tcov:
     desc: Runs code coverage using tarpaulin
     cmds:

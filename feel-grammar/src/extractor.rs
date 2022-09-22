@@ -322,21 +322,19 @@ fn extract_numeric_table(input: &str, table_name: &str) -> (String, Vec<i64>) {
   );
   let re: Regex = Regex::new(&pattern).unwrap();
   if let Some(captures) = re.captures(input) {
-    if let Some(type_match) = captures.name("type") {
-      let table_type = match type_match.as_str() {
-        "yytype_int8" => "i8",
-        "yytype_uint8" => "u8",
-        "yytype_int16" => "i16",
-        _ => {
-          panic!("unhandled type for table elements `{}`", type_match.as_str());
-        }
-      }
-      .to_string();
-      if let Some(values_match) = captures.name("values") {
-        let s = values_match.as_str().split(',');
-        return (table_type, s.map(|a| a.trim().parse::<i64>().unwrap()).collect());
+    let type_match = captures.name("type").unwrap(); // unwrap is ok, `type` group always exists
+    let table_type = match type_match.as_str() {
+      "yytype_int8" => "i8",
+      "yytype_uint8" => "u8",
+      "yytype_int16" => "i16",
+      _ => {
+        panic!("unhandled type for table elements `{}`", type_match.as_str());
       }
     }
+    .to_string();
+    let values_match = captures.name("values").unwrap(); // unwrap is ok, `values` group always exists
+    let s = values_match.as_str().split(',');
+    return (table_type, s.map(|a| a.trim().parse::<i64>().unwrap()).collect());
   }
   panic!("no table elements found for table `{}`", table_name);
 }
@@ -371,42 +369,42 @@ fn extract_semantic_actions(input: &str) -> Vec<(i64, String, String)> {
 
 #[cfg(test)]
 mod tests {
-  use crate::extractor::{extract_numeric_table, extract_semantic_actions, extract_symbol_kinds, extract_token_types, extract_value};
+  use super::*;
 
   #[test]
   #[should_panic]
-  fn test_no_table_elements() {
+  fn test_extractor_001() {
     extract_numeric_table("", "MY_TABLE");
   }
 
   #[test]
   #[should_panic]
-  fn test_no_semantic_actions() {
-    extract_semantic_actions("");
-  }
-
-  #[test]
-  #[should_panic]
-  fn test_invalid_table_type() {
+  fn test_extractor_002() {
     let input = r#"static const yytype_uint16 yystos[] = { 0, 1, 2 };"#;
     extract_numeric_table(input, "yystos");
   }
 
   #[test]
   #[should_panic]
-  fn test_extract_value() {
+  fn test_extractor_003() {
+    extract_semantic_actions("");
+  }
+
+  #[test]
+  #[should_panic]
+  fn test_extractor_004() {
     extract_value("", "a");
   }
 
   #[test]
   #[should_panic]
-  fn test_empty_symbol_kinds() {
+  fn test_extractor_005() {
     extract_symbol_kinds("");
   }
 
   #[test]
   #[should_panic]
-  fn test_empty_token_types() {
+  fn test_extractor_006() {
     extract_token_types("");
   }
 }
