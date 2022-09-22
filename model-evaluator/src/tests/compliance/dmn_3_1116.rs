@@ -47,79 +47,144 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_002_9d2e399b96", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_002_9d2e399b96",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0003() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_003_d1f0ea5bb9", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_003_d1f0ea5bb9",
+    &ctx,
+    r#"null([core::time_4] minutes must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_004_57aea91d1c", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_004_57aea91d1c",
+    &ctx,
+    r#"null([core::time_4] seconds must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_005_32ea20b34f", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_005_32ea20b34f",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_006_e266498180", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_006_e266498180",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0007() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_007_ee82c7bf12", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_007_ee82c7bf12",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_008_08078c6c29", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_008_08078c6c29",
+    &ctx,
+    r#"null([core::time_4] minutes must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_009_804c21ed52", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_009_804c21ed52",
+    &ctx,
+    r#"null([core::time_4] seconds must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_010_cc773bb44b", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_010_cc773bb44b",
+    &ctx,
+    r#"null([core::time_4] minutes must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_011_ad5b3a26b5", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_011_ad5b3a26b5",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_012_3c2f416fc9", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_012_3c2f416fc9",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_013_7f22c0bda8", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_013_7f22c0bda8",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
 fn _0014() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_014_0dc13176e8", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_014_0dc13176e8",
+    &ctx,
+    r#"null([core::time_4] hour must be a number, current type is: Null)"#,
+  );
 }
 
 #[test]
@@ -496,25 +561,45 @@ fn _0075() {
 #[test]
 fn _0076() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_076_cb117ca612", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_076_cb117ca612",
+    &ctx,
+    r#"null([core::time_4] hour must be 0..23, current value is: 24)"#,
+  );
 }
 
 #[test]
 fn _0077() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_077_a4daad060c", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_077_a4daad060c",
+    &ctx,
+    r#"null([core::time_4] hour must be 0..23, current value is: -24)"#,
+  );
 }
 
 #[test]
 fn _0078() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_078_c2fe73418b", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_078_c2fe73418b",
+    &ctx,
+    r#"null([core::time_4] minute must be 0..59, current value is: 60)"#,
+  );
 }
 
 #[test]
 fn _0079() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-time-function_ErrorCase_079_d2d226c3cd", &ctx, r#"null(time_4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "feel-time-function_ErrorCase_079_d2d226c3cd",
+    &ctx,
+    r#"null([core::time_4] second must be 0..59, current value is: 60)"#,
+  );
 }
 
 #[test]

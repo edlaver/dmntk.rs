@@ -181,42 +181,82 @@ fn _0025() {
 
 #[test]
 fn _0026() {
-  te_null(false, &scope!(), r#"time(24,59,45,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(24,59,45,null)"#,
+    "[core::time_4] hour must be 0..23, current value is: 24",
+  );
 }
 
 #[test]
 fn _0027() {
-  te_null(false, &scope!(), r#"time(23,60,45,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(23,60,45,null)"#,
+    "[core::time_4] minute must be 0..59, current value is: 60",
+  );
 }
 
 #[test]
 fn _0028() {
-  te_null(false, &scope!(), r#"time(24,59,45,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(24,59,45,null)"#,
+    "[core::time_4] hour must be 0..23, current value is: 24",
+  );
 }
 
 #[test]
 fn _0029() {
-  te_null(false, &scope!(), r#"time(23,60,45,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(23,60,45,null)"#,
+    "[core::time_4] minute must be 0..59, current value is: 60",
+  );
 }
 
 #[test]
 fn _0030() {
-  te_null(false, &scope!(), r#"time(23,59,60,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(23,59,60,null)"#,
+    "[core::time_4] second must be 0..59, current value is: 60",
+  );
 }
 
 #[test]
 fn _0031() {
-  te_null(false, &scope!(), r#"time(-12,12,12,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(-12,12,12,null)"#,
+    "[core::time_4] hour must be 0..23, current value is: -12",
+  );
 }
 
 #[test]
 fn _0032() {
-  te_null(false, &scope!(), r#"time(12,-12,12,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(12,-12,12,null)"#,
+    "[core::time_4] minute must be 0..59, current value is: -12",
+  );
 }
 
 #[test]
 fn _0033() {
-  te_null(false, &scope!(), r#"time(12,12,-12,null)"#, "time_4");
+  te_null(
+    false,
+    &scope!(),
+    r#"time(12,12,-12,null)"#,
+    "[core::time_4] second must be 0..59, current value is: -12",
+  );
 }
 
 #[test]
@@ -281,5 +321,35 @@ fn _0041() {
     &scope!(),
     r#"time(hour: 11, minute: 59, s: 45, offset: null)"#,
     r#"invalid parameters in bif time"#,
+  );
+}
+
+#[test]
+fn _0042() {
+  te_null(
+    false,
+    &scope!(),
+    r#"time("11", 59, 45, null)"#,
+    r#"[core::time_4] hour must be a number, current type is: string"#,
+  );
+}
+
+#[test]
+fn _0043() {
+  te_null(
+    false,
+    &scope!(),
+    r#"time(11, "59", 45, null)"#,
+    r#"[core::time_4] minutes must be a number, current type is: string"#,
+  );
+}
+
+#[test]
+fn _0044() {
+  te_null(
+    false,
+    &scope!(),
+    r#"time(11, 59, "45", null)"#,
+    r#"[core::time_4] seconds must be a number, current type is: string"#,
   );
 }

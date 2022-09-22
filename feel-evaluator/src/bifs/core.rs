@@ -47,14 +47,14 @@ use std::str::FromStr;
 
 /// Builds null value with invalid argument type message.
 macro_rules! invalid_argument_type {
-  ($function:literal, $expected:literal, $actual:expr) => {{
+  ($function:literal, $expected:expr, $actual:expr) => {
     value_null!(
-      "[core::{}] invalid argument type, expected {}, actual type is {}",
+      "core",
       $function,
-      $expected,
-      $actual
+      "{}",
+      format!("invalid argument type, expected {}, actual type is {}", $expected, $actual)
     )
-  }};
+  };
 }
 
 /// Returns the absolute value of the argument.
@@ -1828,35 +1828,55 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
   if let Value::Number(hour) = hour_value {
     if let Value::Number(minute) = minute_value {
       if let Value::Number(second) = second_value {
-        if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
-          let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
-          if let Ok(h) = hour.try_into() {
-            if let Ok(m) = minute.try_into() {
-              if let Ok(s) = seconds.try_into() {
-                if let Ok(n) = nanoseconds.try_into() {
-                  match duration_value {
-                    Value::DaysAndTimeDuration(duration) => {
-                      if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
-                        return Value::Time(feel_time);
-                      }
+        if (0..24).contains(hour) {
+          if (0..60).contains(minute) {
+            if (0..60).contains(second) {
+              let seconds = second.trunc();
+              let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
+              let h = hour.try_into().unwrap(); // unwrap is safe, hour is a number in range <0..24)
+              let m = minute.try_into().unwrap(); // unwrap is safe, minute is a number in range <0..60)
+              let s = seconds.try_into().unwrap(); // unwrap is safe, seconds is a number in range <0..60)
+              if let Ok(n) = nanoseconds.try_into() {
+                match duration_value {
+                  Value::DaysAndTimeDuration(duration) => {
+                    if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
+                      Value::Time(feel_time)
+                    } else {
+                      value_null!("time_4 1")
                     }
-                    Value::Null(_) => {
-                      if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                        return Value::Time(feel_time);
-                      }
+                  }
+                  Value::Null(_) => {
+                    if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
+                      Value::Time(feel_time)
+                    } else {
+                      value_null!("time_4 2")
                     }
-                    _ => {}
+                  }
+                  _ => {
+                    value_null!("time_4 12")
                   }
                 }
+              } else {
+                value_null!("time_4 33489573457")
               }
+            } else {
+              value_null!("core", "time_4", "second must be 0..59, current value is: {}", second)
             }
+          } else {
+            value_null!("core", "time_4", "minute must be 0..59, current value is: {}", minute)
           }
+        } else {
+          value_null!("core", "time_4", "hour must be 0..23, current value is: {}", hour)
         }
+      } else {
+        value_null!("core", "time_4", "seconds must be a number, current type is: {}", second_value.type_of())
       }
+    } else {
+      value_null!("core", "time_4", "minutes must be a number, current type is: {}", minute_value.type_of())
     }
+  } else {
+    value_null!("core", "time_4", "hour must be a number, current type is: {}", hour_value.type_of())
   }
-  value_null!("time_4")
 }
 
 /// Returns new list containing concatenated list with duplicates removed.

@@ -68,11 +68,14 @@ use std::str::FromStr;
 /// ```
 #[macro_export]
 macro_rules! value_null {
-  ($f:expr, $($a:tt)*) => {
-    Value::Null(Some(format!($f, $($a)*)))
+  ($module:literal, $function:literal, $format:literal, $($arguments:tt)*) => {
+    Value::Null(Some(format!("[{}::{}] {}", $module, $function, format!($format, $($arguments)*))))
   };
-  ($l:expr) => {
-    Value::Null(Some(format!("{}", $l)))
+  ($format:literal, $($arguments:tt)*) => {
+    Value::Null(Some(format!($format, $($arguments)*)))
+  };
+  ($argument:expr) => {
+    Value::Null(Some(format!("{}", $argument)))
   };
   () => {
     Value::Null(None)
