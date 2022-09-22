@@ -422,7 +422,7 @@ impl Display for FeelNumber {
       before.push('.');
       before.push_str(&after);
     }
-    return f.pad_integral(!negative, "", &before);
+    f.pad_integral(!negative, "", &before)
   }
 }
 
