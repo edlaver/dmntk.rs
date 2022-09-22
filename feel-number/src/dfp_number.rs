@@ -360,50 +360,47 @@ impl Display for FeelNumber {
     let s = bid128_to_string(self.0, flags!());
     let negative = s.starts_with('-');
     let mut split = s[1..].split('E');
-    if let Some((sb, sa)) = split.next().zip(split.next()) {
-      if let Ok(exponent) = sa.parse::<isize>() {
-        let decimal_points = exponent.unsigned_abs();
-        let (mut before, mut after) = if exponent < 0 {
-          let digit_count = sb.len();
-          if digit_count <= decimal_points {
-            let before = "0".to_string();
-            let mut after = "0".repeat(decimal_points - digit_count);
-            if self.1 {
-              after.push_str(sb.trim_end_matches('0'));
-            } else {
-              after.push_str(sb);
-            }
-            (before, after)
-          } else {
-            let before = sb[..digit_count - decimal_points].to_string();
-            let after = if self.1 {
-              sb[digit_count - decimal_points..].trim_end_matches('0').to_string()
-            } else {
-              sb[digit_count - decimal_points..].to_string()
-            };
-            (before, after)
-          }
+    let (sb, sa) = split.next().zip(split.next()).unwrap(); // unwrap is ok, there is always E present
+    let exponent = sa.parse::<isize>().unwrap(); // unwrap is ok, there is always correct exponent present
+    let decimal_points = exponent.unsigned_abs();
+    let (mut before, mut after) = if exponent < 0 {
+      let digit_count = sb.len();
+      if digit_count <= decimal_points {
+        let before = "0".to_string();
+        let mut after = "0".repeat(decimal_points - digit_count);
+        if self.1 {
+          after.push_str(sb.trim_end_matches('0'));
         } else {
-          let mut before = sb.to_string();
-          before.push_str(&"0".repeat(decimal_points));
-          let after = "".to_string();
-          (before, after)
+          after.push_str(sb);
+        }
+        (before, after)
+      } else {
+        let before = sb[..digit_count - decimal_points].to_string();
+        let after = if self.1 {
+          sb[digit_count - decimal_points..].trim_end_matches('0').to_string()
+        } else {
+          sb[digit_count - decimal_points..].to_string()
         };
-        if let Some(precision) = f.precision() {
-          if after.len() < precision {
-            after.push_str(&"0".repeat(precision - after.len()));
-          } else {
-            after = after[0..precision].to_string();
-          }
-        }
-        if !after.is_empty() {
-          before.push('.');
-          before.push_str(&after);
-        }
-        return f.pad_integral(!negative, "", &before);
+        (before, after)
+      }
+    } else {
+      let mut before = sb.to_string();
+      before.push_str(&"0".repeat(decimal_points));
+      let after = "".to_string();
+      (before, after)
+    };
+    if let Some(precision) = f.precision() {
+      if after.len() < precision {
+        after.push_str(&"0".repeat(precision - after.len()));
+      } else {
+        after = after[0..precision].to_string();
       }
     }
-    f.pad(&s)
+    if !after.is_empty() {
+      before.push('.');
+      before.push_str(&after);
+    }
+    return f.pad_integral(!negative, "", &before);
   }
 }
 

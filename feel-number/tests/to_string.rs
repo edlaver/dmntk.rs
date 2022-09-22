@@ -50,3 +50,21 @@ fn test_to_string_007() {
 fn test_to_string_007() {
   eqs!("50.50", FeelNumber::new(5050, 2).to_string());
 }
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_to_string_008() {
+  assert_eq!("50.10", format!("{:.2}", num!(50.1)));
+}
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_to_string_009() {
+  assert_eq!("50.123456", format!("{:.6}", num!(50.123456789)));
+}
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_to_string_010() {
+  assert_eq!("  50.1", format!("{:>6}", num!(50.1)));
+}

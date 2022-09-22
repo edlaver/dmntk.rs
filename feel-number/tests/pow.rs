@@ -25,3 +25,9 @@ fn test_pow_001() {
 fn test_pow_002() {
   eqs!("41959.857373594361860953310707468", num!(12.2384283).pow(&num!(4.25)).unwrap());
 }
+
+#[cfg(feature = "dfp")]
+#[test]
+fn test_pow_003() {
+  assert!(num!(9999).pow(&num!(9999)).is_none());
+}
