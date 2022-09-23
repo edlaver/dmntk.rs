@@ -1261,8 +1261,8 @@ pub fn modulo(dividend_value: &Value, divisor_value: &Value) -> Value {
 }
 
 /// Returns the month of the year according to the Gregorian calendar enumeration:
-/// `January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`,
-/// `September`, `October`, `November`, `December`.
+/// `January`, `February`, `March`, `April`, `May`, `June`, `July`,
+/// `August`, `September`, `October`, `November`, `December`.
 pub fn month_of_year(value: &Value) -> Value {
   fn gregorian_month(opt_month_of_year: Option<MonthOfYear>) -> Value {
     if let Some(month_of_year) = opt_month_of_year {
