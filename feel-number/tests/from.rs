@@ -83,21 +83,55 @@ fn test_from_0013() {
 #[test]
 fn test_from_0014() {
   assert!(u8::try_from(num!(0)).is_ok());
+  assert!(u8::try_from(num!(0.999)).is_ok());
   assert!(u8::try_from(num!(255)).is_ok());
   assert!(u8::try_from(num!(256)).is_err());
   assert!(u8::try_from(num!(4294967296)).is_err());
 }
 
 #[test]
-fn test_from_0015() {
-  assert!(i32::try_from(FeelNumber::new(-2147483648, 0)).is_ok());
-  assert!(i32::try_from(FeelNumber::new(-2147483649, 0)).is_err());
+fn test_from_0014_1() {
+  assert!(i8::try_from(num!(0)).is_ok());
+  assert!(i8::try_from(num!(0.999)).is_ok());
+  assert!(i8::try_from(num!(-0.999)).is_ok());
+  assert!(i8::try_from(num!(-128)).is_ok());
+  assert!(i8::try_from(num!(127)).is_ok());
+  assert!(i8::try_from(num!(-129)).is_err());
+  assert!(i8::try_from(num!(128)).is_err());
+  assert!(i8::try_from(num!(4294967296)).is_err());
+  assert!(i8::try_from(num!(-4294967296)).is_err());
 }
 
 #[test]
 fn test_from_0016() {
-  assert!(u32::try_from(FeelNumber::new(4294967295, 0)).is_ok());
-  assert!(u32::try_from(FeelNumber::new(4294967296, 0)).is_err());
+  assert!(u32::try_from(num!(0)).is_ok());
+  assert!(u32::try_from(num!(0.999)).is_ok());
+  assert!(u32::try_from(num!(4294967295)).is_ok());
+  assert!(u32::try_from(num!(4294967296)).is_err());
+  assert!(u32::try_from(num!(-1)).is_err());
+}
+
+#[test]
+fn test_from_0015() {
+  assert!(i32::try_from(num!(0)).is_ok());
+  assert!(i32::try_from(num!(0.999)).is_ok());
+  assert!(i32::try_from(num!(-0.999)).is_ok());
+  assert!(i32::try_from(num!(-2147483648)).is_ok());
+  assert!(i32::try_from(num!(2147483647)).is_ok());
+  assert!(i32::try_from(num!(2147483648)).is_err());
+  assert!(i32::try_from(num!(-2147483649)).is_err());
+}
+
+#[test]
+fn test_from_0019() {
+  assert!(u64::try_from(num!(0)).is_ok());
+  assert!(u64::try_from(num!(2)).is_ok());
+  assert!(u64::try_from(<usize as Into<FeelNumber>>::into(usize::MAX)).is_ok());
+  assert!(u64::try_from(<usize as Into<FeelNumber>>::into(usize::MIN)).is_ok());
+  assert!(u64::try_from(<isize as Into<FeelNumber>>::into(isize::MAX)).is_ok());
+  assert!(u64::try_from(<isize as Into<FeelNumber>>::into(isize::MIN)).is_err());
+  assert!(u64::try_from(num!(-1)).is_err());
+  assert_eq!(300_000_000_u64, u64::try_from(num!(300000000)).unwrap());
 }
 
 #[test]
@@ -120,16 +154,4 @@ fn test_from_0018() {
   assert_eq!(usize::MAX, usize::try_from(<usize as Into<FeelNumber>>::into(usize::MAX)).unwrap());
   assert_eq!(usize::MIN, usize::try_from(<usize as Into<FeelNumber>>::into(usize::MIN)).unwrap());
   assert_eq!(usize::MAX / 2, usize::try_from(<isize as Into<FeelNumber>>::into(isize::MAX)).unwrap());
-}
-
-#[test]
-fn test_from_0019() {
-  assert!(u64::try_from(num!(0)).is_ok());
-  assert!(u64::try_from(num!(2)).is_ok());
-  assert!(u64::try_from(<usize as Into<FeelNumber>>::into(usize::MAX)).is_ok());
-  assert!(u64::try_from(<usize as Into<FeelNumber>>::into(usize::MIN)).is_ok());
-  assert!(u64::try_from(<isize as Into<FeelNumber>>::into(isize::MAX)).is_ok());
-  assert!(u64::try_from(<isize as Into<FeelNumber>>::into(isize::MIN)).is_err());
-  assert!(u64::try_from(num!(-1)).is_err());
-  assert_eq!(300_000_000_u64, u64::try_from(num!(300000000)).unwrap());
 }
