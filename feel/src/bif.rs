@@ -115,7 +115,7 @@ pub enum Bif {
 
 impl FromStr for Bif {
   type Err = DmntkError;
-
+  /// Converts a string into corresponding enumeration variant of [Bif].
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     match s {
       "abs" => Ok(Self::Abs),
@@ -198,12 +198,12 @@ impl FromStr for Bif {
 }
 
 /// Returns `true` when the specified name is a built-in function name.
-/// Built-in functions are described in details in specification: `10.3.4 Built-in functions`.
 pub fn is_built_in_function_name(name: &str) -> bool {
   Bif::from_str(name).is_ok()
 }
 
-/// Returns `true` when the specified name is a built-in function name for date and time literals:
+/// Returns `true` when the specified name is a one of the following
+/// built-in function name (date and time literals):
 /// - date
 /// - time
 /// - date and time
