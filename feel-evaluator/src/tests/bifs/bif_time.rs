@@ -65,6 +65,29 @@ fn _0004() {
 }
 
 #[test]
+fn _00041() {
+  let scope = &te_scope(r#"{Hours:12,Minutes:59,Seconds:1.9999999999999999999999999999999999999999999999999,Timezone:@"-PT1H"}"#);
+  te_time(
+    false,
+    scope,
+    r#"time(Hours,Minutes,Seconds,Timezone)"#,
+    FeelTime::new_hmso_opt(12, 59, 2, 0, -3600).unwrap(),
+  );
+}
+
+#[test]
+#[ignore]
+fn _00042() {
+  let scope = &te_scope(r#"{Hours:12.999,Minutes:59.999,Seconds:1.0003,Timezone:@"-PT1H3S"}"#);
+  te_time(
+    false,
+    scope,
+    r#"time(Hours,Minutes,Seconds,Timezone)"#,
+    FeelTime::new_hmso_opt(12, 59, 1, 300_000, -3603).unwrap(),
+  );
+}
+
+#[test]
 fn _0005() {
   te_time(false, &scope!(), r#"time("23:59:00")"#, FeelTime::local(23, 59, 0, 0));
 }

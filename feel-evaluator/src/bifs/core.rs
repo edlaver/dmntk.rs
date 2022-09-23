@@ -1832,32 +1832,29 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
           if (0..60).contains(minute) {
             if (0..60).contains(second) {
               let seconds = second.trunc();
-              let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
-              let h = hour.try_into().unwrap(); // unwrap is safe, hour is a number in range <0..24)
-              let m = minute.try_into().unwrap(); // unwrap is safe, minute is a number in range <0..60)
-              let s = seconds.try_into().unwrap(); // unwrap is safe, seconds is a number in range <0..60)
-              if let Ok(n) = nanoseconds.try_into() {
-                match duration_value {
-                  Value::DaysAndTimeDuration(duration) => {
-                    if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
-                      Value::Time(feel_time)
-                    } else {
-                      value_null!("time_4 1")
-                    }
-                  }
-                  Value::Null(_) => {
-                    if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                      Value::Time(feel_time)
-                    } else {
-                      value_null!("time_4 2")
-                    }
-                  }
-                  _ => {
-                    value_null!("time_4 12")
+              // unwraps below are safe, value ranges are checked
+              let h = hour.try_into().unwrap();
+              let m = minute.try_into().unwrap();
+              let s = seconds.try_into().unwrap();
+              let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
+              match duration_value {
+                Value::DaysAndTimeDuration(duration) => {
+                  if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
+                    Value::Time(feel_time)
+                  } else {
+                    value_null!("time_4 1")
                   }
                 }
-              } else {
-                value_null!("time_4 33489573457")
+                Value::Null(_) => {
+                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
+                    Value::Time(feel_time)
+                  } else {
+                    value_null!("time_4 2")
+                  }
+                }
+                _ => {
+                  value_null!("time_4 12")
+                }
               }
             } else {
               value_null!("core", "time_4", "second must be 0..59, current value is: {}", second)
