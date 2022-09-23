@@ -1824,7 +1824,7 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
 }
 
 ///
-pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, duration_value: &Value) -> Value {
+pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, offset_value: &Value) -> Value {
   if let Value::Number(hour) = hour_value {
     if let Value::Number(minute) = minute_value {
       if let Value::Number(second) = second_value {
@@ -1837,9 +1837,9 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
               let m = minute.try_into().unwrap();
               let s = seconds.try_into().unwrap();
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
-              match duration_value {
-                Value::DaysAndTimeDuration(duration) => {
-                  if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, duration.as_seconds() as i32) {
+              match offset_value {
+                Value::DaysAndTimeDuration(offset) => {
+                  if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, offset.as_seconds() as i32) {
                     Value::Time(feel_time)
                   } else {
                     value_null!("time_4 1")
@@ -1853,7 +1853,12 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, du
                   }
                 }
                 _ => {
-                  value_null!("time_4 12")
+                  value_null!(
+                    "core",
+                    "time_4",
+                    "offset must be a days and time duration or null, current type is: {}",
+                    offset_value.type_of()
+                  )
                 }
               }
             } else {

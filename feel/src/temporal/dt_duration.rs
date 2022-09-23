@@ -191,9 +191,13 @@ impl TryFrom<&str> for FeelDaysAndTimeDuration {
       let mut is_valid = false;
       let mut nanoseconds = 0_i64;
       if let Some(days_match) = captures.name("days") {
-        if let Ok(days) = days_match.as_str().parse::<u64>() {
-          nanoseconds += (days as i64) * NANOSECONDS_IN_DAY;
-          is_valid = true;
+        if let Ok(days_u64) = days_match.as_str().parse::<u64>() {
+          if let Ok(days) = <u64 as TryInto<i64>>::try_into(days_u64) {
+            if let Some(a) = days.checked_mul(NANOSECONDS_IN_DAY) {
+              nanoseconds += a;
+              is_valid = true;
+            }
+          }
         }
       }
       if let Some(hours_match) = captures.name("hours") {
