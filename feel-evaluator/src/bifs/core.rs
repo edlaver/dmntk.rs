@@ -1832,7 +1832,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
           if (0..60).contains(minute) {
             if (0..60).contains(second) {
               let seconds = second.trunc();
-              // unwraps below are safe, value ranges are checked
+              // unwraps below are safe, value ranges are checked above
               let h = hour.try_into().unwrap();
               let m = minute.try_into().unwrap();
               let s = seconds.try_into().unwrap();

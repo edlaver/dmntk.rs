@@ -289,7 +289,7 @@ mod tests {
   use dmntk_feel::{value_number, FeelNumber};
 
   #[test]
-  fn test_range_iterator_1() {
+  fn test_range_iterator_0001() {
     let mut iterator = FeelIterator::default();
     iterator.add_range("x".into(), 1, 3);
     let mut actual = vec![];
@@ -299,7 +299,7 @@ mod tests {
   }
 
   #[test]
-  fn test_range_iterator_2() {
+  fn test_range_iterator_0002() {
     let mut iterator = FeelIterator::default();
     iterator.add_range("x".into(), 1, 3);
     iterator.add_range("y".into(), 1, 5);
@@ -313,7 +313,7 @@ mod tests {
   }
 
   #[test]
-  fn test_range_iterator_3() {
+  fn test_range_iterator_0003() {
     let mut iterator = FeelIterator::default();
     iterator.add_range("x".into(), 1, 2);
     iterator.add_range("y".into(), 1, 3);
@@ -328,7 +328,7 @@ mod tests {
   }
 
   #[test]
-  fn test_list_iterator_1() {
+  fn test_list_iterator_0001() {
     let mut iterator = FeelIterator::default();
     let list = Values::new(vec![
       Value::String("a".to_string()),
@@ -343,7 +343,7 @@ mod tests {
   }
 
   #[test]
-  fn test_list_iterator_2() {
+  fn test_list_iterator_0002() {
     let mut iterator = FeelIterator::default();
     let list1 = Values::new(vec![
       Value::String("a".to_string()),
@@ -363,7 +363,7 @@ mod tests {
   }
 
   #[test]
-  fn test_list_iterator_3() {
+  fn test_list_iterator_0003() {
     let mut iterator = FeelIterator::default();
     let list_x = Values::new(vec![Value::String("a".to_string()), Value::String("b".to_string())]);
     let list_y = Values::new(vec![value_number!(1, 0), value_number!(2, 0), value_number!(3, 0)]);
@@ -395,7 +395,7 @@ mod tests {
   }
 
   #[test]
-  fn test_for_expression_evaluator_1() {
+  fn test_for_expression_evaluator_0001() {
     let mut iterator = ForExpressionEvaluator::new();
     iterator.add_range("x".into(), value_number!(1, 0), value_number!(3, 0));
     let scope = &te_scope(r#"{x:null}"#);
@@ -407,7 +407,7 @@ mod tests {
   }
 
   #[test]
-  fn test_for_expression_evaluator_2() {
+  fn test_for_expression_evaluator_0002() {
     let mut iterator = ForExpressionEvaluator::new();
     iterator.add_range("x".into(), value_number!(1, 0), value_number!(2, 0));
     iterator.add_single(
@@ -423,7 +423,7 @@ mod tests {
   }
 
   #[test]
-  fn test_for_expression_evaluator_empty_list_1() {
+  fn test_for_expression_evaluator_empty_list_0001() {
     let mut iterator = ForExpressionEvaluator::new();
     iterator.add_single("x".into(), Value::List(Values::default()));
     let scope = &te_scope(r#"{x:null}"#);
@@ -435,7 +435,7 @@ mod tests {
   }
 
   #[test]
-  fn test_for_expression_evaluator_empty_list_2() {
+  fn test_for_expression_evaluator_empty_list_0002() {
     let mut iterator = ForExpressionEvaluator::new();
     iterator.add_range("x".into(), value_number!(1, 0), value_number!(2, 0));
     iterator.add_single("y".into(), Value::List(Values::default()));
