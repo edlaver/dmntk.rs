@@ -87,14 +87,6 @@ impl FeelNumber {
   fn from_isize(n: isize) -> Self {
     Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
   }
-  /// Creates a new [FeelNumber] from [i128].
-  fn from_i128(n: i128) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
-  }
-  /// Creates a new [FeelNumber] from [u128].
-  fn from_u128(n: u128) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
-  }
   /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
     Self(bid128_abs(self.0), false)
@@ -491,30 +483,54 @@ impl From<i32> for FeelNumber {
 impl From<u64> for FeelNumber {
   ///
   fn from(value: u64) -> Self {
-    Self::from_u128(value as u128)
+    Self(bid128_from_uint64(value), false)
   }
 }
 
 impl From<i64> for FeelNumber {
   ///
   fn from(value: i64) -> Self {
-    Self::from_i128(value as i128)
+    Self(bid128_from_int64(value), false)
   }
 }
 
 impl From<isize> for FeelNumber {
   ///
+  #[cfg(target_pointer_width = "64")]
   fn from(value: isize) -> Self {
-    Self::from_i128(value as i128)
+    Self(bid128_from_int64(value.try_into().unwrap()), false)
+  }
+  ///
+  #[cfg(not(target_pointer_width = "64"))]
+  fn from(value: isize) -> Self {
+    todo!(Implement conversion from isize for other architecutes as 64-bit)
   }
 }
 
 impl From<usize> for FeelNumber {
   ///
+  #[cfg(target_pointer_width = "64")]
   fn from(value: usize) -> Self {
-    Self::from_u128(value as u128)
+    Self(bid128_from_uint64(value.try_into().unwrap()), false)
+  }
+  ///
+  #[cfg(not(target_pointer_width = "64"))]
+  fn from(value: usize) -> Self {
+    todo!(Implement conversion from usize for other architecutes as 64-bit)
   }
 }
+
+// impl From<FeelNumber> for u8 {
+//   fn from(value: FeelNumber) -> Self {
+//     0
+//   }
+// }
+//
+// impl From<FeelNumber> for u8 {
+//   fn from(value: &FeelNumber) -> Self {
+//     0
+//   }
+// }
 
 macro_rules! try_from_feel_number {
   ($l:tt) => {
