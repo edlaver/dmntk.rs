@@ -64,3 +64,7 @@ pub fn err_invalid_date_time_literal(s: &str) -> DmntkError {
 pub fn err_invalid_years_and_months_duration_literal(s: &str) -> DmntkError {
   TemporalError(format!("invalid years and months literal '{}'", s)).into()
 }
+
+pub fn err_invalid_time_zone_offset(offset: i32) -> DmntkError {
+  TemporalError(format!("invalid time-zone offset '{}'", offset)).into()
+}
