@@ -520,17 +520,24 @@ impl From<usize> for FeelNumber {
   }
 }
 
-// impl From<FeelNumber> for u8 {
-//   fn from(value: FeelNumber) -> Self {
-//     0
-//   }
-// }
-//
-// impl From<FeelNumber> for u8 {
-//   fn from(value: &FeelNumber) -> Self {
-//     0
-//   }
-// }
+impl TryFrom<FeelNumber> for u8 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    u8::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for u8 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_uint32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
 
 macro_rules! try_from_feel_number {
   ($l:tt) => {
@@ -555,4 +562,4 @@ try_from_feel_number!(usize);
 try_from_feel_number!(u64);
 try_from_feel_number!(u32);
 try_from_feel_number!(i32);
-try_from_feel_number!(u8);
+//try_from_feel_number!(u8);

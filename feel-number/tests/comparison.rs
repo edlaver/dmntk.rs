@@ -1,6 +1,7 @@
 mod common;
 
 use dmntk_feel_number::FeelNumber;
+use std::cmp::Ordering;
 
 #[test]
 fn test_comparison_001() {
@@ -38,4 +39,11 @@ fn test_comparison_003() {
   assert!((0_isize == num!(0)));
   assert!((1_isize == num!(1)));
   assert!((-1_isize == num!(-1)));
+}
+
+#[test]
+fn test_comparison_004() {
+  assert!((num!(0).partial_cmp(&num!(0)).unwrap() == Ordering::Equal));
+  assert!((num!(1).partial_cmp(&num!(0)).unwrap() == Ordering::Greater));
+  assert!((num!(0).partial_cmp(&num!(1)).unwrap() == Ordering::Less));
 }
