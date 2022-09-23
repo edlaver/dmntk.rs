@@ -278,7 +278,7 @@ impl Add<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn add(self, rhs: Self) -> Self::Output {
-    Self(bid128_add(self.0, rhs.0, round!(), flags!()), self.1 | rhs.1)
+    Self(bid128_add(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
@@ -286,7 +286,7 @@ impl AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
     self.0 = bid128_add(self.0, rhs.0, round!(), flags!());
-    self.1 |= rhs.1;
+    self.1 = true;
   }
 }
 
@@ -294,7 +294,7 @@ impl Sub<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn sub(self, rhs: Self) -> Self::Output {
-    Self(bid128_sub(self.0, rhs.0, round!(), flags!()), self.1 | rhs.1)
+    Self(bid128_sub(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
@@ -302,7 +302,7 @@ impl SubAssign<FeelNumber> for FeelNumber {
   ///
   fn sub_assign(&mut self, rhs: Self) {
     self.0 = bid128_sub(self.0, rhs.0, round!(), flags!());
-    self.1 |= rhs.1;
+    self.1 = true;
   }
 }
 
@@ -342,14 +342,15 @@ impl Rem<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn rem(self, rhs: Self) -> Self::Output {
-    Self(self.remainder(rhs.0), false)
+    Self(self.remainder(rhs.0), true)
   }
 }
 
 impl RemAssign<FeelNumber> for FeelNumber {
   ///
   fn rem_assign(&mut self, rhs: Self) {
-    self.0 = self.remainder(rhs.0)
+    self.0 = self.remainder(rhs.0);
+    self.1 = true;
   }
 }
 
@@ -357,7 +358,7 @@ impl Neg for FeelNumber {
   type Output = Self;
   ///
   fn neg(self) -> Self::Output {
-    Self(bid128_negate(self.0), false)
+    Self(bid128_negate(self.0), true)
   }
 }
 
