@@ -611,7 +611,7 @@ impl TryFrom<&FeelNumber> for u32 {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n)
   }
 }
 
@@ -630,7 +630,7 @@ impl TryFrom<&FeelNumber> for i32 {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n)
   }
 }
 
@@ -649,7 +649,7 @@ impl TryFrom<&FeelNumber> for u64 {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n)
   }
 }
 
@@ -668,7 +668,7 @@ impl TryFrom<&FeelNumber> for i64 {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n)
   }
 }
 
@@ -690,7 +690,7 @@ impl TryFrom<&FeelNumber> for usize {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n.try_into().unwrap())
   }
   ///
   #[cfg(not(target_pointer_width = "64"))]
@@ -717,7 +717,7 @@ impl TryFrom<&FeelNumber> for isize {
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
-    n.try_into().map_err(|_| err_number_conversion_failed())
+    Ok(n.try_into().unwrap())
   }
   ///
   #[cfg(not(target_pointer_width = "64"))]
