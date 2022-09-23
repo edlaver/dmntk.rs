@@ -695,7 +695,7 @@ impl TryFrom<&FeelNumber> for usize {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+    compile_error!(Implement conversion from usize for other architecutes as 64-bit)
   }
 }
 
