@@ -82,6 +82,7 @@ fn test_from_0013() {
 
 #[test]
 fn test_from_0014() {
+  assert!(u8::try_from(num!(0)).is_ok());
   assert!(u8::try_from(num!(255)).is_ok());
   assert!(u8::try_from(num!(256)).is_err());
   assert!(u8::try_from(num!(4294967296)).is_err());

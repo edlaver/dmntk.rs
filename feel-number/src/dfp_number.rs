@@ -503,7 +503,7 @@ impl From<isize> for FeelNumber {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: isize) -> Self {
-    todo!(Implement conversion from isize for other architecutes as 64-bit)
+    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
   }
 }
 
@@ -516,7 +516,7 @@ impl From<usize> for FeelNumber {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: usize) -> Self {
-    todo!(Implement conversion from usize for other architecutes as 64-bit)
+    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
   }
 }
 
@@ -539,27 +539,189 @@ impl TryFrom<&FeelNumber> for u8 {
   }
 }
 
-macro_rules! try_from_feel_number {
-  ($l:tt) => {
-    impl TryFrom<FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-        $l::try_from(&value)
-      }
-    }
-
-    impl TryFrom<&FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-        return value.to_string().parse::<$l>().map_err(|_| err_number_conversion_failed());
-      }
-    }
-  };
+impl TryFrom<FeelNumber> for i8 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    i8::try_from(&value)
+  }
 }
 
-try_from_feel_number!(isize);
-try_from_feel_number!(usize);
-try_from_feel_number!(u64);
-try_from_feel_number!(u32);
-try_from_feel_number!(i32);
-//try_from_feel_number!(u8);
+impl TryFrom<&FeelNumber> for i8 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_int32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for u16 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    u16::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for u16 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_uint32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for i16 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    i16::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for i16 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_int32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for u32 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    u32::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for u32 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_uint32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for i32 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    i32::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for i32 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_int32_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for u64 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    u64::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for u64 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_uint64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for i64 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    i64::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for i64 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_int64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for usize {
+  type Error = DmntkError;
+  ///
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    usize::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for usize {
+  type Error = DmntkError;
+  ///
+  #[cfg(target_pointer_width = "64")]
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_uint64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+  ///
+  #[cfg(not(target_pointer_width = "64"))]
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+  }
+}
+
+impl TryFrom<FeelNumber> for isize {
+  type Error = DmntkError;
+  ///
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    isize::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for isize {
+  type Error = DmntkError;
+  ///
+  #[cfg(target_pointer_width = "64")]
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let mut flags = FB_CLEAR;
+    let n = bid128_to_int64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    n.try_into().map_err(|_| err_number_conversion_failed())
+  }
+  ///
+  #[cfg(not(target_pointer_width = "64"))]
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+  }
+}
