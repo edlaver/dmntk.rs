@@ -7,14 +7,6 @@ MANUAL_TESTS_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.manual.tests
 # clean before proceeding
 cargo clean
 
-# run building feel-parser, generate parsing tables
-cargo build -p dmntk-feel-parser --features=parsing-tables
-# after reformatting no changes in source code are expected
-cargo fmt -p dmntk-feel-parser
-
-# clean before proceeding
-cargo clean
-
 # set instrumenting variables
 export CARGO_INCREMENTAL=0
 export RUSTDOCFLAGS="-Cpanic=abort"
