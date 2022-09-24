@@ -58,6 +58,7 @@ mod function_invocation;
 mod if_expression;
 mod instance_of;
 mod interval;
+mod invalid;
 mod list;
 mod literal;
 mod miscellaneous;
