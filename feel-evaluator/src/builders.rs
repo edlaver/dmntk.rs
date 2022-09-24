@@ -42,7 +42,6 @@ use dmntk_feel::{
   FunctionBody, Name, Scope,
 };
 use std::borrow::Borrow;
-use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
 use std::ops::Deref;
@@ -849,7 +848,7 @@ fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) != Ordering::Less),
+        Value::String(rh) => Value::Boolean(lh >= rh),
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::Date(lh) => match rhv {
@@ -874,7 +873,7 @@ fn build_gt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_greater_then_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) == Ordering::Greater),
+        Value::String(rh) => Value::Boolean(lh > rh),
         _ => value_null!("eval_greater_then_string"),
       },
       Value::Date(lh) => match rhv {
@@ -1055,7 +1054,7 @@ fn build_le(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_or_equal_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) != Ordering::Greater),
+        Value::String(rh) => Value::Boolean(lh <= rh),
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::Date(lh) => match rhv {
@@ -1080,7 +1079,7 @@ fn build_lt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_then_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) == Ordering::Less),
+        Value::String(rh) => Value::Boolean(lh < rh),
         _ => value_null!("eval_less_then_string"),
       },
       Value::Date(lh) => match rhv {
