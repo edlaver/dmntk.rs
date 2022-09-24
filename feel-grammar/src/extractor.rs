@@ -110,7 +110,7 @@ pub fn extract(input: &str) -> String {
   // generate token types
   {
     output.push_str("\n/// Types of tokens returned by lexer.\n");
-    output.push_str("#[derive(Debug, Clone)]\n");
+    output.push_str("#[derive(Clone)]\n");
     output.push_str("pub enum TokenType {\n");
     for (name, value) in &token_types {
       if !name.starts_with("Prec") {
