@@ -1292,8 +1292,8 @@ fn build_out(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let ine = build_in(lhs, rhs)?;
   let lhe = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let inv = ine(scope);
-    let lhv = lhe(scope);
+    let inv = ine(scope) as Value;
+    let lhv = lhe(scope) as Value;
     match inv {
       Value::Boolean(true) => lhv,
       _ => value_null!(),

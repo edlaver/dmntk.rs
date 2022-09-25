@@ -158,15 +158,60 @@ fn leaf(leaf: &str) -> Tree {
 
 #[cfg(test)]
 mod tests {
-  use crate::ast_tree::ast_tree;
+  use super::*;
   use crate::AstNode;
 
   #[test]
-  fn test_add() {
+  fn test_0001() {
     let node = AstNode::Add(
       Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
       Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
     );
-    println!("{}", ast_tree(&node));
+    assert_eq!(
+      ast_tree(&node),
+      r#"
+       Add
+       ├─ Numeric
+       │  └─ `1.`
+       └─ Numeric
+          └─ `2.`"#
+    );
+  }
+
+  #[test]
+  fn test_0002() {
+    let node = AstNode::CommaList(vec![
+      AstNode::Numeric("1".to_string(), "".to_string()),
+      AstNode::Numeric("2".to_string(), "".to_string()),
+      AstNode::Numeric("3".to_string(), "".to_string()),
+    ]);
+    assert_eq!(
+      ast_tree(&node),
+      r#"
+       CommaList
+       ├─ Numeric
+       │  └─ `1.`
+       ├─ Numeric
+       │  └─ `2.`
+       └─ Numeric
+          └─ `3.`"#
+    );
+  }
+
+  #[test]
+  fn test_0003() {
+    let node = AstNode::Out(
+      Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
+      Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
+    );
+    assert_eq!(
+      ast_tree(&node),
+      r#"
+       Out
+       ├─ Numeric
+       │  └─ `1.`
+       └─ Numeric
+          └─ `2.`"#
+    );
   }
 }
