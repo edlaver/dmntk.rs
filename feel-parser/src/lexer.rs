@@ -331,7 +331,7 @@ impl<'lexer> Lexer<'lexer> {
         Ok((TokenType::RightArrow, TokenValue::RightArrow))
       }
       ['.', ch, _, _, _, _, _, _, _, _, _, _] if is_digit(ch) => {
-        self.consume_character(DECIMAL_SEPARATOR)?;
+        self.position += 1;
         Ok((TokenType::Numeric, TokenValue::Numeric("0".to_string(), self.consume_digits())))
       }
       ['.', _, _, _, _, _, _, _, _, _, _, _] => {
@@ -408,7 +408,7 @@ impl<'lexer> Lexer<'lexer> {
         let mut digits_after = String::new();
         digits_before.push_str(&self.consume_digits());
         if self.is_char_at(0, DECIMAL_SEPARATOR) && self.is_digit_at(1) {
-          self.consume_character(DECIMAL_SEPARATOR)?;
+          self.position += 1;
           digits_after.push_str(&self.consume_digits());
         }
         Ok((TokenType::Numeric, TokenValue::Numeric(digits_before, digits_after)))
@@ -480,34 +480,34 @@ impl<'lexer> Lexer<'lexer> {
   /// Consumes the string literal.
   fn consume_string(&mut self) -> Result<(TokenType, TokenValue)> {
     let mut string = "".to_string();
-    self.consume_character('"')?;
+    self.position += 1;
     loop {
       let first = self.char_at(0);
       let second = self.char_at(1);
       match (first, second) {
         (Some('\\'), Some('\'')) => {
-          self.consume_chars(&['\\', '\''])?;
           string.push('\'');
+          self.position += 2;
         }
         (Some('\\'), Some('"')) => {
-          self.consume_chars(&['\\', '"'])?;
           string.push('"');
+          self.position += 2;
         }
         (Some('\\'), Some('\\')) => {
-          self.consume_chars(&['\\', '\\'])?;
           string.push('\\');
+          self.position += 2;
         }
         (Some('\\'), Some('n')) => {
-          self.consume_chars(&['\\', 'n'])?;
           string.push('\n');
+          self.position += 2;
         }
         (Some('\\'), Some('r')) => {
-          self.consume_chars(&['\\', 'r'])?;
           string.push('\r');
+          self.position += 2;
         }
         (Some('\\'), Some('t')) => {
-          self.consume_chars(&['\\', 't'])?;
           string.push('\t');
+          self.position += 2;
         }
         (Some('\\'), Some('u')) => {
           string.push(self.consume_unicode()?);
@@ -516,13 +516,16 @@ impl<'lexer> Lexer<'lexer> {
           string.push(self.consume_unicode()?);
         }
         (Some('"'), _) => {
-          self.consume_character('"')?;
+          self.position += 1;
           break;
         }
-        (Some(ch1), _) if is_vertical_space(ch1) => {
+        (Some(ch), _) if is_vertical_space(ch) => {
           return Ok((TokenType::YyUndef, TokenValue::YyUndef));
         }
-        (Some(ch1), _) => string.push(self.consume_character(ch1)?),
+        (Some(ch), _) => {
+          string.push(ch);
+          self.position += 1;
+        }
         _ => return Ok((TokenType::YyEof, TokenValue::YyEof)),
       }
     }
@@ -723,43 +726,12 @@ impl<'lexer> Lexer<'lexer> {
     self.char_at(0).unwrap()
   }
 
-  /// Consumes expected character from input or reports an error.
-  fn consume_character(&mut self, expected: char) -> Result<char> {
-    match self.char_at(0) {
-      Some(actual) => {
-        if actual == expected {
-          self.position += 1;
-          Ok(actual)
-        } else {
-          Err(err_expected_character(expected, actual))
-        }
-      }
-      None => Err(err_unexpected_eof()),
-    }
-  }
-
-  /// Consumes a single character from input when is one from expected
-  /// characters. Reports an error when the current character is not on the list.
-  fn consume_characters(&mut self, expected: &[char]) -> Result<char> {
-    match self.char_at(0) {
-      Some(actual) => {
-        if expected.contains(&actual) {
-          self.position += 1;
-          Ok(actual)
-        } else {
-          Err(err_expected_characters(expected, actual))
-        }
-      }
-      None => Err(err_unexpected_eof()),
-    }
-  }
-
   /// Consumes Unicode literal in one of the following forms:
   /// - \u0000 ('\' + 'u' + four hexadecimal characters), or
   /// - \U000000 ('\' + 'U' + six hexadecimal characters).
   fn consume_unicode_literal(&mut self) -> Result<u64> {
-    self.consume_character('\\')?;
-    let u = self.consume_characters(&['u', 'U'])?;
+    let u = self.char_at(1).unwrap();
+    self.position += 2;
     let mut value = 0_u64;
     if u == 'U' {
       value = 1048576 * self.consume_hex_digit()?;
@@ -835,15 +807,6 @@ impl<'lexer> Lexer<'lexer> {
       }
       other => Err(err_unicode_value_out_of_range(other)),
     }
-  }
-
-  /// Consumes expected characters from input or reports an error.
-  fn consume_chars(&mut self, expected: &[char]) -> Result<String> {
-    let mut consumed_string = String::new();
-    for ch in expected {
-      consumed_string.push(self.consume_character(*ch)?);
-    }
-    Ok(consumed_string)
   }
 
   /// Checks if the next value on input is whitespace character.
@@ -1043,69 +1006,28 @@ pub mod errors {
   use dmntk_common::DmntkError;
 
   /// Lexer errors.
-  #[derive(Debug, PartialEq)]
-  enum LexerError {
-    UnexpectedEof,
-    ExpectedCharacter(char, char),
-    ExpectedCharacters(Vec<char>, char),
-    ExpectedHexDigit(char),
-    UnicodeValueOutOfRange(u64),
-    UnicodeSurrogateOutOfRange(u64),
-  }
+  struct LexerError(String);
 
   impl From<LexerError> for DmntkError {
     fn from(e: LexerError) -> Self {
-      DmntkError::new("LexerError", &format!("{}", e))
-    }
-  }
-
-  impl std::fmt::Display for LexerError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        LexerError::UnexpectedEof => {
-          write!(f, "unexpected end of file")
-        }
-        LexerError::ExpectedCharacter(expected, actual) => {
-          write!(f, "expected '{}' character but encountered '{}'", expected, actual)
-        }
-        LexerError::ExpectedCharacters(expected, actual) => {
-          write!(f, "expected '{:?}' characters but encountered '{}'", expected, actual)
-        }
-        LexerError::ExpectedHexDigit(actual) => {
-          write!(f, "expected hex digit but encountered '{}'", actual)
-        }
-        LexerError::UnicodeValueOutOfRange(value) => {
-          write!(f, "Unicode value is out of allowed range 0x0000..0x10FFFF : {:X}", value)
-        }
-        LexerError::UnicodeSurrogateOutOfRange(value) => {
-          write!(f, "UTF-16 surrogate value is out of allowed range 0xD800..0xDFFF : {:X}", value)
-        }
-      }
+      DmntkError::new("LexerError", &format!("{}", e.0))
     }
   }
 
   pub fn err_unexpected_eof() -> DmntkError {
-    LexerError::UnexpectedEof.into()
-  }
-
-  pub fn err_expected_character(expected: char, actual: char) -> DmntkError {
-    LexerError::ExpectedCharacter(expected, actual).into()
-  }
-
-  pub fn err_expected_characters(expected: &[char], actual: char) -> DmntkError {
-    LexerError::ExpectedCharacters(expected.to_vec(), actual).into()
+    LexerError("unexpected end of file".to_string()).into()
   }
 
   pub fn err_expected_hex_digit(ch: char) -> DmntkError {
-    LexerError::ExpectedHexDigit(ch).into()
+    LexerError(format!("expected hex digit but encountered '{}'", ch)).into()
   }
 
   pub fn err_unicode_value_out_of_range(value: u64) -> DmntkError {
-    LexerError::UnicodeValueOutOfRange(value).into()
+    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {:X}", value)).into()
   }
 
   pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
-    LexerError::UnicodeSurrogateOutOfRange(value).into()
+    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {:X}", value)).into()
   }
 }
 

@@ -112,12 +112,12 @@ fn _0009() {
   te(
     r#""\uD800\uE000""#,
     "LexerError",
-    "UTF-16 surrogate value is out of allowed range 0xD800..0xDFFF : E000",
+    "surrogate value is out of allowed range 0xD800..0xDFFF : E000",
   );
 }
 
 #[test]
 fn _0010() {
   // Invalid UTF value.
-  te(r#""\U110000""#, "LexerError", "Unicode value is out of allowed range 0x0000..0x10FFFF : 110000");
+  te(r#""\U110000""#, "LexerError", "value is out of allowed Unicode range 0x0000..0x10FFFF : 110000");
 }
