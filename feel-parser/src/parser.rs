@@ -65,7 +65,7 @@ pub fn parse_name(scope: &Scope, input: &str, trace: bool) -> Result<Name> {
   if let AstNode::Name(name) = Parser::new(scope, TokenType::StartTextualExpression, input, trace).parse()? {
     Ok(name)
   } else {
-    Err(not_a_name(input))
+    Err(err_not_a_feel_name(input))
   }
 }
 
@@ -289,11 +289,11 @@ impl<'parser> Parser<'parser> {
         Action::Error => {
           trace!(self, "\nERROR");
           self.yy_token = SymbolKind::YyError as i16;
-          return Err(syntax_error(self.input));
+          return Err(err_syntax_error(self.input));
         }
         Action::Error1 => {
           trace!(self, "\nERROR 1");
-          return Err(syntax_error(self.input));
+          return Err(err_syntax_error(self.input));
         }
         Action::Accept => {
           trace!(self, "\n**********");
@@ -1235,43 +1235,26 @@ impl<'parser> ReduceActions for Parser<'parser> {
   }
 }
 
-/// Definitions of errors raised by [parser](crate::parser) module.
 mod errors {
   use dmntk_common::DmntkError;
 
-  /// Definition of errors raised by [Parser](super::Parser).
-  enum ParserError {
-    NotAName(String),
-    SyntaxError(String),
-  }
+  /// Parser error.
+  struct ParserError(String);
 
   impl From<ParserError> for DmntkError {
+    /// Creates [DmntkError] from [ParserError].
     fn from(e: ParserError) -> Self {
-      DmntkError::new("ParserError", &format!("{}", e))
+      DmntkError::new("ParserError", &format!("{}", e.0))
     }
   }
 
-  impl std::fmt::Display for ParserError {
-    ///
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        ParserError::NotAName(s) => {
-          write!(f, "expected `FEEL` name on input but found `{}`", s)
-        }
-        ParserError::SyntaxError(input) => {
-          write!(f, "syntax error: {}", input)
-        }
-      }
-    }
+  /// Creates an error when `FEEL` name was expected on input, but something else encountered.
+  pub fn err_not_a_feel_name(s: &str) -> DmntkError {
+    ParserError(format!("expected `FEEL` name on input but found `{}`", s)).into()
   }
 
-  ///
-  pub fn not_a_name(s: &str) -> DmntkError {
-    ParserError::NotAName(s.to_string()).into()
-  }
-
-  ///
-  pub fn syntax_error(input: &str) -> DmntkError {
-    ParserError::SyntaxError(input.to_string()).into()
+  /// Creates syntax error on specified input.
+  pub fn err_syntax_error(input: &str) -> DmntkError {
+    ParserError(format!("syntax error: {}", input)).into()
   }
 }
