@@ -121,3 +121,17 @@ fn _0010() {
   // Invalid UTF value.
   te(r#""\U110000""#, "LexerError", "value is out of allowed Unicode range 0x0000..0x10FFFF : 110000");
 }
+
+#[test]
+fn _0011() {
+  let scope = scope!();
+  assert_eq!(
+    "ParserError: syntax error: 1 += 2",
+    Parser::new(&scope, StartExpression, "1 += 2", false)
+      .parse()
+      .err()
+      .unwrap()
+      .to_string()
+      .as_str()
+  );
+}

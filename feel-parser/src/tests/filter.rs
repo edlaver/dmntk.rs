@@ -64,6 +64,32 @@ fn _0002() {
   accept(
     &scope,
     StartTextualExpression,
+    "[1,2,3][item >= 2]",
+    r#"
+       Filter
+       ├─ List
+       │  ├─ Numeric
+       │  │  └─ `1.`
+       │  ├─ Numeric
+       │  │  └─ `2.`
+       │  └─ Numeric
+       │     └─ `3.`
+       └─ Ge
+          ├─ Name
+          │  └─ `item`
+          └─ Numeric
+             └─ `2.`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0003() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartTextualExpression,
     "EmployeeTable[name=LastName]",
     r#"
        Filter
@@ -80,7 +106,7 @@ fn _0002() {
 }
 
 #[test]
-fn _0003() {
+fn _0004() {
   let scope = scope!();
   accept(
     &scope,
@@ -101,7 +127,7 @@ fn _0003() {
 }
 
 #[test]
-fn _0004() {
+fn _0005() {
   let scope = scope!();
   accept(
     &scope,
@@ -140,7 +166,7 @@ fn _0004() {
 }
 
 #[test]
-fn _0005() {
+fn _0006() {
   let scope = scope!();
   scope.set_entry(&"?".into(), value_null!());
   scope.set_entry(&"Lender Name".into(), value_null!());
