@@ -639,7 +639,6 @@ dependencies = [
  "dmntk-workspace",
  "serde",
  "serde_json",
- "thiserror",
 ]
 
 [[package]]

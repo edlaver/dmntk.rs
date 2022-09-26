@@ -33,57 +33,40 @@
 //! Errors reported by server.
 
 use dmntk_common::DmntkError;
-use thiserror::Error;
 
-/// Errors reported by server.
-#[derive(Error, Debug)]
-enum ServerError {
-  #[error("endpoint not found")]
-  EndpointNotFound,
-  #[error("missing parameter '{0}'")]
-  MissingParameter(String),
-  #[error("invalid Base64 encoding")]
-  InvalidBase64Encoding,
-  #[error("invalid UTF-8 content")]
-  InvalidUtf8Content,
-  #[error("workspace read lock failed")]
-  WorkspaceReadLockFailed,
-  #[error("workspace write lock failed")]
-  WorkspaceWriteLockFailed,
-  #[error("{0}")]
-  InternalError(String),
-}
+/// Server errors.
+struct ServerError(String);
 
 impl From<ServerError> for DmntkError {
   fn from(e: ServerError) -> Self {
-    DmntkError::new("ServerError", &e.to_string())
+    DmntkError::new("ServerError", &e.0)
   }
 }
 
 pub fn err_endpoint_not_found() -> DmntkError {
-  ServerError::EndpointNotFound.into()
+  ServerError("endpoint not found".to_string()).into()
 }
 
 pub fn err_missing_parameter(name: &str) -> DmntkError {
-  ServerError::MissingParameter(name.to_string()).into()
+  ServerError(format!("missing parameter '{}'", name)).into()
 }
 
 pub fn err_invalid_base64_encoding() -> DmntkError {
-  ServerError::InvalidBase64Encoding.into()
+  ServerError("invalid Base64 encoding".to_string()).into()
 }
 
 pub fn err_invalid_utf8_content() -> DmntkError {
-  ServerError::InvalidUtf8Content.into()
+  ServerError("invalid UTF-8 content".to_string()).into()
 }
 
 pub fn err_workspace_read_lock_failed() -> DmntkError {
-  ServerError::WorkspaceReadLockFailed.into()
+  ServerError("workspace read lock failed".to_string()).into()
 }
 
 pub fn err_workspace_write_lock_failed() -> DmntkError {
-  ServerError::WorkspaceWriteLockFailed.into()
+  ServerError("workspace write lock failed".to_string()).into()
 }
 
 pub fn err_internal_error(message: &str) -> DmntkError {
-  ServerError::InternalError(message.to_string()).into()
+  ServerError(format!("{}", message)).into()
 }
