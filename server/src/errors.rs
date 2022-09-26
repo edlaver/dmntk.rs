@@ -68,5 +68,5 @@ pub fn err_workspace_write_lock_failed() -> DmntkError {
 }
 
 pub fn err_internal_error(message: &str) -> DmntkError {
-  ServerError(format!("{}", message)).into()
+  ServerError(message.to_string()).into()
 }
