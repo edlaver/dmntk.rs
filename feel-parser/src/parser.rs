@@ -1244,7 +1244,7 @@ mod errors {
   impl From<ParserError> for DmntkError {
     /// Creates [DmntkError] from [ParserError].
     fn from(e: ParserError) -> Self {
-      DmntkError::new("ParserError", &format!("{}", e.0))
+      DmntkError::new("ParserError", &e.0)
     }
   }
 

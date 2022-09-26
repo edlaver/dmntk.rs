@@ -1010,7 +1010,7 @@ pub mod errors {
 
   impl From<LexerError> for DmntkError {
     fn from(e: LexerError) -> Self {
-      DmntkError::new("LexerError", &format!("{}", e.0))
+      DmntkError::new("LexerError", &e.0)
     }
   }
 

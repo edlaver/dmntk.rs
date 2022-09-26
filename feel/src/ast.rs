@@ -43,7 +43,7 @@ use std::fmt::Display;
 pub type OptAstNode = Option<AstNode>;
 
 /// Node of the Abstract Syntax Tree for `FEEL` grammar.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum AstNode {
   /// Node representing an arithmetic operator `+` (addition).
   Add(Box<AstNode>, Box<AstNode>),

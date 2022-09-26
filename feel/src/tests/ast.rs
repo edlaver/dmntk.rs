@@ -74,6 +74,14 @@ fn eqs(expected: &str, node: &AstNode) {
 }
 
 #[test]
+fn test_equal() {
+  let node_a = AstNode::Add(b_num!(1), b_num!(2));
+  let node_b = AstNode::Add(b_num!(1), b_num!(2));
+  assert!((node_a == node_b));
+}
+
+#[test]
+#[allow(clippy::redundant_clone)]
 fn test_clone() {
   let node_a = AstNode::Add(b_num!(1), b_num!(2));
   let node_b = node_a.clone();

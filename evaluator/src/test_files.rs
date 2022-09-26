@@ -88,12 +88,7 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
               }
             }
           }
-          other => {
-            return Err(DmntkError::new(
-              "Evaluator",
-              &format!("expected expression list, but found '{}'", other.to_string()),
-            ))
-          }
+          other => return Err(DmntkError::new("Evaluator", &format!("expected expression list, but found '{}'", other))),
         },
         Err(reason) => return Err(reason),
       }
