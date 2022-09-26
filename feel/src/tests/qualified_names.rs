@@ -40,6 +40,7 @@ fn test_push() {
 }
 
 #[test]
+#[allow(clippy::redundant_clone)]
 fn test_clone() {
   let name_a = Name::new(&["a"]);
   let name_b = Name::new(&["b"]);

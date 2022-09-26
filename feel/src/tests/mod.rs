@@ -5,3 +5,4 @@ mod function;
 mod names;
 mod qualified_names;
 mod scope;
+mod types;
