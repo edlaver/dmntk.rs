@@ -10,10 +10,9 @@ edition = "2021"
 
 [dependencies]
 ascii_tree = "0.1.1"
-chrono = "0.4.19"
-chrono-tz = "0.6.0"
-derivative = "2.2.0"
+chrono = "0.4.22"
+chrono-tz = "0.6.3"
 dmntk-common = { path = "../common" }
 dmntk-feel-number = { path = "../feel-number" }
 lazy_static = "1.4.0"
-regex = "1.5.4"
+regex = "1.6.0"

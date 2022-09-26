@@ -35,8 +35,6 @@
 extern crate ascii_tree;
 extern crate chrono;
 extern crate chrono_tz;
-#[macro_use]
-extern crate derivative;
 extern crate dmntk_common;
 extern crate dmntk_feel_number;
 #[macro_use]
