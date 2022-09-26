@@ -43,7 +43,7 @@ use std::fmt::Display;
 pub type OptAstNode = Option<AstNode>;
 
 /// Node of the Abstract Syntax Tree for `FEEL` grammar.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum AstNode {
   /// Node representing an arithmetic operator `+` (addition).
   Add(Box<AstNode>, Box<AstNode>),
@@ -345,8 +345,8 @@ impl AstNode {
       AstNode::Add(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
       AstNode::And { .. } => FeelType::Boolean,
       AstNode::At { .. } => FeelType::Any,
-      AstNode::Between { .. } => FeelType::Any,
-      AstNode::Boolean(_) => FeelType::Any,
+      AstNode::Between { .. } => FeelType::Boolean,
+      AstNode::Boolean(_) => FeelType::Boolean,
       AstNode::CommaList { .. } => FeelType::Any,
       AstNode::Context { .. } => FeelType::Any,
       AstNode::ContextEntry { .. } => FeelType::Any,
@@ -363,6 +363,11 @@ impl AstNode {
                   type_entries.push((name, feel_type));
                 }
               }
+              if let AstNode::ContextTypeEntryKey(name) = entry_name.borrow() {
+                if let AstNode::FeelType(feel_type) = entry_type.borrow() {
+                  type_entries.push((name, feel_type));
+                }
+              }
             }
           }
           FeelType::context(&type_entries)
@@ -371,9 +376,8 @@ impl AstNode {
       AstNode::ContextTypeEntry(_, node) => node.type_of(scope),
       AstNode::ContextTypeEntryKey(name) => name.into(),
       AstNode::Div(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
-      AstNode::Eq { .. } => FeelType::Boolean,
       AstNode::EvaluatedExpression { .. } => FeelType::Any,
-      AstNode::Exp { .. } => FeelType::Any,
+      AstNode::Exp { .. } => FeelType::Number,
       AstNode::ExpressionList { .. } => FeelType::Any,
       AstNode::FeelType(feel_type) => feel_type.clone(),
       AstNode::Filter { .. } => FeelType::Any,
@@ -391,8 +395,6 @@ impl AstNode {
           FeelType::Any
         }
       }
-      AstNode::Gt { .. } => FeelType::Any,
-      AstNode::Ge { .. } => FeelType::Any,
       AstNode::If { .. } => FeelType::Any,
       AstNode::In { .. } => FeelType::Any,
       AstNode::InstanceOf { .. } => FeelType::Any,
@@ -400,10 +402,9 @@ impl AstNode {
       AstNode::IterationContexts { .. } => FeelType::Any,
       AstNode::IterationContextSingle { .. } => FeelType::Any,
       AstNode::IterationContextRange { .. } => FeelType::Any,
-      AstNode::Lt { .. } => FeelType::Any,
-      AstNode::Le { .. } => FeelType::Any,
-      AstNode::Neg { .. } => FeelType::Any,
-      AstNode::List(nodes) => {
+      AstNode::Eq { .. } | AstNode::Le { .. } | AstNode::Lt { .. } | AstNode::Ge { .. } | AstNode::Gt { .. } | AstNode::Nq { .. } => FeelType::Boolean,
+      AstNode::Neg { .. } => FeelType::Number,
+      AstNode::List(nodes) | AstNode::NegatedList(nodes) => {
         if nodes.is_empty() {
           FeelType::Any
         } else {
@@ -415,15 +416,13 @@ impl AstNode {
         }
       }
       AstNode::ListType(lhs) => FeelType::List(Box::new(lhs.type_of(scope))),
-      AstNode::Mul { .. } => FeelType::Any,
+      AstNode::Mul { .. } => FeelType::Number,
       AstNode::Name(name) => name.into(),
-      AstNode::NamedParameter { .. } => FeelType::Any,
+      AstNode::NamedParameter(_, rhs) => rhs.type_of(scope),
       AstNode::NamedParameters { .. } => FeelType::Any,
-      AstNode::NegatedList { .. } => FeelType::Any,
-      AstNode::Nq { .. } => FeelType::Boolean,
       AstNode::Null => FeelType::Null,
       AstNode::Numeric(_, _) => FeelType::Number,
-      AstNode::Or { .. } => FeelType::Any,
+      AstNode::Or { .. } => FeelType::Boolean,
       AstNode::Out { .. } => FeelType::Any,
       AstNode::ParameterName(_) => FeelType::Any,
       AstNode::ParameterTypes(_) => FeelType::Any,
@@ -449,11 +448,11 @@ impl AstNode {
       AstNode::RangeType(lhs) => FeelType::Range(Box::new(lhs.type_of(scope))),
       AstNode::Satisfies(mid) => mid.type_of(scope),
       AstNode::String(_) => FeelType::String,
-      AstNode::Sub { .. } => FeelType::Any,
-      AstNode::UnaryGe { .. } => FeelType::Any,
-      AstNode::UnaryGt { .. } => FeelType::Any,
-      AstNode::UnaryLt { .. } => FeelType::Any,
-      AstNode::UnaryLe { .. } => FeelType::Any,
+      AstNode::Sub(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
+      AstNode::UnaryGe { .. } => FeelType::Boolean,
+      AstNode::UnaryGt { .. } => FeelType::Boolean,
+      AstNode::UnaryLt { .. } => FeelType::Boolean,
+      AstNode::UnaryLe { .. } => FeelType::Boolean,
       AstNode::IntervalEnd(_, _) => FeelType::Any,
       AstNode::IntervalStart(_, _) => FeelType::Any,
     }
@@ -464,105 +463,5 @@ impl AstNode {
     let output = format!("      AST:{}", self);
     println!("{}", output);
     output
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-  use crate::types::FeelType;
-
-  /// Utility function for comparing debug strings.
-  fn eqd(expected: &str, node: &AstNode) {
-    assert_eq!(expected, format!("{:?}", node));
-  }
-
-  /// Utility function for comparing result types.  
-  fn eqt(expected: FeelType, node: &AstNode) {
-    assert_eq!(expected, node.type_of(&Scope::default()));
-  }
-
-  /// Utility function for comparing ASCII tree strings.
-  fn eqs(expected: &str, node: &AstNode) {
-    let actual = format!("{}", node);
-    if expected != actual {
-      println!("ERROR:\nexpected:'{}'\nactual:'{}'\n", expected, actual)
-    }
-    assert_eq!(expected, format!("{}", node));
-  }
-
-  #[test]
-  fn test_display() {
-    assert_eq!(
-      r#"
-       Add
-       ├─ Numeric
-       │  └─ `1.`
-       └─ Numeric
-          └─ `2.`
-    "#,
-      format!(
-        "{}",
-        AstNode::Add(
-          Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
-          Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
-        )
-      ),
-    );
-  }
-
-  #[test]
-  fn test_trace() {
-    assert_eq!(
-      r#"      AST:
-       Add
-       ├─ Numeric
-       │  └─ `1.`
-       └─ Numeric
-          └─ `2.`
-    "#,
-      AstNode::Add(
-        Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
-        Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
-      )
-      .trace()
-    );
-  }
-
-  #[test]
-  fn test_debug_add() {
-    let node = &AstNode::Add(
-      Box::new(AstNode::Numeric("1".to_string(), "23".to_string())),
-      Box::new(AstNode::Numeric("2".to_string(), "34".to_string())),
-    );
-    eqd(r#"Add(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-    eqt(FeelType::Number, node);
-    let node = &AstNode::Add(
-      Box::new(AstNode::Numeric("1".to_string(), "23".to_string())),
-      Box::new(AstNode::String("12".to_string())),
-    );
-    eqd(r#"Add(Numeric("1", "23"), String("12"))"#, node);
-    eqt(FeelType::Any, node);
-  }
-
-  #[test]
-  fn test_debug_and() {
-    let node = &AstNode::And(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
-    eqd(r#"And(Boolean(true), Boolean(false))"#, node);
-    eqt(FeelType::Boolean, node);
-  }
-
-  #[test]
-  fn test_debug_at() {
-    let node = &AstNode::At("2022-09-26".to_string());
-    eqd(r#"At("2022-09-26")"#, node);
-    eqt(FeelType::Any, node);
-    eqs(
-      r#"
-       At
-       └─ `2022-09-26`
-    "#,
-      node,
-    );
   }
 }

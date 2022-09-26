@@ -71,5 +71,7 @@ mod qualified_names;
 mod scope;
 mod strings;
 mod temporal;
+#[cfg(test)]
+mod tests;
 mod types;
 pub mod values;
