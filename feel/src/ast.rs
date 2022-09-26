@@ -36,6 +36,8 @@ use crate::ast_tree::ast_tree;
 use crate::types::FeelType;
 use crate::{Name, Scope};
 use std::borrow::Borrow;
+use std::fmt;
+use std::fmt::Display;
 
 /// Type for optional AST node.
 pub type OptAstNode = Option<AstNode>;
@@ -49,7 +51,7 @@ pub enum AstNode {
   /// Node representing a logical operator `and` (conjunction).
   And(Box<AstNode>, Box<AstNode>),
 
-  /// Node representing `@` (at literal).
+  /// Node representing `@` (at) literal.
   At(String),
 
   /// Node representing a comparison operator `between`.
@@ -58,7 +60,7 @@ pub enum AstNode {
   /// Node representing a value of type `boolean`.
   Boolean(bool),
 
-  /// Node representing a comma separated list of AST nodes, used internally in parser.
+  /// Node representing a comma separated list of AST nodes, used internally by parser.
   CommaList(Vec<AstNode>),
 
   /// Node representing a context.
@@ -93,7 +95,7 @@ pub enum AstNode {
   /// Node representing arithmetic operator `/` (division).
   Div(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `equal` comparison.
   Eq(Box<AstNode>, Box<AstNode>),
 
   /// Node representing an expression evaluated as a body of `for` expression.
@@ -107,10 +109,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing exponential function.
   Exp(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing a list of expressions.
   ExpressionList(Vec<AstNode>),
 
   /// Node representing `FEEL` type.
@@ -157,10 +159,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `greater or equal` comparison.
   Ge(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `greater than` comparison.
   Gt(Box<AstNode>, Box<AstNode>),
 
   /// Node representing `if` expression.
@@ -173,7 +175,7 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `in` operator.
   In(Box<AstNode>, Box<AstNode>),
 
   /// Node representing type checking function.
@@ -214,10 +216,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `less or equal` comparison.
   Le(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `less than` comparison.
   Lt(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a list.
@@ -249,7 +251,7 @@ pub enum AstNode {
   /// Node representing an unary arithmetic negation `-`.
   Neg(Box<AstNode>),
 
-  ///
+  /// Node representing `not equal` comparison.
   Nq(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a value of type `Null`.
@@ -258,10 +260,10 @@ pub enum AstNode {
   /// Node representing a value of type `number`.
   Numeric(String, String),
 
-  ///
+  /// Node representing a logical operator `or` (disjunction).
   Or(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing expression for selecting decision table's output value.
   Out(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a name of the function's formal parameter.
@@ -293,7 +295,7 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing a range of values.
   Range(Box<AstNode>, Box<AstNode>),
 
   /// Node representing range type.
@@ -313,35 +315,35 @@ pub enum AstNode {
   /// Node representing a value of type `string`.
   String(String),
 
-  ///
+  /// Node representing an arithmetic operator `-` (subtraction).
   Sub(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `greater or equal`.
   UnaryGe(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `greater than`.
   UnaryGt(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `less or equal`.
   UnaryLe(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `less than`.
   UnaryLt(Box<AstNode>),
 }
 
-impl ToString for AstNode {
+impl Display for AstNode {
   /// Converts [AstNode] to textual representation, including child nodes.
-  fn to_string(&self) -> String {
-    format!("{}\n    ", ast_tree(self))
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{}\n    ", ast_tree(self))
   }
 }
 
 impl AstNode {
-  /// Evaluates the type of the expression represented by this node.
+  /// Evaluates the result type of the expression represented by this node.
   pub fn type_of(&self, scope: &Scope) -> FeelType {
     match self {
       AstNode::Add(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
-      AstNode::And { .. } => FeelType::Any,
+      AstNode::And { .. } => FeelType::Boolean,
       AstNode::At { .. } => FeelType::Any,
       AstNode::Between { .. } => FeelType::Any,
       AstNode::Boolean(_) => FeelType::Any,
@@ -458,7 +460,109 @@ impl AstNode {
   }
 
   /// Writes a trace of the AST starting from this node.
-  pub fn trace(&self) {
-    println!("      AST:{}", self.to_string());
+  pub fn trace(&self) -> String {
+    let output = format!("      AST:{}", self);
+    println!("{}", output);
+    output
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::types::FeelType;
+
+  /// Utility function for comparing debug strings.
+  fn eqd(expected: &str, node: &AstNode) {
+    assert_eq!(expected, format!("{:?}", node));
+  }
+
+  /// Utility function for comparing result types.  
+  fn eqt(expected: FeelType, node: &AstNode) {
+    assert_eq!(expected, node.type_of(&Scope::default()));
+  }
+
+  /// Utility function for comparing ASCII tree strings.
+  fn eqs(expected: &str, node: &AstNode) {
+    let actual = format!("{}", node);
+    if expected != actual {
+      println!("ERROR:\nexpected:'{}'\nactual:'{}'\n", expected, actual)
+    }
+    assert_eq!(expected, format!("{}", node));
+  }
+
+  #[test]
+  fn test_display() {
+    assert_eq!(
+      r#"
+       Add
+       ├─ Numeric
+       │  └─ `1.`
+       └─ Numeric
+          └─ `2.`
+    "#,
+      format!(
+        "{}",
+        AstNode::Add(
+          Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
+          Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
+        )
+      ),
+    );
+  }
+
+  #[test]
+  fn test_trace() {
+    assert_eq!(
+      r#"      AST:
+       Add
+       ├─ Numeric
+       │  └─ `1.`
+       └─ Numeric
+          └─ `2.`
+    "#,
+      AstNode::Add(
+        Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
+        Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
+      )
+      .trace()
+    );
+  }
+
+  #[test]
+  fn test_debug_add() {
+    let node = &AstNode::Add(
+      Box::new(AstNode::Numeric("1".to_string(), "23".to_string())),
+      Box::new(AstNode::Numeric("2".to_string(), "34".to_string())),
+    );
+    eqd(r#"Add(Numeric("1", "23"), Numeric("2", "34"))"#, node);
+    eqt(FeelType::Number, node);
+    let node = &AstNode::Add(
+      Box::new(AstNode::Numeric("1".to_string(), "23".to_string())),
+      Box::new(AstNode::String("12".to_string())),
+    );
+    eqd(r#"Add(Numeric("1", "23"), String("12"))"#, node);
+    eqt(FeelType::Any, node);
+  }
+
+  #[test]
+  fn test_debug_and() {
+    let node = &AstNode::And(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
+    eqd(r#"And(Boolean(true), Boolean(false))"#, node);
+    eqt(FeelType::Boolean, node);
+  }
+
+  #[test]
+  fn test_debug_at() {
+    let node = &AstNode::At("2022-09-26".to_string());
+    eqd(r#"At("2022-09-26")"#, node);
+    eqt(FeelType::Any, node);
+    eqs(
+      r#"
+       At
+       └─ `2022-09-26`
+    "#,
+      node,
+    );
   }
 }

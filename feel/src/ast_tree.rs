@@ -30,18 +30,20 @@
  * limitations under the License.
  */
 
-//! ???
+//! Routines for converting [AstNode] into ASCII tree.
 
 use crate::AstNode;
 use ascii_tree::{write_tree, Tree};
 
-pub fn ast_tree(root: &AstNode) -> String {
+/// Returns ASCII tree representation of the specified node.
+pub fn ast_tree(node: &AstNode) -> String {
   let mut ascii_tree = String::new();
-  let tree = ast_node_to_tree(root);
+  let tree = ast_node_to_tree(node);
   let _ = write_tree(&mut ascii_tree, &tree);
   ascii_tree.lines().map(|line| format!("\n      {}", line)).collect()
 }
 
+/// Converts [AstNode] into ASCII [Tree] node.
 fn ast_node_to_tree(node: &AstNode) -> Tree {
   match node {
     AstNode::Add(lhs, rhs) => node_2("Add", lhs, rhs),
