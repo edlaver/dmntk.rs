@@ -34,102 +34,70 @@ use dmntk_common::DmntkError;
 use dmntk_feel::FeelType;
 
 /// Errors related to model evaluation.
-#[derive(Error, Debug)]
-pub enum ModelEvaluatorError {
-  #[error("business knowledge model with reference `{0}` was not found")]
-  BusinessKnowledgeModelWithReferenceNotFound(String),
-  #[error("input data with identifier `{0}` has no type reference definition")]
-  InputDataWithoutTypeReference(String),
-  #[error("empty FEEL name")]
-  EmptyFeelName,
-  #[error("empty identifier")]
-  EmptyIdentifier,
-  #[error("empty decision logic in decision")]
-  EmptyLiteralExpression,
-  #[error("empty literal expression")]
-  EmptyDecisionLogic,
-  #[error("empty encapsulated logic in business knowledge model")]
-  EmptyEncapsulatedLogic,
-  #[error("invalid item definition type for `{0}`")]
-  InvalidItemDefinitionType(String),
-  #[error("unsupported FEEL type: {0}")]
-  UnsupportedFeelType(String),
-  #[error("empty FEEL type")]
-  EmptyFeelType,
-  #[error("empty reference")]
-  EmptyReference,
-  #[error("empty function definition body")]
-  EmptyFunctionBody,
-  #[error("empty value expression")]
-  EmptyValueExpression,
-  #[error("read lock failed with reason '{0}'")]
-  ReadLockFailed(String),
-  #[error("write lock failed with reason '{0}'")]
-  WriteLockFailed(String),
-}
+pub struct ModelEvaluatorError(String);
 
 impl From<ModelEvaluatorError> for DmntkError {
   fn from(e: ModelEvaluatorError) -> Self {
-    DmntkError::new("ModelEvaluatorError", &e.to_string())
+    DmntkError::new("ModelEvaluatorError", &e.0)
   }
 }
 
-pub fn err_business_knowledge_model_with_reference_not_found(reference: &str) -> DmntkError {
-  ModelEvaluatorError::BusinessKnowledgeModelWithReferenceNotFound(reference.to_string()).into()
+pub fn err_business_knowledge_model_with_reference_not_found(s: &str) -> DmntkError {
+  ModelEvaluatorError(format!("business knowledge model with reference '{}' was not found", s)).into()
 }
 
 pub fn err_input_data_without_type_reference(s: &str) -> DmntkError {
-  ModelEvaluatorError::InputDataWithoutTypeReference(s.to_string()).into()
+  ModelEvaluatorError(format!("input data with identifier '{}' has no type reference definition", s)).into()
 }
 
 pub fn err_empty_feel_name() -> DmntkError {
-  ModelEvaluatorError::EmptyFeelName.into()
+  ModelEvaluatorError("empty FEEL name".to_string()).into()
 }
 
 pub fn err_empty_identifier() -> DmntkError {
-  ModelEvaluatorError::EmptyIdentifier.into()
+  ModelEvaluatorError("empty identifier".to_string()).into()
 }
 
 pub fn err_empty_literal_expression() -> DmntkError {
-  ModelEvaluatorError::EmptyLiteralExpression.into()
+  ModelEvaluatorError("empty literal expression".to_string()).into()
 }
 
 pub fn err_empty_decision_logic() -> DmntkError {
-  ModelEvaluatorError::EmptyDecisionLogic.into()
+  ModelEvaluatorError("empty decision logic in decision".to_string()).into()
 }
 
 pub fn err_empty_encapsulated_logic() -> DmntkError {
-  ModelEvaluatorError::EmptyEncapsulatedLogic.into()
+  ModelEvaluatorError("empty encapsulated logic in business knowledge model".to_string()).into()
 }
 
 pub fn err_invalid_item_definition_type(s: &str) -> DmntkError {
-  ModelEvaluatorError::InvalidItemDefinitionType(s.to_string()).into()
+  ModelEvaluatorError(format!("invalid item definition type for '{}'", s)).into()
 }
 
 pub fn err_unsupported_feel_type(feel_type: FeelType) -> DmntkError {
-  ModelEvaluatorError::UnsupportedFeelType(feel_type.to_string()).into()
+  ModelEvaluatorError(format!("unsupported FEEL type: {}", feel_type)).into()
 }
 
 pub fn err_empty_feel_type() -> DmntkError {
-  ModelEvaluatorError::EmptyFeelType.into()
+  ModelEvaluatorError("empty FEEL type".to_string()).into()
 }
 
 pub fn err_empty_reference() -> DmntkError {
-  ModelEvaluatorError::EmptyReference.into()
+  ModelEvaluatorError("empty reference".to_string()).into()
 }
 
 pub fn err_empty_function_body() -> DmntkError {
-  ModelEvaluatorError::EmptyFunctionBody.into()
+  ModelEvaluatorError("empty function definition body".to_string()).into()
 }
 
 pub fn err_empty_value_expression() -> DmntkError {
-  ModelEvaluatorError::EmptyValueExpression.into()
+  ModelEvaluatorError("empty value expression".to_string()).into()
 }
 
 pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {
-  ModelEvaluatorError::ReadLockFailed(reason.to_string()).into()
+  ModelEvaluatorError(format!("read lock failed with reason '{}'", reason.to_string())).into()
 }
 
 pub fn err_write_lock_failed(reason: impl ToString) -> DmntkError {
-  ModelEvaluatorError::WriteLockFailed(reason.to_string()).into()
+  ModelEvaluatorError(format!("write lock failed with reason '{}'", reason.to_string())).into()
 }

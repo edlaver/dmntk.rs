@@ -14,7 +14,6 @@ dmntk-feel = { path = "../feel" }
 dmntk-feel-evaluator = { path = "../feel-evaluator" }
 dmntk-feel-parser = { path = "../feel-parser" }
 dmntk-model = { path = "../model" }
-thiserror = "1.0.30"
 
 [dev-dependencies]
 dmntk-examples = { path = "../examples" }

@@ -35,8 +35,6 @@ extern crate dmntk_feel;
 extern crate dmntk_feel_evaluator;
 extern crate dmntk_model;
 extern crate dmntk_model_evaluator;
-#[macro_use]
-extern crate thiserror;
 extern crate walkdir;
 
 mod errors;

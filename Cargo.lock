@@ -612,7 +612,6 @@ dependencies = [
  "dmntk-model",
  "dmntk-recognizer",
  "lazy_static",
- "thiserror",
 ]
 
 [[package]]
@@ -650,7 +649,6 @@ dependencies = [
  "dmntk-feel-evaluator",
  "dmntk-model",
  "dmntk-model-evaluator",
- "thiserror",
  "walkdir",
 ]
 

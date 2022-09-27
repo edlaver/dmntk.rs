@@ -50,10 +50,7 @@ use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelType, Name, Scope};
-use dmntk_model::model::{
-  Context, DecisionTable, Expression, ExpressionInstance, FunctionDefinition, InformationItem, Invocation, ItemDefinition, ItemDefinitionType,
-  LiteralExpression, NamedElement, Relation,
-};
+use dmntk_model::model::*;
 pub use input_data::InputDataEvaluator;
 pub use input_data_context::InputDataContextEvaluator;
 pub use item_definition::ItemDefinitionEvaluator;
@@ -124,7 +121,6 @@ fn type_ref_to_feel_type(type_ref: &str) -> Option<FeelType> {
 type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
 
 ///
-#[derive(Clone)]
 pub struct Variable {
   pub name: Name,
   pub type_ref: Option<String>,
