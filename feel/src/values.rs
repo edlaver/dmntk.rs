@@ -548,8 +548,4 @@ mod errors {
   pub fn err_invalid_xsd_duration(text: &str) -> DmntkError {
     ValueError(format!("'{}' is not valid xsd:duration representation", text)).into()
   }
-  // /// Error used when converting a [Value] to [FeelContext](crate::context::FeelContext) fails.
-  // pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
-  //   ValueError(format!("'{}' is not a value containing context", value)).into()
-  // }
 }
