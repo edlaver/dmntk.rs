@@ -205,7 +205,7 @@ pub enum Value {
   /// Value representing a `range`.
   Range(Box<Value>, bool, Box<Value>, bool),
 
-  /// **String** value...
+  /// `String` value...
   String(String),
 
   /// Value for storing time as [FeelTime].
@@ -228,6 +228,7 @@ pub enum Value {
 }
 
 impl std::fmt::Display for Value {
+  ///
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
       Value::Boolean(value) => write!(f, "{}", value),
@@ -387,17 +388,17 @@ impl Value {
   }
   /// Tries to convert `xsd:integer` string into valid [Value] representing a number.
   pub fn try_from_xsd_integer(text: &str) -> Result<Self> {
-    let value = text.parse::<FeelNumber>().map_err(|_| invalid_xsd_integer(text))?;
+    let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_integer(text))?;
     Ok(Value::Number(value))
   }
   /// Tries to convert `xsd:decimal` string into valid [Value] representing a number.
   pub fn try_from_xsd_decimal(text: &str) -> Result<Self> {
-    let value = text.parse::<FeelNumber>().map_err(|_| invalid_xsd_decimal(text))?;
+    let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_decimal(text))?;
     Ok(Value::Number(value))
   }
   /// Tries to convert `xsd:double` string into valid [Value] representing a number.
   pub fn try_from_xsd_double(text: &str) -> Result<Self> {
-    let value = text.parse::<FeelNumber>().map_err(|_| invalid_xsd_double(text))?;
+    let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_double(text))?;
     Ok(Value::Number(value))
   }
   /// Tries to convert `xsd:boolean` string into valid [Value] representing a boolean.
@@ -405,7 +406,7 @@ impl Value {
     match text {
       "true" | "1" => Ok(Value::Boolean(true)),
       "false" | "0" => Ok(Value::Boolean(false)),
-      _ => Err(invalid_xsd_boolean(text)),
+      _ => Err(err_invalid_xsd_boolean(text)),
     }
   }
   /// Tries to convert `xsd:date` string into valid [Value] representing a date.
@@ -414,7 +415,7 @@ impl Value {
     if let Ok(feel_date) = FeelDate::from_str(text) {
       return Ok(Value::Date(feel_date));
     }
-    Err(invalid_xsd_date(text))
+    Err(err_invalid_xsd_date(text))
   }
   /// Tries to convert `xsd:time` string into valid [Value] representing a time.
   /// FEEL time format is fully conformant with `xsd:time`.
@@ -422,12 +423,12 @@ impl Value {
     if let Ok(feel_time) = FeelTime::from_str(text) {
       return Ok(Value::Time(feel_time));
     }
-    Err(invalid_xsd_time(text))
+    Err(err_invalid_xsd_time(text))
   }
   /// Tries to convert `xsd:dateTime` string into valid [Value] representing a date and time.
   /// FEEL date and time format is fully conformant with `xsd:dateTime`.
   pub fn try_from_xsd_date_time(text: &str) -> Result<Self> {
-    Ok(Value::DateTime(FeelDateTime::try_from(text)?))
+    Ok(Value::DateTime(FeelDateTime::try_from(text).map_err(|_| err_invalid_xsd_date_time(text))?))
   }
   /// Tries to convert `xsd:duration` string into valid [Value] representing a date and time.
   /// FEEL durations are conformant with `xsd:duration` but spit into two ranges.
@@ -438,7 +439,7 @@ impl Value {
     if let Ok(dt_duration) = FeelDaysAndTimeDuration::try_from(text) {
       return Ok(Value::DaysAndTimeDuration(dt_duration));
     }
-    Err(invalid_xsd_duration(text))
+    Err(err_invalid_xsd_duration(text))
   }
 }
 
@@ -502,167 +503,53 @@ impl Jsonify for Values {
 }
 
 /// Definitions of value errors.
-pub mod errors {
-  use crate::values::Value;
+mod errors {
   use dmntk_common::DmntkError;
 
   /// Value errors.
-  #[derive(Debug, PartialEq)]
-  enum ValueError {
-    /// Used when parsed text is not acceptable xsd:integer representation.
-    InvalidXsdInteger(String),
-    /// Used when parsed text is not acceptable xsd:decimal representation.
-    InvalidXsdDecimal(String),
-    /// Used when parsed text is not acceptable xsd:double representation.
-    InvalidXsdDouble(String),
-    /// Used when parsed text is not acceptable xsd:boolean representation.
-    InvalidXsdBoolean(String),
-    /// Used when parsed text is not acceptable xsd:date representation.
-    InvalidXsdDate(String),
-    /// Used when parsed text is not acceptable xsd:time representation.
-    InvalidXsdTime(String),
-    /// Used when parsed text is not acceptable xsd:duration representation.
-    InvalidXsdDuration(String),
-    /// Used when converting a [Value] to [FeelContext](crate::context::FeelContext).
-    ValueIsNotAContext(String),
-  }
+  struct ValueError(String);
 
   impl From<ValueError> for DmntkError {
+    /// Converts [ValueError] into [DmntkError].
     fn from(e: ValueError) -> Self {
-      DmntkError::new("ValueError", &format!("{}", e))
+      DmntkError::new("ValueError", &e.0)
     }
   }
 
-  impl std::fmt::Display for ValueError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        ValueError::InvalidXsdInteger(text) => {
-          write!(f, "'{}' is not valid xsd:integer representation", text)
-        }
-        ValueError::InvalidXsdDecimal(text) => {
-          write!(f, "'{}' is not valid xsd:decimal representation", text)
-        }
-        ValueError::InvalidXsdDouble(text) => {
-          write!(f, "'{}' is not valid xsd:double representation", text)
-        }
-        ValueError::InvalidXsdBoolean(text) => {
-          write!(f, "'{}' is not valid xsd:boolean representation", text)
-        }
-        ValueError::InvalidXsdDate(text) => {
-          write!(f, "'{}' is not valid xsd:date representation", text)
-        }
-        ValueError::InvalidXsdTime(text) => {
-          write!(f, "'{}' is not valid xsd:time representation", text)
-        }
-        ValueError::InvalidXsdDuration(text) => {
-          write!(f, "'{}' is not valid xsd:duration representation", text)
-        }
-        ValueError::ValueIsNotAContext(text) => {
-          write!(f, "'{}' is not a value containing context", text)
-        }
-      }
-    }
+  /// Error used when parsed text is not acceptable `xsd:integer` representation.
+  pub fn err_invalid_xsd_integer(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:integer representation", text)).into()
   }
-
-  pub fn invalid_xsd_integer(text: &str) -> DmntkError {
-    ValueError::InvalidXsdInteger(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:decimal` representation.
+  pub fn err_invalid_xsd_decimal(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:decimal representation", text)).into()
   }
-
-  pub fn invalid_xsd_decimal(text: &str) -> DmntkError {
-    ValueError::InvalidXsdDecimal(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:double` representation.
+  pub fn err_invalid_xsd_double(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:double representation", text)).into()
   }
-
-  pub fn invalid_xsd_double(text: &str) -> DmntkError {
-    ValueError::InvalidXsdDouble(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:boolean` representation.
+  pub fn err_invalid_xsd_boolean(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:boolean representation", text)).into()
   }
-
-  pub fn invalid_xsd_boolean(text: &str) -> DmntkError {
-    ValueError::InvalidXsdBoolean(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:date` representation.
+  pub fn err_invalid_xsd_date(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:date representation", text)).into()
   }
-
-  pub fn invalid_xsd_date(text: &str) -> DmntkError {
-    ValueError::InvalidXsdDate(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:time` representation.
+  pub fn err_invalid_xsd_time(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:time representation", text)).into()
   }
-
-  pub fn invalid_xsd_time(text: &str) -> DmntkError {
-    ValueError::InvalidXsdTime(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:dateTime` representation.
+  pub fn err_invalid_xsd_date_time(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:dateTime representation", text)).into()
   }
-
-  pub fn invalid_xsd_duration(text: &str) -> DmntkError {
-    ValueError::InvalidXsdDuration(text.to_string()).into()
+  /// Error used when parsed text is not acceptable `xsd:duration` representation.
+  pub fn err_invalid_xsd_duration(text: &str) -> DmntkError {
+    ValueError(format!("'{}' is not valid xsd:duration representation", text)).into()
   }
-
-  pub fn value_is_not_a_context(value: &Value) -> DmntkError {
-    ValueError::ValueIsNotAContext(value.to_string()).into()
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use crate::context::FeelContext;
-  use crate::function::FunctionBody;
-  use crate::values::Value;
-  use crate::{FeelNumber, Scope, ToFeelString};
-  use std::sync::Arc;
-
-  #[test]
-  fn _0001() {
-    assert!(value_number!(10).is_number());
-    assert!(value_number!(10123, 3).is_number());
-    assert!(!Value::Boolean(true).is_number());
-    assert!(!Value::Boolean(false).is_number());
-  }
-
-  #[test]
-  fn _0002() {
-    assert_eq!(value_number!(10), value_number!(10));
-    assert_ne!(value_number!(10, 0), value_number!(10, 1));
-  }
-
-  #[test]
-  fn _0003() {
-    assert_eq!(Value::Boolean(true), Value::Boolean(true));
-    assert_eq!(Value::Boolean(false), Value::Boolean(false));
-    assert_ne!(Value::Boolean(true), Value::Boolean(false));
-    assert_ne!(Value::Boolean(false), Value::Boolean(true));
-  }
-
-  #[test]
-  fn _0004() {
-    assert_eq!(Value::Context(FeelContext::default()), Value::Context(FeelContext::default()));
-  }
-
-  #[test]
-  fn _0005() {
-    let fun_body_a = FunctionBody::Context(Arc::new(Box::new(|_: &Scope| value_number!(1))));
-    let fun_body_b = FunctionBody::Context(Arc::new(Box::new(|_: &Scope| value_number!(2))));
-    let fun_body_c = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(3))));
-    let fun_body_d = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(4))));
-    let fun_body_e = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &Scope| value_number!(4))));
-    let fun_body_f = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &Scope| value_number!(5))));
-    let fun_body_g = FunctionBody::External(Arc::new(Box::new(|_: &Scope| value_number!(6))));
-    let fun_body_h = FunctionBody::External(Arc::new(Box::new(|_: &Scope| value_number!(7))));
-    assert_eq!(fun_body_a, fun_body_b);
-    assert_ne!(fun_body_a, fun_body_c);
-    assert_ne!(fun_body_a, fun_body_e);
-    assert_ne!(fun_body_a, fun_body_g);
-    assert_eq!(fun_body_c, fun_body_d);
-    assert_ne!(fun_body_c, fun_body_a);
-    assert_ne!(fun_body_c, fun_body_e);
-    assert_ne!(fun_body_c, fun_body_g);
-    assert_eq!(fun_body_e, fun_body_f);
-    assert_ne!(fun_body_e, fun_body_a);
-    assert_ne!(fun_body_e, fun_body_c);
-    assert_ne!(fun_body_e, fun_body_g);
-    assert_eq!(fun_body_g, fun_body_h);
-    assert_ne!(fun_body_g, fun_body_a);
-    assert_ne!(fun_body_g, fun_body_c);
-    assert_ne!(fun_body_g, fun_body_e);
-  }
-
-  #[test]
-  fn test_value_to_feel_string() {
-    assert_eq!(r#""foo""#, Value::String("foo".to_string()).to_feel_string());
-    assert_eq!(r#""\"bar\"""#, Value::String("\"bar\"".to_string()).to_feel_string());
-  }
+  // /// Error used when converting a [Value] to [FeelContext](crate::context::FeelContext) fails.
+  // pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
+  //   ValueError(format!("'{}' is not a value containing context", value)).into()
+  // }
 }
