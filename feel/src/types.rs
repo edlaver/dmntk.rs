@@ -240,11 +240,8 @@ impl FeelType {
   pub fn get_conformant_value(&self, actual_value: &Value) -> Value {
     let actual_type = actual_value.type_of();
     if actual_type.is_conformant(self) {
-      if let Ok(expected_value) = self.get_value_checked(actual_value) {
-        expected_value
-      } else {
-        value_null!("actual value {} does not match expected type {}", actual_value, self.to_string())
-      }
+      // unwrap is ok, all non-conformant combinations are filtered in the condition above
+      self.get_value_checked(actual_value).unwrap()
     } else {
       value_null!("type '{}' is not conformant with value of type '{}'", self.to_string(), actual_type.to_string())
     }
@@ -304,11 +301,6 @@ impl FeelType {
           return Ok(Value::List(Values::new(result)));
         }
       }
-      FeelType::Null => {
-        if let Value::Null(_) = value {
-          return Ok(value_null!());
-        }
-      }
       FeelType::Number => {
         if let Value::Number(_) = value {
           return Ok(value.clone());
@@ -334,6 +326,7 @@ impl FeelType {
           return Ok(value.clone());
         }
       }
+      _ => {}
     }
     Err(err_invalid_value_for_retrieving_using_feel_type(&self.to_string(), &value.to_string()))
   }
