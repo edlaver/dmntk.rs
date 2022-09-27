@@ -50,6 +50,7 @@ fn rect_new() {
   assert_eq!(r.top, 0);
   assert_eq!(r.right, 50);
   assert_eq!(r.bottom, 100);
+  r.assert_receiver_is_total_eq();
 }
 
 #[test]
@@ -104,10 +105,27 @@ fn rect_width_height() {
 
 #[test]
 fn rect_display() {
-  assert_eq!(format!("{}", Rect::new(10, 11, 12, 13)), "(10,11;12,13)");
+  assert_eq!("(10,11;12,13)", format!("{}", Rect::new(10, 11, 12, 13)));
 }
 
 #[test]
 fn rect_debug() {
-  assert_eq!(format!("{:?}", Rect::new(10, 11, 12, 13)), "(10,11;12,13)");
+  assert_eq!("(10,11;12,13)", format!("{:?}", Rect::new(10, 11, 12, 13)));
+}
+
+#[test]
+fn rect_compare() {
+  let r1 = Rect::new(10, 10, 20, 20);
+  let r2 = Rect::new(10, 10, 20, 20);
+  let r3 = Rect::new(15, 15, 19, 19);
+  assert!((r1 == r2));
+  assert!((r1 != r3));
+}
+
+#[test]
+#[allow(clippy::clone_on_copy)]
+fn rect_clone() {
+  let r1 = Rect::new(10, 10, 20, 20);
+  let r2 = r1.clone();
+  assert!((r1 == r2));
 }
