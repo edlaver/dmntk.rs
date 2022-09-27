@@ -46,7 +46,7 @@ struct Size {
 }
 
 fn size_err(details: &str) -> Result<Size> {
-  Err(invalid_size(details))
+  Err(err_invalid_size(details))
 }
 
 /// Validates the sizes of the individual components of the decision table in relation to each other.

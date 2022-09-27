@@ -161,11 +161,11 @@ impl Recognizer {
         // by three rows there must be always input/output values provided, just checking if the
         // two upper rows contains the same regions - input expressions
         if !self.plane.unique_regions_in_columns(&r.inc_top(1))? {
-          return Err(invalid_input_expressions());
+          return Err(err_invalid_input_expressions());
         }
         true
       }
-      _ => return Err(too_many_rows_in_input_clause()),
+      _ => return Err(err_too_many_rows_in_input_clause()),
     };
     // retrieve input expressions from plane
     for col in r.left..r.right {
@@ -192,7 +192,7 @@ impl Recognizer {
     match r.width() {
       0 => {
         // no output columns => report an error
-        return Err(no_output_clause());
+        return Err(err_no_output_clause());
       }
       1 => {
         // single output
@@ -208,10 +208,10 @@ impl Recognizer {
               self.output_values.push(self.plane.region_text(r.top + 1, r.left)?)
             } else {
               // invalid output clause
-              return Err(plane_invalid_output_clause());
+              return Err(err_plane_invalid_output_clause());
             }
           }
-          _ => return Err(too_many_rows_in_input_clause()),
+          _ => return Err(err_too_many_rows_in_input_clause()),
         }
       }
       _ => {
@@ -250,7 +250,7 @@ impl Recognizer {
               self.output_values.push(self.plane.region_text(r.top + 2, col)?);
             }
           }
-          _ => return Err(too_many_rows_in_input_clause()),
+          _ => return Err(err_too_many_rows_in_input_clause()),
         }
       }
     }
@@ -284,7 +284,7 @@ impl Recognizer {
   fn recognize_crosstab_table(&mut self) -> Result<()> {
     // TODO implement crosstab recognition
     self.rule_count = 0; // TODO properly recognize the total number of rules!
-    Err(recognizing_cross_tab_not_supported_yet())
+    Err(err_recognizing_cross_tab_not_supported_yet())
   }
 
   /// Recognizes the orientation of decision table.
@@ -300,10 +300,10 @@ impl Recognizer {
           self.rule_count = self.rule_numbers_placement.rule_count();
           Ok(())
         } else {
-          Err(expected_left_below_rule_numbers_placement())
+          Err(err_expected_left_below_rule_numbers_placement())
         }
       } else {
-        Err(expected_top_left_hit_policy_placement())
+        Err(err_expected_top_left_hit_policy_placement())
       }
     } else if self.plane.vertical_double_crossing().is_some() {
       // vertical orientation
@@ -314,10 +314,10 @@ impl Recognizer {
           self.rule_count = self.rule_numbers_placement.rule_count();
           Ok(())
         } else {
-          Err(expected_right_after_rule_numbers_placement())
+          Err(err_expected_right_after_rule_numbers_placement())
         }
       } else {
-        Err(expected_bottom_left_hit_policy_placement())
+        Err(err_expected_bottom_left_hit_policy_placement())
       }
     } else {
       // detect the orientation
@@ -329,7 +329,7 @@ impl Recognizer {
             self.rule_count = self.rule_numbers_placement.rule_count();
             Ok(())
           } else {
-            Err(expected_left_below_rule_numbers_placement())
+            Err(err_expected_left_below_rule_numbers_placement())
           }
         }
         HitPolicyPlacement::BottomLeft(_) => {
@@ -339,7 +339,7 @@ impl Recognizer {
             self.rule_count = self.rule_numbers_placement.rule_count();
             Ok(())
           } else {
-            Err(expected_right_after_rule_numbers_placement())
+            Err(err_expected_right_after_rule_numbers_placement())
           }
         }
         HitPolicyPlacement::NotPresent => {
@@ -349,7 +349,7 @@ impl Recognizer {
             self.rule_count = 0; // will be recognized later
             Ok(())
           } else {
-            Err(expected_no_rule_numbers_present())
+            Err(err_expected_no_rule_numbers_present())
           }
         }
       }
