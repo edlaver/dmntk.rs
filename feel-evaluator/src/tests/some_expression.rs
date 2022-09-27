@@ -33,13 +33,25 @@
 use super::*;
 
 #[test]
-fn test_0001() {
+fn _0001() {
   let scope = &te_scope("{}");
   te_bool(false, scope, r#"some n in [1,2,3] satisfies n > 1.5"#, true);
 }
 
 #[test]
-fn test_0002() {
+fn _0002() {
   let scope = &te_scope("{}");
   te_bool(false, scope, r#"some n in [1,2,3] satisfies n > 10.5"#, false);
+}
+
+#[test]
+fn _0003() {
+  let scope = &te_scope("{}");
+  te_bool(false, scope, r#"some n in 1 satisfies n > 10.5"#, false);
+}
+
+#[test]
+fn _0004() {
+  let scope = &te_scope("{}");
+  te_bool(false, scope, r#"some n in 12.58 satisfies n > 10.5"#, true);
 }

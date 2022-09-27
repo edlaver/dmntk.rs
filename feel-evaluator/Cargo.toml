@@ -14,4 +14,3 @@ dmntk-feel = { path = "../feel" }
 dmntk-feel-parser = { path = "../feel-parser" }
 lazy_static = "1.4.0"
 regex = "1.5.4"
-thiserror = "1.0.30"

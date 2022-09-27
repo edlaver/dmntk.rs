@@ -552,7 +552,6 @@ dependencies = [
  "dmntk-feel-parser",
  "lazy_static",
  "regex",
- "thiserror",
 ]
 
 [[package]]
