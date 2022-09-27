@@ -30,13 +30,11 @@
  * limitations under the License.
  */
 
-#[cfg(feature = "tck")]
 use crate::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
 use crate::errors::*;
 use actix_web::web::Json;
 use actix_web::{error, get, post, web, App, HttpResponse, HttpServer};
 use dmntk_common::{DmntkError, Jsonify, Result};
-#[cfg(feature = "tck")]
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::Scope;
@@ -183,7 +181,6 @@ struct StatusResult {
 /// Parameters for evaluating invocable in DMN™ model definitions.
 /// The format of input data is compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[cfg(feature = "tck")]
 #[derive(Deserialize)]
 struct TckEvaluateParams {
   /// Name of the model where the invocable will be searched.
@@ -286,7 +283,6 @@ async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::R
 
 /// Handler for evaluating models with input values in format compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[cfg(feature = "tck")]
 #[post("/tck/evaluate")]
 async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<OutputNodeDto>>> {
   if let Ok(workspace) = data.workspace.read() {
@@ -297,13 +293,6 @@ async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<Appl
   } else {
     Ok(Json(ResultDto::error(err_workspace_read_lock_failed())))
   }
-}
-
-/// Blind endpoint when `tck` feature is switched-off
-#[cfg(not(feature = "tck"))]
-#[post("/tck/evaluate")]
-async fn post_tck_evaluate() -> std::io::Result<Json<ResultDto<()>>> {
-  Ok(Json(ResultDto::error(err_endpoint_not_found())))
 }
 
 /// Handler for evaluating invocable in model.
@@ -333,20 +322,6 @@ async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, 
 async fn not_found() -> std::io::Result<Json<ResultDto<()>>> {
   Ok(Json(ResultDto::error(err_endpoint_not_found())))
 }
-
-/*
-/// Handler for mockers.
-async fn mockers(req: HttpRequest) -> std::io::Result<String> {
-  let mut result = String::new();
-  result.push_str(&format!("method={}\n", req.method()));
-  result.push_str(&format!("uri={}\n", req.uri()));
-  result.push_str(&format!("path={}\n", req.path()));
-  result.push_str(&format!("query-string={}\n", req.query_string()));
-  result.push_str(&format!("headers={:?}\n", req.headers().keys().map(|k| k.to_string()).collect::<Vec<String>>()));
-
-  Ok(result)
-}
-*/
 
 /// Starts the server.
 pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, opt_dir: Option<String>) -> std::io::Result<()> {
@@ -452,7 +427,6 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
 }
 
 ///
-#[inline(always)]
 fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
   workspace.clear();
   Ok(StatusResult {
@@ -461,7 +435,6 @@ fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 }
 
 ///
-#[inline(always)]
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = base64::decode(content) {
@@ -487,7 +460,6 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
 }
 
 ///
-#[inline(always)]
 fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<StatusResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = base64::decode(content) {
@@ -513,7 +485,6 @@ fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitions
 }
 
 ///
-#[inline(always)]
 fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsParams) -> Result<StatusResult> {
   if let Some(namespace) = &params.namespace {
     if let Some(name) = &params.name {
@@ -530,7 +501,6 @@ fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsPa
 }
 
 ///
-#[inline(always)]
 fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
   match workspace.deploy() {
     Ok(()) => Ok(StatusResult {
@@ -543,8 +513,6 @@ fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 /// Evaluates the invocable in model and returns the result.
 /// Input and output data format is compatible with
 /// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[cfg(feature = "tck")]
-#[inline(always)]
 fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<OutputNodeDto, DmntkError> {
   if let Some(model_name) = &params.model_name {
     if let Some(invocable_name) = &params.invocable_name {
@@ -565,7 +533,6 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
 }
 
 /// Evaluates the artifact specified in parameters and returns the result.
-#[inline(always)]
 fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
   if let Some(model_name) = &params.model_name {
     if let Some(invocable_name) = &params.invocable_name {

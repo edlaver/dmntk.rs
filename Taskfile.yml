@@ -19,11 +19,6 @@ tasks:
     cmds:
       - cmd: cargo build
 
-  build-tck:
-    desc: Builds in debug mode with TCK feature
-    cmds:
-      - cmd: cargo build --features=tck
-
   clean:
     desc: Cleans all targets
     cmds:
@@ -120,18 +115,12 @@ tasks:
   run:
     desc: Runs the server in release mode
     cmds:
-      - cmd: cargo +stable run --release -- srv -P 22022
+      - cmd: cargo +stable run --release -- srv
 
-  run-tck:
-    desc: Runs the server in release mode
+  run-musl:
+    desc: Runs the server in release mode and musl target
     cmds:
-      - cmd: cargo +stable run --features=tck --release --target=x86_64-unknown-linux-musl
-      - cmd: cargo +stable run --features=tck --release -- srv -P 22022
-
-  run-tck-musl:
-    desc: Runs the server in release mode for MUSL target
-    cmds:
-      - cmd: cargo +stable run --features=tck --release --target=x86_64-unknown-linux-musl -- srv -P 22022
+      - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv
 
   test:
     desc: Runs tests in debug mode

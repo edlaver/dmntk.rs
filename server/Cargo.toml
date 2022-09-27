@@ -8,10 +8,6 @@ repository = "https://github.com/dmntk/dmntk.rs.git"
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
-[features]
-default = []
-tck = []
-
 [dependencies]
 actix-web = "4.2.1"
 base64 = "0.13.0"
