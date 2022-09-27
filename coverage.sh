@@ -11,6 +11,8 @@ cargo clean
 export CARGO_INCREMENTAL=0
 export RUSTDOCFLAGS="-Cpanic=abort"
 export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
+# set DMNTK features
+export CARGO_FEATURE_PARSING_TABLES=1
 
 if [ -n "$1" ]; then
   # run tests only for specified package
@@ -42,3 +44,6 @@ genhtml -t "Decision Model and Notation Toolkit" -q -o ./target/coverage ./targe
 echo ""
 echo "Open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html"
 echo ""
+
+# reformat generated code
+cargo fmt -p dmntk-feel-parser
