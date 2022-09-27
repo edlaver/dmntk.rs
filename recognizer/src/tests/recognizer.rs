@@ -30,15 +30,67 @@
  * limitations under the License.
  */
 
-//! ???
-
 use crate::recognizer::Recognizer;
-use crate::tests::{eq_matrices, eq_vectors, EX_01, EX_02, EX_03, EX_05, EX_06, EX_07, EX_08, EX_09, EX_10};
+use crate::tests::{eq_matrices, eq_vectors, EX_01, EX_02, EX_03, EX_05, EX_06, EX_07, EX_08, EX_09, EX_10, EX_ERR_01, EX_ERR_02, EX_ERR_03};
 use dmntk_examples::decision_tables::H_110010;
 use dmntk_model::model::{BuiltinAggregator, DecisionTableOrientation, HitPolicy};
 
 const EMPTY_VECTOR: &[&str] = &[];
 const EMPTY_MATRIX: &[&[&str]] = &[];
+
+fn no_information_item_name(recognizer: &Recognizer) {
+  assert!(recognizer.information_item_name.is_none());
+}
+
+fn eq_information_item_name(recognizer: &Recognizer, expected: &str) {
+  assert!(recognizer.information_item_name.is_some());
+  assert_eq!(recognizer.information_item_name.as_ref().unwrap(), expected);
+}
+
+fn eq_hit_policy(recognizer: &Recognizer, expected: HitPolicy) {
+  assert_eq!(recognizer.hit_policy, expected);
+}
+
+fn eq_orientation(recognizer: &Recognizer, expected: DecisionTableOrientation) {
+  assert_eq!(recognizer.orientation, expected);
+}
+
+fn eq_output_label(recognizer: &Recognizer, expected: &str) {
+  assert!(recognizer.output_label.is_some());
+  assert_eq!(recognizer.output_label.as_ref().unwrap(), expected);
+}
+
+fn eq_input_expressions(recognizer: &Recognizer, expected: &[&str]) {
+  eq_vectors(&recognizer.input_expressions, expected);
+}
+
+fn eq_input_values(recognizer: &Recognizer, expected: &[&str]) {
+  eq_vectors(&recognizer.input_values, expected);
+}
+
+fn eq_input_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
+  eq_matrices(&recognizer.input_entries, expected);
+}
+
+fn eq_output_components(recognizer: &Recognizer, expected: &[&str]) {
+  eq_vectors(&recognizer.output_components, expected);
+}
+
+fn eq_output_values(recognizer: &Recognizer, expected: &[&str]) {
+  eq_vectors(&recognizer.output_values, expected);
+}
+
+fn eq_output_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
+  eq_matrices(&recognizer.output_entries, expected);
+}
+
+fn eq_annotations(recognizer: &Recognizer, expected: &[&str]) {
+  eq_vectors(&recognizer.annotations, expected);
+}
+
+fn eq_annotation_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
+  eq_matrices(&recognizer.annotation_entries, expected);
+}
 
 #[test]
 fn test_dt_0001() {
@@ -267,67 +319,26 @@ fn general_cross_tab() {
   // eq_annotation_entries(rec, EMPTY_MATRIX);
 }
 
-fn no_information_item_name(recognizer: &Recognizer) {
-  assert!(recognizer.information_item_name.is_none());
+#[test]
+fn test_err_01() {
+  assert_eq!(
+    "RecognizerError: expected characters not found: ['╬']",
+    Recognizer::recognize(&String::from(EX_ERR_01)).err().unwrap().to_string()
+  );
 }
 
-//TODO make it private or remove
-// pub fn no_output_label(recognizer: &Recognizer) {
-//   assert_eq!(recognizer.output_label.is_none(), true);
-// }
-
-fn eq_information_item_name(recognizer: &Recognizer, expected: &str) {
-  assert!(recognizer.information_item_name.is_some());
-  assert_eq!(recognizer.information_item_name.as_ref().unwrap(), expected);
+#[test]
+fn test_err_02() {
+  assert_eq!(
+    "RecognizerError: character ' ' is not allowed in ['─', '┴']",
+    Recognizer::recognize(&String::from(EX_ERR_02)).err().unwrap().to_string()
+  );
 }
 
-fn eq_hit_policy(recognizer: &Recognizer, expected: HitPolicy) {
-  assert_eq!(recognizer.hit_policy, expected);
+#[test]
+fn test_err_03() {
+  assert_eq!(
+    "RecognizerError: rectangle is not closed, start point: (0,1), end point: (0,0)",
+    Recognizer::recognize(&String::from(EX_ERR_03)).err().unwrap().to_string()
+  );
 }
-
-fn eq_orientation(recognizer: &Recognizer, expected: DecisionTableOrientation) {
-  assert_eq!(recognizer.orientation, expected);
-}
-
-fn eq_output_label(recognizer: &Recognizer, expected: &str) {
-  assert!(recognizer.output_label.is_some());
-  assert_eq!(recognizer.output_label.as_ref().unwrap(), expected);
-}
-
-fn eq_input_expressions(recognizer: &Recognizer, expected: &[&str]) {
-  eq_vectors(&recognizer.input_expressions, expected);
-}
-
-fn eq_input_values(recognizer: &Recognizer, expected: &[&str]) {
-  eq_vectors(&recognizer.input_values, expected);
-}
-
-fn eq_input_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
-  eq_matrices(&recognizer.input_entries, expected);
-}
-
-fn eq_output_components(recognizer: &Recognizer, expected: &[&str]) {
-  eq_vectors(&recognizer.output_components, expected);
-}
-
-fn eq_output_values(recognizer: &Recognizer, expected: &[&str]) {
-  eq_vectors(&recognizer.output_values, expected);
-}
-
-fn eq_output_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
-  eq_matrices(&recognizer.output_entries, expected);
-}
-
-fn eq_annotations(recognizer: &Recognizer, expected: &[&str]) {
-  eq_vectors(&recognizer.annotations, expected);
-}
-
-fn eq_annotation_entries(recognizer: &Recognizer, expected: &[&[&str]]) {
-  eq_matrices(&recognizer.annotation_entries, expected);
-}
-
-// pub fn debug(recognizer: &Recognizer) {
-//   recognizer.canvas.display_text_layer();
-//   println!("{}", recognizer.plane);
-//   recognizer.trace();
-// }
