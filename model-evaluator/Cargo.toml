@@ -5,7 +5,7 @@ authors.workspace = true
 description = "DMNTK | DMN model evaluator"
 documentation = "https://docs.rs/dmntk-evaluator"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
+license.workspace = true
 edition.workspace = true
 
 [dependencies]

@@ -5,7 +5,7 @@ authors.workspace = true
 description = "DMNTK | FEEL parser"
 documentation = "https://docs.rs/dmntk-feel-parser"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
+license.workspace = true
 edition.workspace = true
 
 [features]

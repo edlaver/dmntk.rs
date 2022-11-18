@@ -21,4 +21,5 @@ members = [
 [workspace.package]
 version = "0.0.46"
 authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+license = "MIT OR Apache-2.0"
 edition = "2021"
