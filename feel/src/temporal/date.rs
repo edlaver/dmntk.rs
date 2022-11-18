@@ -151,7 +151,7 @@ impl FeelDate {
   }
   ///
   pub fn today_local() -> Self {
-    let today = Local::today();
+    let today = Local::now();
     Self(today.year(), today.month() as u8, today.day() as u8)
   }
   ///
@@ -234,7 +234,7 @@ pub fn is_valid_date(year: i32, month: u8, day: u8) -> bool {
   if DateTime::try_from(FeelDate(year, month, day)).is_ok() {
     return true;
   }
-  if year >= -999_999_999 && year <= 999_999_999 {
+  if (-999_999_999..=999_999_999).contains(&year) {
     if let Some(last_day_of_month) = last_day_of_month(year, month) {
       return day <= last_day_of_month;
     }

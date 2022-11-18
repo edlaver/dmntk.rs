@@ -36,7 +36,7 @@ use crate::temporal::date::{is_valid_date, FeelDate};
 use crate::temporal::errors::*;
 use crate::temporal::ym_duration::FeelYearsAndMonthsDuration;
 use crate::temporal::zone::FeelZone;
-use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
+use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
 use dmntk_common::{DmntkError, Result};
 use regex::Regex;
 use std::cmp::Ordering;
@@ -587,11 +587,12 @@ fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
 }
 
 fn date_time_offset(date: (i32, u32, u32), time: (u32, u32, u32, u32), offset: i32) -> Option<DateTime<FixedOffset>> {
-  if let LocalResult::Single(date_time) = FixedOffset::east(offset)
-    .ymd_opt(date.0, date.1, date.2)
-    .and_hms_nano_opt(time.0, time.1, time.2, time.3)
-  {
-    return Some(date_time);
+  if let Some(fixed_offset) = FixedOffset::east_opt(offset) {
+    if let LocalResult::Single(date_time) = fixed_offset.with_ymd_and_hms(date.0, date.1, date.2, time.0, time.1, time.2) {
+      if let Some(date_time_nano) = date_time.with_nanosecond(time.3) {
+        return Some(date_time_nano);
+      }
+    }
   }
   None
 }
@@ -612,15 +613,20 @@ fn get_local_offset(date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option
 /// and UTC time zone at specified date and time.
 fn get_zone_offset(zone_name: &str, date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option<i32> {
   // try to build UTC date and time from specified values
-  if let LocalResult::Single(utc) = Utc.ymd_opt(date.0, date.1, date.2).and_hms_nano_opt(time.0, time.1, time.2, time.3) {
-    // try parse the time zone specified as text
-    if let Ok(tz) = zone_name.parse::<chrono_tz::Tz>() {
-      // build date and time in parsed time zone
-      let zdt = tz.ymd(date.0, date.1, date.2).and_hms_nano(time.0, time.1, time.2, time.3);
-      // calculate the time offset, the result is a chrono::Duration
-      let offset: chrono::Duration = utc.with_timezone(&tz) - zdt;
-      // return seconds
-      return Some(offset.num_seconds() as i32);
+  if let LocalResult::Single(utc_date_time) = Utc.with_ymd_and_hms(date.0, date.1, date.2, time.0, time.1, time.2) {
+    if let Some(utc) = utc_date_time.with_nanosecond(time.3) {
+      // try parse the time zone specified as text
+      if let Ok(tz) = zone_name.parse::<chrono_tz::Tz>() {
+        // build date and time in parsed time zone
+        if let LocalResult::Single(zdt_date_time) = tz.with_ymd_and_hms(date.0, date.1, date.2, time.0, time.1, time.2) {
+          if let Some(zdt) = zdt_date_time.with_nanosecond(time.3) {
+            // calculate the time offset, the result is a chrono::Duration
+            let offset: chrono::Duration = utc.with_timezone(&tz) - zdt;
+            // return seconds
+            return Some(offset.num_seconds() as i32);
+          }
+        }
+      }
     }
   }
   None
