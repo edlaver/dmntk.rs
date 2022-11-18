@@ -6,7 +6,7 @@ description = "DMNTK | Decision table recognizer"
 documentation = "https://docs.rs/dmntk-recognizer"
 repository = "https://github.com/dmntk/dmntk.rs.git"
 license = "MIT OR Apache-2.0"
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 dmntk-common = "0.0.46"

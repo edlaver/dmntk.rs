@@ -6,7 +6,7 @@ description = "DMNTK | Documentation generator"
 documentation = "https://docs.rs/dmntk-model"
 repository = "https://github.com/dmntk/dmntk.rs.git"
 license = "MIT OR Apache-2.0"
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 dmntk-examples = "0.0.46"

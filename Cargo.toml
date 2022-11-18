@@ -21,3 +21,4 @@ members = [
 [workspace.package]
 version = "0.0.46"
 authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+edition = "2021"

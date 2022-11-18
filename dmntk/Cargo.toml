@@ -6,7 +6,7 @@ description = "DMNTK | Decision Model and Notation Toolkit"
 documentation = "https://docs.rs/dmntk"
 repository = "https://github.com/dmntk/dmntk.rs.git"
 license = "MIT OR Apache-2.0"
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
 actix-web = "3.3.2"
