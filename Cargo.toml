@@ -17,3 +17,6 @@ members = [
   "server",
   "workspace"
 ]
+
+[workspace.package]
+version = "0.0.46"
