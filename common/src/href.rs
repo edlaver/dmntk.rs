@@ -33,7 +33,7 @@
 use self::errors::*;
 use crate::DmntkError;
 use std::convert::TryFrom;
-use uriparse::{RelativeReference, URI};
+use uriparse::{RelativeReference, URIReference, URI};
 
 /// Optional reference to an element.
 pub type OptHRef = Option<HRef>;
@@ -64,8 +64,10 @@ impl TryFrom<&str> for HRef {
       let s = relative_reference.to_string();
       return Ok(Self(if s.starts_with('#') { s.strip_prefix('#').unwrap().to_string() } else { s }));
     }
-    if let Ok(uri) = URI::try_from(value) {
-      return Ok(Self(uri.to_string()));
+    if let Ok(uri_reference) = URIReference::try_from(value) {
+      if let Ok(uri) = URI::try_from(uri_reference) {
+        return Ok(Self(uri.to_string()));
+      }
     }
     Err(err_invalid_reference(value))
   }
@@ -93,6 +95,7 @@ mod errors {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::borrow::Borrow;
   use std::convert::TryFrom;
 
   fn assert_href(expected: &str, uri: &str) {
@@ -105,7 +108,6 @@ mod tests {
   fn test_valid_references() {
     assert_href("", "");
     assert_href("ref", "#ref");
-    assert_href(":alfa", ":alfa");
     assert_href("//beta/gamma", "//beta/gamma");
     assert_href("ee412cf7-4dc9-4555-ab90-61907cb5b10e", "#ee412cf7-4dc9-4555-ab90-61907cb5b10e");
     assert_href("_82032dc2-36a7-4477-9392-9921353c4b44", "#_82032dc2-36a7-4477-9392-9921353c4b44");
@@ -115,6 +117,7 @@ mod tests {
   #[test]
   fn test_invalid_references() {
     assert!(HRef::try_from("##").is_err());
+    assert!(HRef::try_from(":alfa").is_err());
     assert_eq!("HRefError: invalid reference '##'", HRef::try_from("##").err().unwrap().to_string());
   }
 
@@ -144,7 +147,7 @@ mod tests {
   fn test_href_clone() {
     let href_src = HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
     let href_dst = href_src.clone();
-    let actual: String = (&href_dst).into();
+    let actual: String = href_dst.borrow().into();
     assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
   }
 }

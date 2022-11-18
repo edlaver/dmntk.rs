@@ -11,5 +11,5 @@ edition = "2021"
 [dependencies]
 serde = "1.0.130"
 serde_derive = "1.0.130"
-serde_yaml = "0.8.21"
+serde_yaml = "0.9.14"
 uriparse = "0.6.3"
