@@ -17,12 +17,17 @@ tasks:
   build:
     desc: Builds in debug mode
     cmds:
-      - cmd: cargo build
+      - cmd: cargo build --workspace
 
   clean:
     desc: Cleans all targets
     cmds:
       - cmd: cargo clean
+
+  clippy:
+    desc: Runs clippy for all targets
+    cmds:
+      - cmd: cargo clippy --workspace --all-targets
 
   cov:
     desc: Runs code coverage using grcov
@@ -43,6 +48,11 @@ tasks:
     desc: Runs code coverage using grcov for dmntk-feel-evaluator
     cmds:
       - cmd: ./coverage.sh dmntk-feel-evaluator
+
+  fmt:
+    desc: Runs code formatter
+    cmds:
+      - cmd: cargo fmt
 
   tcov:
     desc: Runs code coverage using tarpaulin
@@ -113,13 +123,3 @@ tasks:
     desc: Runs tests in debug and quiet mode
     cmds:
       - cmd: cargo test -q
-
-  clippy:
-    desc: Runs clippy for all targets
-    cmds:
-      - cmd: cargo clippy --all-targets
-
-  fmt:
-    desc: Runs code formatter
-    cmds:
-      - cmd: cargo fmt
