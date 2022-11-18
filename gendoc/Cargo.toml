@@ -9,5 +9,5 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-dmntk-examples = "0.0.46"
-dmntk-model = "0.0.46"
+dmntk-examples.workspace = true
+dmntk-model.workspace = true

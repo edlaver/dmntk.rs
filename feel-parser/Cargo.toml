@@ -12,8 +12,8 @@ edition.workspace = true
 parsing-tables = []
 
 [dependencies]
-dmntk-common = "0.0.46"
-dmntk-feel = "0.0.46"
+dmntk-common.workspace = true
+dmntk-feel.workspace = true
 
 [dev-dependencies]
 difference = "2.0.0"

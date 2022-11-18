@@ -9,7 +9,7 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-dmntk-common = "0.0.46"
+dmntk-common.workspace = true
 libc = "0.2.112"
 lazy_static = "1.4.0"
 

@@ -9,8 +9,8 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-dmntk-common = "0.0.46"
-dmntk-examples = "0.0.46"
-dmntk-feel = "0.0.46"
-dmntk-feel-parser = "0.0.46"
-roxmltree = "0.14.1"
+dmntk-common.workspace = true
+dmntk-examples.workspace = true
+dmntk-feel.workspace = true
+dmntk-feel-parser.workspace = true
+roxmltree = "0.15.1"

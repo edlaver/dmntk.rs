@@ -722,7 +722,7 @@ dependencies = [
  "dmntk-workspace 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_derive",
- "serde_yaml 0.8.26",
+ "serde_yaml 0.9.14",
  "thiserror",
 ]
 
@@ -917,7 +917,7 @@ dependencies = [
  "dmntk-examples 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
- "roxmltree",
+ "roxmltree 0.15.1",
 ]
 
 [[package]]
@@ -930,7 +930,7 @@ dependencies = [
  "dmntk-examples 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
- "roxmltree",
+ "roxmltree 0.14.1",
 ]
 
 [[package]]
@@ -1023,7 +1023,7 @@ name = "dmntk-workspace"
 version = "0.0.46"
 dependencies = [
  "dmntk-common 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-examples 0.0.46",
+ "dmntk-examples 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-evaluator 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-model 0.0.46 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1871,6 +1871,15 @@ name = "roxmltree"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "921904a62e410e37e215c40381b7117f830d9d89ba60ab5236170541dd25646b"
+dependencies = [
+ "xmlparser",
+]
+
+[[package]]
+name = "roxmltree"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6b9de9831a129b122e7e61f242db509fa9d0838008bf0b29bb0624669edfe48a"
 dependencies = [
  "xmlparser",
 ]
