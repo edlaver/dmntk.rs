@@ -1,7 +1,7 @@
 [package]
 name = "dmntk-gendoc"
 version.workspace = true
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+authors.workspace = true
 description = "DMNTK | Documentation generator"
 documentation = "https://docs.rs/dmntk-model"
 repository = "https://github.com/dmntk/dmntk.rs.git"

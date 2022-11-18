@@ -1,7 +1,7 @@
 [package]
 name = "dmntk"
 version.workspace = true
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+authors.workspace = true
 description = "DMNTK | Decision Model and Notation Toolkit"
 documentation = "https://docs.rs/dmntk"
 repository = "https://github.com/dmntk/dmntk.rs.git"

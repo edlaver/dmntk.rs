@@ -1,7 +1,7 @@
 [package]
 name = "dmntk-workspace"
-version = "0.0.46"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | Workspace"
 documentation = "https://docs.rs/dmntk-workspace"
 repository = "https://github.com/dmntk/dmntk.rs.git"

@@ -1,7 +1,7 @@
 [package]
 name = "dmntk-evaluator"
 version.workspace = true
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+authors.workspace = true
 description = "DMNTK | FEEL and DMN model evaluator"
 documentation = "https://docs.rs/dmntk-evaluator"
 repository = "https://github.com/dmntk/dmntk.rs.git"
