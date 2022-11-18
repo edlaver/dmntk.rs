@@ -964,7 +964,7 @@ fn is_digit(ch: char) -> bool {
 
 /// Returns **true** when the specified character is a hexadecimal digit.
 fn is_hex_digit(ch: char) -> bool {
-  ch.is_digit(16)
+  ch.is_ascii_hexdigit()
 }
 
 /// Returns `true` when the specified character is a keyword `not` separator,
