@@ -1,16 +1,16 @@
 [package]
 name = "dmntk-model"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | DMN model and parser"
 documentation = "https://docs.rs/dmntk-model"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-dmntk-common = { path = "../common" }
-dmntk-examples = { path = "../examples" }
-dmntk-feel = { path = "../feel" }
-dmntk-feel-parser = { path = "../feel-parser" }
-roxmltree = "0.14.1"
+dmntk-common.workspace = true
+dmntk-examples.workspace = true
+dmntk-feel.workspace = true
+dmntk-feel-parser.workspace = true
+roxmltree = "0.15.0"
