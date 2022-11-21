@@ -106,7 +106,7 @@ fn lalr_c_tables() -> String {
 /// ```
 pub fn lalr_rust_tables(output_file: &str) {
   let lalr_rust_tables = crate::extractor::extract(&lalr_c_tables());
-  fs::write(output_file, &lalr_rust_tables).expect("writing output file failed");
+  fs::write(output_file, lalr_rust_tables).expect("writing output file failed");
 }
 
 #[cfg(test)]

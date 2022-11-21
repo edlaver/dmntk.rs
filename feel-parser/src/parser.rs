@@ -211,7 +211,7 @@ impl<'parser> Parser<'parser> {
           trace!(self, "  value_stack={:?}", self.yy_value_stack);
           trace!(self, "  node_stack={:?}", self.yy_node_stack);
           //
-          let yy_token_code = self.yy_token as i16;
+          let yy_token_code = self.yy_token;
           self.yy_n += yy_token_code;
           if self.yy_n < 0 || YY_LAST < self.yy_n || YY_CHECK[self.yy_n as usize] != yy_token_code {
             action = Action::Default;
@@ -268,7 +268,7 @@ impl<'parser> Parser<'parser> {
           }
           // keep yy_len = 0
           self.yy_len = 0;
-          let yy_lhs = (YY_R1[self.yy_n as usize] as usize) - (YY_N_TOKENS as usize);
+          let yy_lhs = (YY_R1[self.yy_n as usize] as usize) - YY_N_TOKENS;
           let top_state = self.yy_state_stack[self.yy_state_stack.len() - 1] as i16;
           let yy_i = YY_P_GOTO[yy_lhs] + top_state;
           // calculate the new state number
