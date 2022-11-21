@@ -1,18 +1,18 @@
 [package]
 name = "dmntk-feel"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | FEEL definitions"
 documentation = "https://docs.rs/dmntk-feel"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
 ascii_tree = "0.1.1"
-chrono = "0.4.22"
-chrono-tz = "0.6.3"
-dmntk-common = { path = "../common" }
-dmntk-feel-number = { path = "../feel-number" }
+chrono = "0.4.23"
+chrono-tz = "0.8.0"
+dmntk-common.workspace = true
+dmntk-feel-number.workspace = true
 lazy_static = "1.4.0"
-regex = "1.6.0"
+regex = "1.7.0"

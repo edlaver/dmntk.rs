@@ -147,7 +147,7 @@ impl FeelDate {
   }
   ///
   pub fn today_local() -> Self {
-    let today = Local::today();
+    let today = Local::now();
     Self(today.year() as Year, today.month() as Month, today.day() as Day)
   }
   ///

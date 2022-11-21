@@ -1,9 +1,9 @@
 [package]
 name = "dmntk-examples"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | Examples"
 documentation = "https://docs.rs/dmntk-examples"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true

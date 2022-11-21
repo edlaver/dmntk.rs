@@ -1,16 +1,16 @@
 [package]
 name = "dmntk-evaluator"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | FEEL and DMN model evaluator"
 documentation = "https://docs.rs/dmntk-evaluator"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-dmntk-common = { path = "../common" }
-dmntk-feel = { path = "../feel" }
-dmntk-feel-evaluator = { path = "../feel-evaluator" }
-dmntk-feel-parser = { path = "../feel-parser" }
-dmntk-model-evaluator = { path = "../model-evaluator" }
+dmntk-common.workspace = true
+dmntk-feel.workspace = true
+dmntk-feel-evaluator.workspace = true
+dmntk-feel-parser.workspace = true
+dmntk-model-evaluator.workspace = true
