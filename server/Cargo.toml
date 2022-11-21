@@ -1,21 +1,21 @@
 [package]
 name = "dmntk-server"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | API server"
 documentation = "https://docs.rs/dmntk-server"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
 actix-web = "4.2.1"
-base64 = "0.13.0"
-dmntk-common = { path = "../common" }
-dmntk-evaluator = { path = "../evaluator" }
-dmntk-feel = { path = "../feel" }
-dmntk-feel-parser = { path = "../feel-parser" }
-dmntk-model = { path = "../model" }
-dmntk-workspace = { path = "../workspace" }
-serde = { version = "1.0.145", features = ["derive"] }
-serde_json = "1.0.85"
+base64 = "0.13.1"
+dmntk-common.workspace = true
+dmntk-evaluator.workspace = true
+dmntk-feel.workspace = true
+dmntk-feel-parser.workspace = true
+dmntk-model.workspace = true
+dmntk-workspace.workspace = true
+serde.workspace = true
+serde_json.workspace = true

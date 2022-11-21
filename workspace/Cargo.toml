@@ -1,20 +1,20 @@
 [package]
 name = "dmntk-workspace"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | Workspace"
 documentation = "https://docs.rs/dmntk-workspace"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-dmntk-common = { path = "../common" }
-dmntk-feel = { path = "../feel" }
-dmntk-feel-evaluator = { path = "../feel-evaluator" }
-dmntk-model = { path = "../model" }
-dmntk-model-evaluator = { path = "../model-evaluator" }
+dmntk-common.workspace = true
+dmntk-feel.workspace = true
+dmntk-feel-evaluator.workspace = true
+dmntk-model.workspace = true
+dmntk-model-evaluator.workspace = true
 walkdir = "2.3.2"
 
 [dev-dependencies]
-dmntk-examples = { path = "../examples" }
+dmntk-examples.workspace = true

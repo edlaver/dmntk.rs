@@ -1,16 +1,16 @@
 [package]
 name = "dmntk-recognizer"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | Decision table recognizer"
 documentation = "https://docs.rs/dmntk-recognizer"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-dmntk-common = { path = "../common" }
-dmntk-model = { path = "../model" }
+dmntk-common.workspace = true
+dmntk-model.workspace = true
 
 [dev-dependencies]
-dmntk-examples = { path = "../examples" }
+dmntk-examples.workspace = true
