@@ -17,12 +17,17 @@ tasks:
   build:
     desc: Builds in debug mode
     cmds:
-      - cmd: cargo build
+      - cmd: cargo build --workspace
 
   clean:
     desc: Cleans all targets
     cmds:
       - cmd: cargo clean
+
+  clippy:
+    desc: Runs clippy for all targets
+    cmds:
+      - cmd: cargo clippy --workspace --all-targets
 
   cov:
     desc: Runs code coverage using grcov
@@ -115,6 +120,7 @@ tasks:
   release:
     desc: Builds in release mode
     cmds:
+      - cmd: cargo clean
       - cmd: cargo +stable build --release
 
   run:
@@ -130,19 +136,9 @@ tasks:
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo test
+      - cmd: cargo test --workspace
 
-  test-quiet:
+  testq:
     desc: Runs tests in debug and quiet mode
     cmds:
-      - cmd: cargo test -q
-
-  clippy:
-    desc: Runs clippy for all targets
-    cmds:
-      - cmd: cargo clippy --workspace --all-targets
-
-  fmt:
-    desc: Runs code formatter
-    cmds:
-      - cmd: cargo fmt
+      - cmd: cargo test --workspace -q

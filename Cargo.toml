@@ -17,3 +17,6 @@ members = [
   "server",
   "workspace"
 ]
+
+[workspace.dependencies]
+dmntk-common = { path = "common" }
