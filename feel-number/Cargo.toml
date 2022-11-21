@@ -1,13 +1,13 @@
 [package]
 name = "dmntk-feel-number"
-version = "0.0.47-dev"
-authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
+version.workspace = true
+authors.workspace = true
 description = "DMNTK | FEEL number"
 documentation = "https://docs.rs/dmntk-feel-number"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
-dmntk-common = { path = "../common" }
+dmntk-common.workspace = true
 dfp-number-sys = "0.0.10"
