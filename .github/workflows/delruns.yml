@@ -1,7 +1,11 @@
 name: Delete workflow runs
 on:
-  schedule:
-    - cron: '0 0 1 * *'
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   del_runs:
