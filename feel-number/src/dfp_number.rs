@@ -504,7 +504,7 @@ impl From<isize> for FeelNumber {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: isize) -> Self {
-    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+    compile_error!("Implement conversion from isize for other architectures as 64-bit")
   }
 }
 
@@ -517,7 +517,7 @@ impl From<usize> for FeelNumber {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: usize) -> Self {
-    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+    compile_error!("Implement conversion from isize for other architectures as 64-bit")
   }
 }
 
@@ -696,7 +696,7 @@ impl TryFrom<&FeelNumber> for usize {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-    compile_error!(Implement conversion from usize for other architecutes as 64-bit)
+    compile_error!("Implement conversion from usize for other architectures as 64-bit")
   }
 }
 
@@ -723,6 +723,6 @@ impl TryFrom<&FeelNumber> for isize {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-    compile_error!(Implement conversion from isize for other architecutes as 64-bit)
+    compile_error!("Implement conversion from isize for other architectures as 64-bit")
   }
 }

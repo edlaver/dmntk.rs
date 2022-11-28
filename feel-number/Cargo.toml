@@ -10,4 +10,4 @@ edition.workspace = true
 
 [dependencies]
 dmntk-common.workspace = true
-dfp-number-sys = "0.0.10"
+dfp-number-sys = "0.0.11"
