@@ -84,8 +84,11 @@ fn _0013() {
 fn _0014() {
   assert_eq!(27_u8, u8::try_from(num!(27)).unwrap());
   assert!(u8::try_from(num!(0)).is_ok());
+  assert_eq!(0, u8::try_from(num!(0)).unwrap());
   assert!(u8::try_from(num!(0.999)).is_ok());
+  assert_eq!(0, u8::try_from(num!(0.999)).unwrap());
   assert!(u8::try_from(num!(255)).is_ok());
+  assert_eq!(255, u8::try_from(num!(255)).unwrap());
   assert!(u8::try_from(num!(256)).is_err());
   assert!(u8::try_from(num!(4294967296)).is_err());
 }

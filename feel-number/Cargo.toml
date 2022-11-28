@@ -8,6 +8,11 @@ repository = "https://github.com/dmntk/dmntk.rs.git"
 license.workspace = true
 edition.workspace = true
 
+[features]
+dec-number = ["dec-number-sys"]
+dfp-number = ["dfp-number-sys"]
+
 [dependencies]
 dmntk-common.workspace = true
-dfp-number-sys = "0.0.11"
+dec-number-sys = { version = "0.0.25", optional = true }
+dfp-number-sys = { version = "0.0.11", optional = true }

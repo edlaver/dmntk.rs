@@ -30,9 +30,22 @@
  * limitations under the License.
  */
 
+#[cfg(feature = "dec-number")]
+extern crate dec_number_sys;
+
+#[cfg(feature = "dfp-number")]
 extern crate dfp_number_sys;
 
+#[cfg(feature = "dec-number")]
+mod dec_number;
+
+#[cfg(feature = "dfp-number")]
 mod dfp_number;
+
 mod errors;
 
+#[cfg(feature = "dec-number")]
+pub use dec_number::FeelNumber;
+
+#[cfg(feature = "dfp-number")]
 pub use dfp_number::FeelNumber;
