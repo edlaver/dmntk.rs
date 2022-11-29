@@ -9,8 +9,9 @@ license.workspace = true
 edition.workspace = true
 
 [features]
-dec-number = ["dec-number-sys"]
-dfp-number = ["dfp-number-sys"]
+default = []
+dec = ["dec-number-sys"]
+dfp = ["dfp-number-sys"]
 
 [dependencies]
 dmntk-common.workspace = true

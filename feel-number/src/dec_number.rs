@@ -190,13 +190,18 @@ impl FeelNumber {
   ///
   pub fn pow(&self, rhs: &FeelNumber) -> Option<Self> {
     unsafe {
+      //TODO verify why in this case the library returns NaN
+      if decQuadIsZero(&self.0) == 1 && decQuadIsZero(&rhs.0) == 1 {
+        return Some(Self(DEC_QUAD_ONE));
+      }
       let mut n1 = DecNumber::default();
       let mut n2 = DecNumber::default();
+      let mut n3 = DecNumber::default();
       let mut dq = DecQuad::default();
       decimal128ToNumber(&self.0, &mut n1);
       decimal128ToNumber(&rhs.0, &mut n2);
-      decNumberPower(&mut n1, &n1, &n2, ctx!());
-      decimal128FromNumber(&mut dq, &n1, ctx!());
+      decNumberPower(&mut n3, &n1, &n2, ctx!());
+      decimal128FromNumber(&mut dq, &n3, ctx!());
       if decQuadIsFinite(&dq) == 1 {
         decQuadReduce(&mut dq, &dq, ctx!());
         Some(Self(dq))
@@ -547,37 +552,14 @@ impl From<usize> for FeelNumber {
   }
 }
 
-macro_rules! try_from_feel_number {
-  ($l:tt) => {
-    impl TryFrom<FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-        $l::try_from(&value)
-      }
-    }
-
-    impl TryFrom<&FeelNumber> for $l {
-      type Error = DmntkError;
-      fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-        return value.to_string().parse::<$l>().map_err(|_| err_number_conversion_failed());
-      }
-    }
-  };
-}
-
-try_from_feel_number!(isize);
-try_from_feel_number!(usize);
-try_from_feel_number!(u64);
-try_from_feel_number!(i64);
-
-impl TryFrom<FeelNumber> for u32 {
+impl TryFrom<FeelNumber> for u8 {
   type Error = DmntkError;
   fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-    u32::try_from(&value)
+    u8::try_from(&value)
   }
 }
 
-impl TryFrom<&FeelNumber> for u32 {
+impl TryFrom<&FeelNumber> for u8 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let ctx = ctx!();
@@ -585,18 +567,18 @@ impl TryFrom<&FeelNumber> for u32 {
     if dec_context_get_status(ctx) != 0 {
       return Err(err_number_conversion_failed());
     }
-    u32::try_from(v).map_err(|_| err_number_conversion_failed())
+    u8::try_from(v).map_err(|_| err_number_conversion_failed())
   }
 }
 
-impl TryFrom<FeelNumber> for i32 {
+impl TryFrom<FeelNumber> for i8 {
   type Error = DmntkError;
   fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-    i32::try_from(&value)
+    i8::try_from(&value)
   }
 }
 
-impl TryFrom<&FeelNumber> for i32 {
+impl TryFrom<&FeelNumber> for i8 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let ctx = ctx!();
@@ -604,7 +586,7 @@ impl TryFrom<&FeelNumber> for i32 {
     if dec_context_get_status(ctx) != 0 {
       return Err(err_number_conversion_failed());
     }
-    i32::try_from(v).map_err(|_| err_number_conversion_failed())
+    i8::try_from(v).map_err(|_| err_number_conversion_failed())
   }
 }
 
@@ -646,14 +628,14 @@ impl TryFrom<&FeelNumber> for i16 {
   }
 }
 
-impl TryFrom<FeelNumber> for u8 {
+impl TryFrom<FeelNumber> for u32 {
   type Error = DmntkError;
   fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-    u8::try_from(&value)
+    u32::try_from(&value)
   }
 }
 
-impl TryFrom<&FeelNumber> for u8 {
+impl TryFrom<&FeelNumber> for u32 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let ctx = ctx!();
@@ -661,18 +643,18 @@ impl TryFrom<&FeelNumber> for u8 {
     if dec_context_get_status(ctx) != 0 {
       return Err(err_number_conversion_failed());
     }
-    u8::try_from(v).map_err(|_| err_number_conversion_failed())
+    u32::try_from(v).map_err(|_| err_number_conversion_failed())
   }
 }
 
-impl TryFrom<FeelNumber> for i8 {
+impl TryFrom<FeelNumber> for i32 {
   type Error = DmntkError;
   fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
-    i8::try_from(&value)
+    i32::try_from(&value)
   }
 }
 
-impl TryFrom<&FeelNumber> for i8 {
+impl TryFrom<&FeelNumber> for i32 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let ctx = ctx!();
@@ -680,6 +662,86 @@ impl TryFrom<&FeelNumber> for i8 {
     if dec_context_get_status(ctx) != 0 {
       return Err(err_number_conversion_failed());
     }
-    i8::try_from(v).map_err(|_| err_number_conversion_failed())
+    i32::try_from(v).map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for u64 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    u64::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for u64 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let ctx = ctx!();
+    let v = dec_quad_to_integral_value(&value.0, ctx, DEC_ROUND_DOWN);
+    if dec_context_get_status(ctx) != 0 {
+      return Err(err_number_conversion_failed());
+    }
+    let s = dec_quad_to_string(&v);
+    s.parse::<u64>().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for i64 {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    i64::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for i64 {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let ctx = ctx!();
+    let v = dec_quad_to_integral_value(&value.0, ctx, DEC_ROUND_DOWN);
+    if dec_context_get_status(ctx) != 0 {
+      return Err(err_number_conversion_failed());
+    }
+    let s = dec_quad_to_string(&v);
+    s.parse::<i64>().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for usize {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    usize::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for usize {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let ctx = ctx!();
+    let v = dec_quad_to_integral_value(&value.0, ctx, DEC_ROUND_DOWN);
+    if dec_context_get_status(ctx) != 0 {
+      return Err(err_number_conversion_failed());
+    }
+    let s = dec_quad_to_string(&v);
+    s.parse::<usize>().map_err(|_| err_number_conversion_failed())
+  }
+}
+
+impl TryFrom<FeelNumber> for isize {
+  type Error = DmntkError;
+  fn try_from(value: FeelNumber) -> Result<Self, Self::Error> {
+    isize::try_from(&value)
+  }
+}
+
+impl TryFrom<&FeelNumber> for isize {
+  type Error = DmntkError;
+  fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
+    let ctx = ctx!();
+    let v = dec_quad_to_integral_value(&value.0, ctx, DEC_ROUND_DOWN);
+    if dec_context_get_status(ctx) != 0 {
+      return Err(err_number_conversion_failed());
+    }
+    let s = dec_quad_to_string(&v);
+    s.parse::<isize>().map_err(|_| err_number_conversion_failed())
   }
 }

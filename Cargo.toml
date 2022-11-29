@@ -31,7 +31,7 @@ dmntk-examples = { path = "examples" }
 dmntk-feel = { path = "feel" }
 dmntk-feel-evaluator = { path = "feel-evaluator" }
 dmntk-feel-grammar = { path = "feel-grammar" }
-dmntk-feel-number = { path = "feel-number" }
+dmntk-feel-number = { path = "feel-number", features = ["dfp"]}
 dmntk-feel-parser = { path = "feel-parser" }
 dmntk-gendoc = { path = "gendoc" }
 dmntk-model = { path = "model" }
