@@ -38,40 +38,16 @@ fn test_to_string_007() {
 }
 
 #[test]
-#[cfg(feature = "dfp")]
 fn test_to_string_008() {
   assert_eq!("50.10", format!("{:.2}", num!(50.1)));
 }
 
 #[test]
-#[cfg(feature = "dec")]
-fn test_to_string_008() {
-  //TODO fix me like in dfp
-  assert_eq!("50.1", format!("{:.2}", num!(50.1)));
-}
-
-#[test]
-#[cfg(feature = "dfp")]
 fn test_to_string_009() {
   assert_eq!("50.123456", format!("{:.6}", num!(50.123456789)));
 }
 
 #[test]
-#[cfg(feature = "dec")]
-fn test_to_string_009() {
-  //TODO fix me like in dfp
-  assert_eq!("50.123456789", format!("{:.6}", num!(50.123456789)));
-}
-
-#[test]
-#[cfg(feature = "dfp")]
 fn test_to_string_010() {
   assert_eq!("  50.1", format!("{:>6}", num!(50.1)));
-}
-
-#[test]
-#[cfg(feature = "dec")]
-fn test_to_string_010() {
-  //TODO fix me like in dfp
-  assert_eq!("50.1", format!("{:>6}", num!(50.1)));
 }

@@ -154,7 +154,7 @@ fn test_display() {
   eq_dsp!(r#"UnaryGreater"#, Value::UnaryGreater(b_number.clone()));
   eq_dsp!(r#"UnaryGreaterOrEqual"#, Value::UnaryGreaterOrEqual(b_number.clone()));
   eq_dsp!(r#"UnaryLess"#, Value::UnaryLess(b_number.clone()));
-  eq_dsp!(r#"UnaryLessOrEqual"#, Value::UnaryLessOrEqual(b_number));
+  eq_dsp!(r#"UnaryLessOrEqual(1)"#, Value::UnaryLessOrEqual(b_number));
   eq_dsp!(r#"P3Y2M"#, Value::YearsAndMonthsDuration(v_years_and_months_duration));
 }
 

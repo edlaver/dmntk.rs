@@ -267,7 +267,7 @@ impl std::fmt::Display for Value {
       Value::UnaryGreater(_) => write!(f, "UnaryGreater"),
       Value::UnaryGreaterOrEqual(_) => write!(f, "UnaryGreaterOrEqual"),
       Value::UnaryLess(_) => write!(f, "UnaryLess"),
-      Value::UnaryLessOrEqual(_) => write!(f, "UnaryLessOrEqual"),
+      Value::UnaryLessOrEqual(value) => write!(f, "UnaryLessOrEqual({})", value),
       Value::YearsAndMonthsDuration(ym_duration) => write!(f, "{}", ym_duration),
     }
   }

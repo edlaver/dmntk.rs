@@ -1836,6 +1836,12 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let h = hour.try_into().unwrap();
               let m = minute.try_into().unwrap();
               let s = seconds.try_into().unwrap();
+              println!("kuku");
+              println!("{}", second.frac());
+              println!("{}", second.frac() * FeelNumber::billion());
+              println!("{}", (second.frac() * FeelNumber::billion()).trunc());
+              let a: u64 = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
+              println!("{}", a);
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
                 Value::DaysAndTimeDuration(offset) => {

@@ -509,16 +509,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dec-number-sys"
-version = "0.0.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "911c33752bf08b1ceff261a0dbfe6fdc91852eea24c774b3e76c4d39d644a392"
-dependencies = [
- "cc",
- "libc",
-]
-
-[[package]]
 name = "derive_more"
 version = "0.99.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -640,7 +630,6 @@ dependencies = [
 name = "dmntk-feel-number"
 version = "0.0.47-dev"
 dependencies = [
- "dec-number-sys",
  "dfp-number-sys",
  "dmntk-common",
 ]

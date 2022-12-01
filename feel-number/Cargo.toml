@@ -9,11 +9,7 @@ license.workspace = true
 edition.workspace = true
 
 [features]
-default = []
-dec = ["dec-number-sys"]
-dfp = ["dfp-number-sys"]
 
 [dependencies]
 dmntk-common.workspace = true
-dec-number-sys = { version = "0.0.25", optional = true }
-dfp-number-sys = { version = "0.0.11", optional = true }
+dfp-number-sys = "0.0.11"
