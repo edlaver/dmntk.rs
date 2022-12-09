@@ -32,11 +32,11 @@
 
 //! Parsing tables generator for `LALR` parser written in Rust.
 
-#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cfg(target_os = "linux")]
 use std::fs::Permissions;
 use std::fs::{self, File};
 use std::io::Write;
-#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cfg(target_os = "linux")]
 use std::os::unix::fs::PermissionsExt;
 
 /// Holds the content of `FEEL` grammar in Bison compatible format.
@@ -58,7 +58,7 @@ const TABLES_FILE_NAME: &str = "feel.tab.c";
 const TARGET_DIR: &str = "../target/feel-grammar";
 
 ///
-#[cfg(any(target_os = "linux", target_os = "macos"))]
+#[cfg(target_os = "linux")]
 fn set_file_permissions(file_name: &str) {
   fs::set_permissions(file_name, Permissions::from_mode(0o755)).expect("setting script permissions failed");
 }
@@ -66,7 +66,12 @@ fn set_file_permissions(file_name: &str) {
 ///
 #[cfg(target_os = "windows")]
 fn set_file_permissions(_file_name: &str) {
-  //compile_error!("Implement file permissions for Windows")
+  //TODO remove or do something with this
+}
+
+///
+#[cfg(target_os = "macos")]
+fn set_file_permissions(_file_name: &str) {
   //TODO remove or do something with this
 }
 
