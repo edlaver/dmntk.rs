@@ -15,18 +15,17 @@
 [apache-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-APACHE
 [build-badge]: https://github.com/dmntk/dmntk.rs/actions/workflows/build.yml/badge.svg
 [tests-badge]: https://github.com/dmntk/dmntk.rs/actions/workflows/tests.yml/badge.svg
-[coverage-badge]: https://img.shields.io/badge/Coverage-100%25-green.svg
+[coverage-badge]: https://img.shields.io/badge/Coverage-84%25-green.svg
 
 ## Overview
 
-**DMNTK** is a set of tools for building, testing and evaluating decision models.
-**DMNTK** is based on the [Decision Model and Notation (DMN™)](https://www.omg.org/dmn/) specification,
-the industry standard led by the [Object Management Group (OMG®)](https://www.omg.org/),
+**DMNTK** is a set of tools for evaluating, building, and testing decision models.
+**DMNTK** is based on the [Decision Model and Notation (DMN™)](https://www.omg.org/dmn/)
+specification, the industry standard led by the [Object Management Group (OMG®)](https://www.omg.org/),
 the institution behind such standards like UML®, BPMN™ and CORBA®.
-**DMNTK** is written in [Rust](https://www.rust-lang.org/), a programming language that empowers
-building reliable and efficient software.
-**DMNTK** aspires to be the fastest and fully compliant with [DMN™ specification](https://www.omg.org/spec/DMN)
-decision model evaluator.
+**DMNTK** aspires to be performant, reliable and fully compliant with
+[DMN™](https://www.omg.org/spec/DMN) specification, decision model evaluator.
+**DMNTK** is written in [Rust](https://www.rust-lang.org/).
 
 Main **DMNTK** features:
 
@@ -48,7 +47,7 @@ Main **DMNTK** features:
 **DMNTK** ships as a single executable with no dependencies.
 
 Binary version of **DMNTK** may be
-- obtained directly from [GitHub releases](https://github.com/dmntk/dmntk.rs/releases),
+- obtained directly from [GitHub releases](https://github.com/dmntk/dmntk.rs/releases), or
 - built and installed from source using [Cargo](https://crates.io/crates/dmntk).
 
 ### Installing DMNTK using [Cargo](https://crates.io/crates/dmntk):
@@ -59,41 +58,40 @@ $ cargo install dmntk
 
 ## Getting started
 
-**DMNTK** provides examples ready to play with.
+**DMNTK** provides few examples, ready to play with.
+To install examples run:
 
-To install the examples run:
-
-```
+```shell
 $ dmntk exs
 ```
 
-### Evaluate FEEL expression
+### Evaluate example FEEL expression
 
-```text
+```shell
 $ cd ./examples/e1
 $ dmntk efe e1.ctx e1.feel
 3
 ```
 
-### Evaluate DMN model
+### Evaluate example DMN model
 
-```text
+```shell
 $ cd ./examples/e2
 $ dmntk edm e2.ctx e2.dmn -i "Greeting Message"
 "Hello John Doe"
 ```
 
-### Evaluate decision table
+### Evaluate example decision table
 
-```text
+```shell
 $ cd ./examples/e3
 $ dmntk edt e3.ctx e3.dtb
 0.15
 ```
 
-### Run as a service
+### Run DMNTK as a service
 
-```text
+```shell
 $ cd ./examples/e2
 $ dmntk srv -H 127.0.0.1 -D .
 Loaded 1 file(s) from directory: .
@@ -102,14 +100,14 @@ dmntk 127.0.0.1:22022
 
 Switch to another terminal window and run:
 
-```text
+```shell
 $ curl -s -d "{\"Full Name\":\"John Doe\"}" -H "Content-Type: application/json" -X POST http://127.0.0.1:22022/evaluate/compliance-level-2-test-0001/Greeting%20Message
 {"data":"Hello John Doe"}
 ```
 
 ## Documentation
 
-**DMNTK** documentation can be found on [dmntk.io](https://dmntk.io).
+More detailed documentation can be found on [dmntk.io](https://dmntk.io).
 
 ## License
 
