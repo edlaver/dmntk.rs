@@ -97,7 +97,3 @@ pub fn err_empty_value_expression() -> DmntkError {
 pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {
   ModelEvaluatorError(format!("read lock failed with reason '{}'", reason.to_string())).into()
 }
-
-pub fn err_write_lock_failed(reason: impl ToString) -> DmntkError {
-  ModelEvaluatorError(format!("write lock failed with reason '{}'", reason.to_string())).into()
-}
