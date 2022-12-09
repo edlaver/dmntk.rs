@@ -175,56 +175,71 @@ pub async fn do_action() -> std::io::Result<()> {
 #[rustfmt::skip]
 fn get_matches() -> ArgMatches {
   command!().name("dmntk").version(DMNTK_VERSION).about(DMNTK_DESCRIPTION)
+    // pfe
     .subcommand(Command::new("pfe").about("Parse FEEL Expression").display_order(7)
       .arg(arg!(<CONTEXT_FILE>).help("File containing context for parsed FEEL expression").required(true).index(1))
       .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be parsed").required(true).index(2)))
+    // efe
     .subcommand(Command::new("efe").about("Evaluate FEEL Expression").display_order(4)
       .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated FEEL expression").required(true).index(1))
       .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be evaluated").required(true).index(2)))
+    // tfe
     .subcommand(Command::new("tfe").about("Test FEEL Expression").display_order(10)
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").required(false).display_order(1))
+      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(1))
       .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(2))
       .arg(arg!(<TEST_FILE>).help("File containing test cases for tested FEEL expression").required(true).index(1))
       .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)))
+    // xfe
     .subcommand(Command::new("xfe").about("eXport FEEL Expression").display_order(13)
       .arg(arg!(<INPUT_FILE>).help("File containing input data for expression to be exported to HTML").required(true).index(1))
       .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be exported to HTML").required(true).index(2))
       .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(3)))
+    // pdm
     .subcommand(Command::new("pdm").about("Parse DMN Model").display_order(5)
       .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(1))
       .arg(arg!(<DMN_FILE>).help("File containing DMN model to be parsed").required(true).index(1)))
+    // edm
     .subcommand(Command::new("edm").about("Evaluate DMN Model").display_order(2)
-      .arg(arg!(-i --invocable).help("Name of the invocable (decision, bkm, decision service) to be evaluated").required(true).action(ArgAction::Set).display_order(1))
+      .arg(arg!(-i --invocable).help("Name of the invocable (decision, bkm, decision service) to be evaluated").action(ArgAction::Set).required(true).display_order(1))
       .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated DMN model").required(true).index(1))
       .arg(arg!(<DMN_FILE>).help("File containing DMN model to be evaluated").required(true).index(2)))
+    // tdm
     .subcommand(Command::new("tdm").about("Test DMN Model").display_order(8)
       .arg(arg!(-i --invocable).help("Name of the invocable to be tested").required(true).action(ArgAction::Set).display_order(1))
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").required(false).display_order(2))
+      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(2))
       .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(3))
       .arg(arg!(<TEST_FILE>).help("File containing test cases for tested DMN model").required(true).index(1))
       .arg(arg!(<DMN_FILE>).help("File containing DMN model to be tested").required(true).index(2)))
+    // xdm
     .subcommand(Command::new("xdm").about("eXport DMN Model").display_order(11)
       .arg(arg!(<DMN_FILE>).help("File containing DMN model to be exported to HTML").required(true).index(1))
       .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)))
+    // pdt
     .subcommand(Command::new("pdt").about("Parse Decision Table").display_order(6)
       .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be parsed").required(true).index(1)))
+    // edt
     .subcommand(Command::new("edt").about("Evaluate Decision Table").display_order(3)
       .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated decision table").required(true).index(1))
       .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be evaluated").required(true).index(2)))
+    // tdt
     .subcommand(Command::new("tdt").about("Test Decision Table").display_order(9)
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").required(false).display_order(1))
+      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(1))
       .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(2))
       .arg(arg!(<TEST_FILE>).help("File containing test cases for tested decision table").required(true).index(1))
       .arg(arg!(<DECTAB_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)))
+    // xdt
     .subcommand(Command::new("xdt").about("eXport Decision Table").display_order(12)
       .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be exported to HTML").required(true).index(1))
       .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)))
+    // rdt
     .subcommand(Command::new("rdt").about("Recognize Decision Table").display_order(14)
       .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be recognized").required(true).index(1)))
+    // srv
     .subcommand(Command::new("srv").about("Run DMNTK as a service").display_order(1)
       .arg(arg!(-H --host).help("Host name").action(ArgAction::Set).display_order(1))
       .arg(arg!(-P --port).help("Port number").action(ArgAction::Set).display_order(2))
       .arg(arg!(-D --dir).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3)))
+    // exs
     .subcommand(Command::new("exs").about("Generate examples in current directory").display_order(15))
     .get_matches()
 }
@@ -259,7 +274,7 @@ fn get_cli_action() -> Action {
       return Action::TestFeelExpression(
         matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
         matches.get_one::<String>("FEEL_FILE").unwrap_or(unknown_feel).to_string(),
-        matches.contains_id("summary"),
+        matches.get_flag("summary"),
         matches.get_one::<String>("color").unwrap_or(auto).to_string(),
       );
     }
@@ -287,7 +302,7 @@ fn get_cli_action() -> Action {
       return Action::TestDecisionTable(
         matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
         matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string(),
-        matches.contains_id("summary"),
+        matches.get_flag("summary"),
         matches.get_one::<String>("color").unwrap_or(auto).to_string(),
       );
     }
@@ -323,7 +338,7 @@ fn get_cli_action() -> Action {
         matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
         matches.get_one::<String>("DMN_FILE").unwrap_or(unknown_dmn).to_string(),
         matches.get_one::<String>("invocable").unwrap_or(unknown).to_string(),
-        matches.contains_id("summary"),
+        matches.get_flag("summary"),
         matches.get_one::<String>("color").unwrap_or(auto).to_string(),
       );
     }
@@ -582,7 +597,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
       Ok(definitions) => {
         println!("\n{color_a}Model{color_r}");
         println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
-        println!("{color_a} ├─ namespace:{} {color_b}{color_r}", definitions.namespace());
+        println!("{color_a} ├─ namespace: {}{color_b}{color_r}", definitions.namespace());
         println!("{color_a} └─ id:{color_b} {}{color_r}", definitions.id().as_ref().unwrap_or(&none));
         // definitions
         if definitions.decisions().is_empty() {
