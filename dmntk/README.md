@@ -67,7 +67,7 @@ $ dmntk exs
 
 ### Evaluate example FEEL expression
 
-```text
+```shell
 $ cd ./examples/e1
 $ dmntk efe e1.ctx e1.feel
 3
@@ -75,7 +75,7 @@ $ dmntk efe e1.ctx e1.feel
 
 ### Evaluate example DMN model
 
-```text
+```shell
 $ cd ./examples/e2
 $ dmntk edm e2.ctx e2.dmn -i "Greeting Message"
 "Hello John Doe"
@@ -83,7 +83,7 @@ $ dmntk edm e2.ctx e2.dmn -i "Greeting Message"
 
 ### Evaluate example decision table
 
-```text
+```shell
 $ cd ./examples/e3
 $ dmntk edt e3.ctx e3.dtb
 0.15
@@ -91,7 +91,7 @@ $ dmntk edt e3.ctx e3.dtb
 
 ### Run DMNTK as a service
 
-```text
+```shell
 $ cd ./examples/e2
 $ dmntk srv -H 127.0.0.1 -D .
 Loaded 1 file(s) from directory: .
@@ -100,7 +100,7 @@ dmntk 127.0.0.1:22022
 
 Switch to another terminal window and run:
 
-```text
+```shell
 $ curl -s -d "{\"Full Name\":\"John Doe\"}" -H "Content-Type: application/json" -X POST http://127.0.0.1:22022/evaluate/compliance-level-2-test-0001/Greeting%20Message
 {"data":"Hello John Doe"}
 ```
