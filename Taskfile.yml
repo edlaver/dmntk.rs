@@ -59,11 +59,6 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-feel-evaluator
 
-  fmt:
-    desc: Runs code formatter
-    cmds:
-      - cmd: cargo +nightly fmt
-
   cov-feel-grammar:
     desc: Runs code coverage using grcov for dmntk-feel-grammar
     cmds:
@@ -73,19 +68,6 @@ tasks:
     desc: Runs code coverage using grcov for dmntk-recognizer
     cmds:
       - cmd: ./coverage.sh dmntk-recognizer
-
-  tcov:
-    desc: Runs code coverage using tarpaulin
-    cmds:
-      - cmd: cargo tarpaulin {{.CLI_ARGS}} --out Html --output-dir ./target/tarpaulin
-
-  tcov-open:
-    desc: Runs code coverage using tarpaulin and opens the coverage report in browser
-    cmds:
-      - cmd: cargo tarpaulin {{.CLI_ARGS}} --out Html --output-dir ./target/tarpaulin
-      - cmd: echo -e '#!/usr/bin/env bash\n \n firefox ./target/tarpaulin/tarpaulin-report.html &' > ./target/tarpaulin/open-report.sh
-      - cmd: chmod +x ./target/tarpaulin/open-report.sh
-      - cmd: ./target/tarpaulin/open-report.sh
 
   doc:
     desc: Generates documentation
@@ -106,6 +88,11 @@ tasks:
     desc: Generates documentation with private items and opens it in browser
     cmds:
       - cmd: cargo doc --no-deps --open --document-private-items
+
+  fmt:
+    desc: Runs code formatter
+    cmds:
+      - cmd: cargo +nightly fmt
 
   install:
     desc: Builds and installs release version
@@ -141,7 +128,7 @@ tasks:
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo +nightly test --workspace
+      - cmd: cargo test --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode
