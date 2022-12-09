@@ -16,12 +16,12 @@ export CARGO_FEATURE_PARSING_TABLES=1
 
 if [ -n "$1" ]; then
   # run tests only for specified package
-  cargo test -p "$1"
+  cargo +nightly test -p "$1"
 else
   # run all tests including including manual tests
-  cargo test
+  cargo +nightly test
   # build the whole binary before running tests
-  cargo build
+  cargo +nightly build
   # run manual tests to collect the coverage of the code executed from command-line
   echo "$MANUAL_TESTS_DIRECTORY"
   if [[ -d "$MANUAL_TESTS_DIRECTORY" ]]
@@ -46,4 +46,4 @@ echo "Open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html
 echo ""
 
 # reformat generated code
-cargo fmt -p dmntk-feel-parser
+cargo +nightly fmt -p dmntk-feel-parser
