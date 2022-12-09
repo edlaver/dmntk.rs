@@ -2,8 +2,9 @@
 
 [![MIT licensed][mit-badge]][mit-url]
 [![Apache 2.0 licensed][apache-badge]][apache-url]
-![build][build-badge]
-![tests][tests-badge]
+![build Linux][build-badge-linux]
+![build Windows][build-badge-windows]
+![build MacOs][build-badge-macos]
 ![Code coverage][coverage-badge]
 [![Contributor Covenant][coc-badge]](CODE_OF_CONDUCT.md)
 
@@ -11,8 +12,9 @@
 [mit-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-MIT
 [apache-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
 [apache-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-APACHE
-[build-badge]: https://github.com/dmntk/dmntk.rs/actions/workflows/build.yml/badge.svg
-[tests-badge]: https://github.com/dmntk/dmntk.rs/actions/workflows/tests.yml/badge.svg
+[build-badge-linux]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-linux.yml/badge.svg
+[build-badge-windows]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-windows.yml/badge.svg
+[build-badge-macos]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-macos.yml/badge.svg
 [coverage-badge]: https://img.shields.io/badge/Coverage-89%25-green.svg
 [coc-badge]: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg
 
