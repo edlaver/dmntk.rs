@@ -58,6 +58,7 @@ mod function_invocation;
 mod if_expression;
 mod instance_of;
 mod interval;
+mod invalid;
 mod list;
 mod literal;
 mod miscellaneous;
@@ -79,8 +80,8 @@ fn accept(scope: &Scope, start_token_type: TokenType, input: &str, expected: &st
   let node = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
   let actual = node.to_string();
   if actual != expected {
-    println!("EXPECTED:\n------------------------------------------------------------{}\n", expected);
-    println!("ACTUAL:\n------------------------------------------------------------{}\n", actual);
+    println!("EXPECTED:\n------------------------------------------------------------{expected}\n");
+    println!("ACTUAL:\n------------------------------------------------------------{actual}\n");
     println!(
       "DIFF:\n------------------------------------------------------------{}\n",
       Changeset::new(expected, &actual, "")

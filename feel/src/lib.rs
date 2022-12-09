@@ -30,20 +30,16 @@
  * limitations under the License.
  */
 
-//! `FEEL` definitions.
+//! FEEL definitions.
 
 extern crate ascii_tree;
 extern crate chrono;
 extern crate chrono_tz;
-#[macro_use]
-extern crate derivative;
 extern crate dmntk_common;
 extern crate dmntk_feel_number;
 #[macro_use]
 extern crate lazy_static;
 extern crate regex;
-#[macro_use]
-extern crate thiserror;
 
 pub use ast::{AstNode, OptAstNode};
 pub use dmntk_feel_number::FeelNumber;
@@ -54,9 +50,12 @@ pub use qualified_names::QualifiedName;
 pub use scope::Scope;
 pub use strings::ToFeelString;
 pub use temporal::date::FeelDate;
+pub use temporal::date_time::FeelDateTime;
 pub use temporal::dt_duration::FeelDaysAndTimeDuration;
+pub use temporal::time::FeelTime;
 pub use temporal::ym_duration::FeelYearsAndMonthsDuration;
-pub use temporal::{subtract, FeelDateTime, FeelTime};
+pub use temporal::zone::FeelZone;
+pub use temporal::{subtract, Day, DayOfWeek, DayOfYear, Month, MonthOfYear, WeekOfYear, Year};
 pub use types::{is_built_in_type_name, FeelType};
 
 mod ast;
@@ -70,5 +69,7 @@ mod qualified_names;
 mod scope;
 mod strings;
 mod temporal;
+#[cfg(test)]
+mod tests;
 mod types;
 pub mod values;

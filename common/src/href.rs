@@ -88,7 +88,7 @@ mod errors {
 
   /// Creates an invalid reference error.
   pub fn err_invalid_reference(s: &str) -> DmntkError {
-    HRefError(format!("invalid reference '{}'", s)).into()
+    HRefError(format!("invalid reference '{s}'")).into()
   }
 }
 
@@ -138,7 +138,7 @@ mod tests {
   #[test]
   fn test_href_debug() {
     let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    let actual: String = format!("{:?}", href);
+    let actual: String = format!("{href:?}");
     assert_eq!(r#"HRef("_c03e81bf-a53d-47c5-9135-189935765fdc")"#, actual);
   }
 

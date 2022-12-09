@@ -30,28 +30,41 @@
  * limitations under the License.
  */
 
-//! Errors reported by temporal functions.
+//! Implementation of FEEL temporal errors.
 
 use dmntk_common::DmntkError;
+use dmntk_feel_number::FeelNumber;
 
-#[derive(Error, Debug)]
-enum TemporalError {
-  #[error("invalid date and time literal '{0}'")]
-  InvalidDateTimeLiteral(String),
-  #[error("invalid years and months duration literal: '{0}'")]
-  InvalidYearsAndMonthsDurationLiteral(String),
-}
+/// FEEL temporal error.
+struct TemporalError(String);
 
 impl From<TemporalError> for DmntkError {
+  /// Converts temporal error into [DmntkError].
   fn from(e: TemporalError) -> Self {
-    DmntkError::new("TemporalError", &e.to_string())
+    DmntkError::new("TemporalError", &e.0)
   }
 }
 
+pub fn err_invalid_date(y: FeelNumber, m: FeelNumber, d: FeelNumber) -> DmntkError {
+  TemporalError(format!("invalid date {y}-{m}-{d}")).into()
+}
+
+pub fn err_invalid_date_literal(s: &str) -> DmntkError {
+  TemporalError(format!("invalid date literal '{s}'")).into()
+}
+
+pub fn err_invalid_time_literal(s: &str) -> DmntkError {
+  TemporalError(format!("invalid time literal '{s}'")).into()
+}
+
 pub fn err_invalid_date_time_literal(s: &str) -> DmntkError {
-  TemporalError::InvalidDateTimeLiteral(s.to_string()).into()
+  TemporalError(format!("invalid date and time literal '{s}'")).into()
 }
 
 pub fn err_invalid_years_and_months_duration_literal(s: &str) -> DmntkError {
-  TemporalError::InvalidYearsAndMonthsDurationLiteral(s.to_string()).into()
+  TemporalError(format!("invalid years and months literal '{s}'")).into()
+}
+
+pub fn err_invalid_time_zone_offset(offset: i32) -> DmntkError {
+  TemporalError(format!("invalid time-zone offset '{offset}'")).into()
 }

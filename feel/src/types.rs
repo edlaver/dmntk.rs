@@ -94,41 +94,42 @@ pub enum FeelType {
 }
 
 impl std::fmt::Display for FeelType {
+  ///
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
-      FeelType::Any => write!(f, "{}", FEEL_TYPE_NAME_ANY),
-      FeelType::Boolean => write!(f, "{}", FEEL_TYPE_NAME_BOOLEAN),
+      FeelType::Any => write!(f, "{FEEL_TYPE_NAME_ANY}"),
+      FeelType::Boolean => write!(f, "{FEEL_TYPE_NAME_BOOLEAN}"),
       FeelType::Context(entries) => {
         let entries_str = entries
           .iter()
-          .map(|(entry_name, entry_type)| format!("{}: {}", entry_name, entry_type))
+          .map(|(entry_name, entry_type)| format!("{entry_name}: {entry_type}"))
           .collect::<Vec<String>>()
           .join(", ");
-        write!(f, "context<{}>", entries_str)
+        write!(f, "context<{entries_str}>",)
       }
-      FeelType::Date => write!(f, "{}", FEEL_TYPE_NAME_DATE),
-      FeelType::DateTime => write!(f, "{}", FEEL_TYPE_NAME_DATE_AND_TIME),
-      FeelType::DaysAndTimeDuration => write!(f, "{}", FEEL_TYPE_NAME_DAYS_AND_TIME_DURATION),
+      FeelType::Date => write!(f, "{FEEL_TYPE_NAME_DATE}"),
+      FeelType::DateTime => write!(f, "{FEEL_TYPE_NAME_DATE_AND_TIME}"),
+      FeelType::DaysAndTimeDuration => write!(f, "{FEEL_TYPE_NAME_DAYS_AND_TIME_DURATION}"),
       FeelType::Function(parameter_types, result_type) => {
         let parameter_types_str = parameter_types
           .iter()
-          .map(|parameter_type| format!("{}", parameter_type))
+          .map(|parameter_type| format!("{parameter_type}"))
           .collect::<Vec<String>>()
           .join(", ");
         let result_type_str = result_type.to_string();
-        write!(f, "function<{}>->{}", parameter_types_str, result_type_str)
+        write!(f, "function<{parameter_types_str}>->{result_type_str}")
       }
       FeelType::List(item_type) => {
-        write!(f, "list<{}>", item_type)
+        write!(f, "list<{item_type}>")
       }
-      FeelType::Null => write!(f, "{}", FEEL_TYPE_NAME_NULL),
-      FeelType::Number => write!(f, "{}", FEEL_TYPE_NAME_NUMBER),
+      FeelType::Null => write!(f, "{FEEL_TYPE_NAME_NULL}"),
+      FeelType::Number => write!(f, "{FEEL_TYPE_NAME_NUMBER}"),
       FeelType::Range(range_type) => {
-        write!(f, "range<{}>", range_type)
+        write!(f, "range<{range_type}>")
       }
-      FeelType::String => write!(f, "{}", FEEL_TYPE_NAME_STRING),
-      FeelType::Time => write!(f, "{}", FEEL_TYPE_NAME_TIME),
-      FeelType::YearsAndMonthsDuration => write!(f, "{}", FEEL_TYPE_NAME_YEARS_AND_MONTHS_DURATION),
+      FeelType::String => write!(f, "{FEEL_TYPE_NAME_STRING}"),
+      FeelType::Time => write!(f, "{FEEL_TYPE_NAME_TIME}"),
+      FeelType::YearsAndMonthsDuration => write!(f, "{FEEL_TYPE_NAME_YEARS_AND_MONTHS_DURATION}"),
     }
   }
 }
@@ -148,7 +149,7 @@ impl FromStr for FeelType {
       FEEL_TYPE_NAME_STRING => Ok(Self::String),
       FEEL_TYPE_NAME_TIME => Ok(Self::Time),
       FEEL_TYPE_NAME_YEARS_AND_MONTHS_DURATION => Ok(Self::YearsAndMonthsDuration),
-      _ => Err(invalid_feel_type_name(s)),
+      _ => Err(err_invalid_feel_type_name(s)),
     }
   }
 }
@@ -239,17 +240,10 @@ impl FeelType {
   pub fn get_conformant_value(&self, actual_value: &Value) -> Value {
     let actual_type = actual_value.type_of();
     if actual_type.is_conformant(self) {
-      if let Ok(expected_value) = self.get_value_checked(actual_value) {
-        expected_value
-      } else {
-        value_null!("actual value {} does not match expected type {}", actual_value, self.to_string())
-      }
+      // unwrap is ok, all non-conformant combinations are filtered in the condition above
+      self.get_value_checked(actual_value).unwrap()
     } else {
-      value_null!(
-        "expected type {} is not conformant with actual type {}",
-        self.to_string(),
-        actual_type.to_string()
-      )
+      value_null!("type '{}' is not conformant with value of type '{}'", self.to_string(), actual_type.to_string())
     }
   }
   /// Returns a new value cloned from provided value, and retrieved with type checking.
@@ -307,11 +301,6 @@ impl FeelType {
           return Ok(Value::List(Values::new(result)));
         }
       }
-      FeelType::Null => {
-        if let Value::Null(_) = value {
-          return Ok(value_null!());
-        }
-      }
       FeelType::Number => {
         if let Value::Number(_) = value {
           return Ok(value.clone());
@@ -337,8 +326,9 @@ impl FeelType {
           return Ok(value.clone());
         }
       }
+      _ => {}
     }
-    Err(invalid_value_for_retrieving_using_feel_type(&self.to_string(), &value.to_string()))
+    Err(err_invalid_value_for_retrieving_using_feel_type(&self.to_string(), &value.to_string()))
   }
 
   /// Returns `true` when this type is a simple `FEEL` type.
@@ -383,7 +373,7 @@ impl FeelType {
   }
   ///
   pub fn is_equivalent(&self, other: &FeelType) -> bool {
-    return match other {
+    match other {
       FeelType::Any => matches!(self, FeelType::Any),
       FeelType::Boolean => matches!(self, FeelType::Boolean),
       FeelType::Context(entries_other) => {
@@ -441,7 +431,7 @@ impl FeelType {
       FeelType::String => matches!(self, FeelType::String),
       FeelType::Time => matches!(self, FeelType::Time),
       FeelType::YearsAndMonthsDuration => matches!(self, FeelType::YearsAndMonthsDuration),
-    };
+    }
   }
   ///
   pub fn is_conformant(&self, other: &FeelType) -> bool {
@@ -507,655 +497,22 @@ mod errors {
   use dmntk_common::DmntkError;
 
   /// Definition of errors raised in `types` module.
-  #[derive(Debug, PartialEq)]
-  pub enum TypesError {
-    /// Error raised when the specified text is not a valid `FEEL` type name.
-    InvalidFeelTypeName(String),
-    /// Error raised when the specified value is not valid for retrieving with type checking with `FEEL` type.
-    InvalidValueForRetrievingUsingFeelType(String, String),
-  }
+  struct TypesError(String);
 
   impl From<TypesError> for DmntkError {
     /// Converts `TypesError` into [DmntkError].
     fn from(e: TypesError) -> Self {
-      DmntkError::new("TypesError", &e.to_string())
+      DmntkError::new("TypesError", &e.0)
     }
   }
 
-  impl std::fmt::Display for TypesError {
-    /// Implements [Display](std::fmt::Display) trait for [TypesError].
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        TypesError::InvalidFeelTypeName(s) => {
-          write!(f, "invalid FEEL type name: {}", s)
-        }
-        TypesError::InvalidValueForRetrievingUsingFeelType(s1, s2) => {
-          write!(f, "invalid value for retrieving with type check, type = `{}`, value = `{}`", s1, s2)
-        }
-      }
-    }
+  /// Creates an invalid `FEEL` type name error.
+  pub fn err_invalid_feel_type_name(s: &str) -> DmntkError {
+    TypesError(format!("invalid FEEL type name: {s}")).into()
   }
 
-  /// Creates an [InvalidFeelTypeName](TypesError::InvalidFeelTypeName) error.
-  pub fn invalid_feel_type_name(s: &str) -> DmntkError {
-    TypesError::InvalidFeelTypeName(s.to_owned()).into()
-  }
-
-  /// Creates an [InvalidValueForRetrievingUsingFeelType](TypesError::InvalidValueForRetrievingUsingFeelType) error.
-  pub fn invalid_value_for_retrieving_using_feel_type(s1: &str, s2: &str) -> DmntkError {
-    TypesError::InvalidValueForRetrievingUsingFeelType(s1.to_owned(), s2.to_owned()).into()
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use crate::names::Name;
-  use crate::types::is_built_in_type_name;
-  use crate::types::FeelType::{self, Any, Number};
-  use crate::values::{Value, Values};
-  use crate::{value_number, FeelNumber};
-
-  #[test]
-  fn test_get_value_checked() {
-    let t_any = FeelType::Any;
-    let t_boolean = FeelType::Boolean;
-    let v_null = Value::Null(None);
-    let v_boolean = Value::Boolean(true);
-    let v_string = Value::String("hello".to_owned());
-    assert_eq!("null", t_any.get_value_checked(&v_null).unwrap().to_string());
-    assert_eq!("true", t_any.get_value_checked(&v_boolean).unwrap().to_string());
-    assert!(t_boolean.get_value_checked(&v_string).is_err());
-    assert_eq!(
-      r#"TypesError: invalid value for retrieving with type check, type = `boolean`, value = `"hello"`"#,
-      format!("{}", t_boolean.get_value_checked(&v_string).err().unwrap()).as_str()
-    );
-  }
-
-  #[test]
-  fn test_type_equivalence() {
-    let name_a = Name::from("a");
-    let name_b = Name::from("b");
-    let name_c = Name::from("c");
-    let t_any = FeelType::Any;
-    let t_boolean = FeelType::Boolean;
-    let t_date = FeelType::Date;
-    let t_date_time = FeelType::DateTime;
-    let t_days_and_time_duration = FeelType::DaysAndTimeDuration;
-    let t_null = FeelType::Null;
-    let t_number = FeelType::Number;
-    let t_string = FeelType::String;
-    let t_time = FeelType::Time;
-    let t_years_and_months_duration = FeelType::YearsAndMonthsDuration;
-    let t_list = FeelType::List(Box::new(FeelType::Boolean));
-    let t_list_b = FeelType::List(Box::new(FeelType::Number));
-    let t_context = FeelType::context(&[(&name_a, &t_number)]);
-    let t_context_a_b = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean)]);
-    let t_context_a_b_c = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean), (&name_c, &t_string)]);
-    let t_function = FeelType::function(&[Number, Number], &t_number);
-    let t_function_b = FeelType::function(&[Number, Number], &t_boolean);
-    let t_function_c = FeelType::function(&[Number], &t_string);
-    let t_range = FeelType::range(&t_number);
-    let t_range_b = FeelType::range(&t_date);
-    // any
-    assert!(t_any.is_equivalent(&t_any));
-    assert!(!t_any.is_equivalent(&t_boolean));
-    assert!(!t_any.is_equivalent(&t_context));
-    assert!(!t_any.is_equivalent(&t_date));
-    assert!(!t_any.is_equivalent(&t_date_time));
-    assert!(!t_any.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_boolean.is_equivalent(&t_function));
-    assert!(!t_boolean.is_equivalent(&t_list));
-    assert!(!t_boolean.is_equivalent(&t_null));
-    assert!(!t_boolean.is_equivalent(&t_number));
-    assert!(!t_boolean.is_equivalent(&t_range));
-    assert!(!t_boolean.is_equivalent(&t_string));
-    assert!(!t_boolean.is_equivalent(&t_time));
-    assert!(!t_boolean.is_equivalent(&t_years_and_months_duration));
-    // boolean
-    assert!(t_boolean.is_equivalent(&t_boolean));
-    assert!(!t_boolean.is_equivalent(&t_any));
-    assert!(!t_boolean.is_equivalent(&t_context));
-    assert!(!t_boolean.is_equivalent(&t_date));
-    assert!(!t_boolean.is_equivalent(&t_date_time));
-    assert!(!t_boolean.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_boolean.is_equivalent(&t_function));
-    assert!(!t_boolean.is_equivalent(&t_list));
-    assert!(!t_boolean.is_equivalent(&t_null));
-    assert!(!t_boolean.is_equivalent(&t_number));
-    assert!(!t_boolean.is_equivalent(&t_range));
-    assert!(!t_boolean.is_equivalent(&t_string));
-    assert!(!t_boolean.is_equivalent(&t_time));
-    assert!(!t_boolean.is_equivalent(&t_years_and_months_duration));
-    // context
-    assert!(t_context.is_equivalent(&t_context));
-    assert!(t_context_a_b.is_equivalent(&t_context_a_b));
-    assert!(t_context_a_b_c.is_equivalent(&t_context_a_b_c));
-    assert!(!t_context.is_equivalent(&t_context_a_b));
-    assert!(!t_context_a_b.is_equivalent(&t_context_a_b_c));
-    assert!(!t_context_a_b.is_equivalent(&t_context_a_b_c));
-    assert!(!t_context.is_equivalent(&t_any));
-    assert!(!t_context.is_equivalent(&t_boolean));
-    assert!(!t_context.is_equivalent(&t_date));
-    assert!(!t_context.is_equivalent(&t_date_time));
-    assert!(!t_context.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_context.is_equivalent(&t_function));
-    assert!(!t_context.is_equivalent(&t_list));
-    assert!(!t_context.is_equivalent(&t_null));
-    assert!(!t_context.is_equivalent(&t_number));
-    assert!(!t_context.is_equivalent(&t_range));
-    assert!(!t_context.is_equivalent(&t_string));
-    assert!(!t_context.is_equivalent(&t_time));
-    assert!(!t_context.is_equivalent(&t_years_and_months_duration));
-    // date
-    assert!(t_date.is_equivalent(&t_date));
-    assert!(!t_date.is_equivalent(&t_any));
-    assert!(!t_date.is_equivalent(&t_boolean));
-    assert!(!t_date.is_equivalent(&t_context));
-    assert!(!t_date.is_equivalent(&t_date_time));
-    assert!(!t_date.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_date.is_equivalent(&t_function));
-    assert!(!t_date.is_equivalent(&t_list));
-    assert!(!t_date.is_equivalent(&t_null));
-    assert!(!t_date.is_equivalent(&t_number));
-    assert!(!t_date.is_equivalent(&t_range));
-    assert!(!t_date.is_equivalent(&t_string));
-    assert!(!t_date.is_equivalent(&t_time));
-    assert!(!t_date.is_equivalent(&t_years_and_months_duration));
-    // date and time
-    assert!(t_date_time.is_equivalent(&t_date_time));
-    assert!(!t_date_time.is_equivalent(&t_any));
-    assert!(!t_date_time.is_equivalent(&t_boolean));
-    assert!(!t_date_time.is_equivalent(&t_context));
-    assert!(!t_date_time.is_equivalent(&t_date));
-    assert!(!t_date_time.is_equivalent(&t_function));
-    assert!(!t_date_time.is_equivalent(&t_list));
-    assert!(!t_date_time.is_equivalent(&t_null));
-    assert!(!t_date_time.is_equivalent(&t_number));
-    assert!(!t_date_time.is_equivalent(&t_range));
-    assert!(!t_date_time.is_equivalent(&t_string));
-    assert!(!t_date_time.is_equivalent(&t_time));
-    assert!(!t_date_time.is_equivalent(&t_years_and_months_duration));
-    // days and time duration
-    assert!(t_days_and_time_duration.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_any));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_boolean));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_context));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_date));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_date_time));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_function));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_list));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_null));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_number));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_range));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_string));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_time));
-    assert!(!t_days_and_time_duration.is_equivalent(&t_years_and_months_duration));
-    // function
-    assert!(t_function.is_equivalent(&t_function));
-    assert!(t_function_b.is_equivalent(&t_function_b));
-    assert!(t_function_c.is_equivalent(&t_function_c));
-    assert!(!t_function.is_equivalent(&t_function_b));
-    assert!(!t_function.is_equivalent(&t_function_c));
-    assert!(!t_function_b.is_equivalent(&t_function));
-    assert!(!t_function_b.is_equivalent(&t_function_c));
-    assert!(!t_function_c.is_equivalent(&t_function));
-    assert!(!t_function_c.is_equivalent(&t_function_b));
-    assert!(!t_function.is_equivalent(&t_any));
-    assert!(!t_function.is_equivalent(&t_boolean));
-    assert!(!t_function.is_equivalent(&t_context));
-    assert!(!t_function.is_equivalent(&t_date));
-    assert!(!t_function.is_equivalent(&t_date_time));
-    assert!(!t_function.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_function.is_equivalent(&t_list));
-    assert!(!t_function.is_equivalent(&t_null));
-    assert!(!t_function.is_equivalent(&t_range));
-    assert!(!t_function.is_equivalent(&t_string));
-    assert!(!t_function.is_equivalent(&t_time));
-    assert!(!t_function.is_equivalent(&t_years_and_months_duration));
-    // list
-    assert!(t_list_b.is_equivalent(&t_list_b));
-    assert!(!t_list_b.is_equivalent(&t_list));
-    assert!(!t_list.is_equivalent(&t_any));
-    assert!(!t_list.is_equivalent(&t_boolean));
-    assert!(!t_list.is_equivalent(&t_context));
-    assert!(!t_list.is_equivalent(&t_date));
-    assert!(!t_list.is_equivalent(&t_date_time));
-    assert!(!t_list.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_list.is_equivalent(&t_function));
-    assert!(!t_list.is_equivalent(&t_null));
-    assert!(!t_list.is_equivalent(&t_range));
-    assert!(!t_list.is_equivalent(&t_string));
-    assert!(!t_list.is_equivalent(&t_time));
-    assert!(!t_list.is_equivalent(&t_years_and_months_duration));
-    // null
-    assert!(t_null.is_equivalent(&t_null));
-    assert!(!t_null.is_equivalent(&t_any));
-    assert!(!t_null.is_equivalent(&t_boolean));
-    assert!(!t_null.is_equivalent(&t_context));
-    assert!(!t_null.is_equivalent(&t_date));
-    assert!(!t_null.is_equivalent(&t_date_time));
-    assert!(!t_null.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_null.is_equivalent(&t_function));
-    assert!(!t_null.is_equivalent(&t_list));
-    assert!(!t_null.is_equivalent(&t_range));
-    assert!(!t_null.is_equivalent(&t_string));
-    assert!(!t_null.is_equivalent(&t_time));
-    assert!(!t_null.is_equivalent(&t_years_and_months_duration));
-    // number
-    assert!(t_number.is_equivalent(&t_number));
-    assert!(!t_number.is_equivalent(&t_any));
-    assert!(!t_number.is_equivalent(&t_boolean));
-    assert!(!t_number.is_equivalent(&t_context));
-    assert!(!t_number.is_equivalent(&t_date));
-    assert!(!t_number.is_equivalent(&t_date_time));
-    assert!(!t_number.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_number.is_equivalent(&t_function));
-    assert!(!t_number.is_equivalent(&t_list));
-    assert!(!t_number.is_equivalent(&t_null));
-    assert!(!t_number.is_equivalent(&t_range));
-    assert!(!t_number.is_equivalent(&t_string));
-    assert!(!t_number.is_equivalent(&t_time));
-    assert!(!t_number.is_equivalent(&t_years_and_months_duration));
-    // range
-    assert!(t_range.is_equivalent(&t_range));
-    assert!(t_range_b.is_equivalent(&t_range_b));
-    assert!(!t_range.is_equivalent(&t_any));
-    assert!(!t_range.is_equivalent(&t_boolean));
-    assert!(!t_range.is_equivalent(&t_context));
-    assert!(!t_range.is_equivalent(&t_date));
-    assert!(!t_range.is_equivalent(&t_date_time));
-    assert!(!t_range.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_range.is_equivalent(&t_function));
-    assert!(!t_range.is_equivalent(&t_list));
-    assert!(!t_range.is_equivalent(&t_null));
-    assert!(!t_range.is_equivalent(&t_number));
-    assert!(!t_range.is_equivalent(&t_string));
-    assert!(!t_range.is_equivalent(&t_time));
-    assert!(!t_range.is_equivalent(&t_years_and_months_duration));
-    // string
-    assert!(t_string.is_equivalent(&t_string));
-    assert!(!t_string.is_equivalent(&t_any));
-    assert!(!t_string.is_equivalent(&t_boolean));
-    assert!(!t_string.is_equivalent(&t_context));
-    assert!(!t_string.is_equivalent(&t_date));
-    assert!(!t_string.is_equivalent(&t_date_time));
-    assert!(!t_string.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_string.is_equivalent(&t_function));
-    assert!(!t_string.is_equivalent(&t_list));
-    assert!(!t_string.is_equivalent(&t_null));
-    assert!(!t_string.is_equivalent(&t_number));
-    assert!(!t_string.is_equivalent(&t_range));
-    assert!(!t_string.is_equivalent(&t_time));
-    assert!(!t_string.is_equivalent(&t_years_and_months_duration));
-    // time
-    assert!(t_time.is_equivalent(&t_time));
-    assert!(!t_time.is_equivalent(&t_any));
-    assert!(!t_time.is_equivalent(&t_boolean));
-    assert!(!t_time.is_equivalent(&t_context));
-    assert!(!t_time.is_equivalent(&t_date));
-    assert!(!t_time.is_equivalent(&t_date_time));
-    assert!(!t_time.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_time.is_equivalent(&t_function));
-    assert!(!t_time.is_equivalent(&t_list));
-    assert!(!t_time.is_equivalent(&t_null));
-    assert!(!t_time.is_equivalent(&t_number));
-    assert!(!t_time.is_equivalent(&t_range));
-    assert!(!t_time.is_equivalent(&t_string));
-    assert!(!t_time.is_equivalent(&t_years_and_months_duration));
-    // years and months duration
-    assert!(t_years_and_months_duration.is_equivalent(&t_years_and_months_duration));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_any));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_boolean));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_context));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_date));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_date_time));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_days_and_time_duration));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_function));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_list));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_null));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_number));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_range));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_string));
-    assert!(!t_years_and_months_duration.is_equivalent(&t_time));
-  }
-
-  #[test]
-  fn test_type_conformance() {
-    let name_a = Name::from("a");
-    let name_b = Name::from("b");
-    let name_c = Name::from("c");
-    let t_any = FeelType::Any;
-    let t_boolean = FeelType::Boolean;
-    let t_date = FeelType::Date;
-    let t_date_time = FeelType::DateTime;
-    let t_days_and_time_duration = FeelType::DaysAndTimeDuration;
-    let t_null = FeelType::Null;
-    let t_number = FeelType::Number;
-    let t_string = FeelType::String;
-    let t_time = FeelType::Time;
-    let t_years_and_months_duration = FeelType::YearsAndMonthsDuration;
-    let t_list = FeelType::List(Box::new(FeelType::Boolean));
-    let t_list_b = FeelType::List(Box::new(FeelType::Number));
-    let t_context = FeelType::context(&[(&name_a, &t_number)]);
-    let t_context_a_b = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean)]);
-    let t_context_a_b_c = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean), (&name_c, &t_string)]);
-    let t_function = FeelType::function(&[Number, Number], &t_number);
-    let t_function_b = FeelType::function(&[Number, Number], &t_boolean);
-    let t_function_c = FeelType::function(&[Number], &t_string);
-    let t_function_d = FeelType::function(&[Any], &t_string);
-    let t_range = FeelType::range(&t_number);
-    let t_range_b = FeelType::range(&t_date);
-    // any
-    assert!(t_any.is_conformant(&t_any));
-    assert!(!t_any.is_conformant(&t_boolean));
-    assert!(!t_any.is_conformant(&t_context));
-    assert!(!t_any.is_conformant(&t_date));
-    assert!(!t_any.is_conformant(&t_date_time));
-    assert!(!t_any.is_conformant(&t_days_and_time_duration));
-    assert!(!t_boolean.is_conformant(&t_function));
-    assert!(!t_boolean.is_conformant(&t_list));
-    assert!(!t_boolean.is_conformant(&t_null));
-    assert!(!t_boolean.is_conformant(&t_number));
-    assert!(!t_boolean.is_conformant(&t_range));
-    assert!(!t_boolean.is_conformant(&t_string));
-    assert!(!t_boolean.is_conformant(&t_time));
-    assert!(!t_boolean.is_conformant(&t_years_and_months_duration));
-    // boolean
-    assert!(t_boolean.is_conformant(&t_boolean));
-    assert!(t_boolean.is_conformant(&t_any));
-    assert!(!t_boolean.is_conformant(&t_context));
-    assert!(!t_boolean.is_conformant(&t_date));
-    assert!(!t_boolean.is_conformant(&t_date_time));
-    assert!(!t_boolean.is_conformant(&t_days_and_time_duration));
-    assert!(!t_boolean.is_conformant(&t_function));
-    assert!(!t_boolean.is_conformant(&t_list));
-    assert!(!t_boolean.is_conformant(&t_null));
-    assert!(!t_boolean.is_conformant(&t_number));
-    assert!(!t_boolean.is_conformant(&t_range));
-    assert!(!t_boolean.is_conformant(&t_string));
-    assert!(!t_boolean.is_conformant(&t_time));
-    assert!(!t_boolean.is_conformant(&t_years_and_months_duration));
-    // context
-    assert!(t_context.is_conformant(&t_context));
-    assert!(t_context_a_b.is_conformant(&t_context_a_b));
-    assert!(t_context_a_b.is_conformant(&t_context));
-    assert!(t_context_a_b_c.is_conformant(&t_context_a_b_c));
-    assert!(t_context_a_b_c.is_conformant(&t_context_a_b));
-    assert!(!t_context.is_conformant(&t_context_a_b));
-    assert!(!t_context_a_b.is_conformant(&t_context_a_b_c));
-    assert!(!t_context_a_b.is_conformant(&t_context_a_b_c));
-    assert!(t_context.is_conformant(&t_any));
-    assert!(!t_context.is_conformant(&t_boolean));
-    assert!(!t_context.is_conformant(&t_date));
-    assert!(!t_context.is_conformant(&t_date_time));
-    assert!(!t_context.is_conformant(&t_days_and_time_duration));
-    assert!(!t_context.is_conformant(&t_function));
-    assert!(!t_context.is_conformant(&t_list));
-    assert!(!t_context.is_conformant(&t_null));
-    assert!(!t_context.is_conformant(&t_number));
-    assert!(!t_context.is_conformant(&t_range));
-    assert!(!t_context.is_conformant(&t_string));
-    assert!(!t_context.is_conformant(&t_time));
-    assert!(!t_context.is_conformant(&t_years_and_months_duration));
-    // date
-    assert!(t_date.is_conformant(&t_date));
-    assert!(t_date.is_conformant(&t_any));
-    assert!(!t_date.is_conformant(&t_boolean));
-    assert!(!t_date.is_conformant(&t_context));
-    assert!(!t_date.is_conformant(&t_date_time));
-    assert!(!t_date.is_conformant(&t_days_and_time_duration));
-    assert!(!t_date.is_conformant(&t_function));
-    assert!(!t_date.is_conformant(&t_list));
-    assert!(!t_date.is_conformant(&t_null));
-    assert!(!t_date.is_conformant(&t_number));
-    assert!(!t_date.is_conformant(&t_range));
-    assert!(!t_date.is_conformant(&t_string));
-    assert!(!t_date.is_conformant(&t_time));
-    assert!(!t_date.is_conformant(&t_years_and_months_duration));
-    // date and time
-    assert!(t_date_time.is_conformant(&t_date_time));
-    assert!(t_date_time.is_conformant(&t_any));
-    assert!(!t_date_time.is_conformant(&t_boolean));
-    assert!(!t_date_time.is_conformant(&t_context));
-    assert!(!t_date_time.is_conformant(&t_date));
-    assert!(!t_date_time.is_conformant(&t_function));
-    assert!(!t_date_time.is_conformant(&t_list));
-    assert!(!t_date_time.is_conformant(&t_null));
-    assert!(!t_date_time.is_conformant(&t_number));
-    assert!(!t_date_time.is_conformant(&t_range));
-    assert!(!t_date_time.is_conformant(&t_string));
-    assert!(!t_date_time.is_conformant(&t_time));
-    assert!(!t_date_time.is_conformant(&t_years_and_months_duration));
-    // days and time duration
-    assert!(t_days_and_time_duration.is_conformant(&t_days_and_time_duration));
-    assert!(t_days_and_time_duration.is_conformant(&t_any));
-    assert!(!t_days_and_time_duration.is_conformant(&t_boolean));
-    assert!(!t_days_and_time_duration.is_conformant(&t_context));
-    assert!(!t_days_and_time_duration.is_conformant(&t_date));
-    assert!(!t_days_and_time_duration.is_conformant(&t_date_time));
-    assert!(!t_days_and_time_duration.is_conformant(&t_function));
-    assert!(!t_days_and_time_duration.is_conformant(&t_list));
-    assert!(!t_days_and_time_duration.is_conformant(&t_null));
-    assert!(!t_days_and_time_duration.is_conformant(&t_number));
-    assert!(!t_days_and_time_duration.is_conformant(&t_range));
-    assert!(!t_days_and_time_duration.is_conformant(&t_string));
-    assert!(!t_days_and_time_duration.is_conformant(&t_time));
-    assert!(!t_days_and_time_duration.is_conformant(&t_years_and_months_duration));
-    // function
-    assert!(t_function.is_conformant(&t_function));
-    assert!(t_function_b.is_conformant(&t_function_b));
-    assert!(t_function_c.is_conformant(&t_function_c));
-    assert!(!t_function.is_conformant(&t_function_b));
-    assert!(!t_function.is_conformant(&t_function_c));
-    assert!(!t_function_b.is_conformant(&t_function));
-    assert!(!t_function_b.is_conformant(&t_function_c));
-    assert!(!t_function_c.is_conformant(&t_function));
-    assert!(!t_function_c.is_conformant(&t_function_b));
-    assert!(t_function_d.is_conformant(&t_function_c));
-    assert!(t_function.is_conformant(&t_any));
-    assert!(!t_function.is_conformant(&t_boolean));
-    assert!(!t_function.is_conformant(&t_context));
-    assert!(!t_function.is_conformant(&t_date));
-    assert!(!t_function.is_conformant(&t_date_time));
-    assert!(!t_function.is_conformant(&t_days_and_time_duration));
-    assert!(!t_function.is_conformant(&t_list));
-    assert!(!t_function.is_conformant(&t_null));
-    assert!(!t_function.is_conformant(&t_range));
-    assert!(!t_function.is_conformant(&t_string));
-    assert!(!t_function.is_conformant(&t_time));
-    assert!(!t_function.is_conformant(&t_years_and_months_duration));
-    // list
-    assert!(t_list_b.is_conformant(&t_list_b));
-    assert!(!t_list_b.is_conformant(&t_list));
-    assert!(t_list.is_conformant(&t_any));
-    assert!(!t_list.is_conformant(&t_boolean));
-    assert!(!t_list.is_conformant(&t_context));
-    assert!(!t_list.is_conformant(&t_date));
-    assert!(!t_list.is_conformant(&t_date_time));
-    assert!(!t_list.is_conformant(&t_days_and_time_duration));
-    assert!(!t_list.is_conformant(&t_function));
-    assert!(!t_list.is_conformant(&t_null));
-    assert!(!t_list.is_conformant(&t_range));
-    assert!(!t_list.is_conformant(&t_string));
-    assert!(!t_list.is_conformant(&t_time));
-    assert!(!t_list.is_conformant(&t_years_and_months_duration));
-    // null
-    assert!(t_null.is_conformant(&t_null));
-    assert!(t_null.is_conformant(&t_any));
-    assert!(t_null.is_conformant(&t_boolean));
-    assert!(t_null.is_conformant(&t_context));
-    assert!(t_null.is_conformant(&t_date));
-    assert!(t_null.is_conformant(&t_date_time));
-    assert!(t_null.is_conformant(&t_days_and_time_duration));
-    assert!(t_null.is_conformant(&t_function));
-    assert!(t_null.is_conformant(&t_list));
-    assert!(t_null.is_conformant(&t_range));
-    assert!(t_null.is_conformant(&t_string));
-    assert!(t_null.is_conformant(&t_time));
-    assert!(t_null.is_conformant(&t_years_and_months_duration));
-    // number
-    assert!(t_number.is_conformant(&t_number));
-    assert!(t_number.is_conformant(&t_any));
-    assert!(!t_number.is_conformant(&t_boolean));
-    assert!(!t_number.is_conformant(&t_context));
-    assert!(!t_number.is_conformant(&t_date));
-    assert!(!t_number.is_conformant(&t_date_time));
-    assert!(!t_number.is_conformant(&t_days_and_time_duration));
-    assert!(!t_number.is_conformant(&t_function));
-    assert!(!t_number.is_conformant(&t_list));
-    assert!(!t_number.is_conformant(&t_null));
-    assert!(!t_number.is_conformant(&t_range));
-    assert!(!t_number.is_conformant(&t_string));
-    assert!(!t_number.is_conformant(&t_time));
-    assert!(!t_number.is_conformant(&t_years_and_months_duration));
-    // range
-    assert!(t_range.is_conformant(&t_range));
-    assert!(t_range_b.is_conformant(&t_range_b));
-    assert!(t_range.is_conformant(&t_any));
-    assert!(!t_range.is_conformant(&t_boolean));
-    assert!(!t_range.is_conformant(&t_context));
-    assert!(!t_range.is_conformant(&t_date));
-    assert!(!t_range.is_conformant(&t_date_time));
-    assert!(!t_range.is_conformant(&t_days_and_time_duration));
-    assert!(!t_range.is_conformant(&t_function));
-    assert!(!t_range.is_conformant(&t_list));
-    assert!(!t_range.is_conformant(&t_null));
-    assert!(!t_range.is_conformant(&t_number));
-    assert!(!t_range.is_conformant(&t_string));
-    assert!(!t_range.is_conformant(&t_time));
-    assert!(!t_range.is_conformant(&t_years_and_months_duration));
-    // string
-    assert!(t_string.is_conformant(&t_string));
-    assert!(t_string.is_conformant(&t_any));
-    assert!(!t_string.is_conformant(&t_boolean));
-    assert!(!t_string.is_conformant(&t_context));
-    assert!(!t_string.is_conformant(&t_date));
-    assert!(!t_string.is_conformant(&t_date_time));
-    assert!(!t_string.is_conformant(&t_days_and_time_duration));
-    assert!(!t_string.is_conformant(&t_function));
-    assert!(!t_string.is_conformant(&t_list));
-    assert!(!t_string.is_conformant(&t_null));
-    assert!(!t_string.is_conformant(&t_number));
-    assert!(!t_string.is_conformant(&t_range));
-    assert!(!t_string.is_conformant(&t_time));
-    assert!(!t_string.is_conformant(&t_years_and_months_duration));
-    // time
-    assert!(t_time.is_conformant(&t_time));
-    assert!(t_time.is_conformant(&t_any));
-    assert!(!t_time.is_conformant(&t_boolean));
-    assert!(!t_time.is_conformant(&t_context));
-    assert!(!t_time.is_conformant(&t_date));
-    assert!(!t_time.is_conformant(&t_date_time));
-    assert!(!t_time.is_conformant(&t_days_and_time_duration));
-    assert!(!t_time.is_conformant(&t_function));
-    assert!(!t_time.is_conformant(&t_list));
-    assert!(!t_time.is_conformant(&t_null));
-    assert!(!t_time.is_conformant(&t_number));
-    assert!(!t_time.is_conformant(&t_range));
-    assert!(!t_time.is_conformant(&t_string));
-    assert!(!t_time.is_conformant(&t_years_and_months_duration));
-    // years and months duration
-    assert!(t_years_and_months_duration.is_conformant(&t_years_and_months_duration));
-    assert!(t_years_and_months_duration.is_conformant(&t_any));
-    assert!(!t_years_and_months_duration.is_conformant(&t_boolean));
-    assert!(!t_years_and_months_duration.is_conformant(&t_context));
-    assert!(!t_years_and_months_duration.is_conformant(&t_date));
-    assert!(!t_years_and_months_duration.is_conformant(&t_date_time));
-    assert!(!t_years_and_months_duration.is_conformant(&t_days_and_time_duration));
-    assert!(!t_years_and_months_duration.is_conformant(&t_function));
-    assert!(!t_years_and_months_duration.is_conformant(&t_list));
-    assert!(!t_years_and_months_duration.is_conformant(&t_null));
-    assert!(!t_years_and_months_duration.is_conformant(&t_number));
-    assert!(!t_years_and_months_duration.is_conformant(&t_range));
-    assert!(!t_years_and_months_duration.is_conformant(&t_string));
-    assert!(!t_years_and_months_duration.is_conformant(&t_time));
-  }
-
-  #[test]
-  fn test_is_built_in_type_name() {
-    assert!(is_built_in_type_name("Any"));
-    assert!(is_built_in_type_name("Null"));
-    assert!(is_built_in_type_name("number"));
-    assert!(is_built_in_type_name("string"));
-    assert!(is_built_in_type_name("boolean"));
-    assert!(is_built_in_type_name("days and time duration"));
-    assert!(is_built_in_type_name("years and months duration"));
-    assert!(is_built_in_type_name("date"));
-    assert!(is_built_in_type_name("time"));
-    assert!(is_built_in_type_name("date and time"));
-    assert!(!is_built_in_type_name("list"));
-    assert!(!is_built_in_type_name("range"));
-    assert!(!is_built_in_type_name("context"));
-    assert!(!is_built_in_type_name("function"));
-  }
-
-  #[test]
-  fn test_type_stringify() {
-    let name_a = Name::from("a");
-    let name_b = Name::from("b");
-    let name_c = Name::from("c");
-    let t_any = FeelType::Any;
-    let t_null = FeelType::Null;
-    let t_string = FeelType::String;
-    let t_number = FeelType::Number;
-    let t_boolean = FeelType::Boolean;
-    let t_date = FeelType::Date;
-    let t_time = FeelType::Time;
-    let t_date_time = FeelType::DateTime;
-    let t_dt_duration = FeelType::DaysAndTimeDuration;
-    let t_ym_duration = FeelType::YearsAndMonthsDuration;
-    let t_function_a = FeelType::function(&[Number, Number], &t_number);
-    let t_function_b = FeelType::function(&[], &t_any);
-    let t_function_c = FeelType::function(&[], &t_string);
-    let t_list_a = FeelType::List(Box::new(FeelType::Boolean));
-    let t_list_b = FeelType::List(Box::new(FeelType::Number));
-    let t_range_a = FeelType::range(&t_number);
-    let t_range_b = FeelType::range(&t_date);
-    let t_context_a = FeelType::context(&[(&name_a, &t_number)]);
-    let t_context_b = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean)]);
-    let t_context_c = FeelType::context(&[(&name_a, &t_number), (&name_b, &t_boolean), (&name_c, &t_string)]);
-    assert_eq!("Any", t_any.to_string());
-    assert_eq!("Null", t_null.to_string());
-    assert_eq!("number", t_number.to_string());
-    assert_eq!("boolean", t_boolean.to_string());
-    assert_eq!("date", t_date.to_string());
-    assert_eq!("time", t_time.to_string());
-    assert_eq!("date and time", t_date_time.to_string());
-    assert_eq!("days and time duration", t_dt_duration.to_string());
-    assert_eq!("years and months duration", t_ym_duration.to_string());
-    assert_eq!("string", t_string.to_string());
-    assert_eq!("function<number, number>->number", t_function_a.to_string());
-    assert_eq!("function<>->Any", t_function_b.to_string());
-    assert_eq!("function<>->string", t_function_c.to_string());
-    assert_eq!("list<boolean>", t_list_a.to_string());
-    assert_eq!("list<number>", t_list_b.to_string());
-    assert_eq!("range<number>", t_range_a.to_string());
-    assert_eq!("range<date>", t_range_b.to_string());
-    assert_eq!("context<a: number>", t_context_a.to_string());
-    assert_eq!("context<a: number, b: boolean>", t_context_b.to_string());
-    assert_eq!("context<a: number, b: boolean, c: string>", t_context_c.to_string());
-  }
-
-  #[test]
-  fn test_get_coerced() {
-    let t_any = FeelType::Any;
-    let t_number = FeelType::Number;
-    let t_string = FeelType::String;
-    let t_list_number = FeelType::List(Box::new(t_number.clone()));
-    let t_list_string = FeelType::List(Box::new(t_string.clone()));
-    let t_list_any = FeelType::List(Box::new(t_any));
-    let v_number = value_number!(10, 0);
-    let v_string = Value::String("a".into());
-    let v_list_number_1 = Value::List(Values::new(vec![value_number!(1, 0)]));
-    let v_list_number_2 = Value::List(Values::new(vec![value_number!(1, 0), value_number!(2, 0)]));
-    let v_list_string_1 = Value::List(Values::new(vec![Value::String("A".to_string())]));
-    assert_eq!(r#"[10]"#, t_list_number.coerced(&v_number).to_string());
-    assert_eq!(r#"[10]"#, t_list_any.coerced(&v_number).to_string());
-    assert_eq!(r#"1"#, t_number.coerced(&v_list_number_1).to_string());
-    assert_eq!(r#"null"#, t_number.coerced(&v_list_number_2).to_string());
-    assert_eq!(r#"null"#, t_number.coerced(&v_list_string_1).to_string());
-    assert_eq!(r#"["a"]"#, t_list_string.coerced(&v_string).to_string());
-    assert_eq!(r#"["a"]"#, t_list_any.coerced(&v_string).to_string());
-    assert_eq!(r#""A""#, t_string.coerced(&v_list_string_1).to_string());
+  /// Creates an error indicating value non conformant with type.
+  pub fn err_invalid_value_for_retrieving_using_feel_type(s1: &str, s2: &str) -> DmntkError {
+    TypesError(format!("invalid value for retrieving with type check, type = '{s1}', value = '{s2}'")).into()
   }
 }

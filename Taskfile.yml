@@ -7,7 +7,7 @@ tasks:
   bench:
     desc: Runs all benchmarks
     cmds:
-      - cmd: cargo bench -q | grep 'bench'
+      - cmd: cargo +nightly bench -q | grep 'bench'
 
   benchmarks:
     desc: Runs all compliance benchmarks
@@ -17,7 +17,7 @@ tasks:
   build:
     desc: Builds in debug mode
     cmds:
-      - cmd: cargo build --workspace
+      - cmd: cargo +stable build --workspace
 
   clean:
     desc: Cleans all targets
@@ -27,7 +27,7 @@ tasks:
   clippy:
     desc: Runs clippy for all targets
     cmds:
-      - cmd: cargo clippy --workspace --all-targets
+      - cmd: cargo +nightly clippy --workspace --all-targets
 
   cov:
     desc: Runs code coverage using grcov
@@ -38,6 +38,16 @@ tasks:
     desc: Runs code coverage using grcov for dmntk-common
     cmds:
       - cmd: ./coverage.sh dmntk-common
+
+  cov-feel-number:
+    desc: Runs code coverage using grcov for dmntk-feel-number
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-number
+
+  cov-feel:
+    desc: Runs code coverage using grcov for dmntk-feel
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel
 
   cov-feel-parser:
     desc: Runs code coverage using grcov for dmntk-feel-parser
@@ -52,7 +62,17 @@ tasks:
   fmt:
     desc: Runs code formatter
     cmds:
-      - cmd: cargo fmt
+      - cmd: cargo +nightly fmt
+
+  cov-feel-grammar:
+    desc: Runs code coverage using grcov for dmntk-feel-grammar
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-grammar
+
+  cov-recognizer:
+    desc: Runs code coverage using grcov for dmntk-recognizer
+    cmds:
+      - cmd: ./coverage.sh dmntk-recognizer
 
   tcov:
     desc: Runs code coverage using tarpaulin
@@ -63,7 +83,7 @@ tasks:
     desc: Runs code coverage using tarpaulin and opens the coverage report in browser
     cmds:
       - cmd: cargo tarpaulin {{.CLI_ARGS}} --out Html --output-dir ./target/tarpaulin
-      - cmd: echo -e '#!/usr/bin/env bash\n\nfirefox ./target/tarpaulin/tarpaulin-report.html &' > ./target/tarpaulin/open-report.sh
+      - cmd: echo -e '#!/usr/bin/env bash\n \n firefox ./target/tarpaulin/tarpaulin-report.html &' > ./target/tarpaulin/open-report.sh
       - cmd: chmod +x ./target/tarpaulin/open-report.sh
       - cmd: ./target/tarpaulin/open-report.sh
 
@@ -78,12 +98,12 @@ tasks:
       - cmd: cargo doc --no-deps --open
 
   doc-priv:
-    desc: Generates documentation
+    desc: Generates documentation with private items
     cmds:
       - cmd: cargo doc --no-deps --document-private-items
 
   doc-priv-open:
-    desc: Generates documentation and opens it in browser
+    desc: Generates documentation with private items and opens it in browser
     cmds:
       - cmd: cargo doc --no-deps --open --document-private-items
 
@@ -92,7 +112,7 @@ tasks:
     cmds:
       - cmd: cargo uninstall dmntk > /dev/null 2>&1
         ignore_error: true
-      - cmd: rm ~/.cargo/bin/dmntl > /dev/null 2>&1
+      - cmd: rm ~/.cargo/bin/dmntk > /dev/null 2>&1
         ignore_error: true
       - cmd: cargo build --release
       - cmd: cp ./target/release/dmntk ~/.cargo/bin/
@@ -100,7 +120,7 @@ tasks:
   musl:
     desc: Builds the Linux MUSL target
     cmds:
-      - cmd: cargo build --release --target=x86_64-unknown-linux-musl
+      - cmd: cargo +stable build --release --target=x86_64-unknown-linux-musl
 
   release:
     desc: Builds in release mode
@@ -111,13 +131,17 @@ tasks:
   run:
     desc: Runs the server in release mode
     cmds:
-      - cmd: cargo clean
-      - cmd: cargo +stable run --release -- run -p 12000
+      - cmd: cargo +stable run --release -- srv
+
+  run-musl:
+    desc: Runs the server in release mode and musl target
+    cmds:
+      - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv
 
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo test --workspace
+      - cmd: cargo +nightly test --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode

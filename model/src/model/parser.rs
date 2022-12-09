@@ -40,6 +40,7 @@ use roxmltree::Node;
 
 const NODE_ALLOWED_ANSWERS: &str = "allowedAnswers";
 const NODE_ALLOWED_VALUES: &str = "allowedValues";
+const NODE_AUTHORITY_REQUIREMENT: &str = "authorityRequirement";
 const NODE_BINDING: &str = "binding";
 const NODE_BUSINESS_KNOWLEDGE_MODEL: &str = "businessKnowledgeModel";
 const NODE_COLUMN: &str = "column";
@@ -94,6 +95,7 @@ const NODE_OUTPUT_VALUES: &str = "outputValues";
 const NODE_PARAMETER: &str = "parameter";
 const NODE_QUESTION: &str = "question";
 const NODE_RELATION: &str = "relation";
+const NODE_REQUIRED_AUTHORITY: &str = "requiredAuthority";
 const NODE_REQUIRED_DECISION: &str = "requiredDecision";
 const NODE_REQUIRED_KNOWLEDGE: &str = "requiredKnowledge";
 const NODE_REQUIRED_INPUT: &str = "requiredInput";
@@ -142,11 +144,16 @@ const ATTR_X: &str = "x";
 const ATTR_Y: &str = "y";
 
 #[derive(Default)]
-pub struct ModelParser {}
+pub struct ModelParser {
+  requirements_by_id: HashMap<String, Requirement>,
+}
 
 impl ModelParser {
   /// Parses the XML document containing [Definitions] serialized to interchange format.
   pub fn parse(&mut self, xml: &str) -> Result<Definitions> {
+    // clear all properties
+    self.requirements_by_id.clear();
+    // parse document
     match roxmltree::Document::parse(xml) {
       Ok(document) => {
         let definitions_node = document.root_element();
@@ -160,6 +167,13 @@ impl ModelParser {
   }
   /// Parses [Definitions].
   fn parse_definitions(&mut self, node: &Node) -> Result<Definitions> {
+    let drg_elements = self.parse_drg_elements(node)?;
+    let mut drg_elements_by_id = HashMap::new();
+    for drg_element in &drg_elements {
+      if let Some(id) = drg_element.get_id() {
+        drg_elements_by_id.insert(id, Arc::clone(drg_element));
+      }
+    }
     let mut definitions = Definitions {
       name: required_name(node)?,
       feel_name: optional_feel_name(node)?,
@@ -174,11 +188,18 @@ impl ModelParser {
       exporter: optional_attribute(node, ATTR_EXPORTER),
       exporter_version: optional_attribute(node, ATTR_EXPORTER_VERSION),
       item_definitions: self.parse_item_definitions(node, NODE_ITEM_DEFINITION)?,
-      drg_elements: self.parse_drg_elements(node)?,
+      drg_elements,
+      drg_elements_by_id,
       business_context_elements: self.parse_business_context_elements(node)?,
       imports: self.parse_imports(node)?,
-      dmndi: None, // DMNDI (if present) is parsed in next step below //FIXME maybe this could be done here?
+      dmndi: None, // diagram (if present) is parsed below
+      requirements_by_id: HashMap::new(),
     };
+    // assign requirements found in definitions
+    for (id, requirement) in self.requirements_by_id.drain() {
+      definitions.requirements_by_id.insert(id, requirement);
+    }
+    // parse diagram if present
     self.parse_dmndi(node, &mut definitions)?;
     Ok(definitions)
   }
@@ -235,7 +256,7 @@ impl ModelParser {
     }
   }
 
-  fn parse_drg_elements(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_drg_elements(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut drg_elements = vec![];
     drg_elements.append(&mut self.parse_input_data(node)?);
     drg_elements.append(&mut self.parse_decisions(node)?);
@@ -245,7 +266,7 @@ impl ModelParser {
     Ok(drg_elements)
   }
 
-  fn parse_input_data(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_input_data(&self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut input_data_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_INPUT_DATA) {
       let input_data = InputData {
@@ -258,12 +279,12 @@ impl ModelParser {
         feel_name: optional_feel_name(node)?,
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
       };
-      input_data_items.push(DrgElement::InputData(input_data));
+      input_data_items.push(Arc::new(DrgElement::InputData(input_data)));
     }
     Ok(input_data_items)
   }
 
-  fn parse_decisions(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_decisions(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut decision_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION) {
       let decision = Decision {
@@ -280,13 +301,14 @@ impl ModelParser {
         decision_logic: self.parse_optional_expression_instance(child_node)?,
         information_requirements: self.parse_information_requirements(child_node, NODE_INFORMATION_REQUIREMENT)?,
         knowledge_requirements: self.parse_knowledge_requirements(child_node, NODE_KNOWLEDGE_REQUIREMENT)?,
+        authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      decision_items.push(DrgElement::Decision(decision));
+      decision_items.push(Arc::new(DrgElement::Decision(decision)));
     }
     Ok(decision_items)
   }
 
-  fn parse_business_knowledge_models(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_business_knowledge_models(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut parsed_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_BUSINESS_KNOWLEDGE_MODEL) {
       let business_knowledge_model = BusinessKnowledgeModel {
@@ -300,14 +322,14 @@ impl ModelParser {
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
         encapsulated_logic: self.parse_function_definition_child(child_node, NODE_ENCAPSULATED_LOGIC)?,
         knowledge_requirements: self.parse_knowledge_requirements(child_node, NODE_KNOWLEDGE_REQUIREMENT)?,
-        authority_requirements: vec![],
+        authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      parsed_items.push(DrgElement::BusinessKnowledgeModel(business_knowledge_model));
+      parsed_items.push(Arc::new(DrgElement::BusinessKnowledgeModel(business_knowledge_model)));
     }
     Ok(parsed_items)
   }
 
-  fn parse_decision_services(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_decision_services(&self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION_SERVICE) {
       let decision_service = DecisionService {
@@ -324,12 +346,12 @@ impl ModelParser {
         input_decisions: self.required_hrefs_in_child_nodes(child_node, NODE_INPUT_DECISION)?,
         input_data: self.required_hrefs_in_child_nodes(child_node, NODE_INPUT_DATA)?,
       };
-      drg_elements.push(DrgElement::DecisionService(decision_service));
+      drg_elements.push(Arc::new(DrgElement::DecisionService(decision_service)));
     }
     Ok(drg_elements)
   }
 
-  fn parse_knowledge_sources(&self, node: &Node) -> Result<Vec<DrgElement>> {
+  fn parse_knowledge_sources(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_KNOWLEDGE_SOURCE) {
       let knowledge_source = KnowledgeSource {
@@ -340,8 +362,9 @@ impl ModelParser {
         extension_attributes: self.parse_extension_attributes(child_node),
         name: required_name(child_node)?,
         feel_name: optional_feel_name(child_node)?,
+        authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      drg_elements.push(DrgElement::KnowledgeSource(knowledge_source));
+      drg_elements.push(Arc::new(DrgElement::KnowledgeSource(knowledge_source)));
     }
     Ok(drg_elements)
   }
@@ -462,7 +485,7 @@ impl ModelParser {
     })
   }
 
-  fn parse_information_requirements(&self, node: &Node, child_name: &str) -> Result<Vec<InformationRequirement>> {
+  fn parse_information_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<InformationRequirement>>> {
     let mut information_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       information_requirement_items.push(self.parse_information_requirement(&child_node)?);
@@ -470,8 +493,8 @@ impl ModelParser {
     Ok(information_requirement_items)
   }
 
-  fn parse_information_requirement(&self, node: &Node) -> Result<InformationRequirement> {
-    Ok(InformationRequirement {
+  fn parse_information_requirement(&mut self, node: &Node) -> Result<Arc<InformationRequirement>> {
+    let req = Arc::new(InformationRequirement {
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
@@ -479,10 +502,14 @@ impl ModelParser {
       extension_attributes: self.parse_extension_attributes(node),
       required_decision: optional_child_required_href(node, NODE_REQUIRED_DECISION)?,
       required_input: optional_child_required_href(node, NODE_REQUIRED_INPUT)?,
-    })
+    });
+    if let Some(id) = req.id() {
+      self.requirements_by_id.insert(id.clone(), Requirement::Information(Arc::clone(&req)));
+    }
+    Ok(req)
   }
 
-  fn parse_knowledge_requirements(&self, node: &Node, child_name: &str) -> Result<Vec<KnowledgeRequirement>> {
+  fn parse_knowledge_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<KnowledgeRequirement>>> {
     let mut knowledge_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       knowledge_requirement_items.push(self.parse_knowledge_requirement(&child_node)?);
@@ -490,15 +517,44 @@ impl ModelParser {
     Ok(knowledge_requirement_items)
   }
 
-  fn parse_knowledge_requirement(&self, node: &Node) -> Result<KnowledgeRequirement> {
-    Ok(KnowledgeRequirement {
+  fn parse_knowledge_requirement(&mut self, node: &Node) -> Result<Arc<KnowledgeRequirement>> {
+    let req = Arc::new(KnowledgeRequirement {
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
       required_knowledge: optional_child_required_href(node, NODE_REQUIRED_KNOWLEDGE)?,
-    })
+    });
+    if let Some(id) = req.id() {
+      self.requirements_by_id.insert(id.clone(), Requirement::Knowledge(Arc::clone(&req)));
+    }
+    Ok(req)
+  }
+
+  fn parse_authority_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<AuthorityRequirement>>> {
+    let mut authority_requirement_items = vec![];
+    for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
+      authority_requirement_items.push(self.parse_authority_requirement(&child_node)?);
+    }
+    Ok(authority_requirement_items)
+  }
+
+  fn parse_authority_requirement(&mut self, node: &Node) -> Result<Arc<AuthorityRequirement>> {
+    let req = Arc::new(AuthorityRequirement {
+      id: optional_attribute(node, ATTR_ID),
+      description: optional_child_optional_content(node, NODE_DESCRIPTION),
+      label: optional_attribute(node, ATTR_LABEL),
+      extension_elements: self.parse_extension_elements(node),
+      extension_attributes: self.parse_extension_attributes(node),
+      required_authority: optional_child_required_href(node, NODE_REQUIRED_AUTHORITY)?,
+      required_decision: optional_child_required_href(node, NODE_REQUIRED_DECISION)?,
+      required_input: optional_child_required_href(node, NODE_REQUIRED_INPUT)?,
+    });
+    if let Some(id) = req.id() {
+      self.requirements_by_id.insert(id.clone(), Requirement::Authority(Arc::clone(&req)));
+    }
+    Ok(req)
   }
 
   fn parse_required_expression_instance(&self, node: &Node) -> Result<ExpressionInstance> {
@@ -1198,7 +1254,7 @@ mod errors {
 
   impl From<ModelParserError> for DmntkError {
     fn from(e: ModelParserError) -> Self {
-      DmntkError::new("ModelParserError", &format!("{}", e))
+      DmntkError::new("ModelParserError", &format!("{e}"))
     }
   }
 
@@ -1206,29 +1262,28 @@ mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         ModelParserError::InvalidFunctionKind(s) => {
-          write!(f, "'{}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`", s)
+          write!(f, "'{s}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`")
         }
         ModelParserError::InvalidHitPolicy(s) => {
           write!(
             f,
-            "'{}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`",
-            s
+            "'{s}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`"
           )
         }
         ModelParserError::InvalidAggregation(s) => {
-          write!(f, "'{}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`", s)
+          write!(f, "'{s}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`")
         }
         ModelParserError::InvalidColorValue(s) => {
-          write!(f, "conversion to valid color value failed with reason: {}", s)
+          write!(f, "conversion to valid color value failed with reason: {s}")
         }
         ModelParserError::InvalidDoubleValue(reason) => {
-          write!(f, "conversion to valid double value failed with reason: {}", reason)
+          write!(f, "conversion to valid double value failed with reason: {reason}")
         }
         ModelParserError::RequiredInputExpressionIsMissing => {
           write!(f, "required input expression in decision table's input clause is missing")
         }
         ModelParserError::RequiredChildNodeIsMissing(s1, s2) => {
-          write!(f, "required child node '{}' in parent node '{}' is missing", s2, s1)
+          write!(f, "required child node '{s2}' in parent node '{s1}' is missing")
         }
         ModelParserError::RequiredExpressionInstanceIsMissing => {
           write!(f, "required expression instance in context entry is missing")
@@ -1237,19 +1292,19 @@ mod errors {
           write!(f, "number of elements in a row differs from the number of columns defined in a relation")
         }
         ModelParserError::XmlParsingModelFailed(s) => {
-          write!(f, "parsing model from XML failed with reason: {}", s)
+          write!(f, "parsing model from XML failed with reason: {s}")
         }
         ModelParserError::XmlUnexpectedNode(s1, s2) => {
-          write!(f, "unexpected XML node, expected: {}, actual: {}", s1, s2)
+          write!(f, "unexpected XML node, expected: {s1}, actual: {s2}")
         }
         ModelParserError::XmlExpectedMandatoryAttribute(s1, s2) => {
-          write!(f, "expected value for mandatory attribute `{}` in node `{}`", s2, s1)
+          write!(f, "expected value for mandatory attribute `{s2}` in node `{s1}`")
         }
         ModelParserError::XmlExpectedMandatoryChildNode(s1, s2) => {
-          write!(f, "expected mandatory child node '{}' in parent node '{}'", s2, s1)
+          write!(f, "expected mandatory child node '{s2}' in parent node '{s1}'")
         }
         ModelParserError::XmlExpectedMandatoryTextContent(s) => {
-          write!(f, "expected mandatory text content in node: {}", s)
+          write!(f, "expected mandatory text content in node: {s}")
         }
       }
     }

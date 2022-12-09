@@ -42,7 +42,6 @@ use dmntk_feel::{
   FunctionBody, Name, Scope,
 };
 use std::borrow::Borrow;
-use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
 use std::ops::Deref;
@@ -122,7 +121,7 @@ pub fn build_evaluator(node: &AstNode) -> Result<Evaluator> {
     | AstNode::PositionalParameters { .. }
     | AstNode::QuantifiedContext { .. }
     | AstNode::QuantifiedContexts { .. }
-    | AstNode::Satisfies { .. } => Err(err_unexpected_ast_node(&node.to_string())),
+    | AstNode::Satisfies { .. } => Err(err_unexpected_ast_node(&format!("{node:?}"))),
   }
 }
 
@@ -137,7 +136,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Number(lh + rh),
         value @ Value::Null(_) => value,
-        _ => value_null!("addition err 1"),
+        _ => value_null!("incompatible types in addition: {}({}) + {}({})", lhv, lhv.type_of(), rhv, rhv.type_of()),
       },
       Value::String(mut lh) => {
         if let Value::String(rh) = rhv {
@@ -162,7 +161,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 
 /// Builds evaluator of temporal expression after `@` (at) literal.
 fn build_at(text: &str) -> Result<Evaluator> {
-  if let Ok(date) = FeelDate::try_from(text) {
+  if let Ok(date) = FeelDate::from_str(text) {
     return Ok(Box::new(move |_: &Scope| Value::Date(date.clone())));
   }
   if let Ok(date_time) = FeelDateTime::try_from(text) {
@@ -177,7 +176,7 @@ fn build_at(text: &str) -> Result<Evaluator> {
   if let Ok(dt_duration) = FeelDaysAndTimeDuration::try_from(text) {
     return Ok(Box::new(move |_: &Scope| Value::DaysAndTimeDuration(dt_duration.clone())));
   }
-  Ok(Box::new(move |_: &Scope| value_null!("eval_at_literal: expected string literal")))
+  Err(err_invalid_at_literal(text))
 }
 
 ///
@@ -215,11 +214,7 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
       Value::Date(lh) => {
         if let Value::Date(mh) = mhv {
           if let Value::Date(rh) = rhv {
-            if let Some(result) = lh.between(&mh, &rh, true, true) {
-              Value::Boolean(result)
-            } else {
-              value_null!("between err 5")
-            }
+            Value::Boolean(mh <= lh && lh <= rh)
           } else {
             value_null!("between err 6")
           }
@@ -230,11 +225,7 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
       Value::Time(lh) => {
         if let Value::Time(mh) = mhv {
           if let Value::Time(rh) = rhv {
-            if let Some(result) = lh.between(&mh, &rh, true, true) {
-              Value::Boolean(result)
-            } else {
-              value_null!("between err 8")
-            }
+            Value::Boolean(mh <= lh && lh <= rh)
           } else {
             value_null!("between err 9")
           }
@@ -245,11 +236,7 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
       Value::DateTime(lh) => {
         if let Value::DateTime(mh) = mhv {
           if let Value::DateTime(rh) = rhv {
-            if let Some(result) = lh.between(&mh, &rh, true, true) {
-              Value::Boolean(result)
-            } else {
-              value_null!("between err 11")
-            }
+            Value::Boolean(mh <= lh && lh <= rh)
           } else {
             value_null!("between err 12")
           }
@@ -755,7 +742,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
     }
   } else {
-    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &lhs.to_string()));
+    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
     let satisfies_evaluator = build_evaluator(satisfies)?;
@@ -767,7 +754,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &rhs.to_string()))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
   }
 }
 
@@ -861,7 +848,7 @@ fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) != Ordering::Less),
+        Value::String(rh) => Value::Boolean(lh >= rh),
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::Date(lh) => match rhv {
@@ -886,7 +873,7 @@ fn build_gt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_greater_then_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) == Ordering::Greater),
+        Value::String(rh) => Value::Boolean(lh > rh),
         _ => value_null!("eval_greater_then_string"),
       },
       Value::Date(lh) => match rhv {
@@ -1067,7 +1054,7 @@ fn build_le(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_or_equal_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) != Ordering::Greater),
+        Value::String(rh) => Value::Boolean(lh <= rh),
         _ => value_null!("eval_less_or_equal_string"),
       },
       Value::Date(lh) => match rhv {
@@ -1092,7 +1079,7 @@ fn build_lt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => value_null!("eval_less_then_number"),
       },
       Value::String(lh) => match rhv {
-        Value::String(rh) => Value::Boolean(lh.cmp(&rh) == Ordering::Less),
+        Value::String(rh) => Value::Boolean(lh < rh),
         _ => value_null!("eval_less_then_string"),
       },
       Value::Date(lh) => match rhv {
@@ -1173,7 +1160,7 @@ fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::NamedParameter(Box::new(lhv.clone()), Box::new(rhv))
     }))
   } else {
-    Err(err_expected_ast_node_parameter_name(&lhs.to_string()))
+    Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
   }
 }
 
@@ -1232,11 +1219,11 @@ fn build_null() -> Result<Evaluator> {
 
 ///
 fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
-  let text = format!("{}.{}", lhs, rhs);
+  let text = format!("{lhs}.{rhs}");
   if let Ok(num) = text.parse::<FeelNumber>() {
     Ok(Box::new(move |_: &Scope| Value::Number(num)))
   } else {
-    Ok(Box::new(move |_: &Scope| value_null!("failed to convert text '{}' into number", text)))
+    Ok(Box::new(move |_: &Scope| value_null!("failed to convert text '{text}' into number")))
   }
 }
 
@@ -1305,8 +1292,8 @@ fn build_out(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let ine = build_in(lhs, rhs)?;
   let lhe = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let inv = ine(scope);
-    let lhv = lhe(scope);
+    let inv = ine(scope) as Value;
+    let lhv = lhe(scope) as Value;
     match inv {
       Value::Boolean(true) => lhv,
       _ => value_null!(),
@@ -1391,8 +1378,8 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             "month" => Value::Number(date.month().into()),
             "day" => Value::Number(date.day().into()),
             "weekday" => {
-              if let Some(day_num) = date.weekday() {
-                Value::Number(day_num.into())
+              if let Some(day_of_week) = date.day_of_week() {
+                Value::Number(day_of_week.1.into())
               } else {
                 value_null!("could not retrieve weekday for date")
               }
@@ -1406,8 +1393,8 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             "month" => Value::Number(date_time.month().into()),
             "day" => Value::Number(date_time.day().into()),
             "weekday" => {
-              if let Some(day_num) = date_time.weekday() {
-                Value::Number(day_num.into())
+              if let Some(day_of_week) = date_time.day_of_week() {
+                Value::Number(day_of_week.1.into())
               } else {
                 value_null!("could not retrieve weekday for date and time")
               }
@@ -1525,7 +1512,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
     }
   } else {
-    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &lhs.to_string()));
+    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
     let satisfies_evaluator = build_evaluator(satisfies)?;
@@ -1537,7 +1524,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &rhs.to_string()))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
   }
 }
 
@@ -1552,25 +1539,31 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
-      Value::Number(ref lh) => {
-        if let Value::Number(ref rh) = rhv {
-          return Value::Number(*lh - *rh);
+      Value::Number(lh) => {
+        if let Value::Number(rh) = rhv {
+          return Value::Number(lh - rh);
         }
       }
-      Value::DateTime(ref lh) => {
-        if let Value::DateTime(ref rh) = rhv {
-          if let Some(a) = subtract(lh, rh) {
+      Value::Time(lh) => {
+        if let Value::Time(rh) = rhv {
+          if let Some(duration) = lh - rh {
+            return Value::DaysAndTimeDuration(duration);
+          }
+        }
+      }
+      Value::DateTime(lh) => {
+        if let Value::DateTime(rh) = rhv {
+          if let Some(a) = subtract(&lh, &rh) {
             return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().nano(a).build());
           }
         }
       }
       _ => {}
     }
-    //TODO make a macro for incompatible types
-    value_null!("[subtraction] incompatible types: {} - {}", lhv as Value, rhv as Value)
+    value_null!("[subtraction] incompatible types: {} - {}", lhe(scope) as Value, rhe(scope) as Value)
   }))
 }
 
@@ -1661,12 +1654,12 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
       _ => None,
     },
     Value::Time(ls) => match rhs {
-      Value::Time(rs) => ls.equal(rs),
+      Value::Time(rs) => Some(*ls == *rs),
       Value::Null(_) => Some(false),
       _ => None,
     },
     Value::DateTime(ls) => match rhs {
-      Value::DateTime(rs) => ls.equal(rs),
+      Value::DateTime(rs) => Some(*ls == *rs),
       Value::Null(_) => Some(false),
       _ => None,
     },
@@ -1856,10 +1849,9 @@ fn eval_in_range(left: &Value, right: &Value) -> Value {
       Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
         Value::Date(lv) => match r.borrow() {
           Value::Date(rv) => {
-            if let Some(b) = value.between(lv, rv, *l_closed, *r_closed) {
-              return Value::Boolean(b);
-            }
-            value_null!("eval_in_range")
+            let l_ok = if *l_closed { value >= lv } else { value > lv };
+            let r_ok = if *r_closed { value <= rv } else { value < rv };
+            Value::Boolean(l_ok && r_ok)
           }
           _ => value_null!("eval_in_range"),
         },
@@ -1871,10 +1863,9 @@ fn eval_in_range(left: &Value, right: &Value) -> Value {
       Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
         Value::Time(lv) => match r.borrow() {
           Value::Time(rv) => {
-            if let Some(b) = value.between(lv, rv, *l_closed, *r_closed) {
-              return Value::Boolean(b);
-            }
-            value_null!("eval_in_range")
+            let l_ok = if *l_closed { value >= lv } else { value > lv };
+            let r_ok = if *r_closed { value <= rv } else { value < rv };
+            Value::Boolean(l_ok && r_ok)
           }
           _ => value_null!("eval_in_range"),
         },
@@ -1886,10 +1877,9 @@ fn eval_in_range(left: &Value, right: &Value) -> Value {
       Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
         Value::DateTime(lv) => match r.borrow() {
           Value::DateTime(rv) => {
-            if let Some(b) = value.between(lv, rv, *l_closed, *r_closed) {
-              return Value::Boolean(b);
-            }
-            value_null!("eval_in_range")
+            let l_ok = if *l_closed { value >= lv } else { value > lv };
+            let r_ok = if *r_closed { value <= rv } else { value < rv };
+            Value::Boolean(l_ok && r_ok)
           }
           _ => value_null!("eval_in_range"),
         },
@@ -1953,23 +1943,17 @@ fn eval_in_unary_less(left: &Value, right: &Value) -> Value {
     }
     Value::Date(r) => {
       if let Value::Date(l) = left {
-        if let Some(result) = l.before(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l < r);
       }
     }
     Value::Time(r) => {
       if let Value::Time(l) = left {
-        if let Some(result) = l.before(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l < r);
       }
     }
     Value::DateTime(r) => {
       if let Value::DateTime(l) = left {
-        if let Some(result) = l.before(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l < r);
       }
     }
     Value::YearsAndMonthsDuration(r) => {
@@ -2002,23 +1986,17 @@ fn eval_in_unary_less_or_equal(left: &Value, right: &Value) -> Value {
     }
     Value::Date(r) => {
       if let Value::Date(l) = left {
-        if let Some(result) = l.before_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l <= r);
       }
     }
     Value::Time(r) => {
       if let Value::Time(l) = left {
-        if let Some(result) = l.before_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l <= r);
       }
     }
     Value::DateTime(r) => {
       if let Value::DateTime(l) = left {
-        if let Some(result) = l.before_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l <= r);
       }
     }
     Value::YearsAndMonthsDuration(r) => {
@@ -2051,23 +2029,17 @@ fn eval_in_unary_greater(left: &Value, right: &Value) -> Value {
     }
     Value::Date(r) => {
       if let Value::Date(l) = left {
-        if let Some(result) = l.after(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l > r);
       }
     }
     Value::Time(r) => {
       if let Value::Time(l) = left {
-        if let Some(result) = l.after(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l > r);
       }
     }
     Value::DateTime(r) => {
       if let Value::DateTime(l) = left {
-        if let Some(result) = l.after(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l > r);
       }
     }
     Value::YearsAndMonthsDuration(r) => {
@@ -2100,23 +2072,17 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
     }
     Value::Date(r) => {
       if let Value::Date(l) = left {
-        if let Some(result) = l.after_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l >= r);
       }
     }
     Value::Time(r) => {
       if let Value::Time(l) = left {
-        if let Some(result) = l.after_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l >= r);
       }
     }
     Value::DateTime(r) => {
       if let Value::DateTime(l) = left {
-        if let Some(result) = l.after_or_equal(r) {
-          return Value::Boolean(result);
-        }
+        return Value::Boolean(l >= r);
       }
     }
     Value::YearsAndMonthsDuration(r) => {

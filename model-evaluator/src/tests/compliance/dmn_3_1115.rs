@@ -396,7 +396,7 @@ fn _0042() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_042_8f5dd97588",
     &ctx,
-    r#"null([core::date] invalid date '2017-13-31')"#,
+    r#"null([core::date_3] invalid date y=2017 m=13 d=31)"#,
   );
 }
 
@@ -407,7 +407,7 @@ fn _0043() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_043_8f82301fac",
     &ctx,
-    r#"null([core::date] invalid date '2017-12-32')"#,
+    r#"null([core::date_3] invalid date y=2017 m=12 d=32)"#,
   );
 }
 
@@ -418,7 +418,7 @@ fn _0044() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_044_74893220b4",
     &ctx,
-    r#"null([core::date] invalid date '2017-00-02')"#,
+    r#"null([core::date_3] invalid date y=2017 m=-8 d=2)"#,
   );
 }
 
@@ -429,7 +429,7 @@ fn _0045() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_045_969723fed5",
     &ctx,
-    r#"null([core::date] invalid date '2017-08-00')"#,
+    r#"null([core::date_3] invalid date y=2017 m=8 d=-2)"#,
   );
 }
 
@@ -440,7 +440,7 @@ fn _0046() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_046_36bf30268a",
     &ctx,
-    r#"null([core::date] invalid date '0000-12-01')"#,
+    r#"null([core::date_3] invalid date y=-1000999999 m=12 d=1)"#,
   );
 }
 
@@ -451,7 +451,7 @@ fn _0047() {
     &MODEL_EVALUATOR,
     "feel-date-function_ErrorCase_047_ba717eb672",
     &ctx,
-    r#"null([core::date] invalid date '1000999999-12-32')"#,
+    r#"null([core::date_3] invalid date y=1000999999 m=12 d=32)"#,
   );
 }
 

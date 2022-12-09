@@ -42,7 +42,7 @@ use std::convert::TryFrom;
 use std::str::FromStr;
 
 /// Cell on the plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Cell {
   /// Rectangular region with unique number, bounded by coordinates defined in **Rect**
   /// and containing the text taken from original decision table source file.
@@ -96,7 +96,7 @@ impl Cell {
 }
 
 /// Placement of the hit policy marker in plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum HitPolicyPlacement {
   /// Hit policy marker is placed in the top-left corner of the plane.
   /// This placement is valid for horizontal decision tables (rules as rows).
@@ -135,7 +135,7 @@ impl HitPolicyPlacement {
 }
 
 /// Placement of the rules in plane.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum RuleNumbersPlacement {
   /// In horizontal decision tables (rules as rows), rule numbers are placed
   /// in the first column of the plane, on the left edge, below horizontal double
@@ -207,13 +207,13 @@ impl Plane {
   /// Returns a cell placed in specified **row** and **col**.
   pub fn cell(&self, row: usize, col: usize) -> Result<&Cell> {
     if self.content.is_empty() {
-      return Err(plane_is_empty());
+      return Err(err_plane_is_empty());
     }
     if row >= self.content.len() {
-      return Err(plane_row_is_out_of_range());
+      return Err(err_plane_row_is_out_of_range());
     }
     if col >= self.content[row].len() {
-      return Err(plane_column_is_out_of_range());
+      return Err(err_plane_column_is_out_of_range());
     }
     Ok(&self.content[row][col])
   }
@@ -223,7 +223,7 @@ impl Plane {
     if let Cell::Region(_, _, text) = cell {
       Ok(text.clone())
     } else {
-      Err(plane_cell_is_not_region(&format!("row={} col={} cell={:?}", row, col, cell)))
+      Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
   /// Returns the region number of a region pointed by row and column.
@@ -232,7 +232,7 @@ impl Plane {
     if let Cell::Region(number, _, _) = cell {
       Ok(*number)
     } else {
-      Err(plane_cell_is_not_region(&format!("row={} col={} cell={:?}", row, col, cell)))
+      Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
   /// Returns the number of cells in specified **row**.
@@ -408,7 +408,7 @@ impl Plane {
         }
       }
     }
-    Err(plane_no_main_double_crossing())
+    Err(err_plane_no_main_double_crossing())
   }
   /// Checks if the plane contains horizontal double crossing.
   /// If the horizontal double crossing was found on this plane, its position is returned.
@@ -441,7 +441,7 @@ impl Plane {
   /// Decision tables with crosstab rules have no hit policy.
   pub fn recognize_hit_policy_placement(&self) -> Result<HitPolicyPlacement> {
     if self.content.is_empty() {
-      return Err(plane_is_empty());
+      return Err(err_plane_is_empty());
     }
     // check if the hit policy is placed in the top-left corner of the plane
     if let Cell::Region(_, _, text) = &self.content.first().unwrap().first().unwrap() {
@@ -479,7 +479,7 @@ impl Plane {
         let text = text.trim();
         if let Ok(rule_number) = usize::from_str(text) {
           if rule_number != max_rule_number + 1 {
-            return Err(plane_invalid_rule_number(rule_number));
+            return Err(err_plane_invalid_rule_number(rule_number));
           } else {
             max_rule_number = rule_number;
           }
@@ -511,7 +511,7 @@ impl Plane {
         let text = text.trim();
         if let Ok(rule_number) = usize::from_str(text) {
           if rule_number != max_rule_number + 1 {
-            return Err(plane_invalid_rule_number(rule_number));
+            return Err(err_plane_invalid_rule_number(rule_number));
           } else {
             max_rule_number = rule_number;
           }
@@ -561,6 +561,6 @@ impl std::fmt::Display for Plane {
       }
       buffer.push('\n');
     }
-    write!(f, "{}", buffer)
+    write!(f, "{buffer}")
   }
 }

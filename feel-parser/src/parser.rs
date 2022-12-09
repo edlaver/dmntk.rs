@@ -65,7 +65,7 @@ pub fn parse_name(scope: &Scope, input: &str, trace: bool) -> Result<Name> {
   if let AstNode::Name(name) = Parser::new(scope, TokenType::StartTextualExpression, input, trace).parse()? {
     Ok(name)
   } else {
-    Err(not_a_name(input))
+    Err(err_not_a_feel_name(input))
   }
 }
 
@@ -220,7 +220,7 @@ impl<'parser> Parser<'parser> {
           self.yy_n = YY_TABLE[self.yy_n as usize];
           if self.yy_n <= 0 {
             if self.yy_n == YY_TABLE_N_INF {
-              action = Action::Error;
+              action = Action::Error; // TODO Find the input, for which this error is triggered.
             } else {
               self.yy_n = -self.yy_n;
               action = Action::Reduce;
@@ -289,26 +289,23 @@ impl<'parser> Parser<'parser> {
         Action::Error => {
           trace!(self, "\nERROR");
           self.yy_token = SymbolKind::YyError as i16;
-          return Err(syntax_error(self.input));
+          return Err(err_syntax_error(self.input));
         }
         Action::Error1 => {
           trace!(self, "\nERROR 1");
-          return Err(syntax_error(self.input));
+          return Err(err_syntax_error(self.input));
         }
         Action::Accept => {
           trace!(self, "\n**********");
           trace!(self, "* ACCEPT *");
           trace!(self, "**********\n");
           self.yy_token = SymbolKind::YyAccept as i16;
-          if let Some(node) = self.yy_node_stack.pop() {
-            if self.yy_node_stack.is_empty() {
-              if self.yy_trace {
-                node.trace();
-              }
-              return Ok(node);
-            }
+          let node = self.yy_node_stack.pop().unwrap();
+          debug_assert!(self.yy_node_stack.is_empty());
+          if self.yy_trace {
+            node.trace();
           }
-          return Err(invalid_parse_result());
+          return Ok(node);
         }
       }
     }
@@ -319,18 +316,18 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_addition(&mut self) -> Result<()> {
     trace_action!(self, "addition");
-    let rhs = Box::new(self.yy_node_stack.pop().ok_or_else(err_pop)?);
-    let lhs = Box::new(self.yy_node_stack.pop().ok_or_else(err_pop)?);
-    self.yy_node_stack.push(AstNode::Add(lhs, rhs));
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
+    self.yy_node_stack.push(AstNode::Add(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
 
   ///
   fn action_between(&mut self) -> Result<()> {
     trace_action!(self, "between");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let mhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let mhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Between(Box::new(lhs), Box::new(mhs), Box::new(rhs)));
     Ok(())
   }
@@ -354,8 +351,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_eq(&mut self) -> Result<()> {
     trace_action!(self, "comparison_equal");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Eq(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -363,8 +360,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_ge(&mut self) -> Result<()> {
     trace_action!(self, "comparison_greater_or_equal");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Ge(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -372,8 +369,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_gt(&mut self) -> Result<()> {
     trace_action!(self, "comparison_greater_than");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Gt(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -381,8 +378,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_in(&mut self) -> Result<()> {
     trace_action!(self, "comparison_in");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::In(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -390,8 +387,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_le(&mut self) -> Result<()> {
     trace_action!(self, "comparison_less_or_equal");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Le(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -399,8 +396,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_lt(&mut self) -> Result<()> {
     trace_action!(self, "comparison_less_than");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Lt(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -408,8 +405,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_nq(&mut self) -> Result<()> {
     trace_action!(self, "comparison_not_equal");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Nq(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -417,7 +414,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_unary_ge(&mut self) -> Result<()> {
     trace_action!(self, "comparison_unary_ge");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::UnaryGe(Box::new(lhs)));
     Ok(())
   }
@@ -425,7 +422,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_unary_gt(&mut self) -> Result<()> {
     trace_action!(self, "comparison_unary_gt");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::UnaryGt(Box::new(lhs)));
     Ok(())
   }
@@ -433,7 +430,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_unary_le(&mut self) -> Result<()> {
     trace_action!(self, "comparison_unary_le");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::UnaryLe(Box::new(lhs)));
     Ok(())
   }
@@ -441,7 +438,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_comparison_unary_lt(&mut self) -> Result<()> {
     trace_action!(self, "comparison_unary_lt");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::UnaryLt(Box::new(lhs)));
     Ok(())
   }
@@ -449,8 +446,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_conjunction(&mut self) -> Result<()> {
     trace_action!(self, "conjunction");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::And(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -472,8 +469,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_context_entry(&mut self) -> Result<()> {
     trace_action!(self, "context_entry");
-    let value_node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let key_node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let value_node = self.yy_node_stack.pop().unwrap();
+    let key_node = self.yy_node_stack.pop().unwrap();
     if let AstNode::ContextEntryKey(name) = &key_node {
       self.yy_lexer.add_name_to_scope(name);
     }
@@ -484,9 +481,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_context_entry_tail(&mut self) -> Result<()> {
     trace_action!(self, "context_entry_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::Context(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::Context(items));
       return Ok(());
@@ -498,7 +495,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_context_type_entry(&mut self) -> Result<()> {
     trace_action!(self, "context_type_entry");
-    let type_node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let type_node = self.yy_node_stack.pop().unwrap();
     if let TokenValue::Name(name) = &self.yy_value_stack[self.yy_value_stack.len() - self.yy_len as usize] {
       let lhs = Box::new(AstNode::ContextTypeEntryKey(name.clone()));
       let rhs = Box::new(type_node);
@@ -510,9 +507,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_context_type_entry_tail(&mut self) -> Result<()> {
     trace_action!(self, "context_type_entry_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::ContextType(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::ContextType(items));
       return Ok(());
@@ -524,8 +521,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_disjunction(&mut self) -> Result<()> {
     trace_action!(self, "disjunction");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Or(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -533,8 +530,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_division(&mut self) -> Result<()> {
     trace_action!(self, "division");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Div(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -551,8 +548,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
     trace_action!(self, "every");
     // pop temporary context from the top of the scope
     self.yy_lexer.pop_from_scope();
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let satisfies = Box::new(AstNode::Satisfies(Box::new(rhs)));
     self.yy_node_stack.push(AstNode::Every(Box::new(lhs), satisfies));
     Ok(())
@@ -571,8 +568,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_exponentiation(&mut self) -> Result<()> {
     trace_action!(self, "exponentiation");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Exp(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -580,9 +577,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_expression_list_tail(&mut self) -> Result<()> {
     trace_action!(self, "expression_list_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::ExpressionList(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::ExpressionList(items));
       return Ok(());
@@ -594,8 +591,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_filter(&mut self) -> Result<()> {
     trace_action!(self, "filter");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Filter(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -607,8 +604,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
     trace_action!(self, "for");
     // pop temporary context from the top of the scope
     self.yy_lexer.pop_from_scope();
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let evaluated_expression = AstNode::EvaluatedExpression(Box::new(rhs));
     self.yy_node_stack.push(AstNode::For(Box::new(lhs), Box::new(evaluated_expression)));
     Ok(())
@@ -631,7 +628,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_formal_parameter_with_type(&mut self) -> Result<()> {
     trace_action!(self, "function_formal_parameter_with_type");
     // the type of the parameter is on top of node stack
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
     // the name of the parameter is in value stack
     if let TokenValue::Name(name) = &self.yy_value_stack[self.yy_value_stack.len() - self.yy_len as usize] {
       // push the new formal parameter on top of node stack
@@ -681,7 +678,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_formal_parameters_first(&mut self) -> Result<()> {
     trace_action!(self, "function_formal_parameters_first");
     // the first parameter is on the top of the node stack
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::FormalParameters(vec![lhs]));
     Ok(())
   }
@@ -690,7 +687,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_formal_parameters_tail(&mut self) -> Result<()> {
     trace_action!(self, "function_formal_parameters_tail");
     // the next parameter is on the top of the node stack
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
     // the collection of formal parameters is now on top of the node stack
     if let Some(AstNode::FormalParameters(mut items)) = self.yy_node_stack.pop() {
       items.push(rhs);
@@ -734,8 +731,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   /// The AstNode just below the function's body is the list of function's formal parameters.
   fn action_function_definition(&mut self) -> Result<()> {
     trace_action!(self, "function_definition");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::FunctionDefinition(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -743,8 +740,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_function_invocation(&mut self) -> Result<()> {
     trace_action!(self, "function_invocation");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::FunctionInvocation(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -762,8 +759,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_function_type(&mut self) -> Result<()> {
     trace_action!(self, "function_type");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::FunctionType(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -778,9 +775,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_function_type_parameters_tail(&mut self) -> Result<()> {
     trace_action!(self, "function_type_parameters_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::ParameterTypes(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::ParameterTypes(items));
       return Ok(());
@@ -792,9 +789,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   /// Reduces `if` expression.
   fn action_if(&mut self) -> Result<()> {
     trace_action!(self, "if");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let mid = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let mid = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::If(Box::new(lhs), Box::new(mid), Box::new(rhs)));
     Ok(())
   }
@@ -802,8 +799,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_instance_of(&mut self) -> Result<()> {
     trace_action!(self, "instance_of");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let checked_value = Box::new(lhs);
     let expected_type = Box::new(rhs);
     self.yy_node_stack.push(AstNode::InstanceOf(checked_value, expected_type));
@@ -813,8 +810,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_interval(&mut self) -> Result<()> {
     trace_action!(self, "interval");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Range(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -823,7 +820,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_interval_end(&mut self) -> Result<()> {
     trace_action!(self, "interval_end");
     let closed = matches!(&self.yy_value_stack[self.yy_value_stack.len() - 1], TokenValue::RightBracket);
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::IntervalEnd(Box::new(lhs), closed));
     Ok(())
   }
@@ -832,7 +829,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_interval_start(&mut self) -> Result<()> {
     trace_action!(self, "interval_start");
     let closed = matches!(&self.yy_value_stack[self.yy_value_stack.len() - self.yy_len as usize], TokenValue::LeftBracket);
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::IntervalStart(Box::new(lhs), closed));
     Ok(())
   }
@@ -844,9 +841,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   /// - variable name.
   fn action_iteration_context_value_range(&mut self) -> Result<()> {
     trace_action!(self, "iteration_context_value_range");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let mid = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let mid = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let node = AstNode::IterationContextRange(Box::new(lhs), Box::new(mid), Box::new(rhs));
     self.yy_node_stack.push(node);
     Ok(())
@@ -858,8 +855,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   /// - variable name.
   fn action_iteration_context_value_single(&mut self) -> Result<()> {
     trace_action!(self, "iteration_context_value_single");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let node = AstNode::IterationContextSingle(Box::new(lhs), Box::new(rhs));
     self.yy_node_stack.push(node);
     Ok(())
@@ -888,9 +885,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   /// Reduces the iteration context.
   fn action_iteration_contexts_tail(&mut self) -> Result<()> {
     trace_action!(self, "iteration_contexts_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::IterationContexts(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::IterationContexts(items));
       return Ok(());
@@ -936,9 +933,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_list_tail(&mut self) -> Result<()> {
     trace_action!(self, "list_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::CommaList(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::CommaList(items));
       return Ok(());
@@ -950,7 +947,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_list_type(&mut self) -> Result<()> {
     trace_action!(self, "list_type");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::ListType(Box::new(lhs)));
     Ok(())
   }
@@ -1012,8 +1009,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_multiplication(&mut self) -> Result<()> {
     trace_action!(self, "multiplication");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Mul(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -1032,7 +1029,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
     trace_action!(self, "named_parameter");
     trace!(self, "{:?}", self.yy_value_stack);
     if let TokenValue::Name(name) = &self.yy_value_stack[self.yy_value_stack.len() - 3] {
-      let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let rhs = self.yy_node_stack.pop().unwrap();
       let parameter_name = Box::new(AstNode::ParameterName(name.clone()));
       let parameter_value = Box::new(rhs);
       self.yy_node_stack.push(AstNode::NamedParameter(parameter_name, parameter_value));
@@ -1043,9 +1040,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_named_parameters_tail(&mut self) -> Result<()> {
     trace_action!(self, "named_parameters_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::NamedParameters(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::NamedParameters(items));
       return Ok(());
@@ -1066,7 +1063,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_path(&mut self) -> Result<()> {
     trace_action!(self, "path");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     if let Some(TokenValue::Name(name)) = &self.yy_value_stack.last() {
       let rhs = AstNode::Name(name.clone());
       self.yy_node_stack.push(AstNode::Path(Box::new(lhs), Box::new(rhs)));
@@ -1090,9 +1087,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_positional_parameters_tail(&mut self) -> Result<()> {
     trace_action!(self, "positional_parameters_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::PositionalParameters(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::PositionalParameters(items));
       return Ok(());
@@ -1127,8 +1124,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_quantified_expression(&mut self) -> Result<()> {
     trace_action!(self, "quantified_expression");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let node = AstNode::QuantifiedContext(Box::new(lhs), Box::new(rhs));
     self.yy_node_stack.push(node);
     Ok(())
@@ -1157,9 +1154,9 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_quantified_expressions_tail(&mut self) -> Result<()> {
     trace_action!(self, "quantified_expressions_tail");
-    let node = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let node = self.yy_node_stack.pop().unwrap();
     if let AstNode::QuantifiedContexts(mut items) = node {
-      let item = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+      let item = self.yy_node_stack.pop().unwrap();
       items.insert(0, item);
       self.yy_node_stack.push(AstNode::QuantifiedContexts(items));
       return Ok(());
@@ -1171,7 +1168,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_range_type(&mut self) -> Result<()> {
     trace_action!(self, "range_type");
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::RangeType(Box::new(lhs)));
     Ok(())
   }
@@ -1181,8 +1178,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
     trace_action!(self, "some");
     // pop temporary context from the top of the scope
     self.yy_lexer.pop_from_scope();
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     let satisfies = Box::new(AstNode::Satisfies(Box::new(rhs)));
     self.yy_node_stack.push(AstNode::Some(Box::new(lhs), satisfies));
     Ok(())
@@ -1201,8 +1198,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_subtraction(&mut self) -> Result<()> {
     trace_action!(self, "subtraction");
-    let rhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
-    let lhs = self.yy_node_stack.pop().ok_or_else(err_pop)?;
+    let rhs = self.yy_node_stack.pop().unwrap();
+    let lhs = self.yy_node_stack.pop().unwrap();
     self.yy_node_stack.push(AstNode::Sub(Box::new(lhs), Box::new(rhs)));
     Ok(())
   }
@@ -1238,61 +1235,26 @@ impl<'parser> ReduceActions for Parser<'parser> {
   }
 }
 
-/// Definitions of errors raised by [parser](crate::parser) module.
 mod errors {
   use dmntk_common::DmntkError;
 
-  /// Definition of errors raised by [Parser](super::Parser).
-  enum ParserError {
-    NotAName(String),
-    InvalidParseResult,
-    SyntaxError(String),
-    PopError,
-  }
+  /// Parser error.
+  struct ParserError(String);
 
   impl From<ParserError> for DmntkError {
+    /// Creates [DmntkError] from [ParserError].
     fn from(e: ParserError) -> Self {
-      DmntkError::new("ParserError", &format!("{}", e))
+      DmntkError::new("ParserError", &e.0)
     }
   }
 
-  impl std::fmt::Display for ParserError {
-    ///
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        ParserError::NotAName(s) => {
-          write!(f, "expected `FEEL` name on input but found `{}`", s)
-        }
-        ParserError::InvalidParseResult => {
-          write!(f, "invalid parse result, expected non empty AST node as a result when parser accepts input")
-        }
-        ParserError::SyntaxError(input) => {
-          write!(f, "syntax error: {}", input)
-        }
-        ParserError::PopError => {
-          write!(f, "pop error")
-        }
-      }
-    }
+  /// Creates an error when `FEEL` name was expected on input, but something else encountered.
+  pub fn err_not_a_feel_name(s: &str) -> DmntkError {
+    ParserError(format!("expected `FEEL` name on input but found `{s}`")).into()
   }
 
-  ///
-  pub fn not_a_name(s: &str) -> DmntkError {
-    ParserError::NotAName(s.to_string()).into()
-  }
-
-  ///
-  pub fn invalid_parse_result() -> DmntkError {
-    ParserError::InvalidParseResult.into()
-  }
-
-  ///
-  pub fn syntax_error(input: &str) -> DmntkError {
-    ParserError::SyntaxError(input.to_string()).into()
-  }
-
-  ///
-  pub fn err_pop() -> DmntkError {
-    ParserError::PopError.into()
+  /// Creates syntax error on specified input.
+  pub fn err_syntax_error(input: &str) -> DmntkError {
+    ParserError(format!("syntax error: {input}")).into()
   }
 }

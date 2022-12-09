@@ -44,7 +44,7 @@ pub const RECT_ZERO: Rect = Rect {
 pub type Rectangles = Vec<Rect>;
 
 /// Rectangle.
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Rect {
   /// Left edge coordinate (inclusive).
   pub left: usize,

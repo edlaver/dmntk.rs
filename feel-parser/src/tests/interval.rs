@@ -34,7 +34,7 @@ use super::accept;
 use crate::dmntk_feel::context::FeelContext;
 use crate::dmntk_feel::values::Value;
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::{scope, value_null, value_number, FeelNumber, Scope};
+use dmntk_feel::{scope, value_null, value_number, Scope};
 
 #[test]
 fn _0001() {

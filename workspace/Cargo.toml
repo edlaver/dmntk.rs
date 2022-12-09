@@ -14,7 +14,6 @@ dmntk-feel.workspace = true
 dmntk-feel-evaluator.workspace = true
 dmntk-model.workspace = true
 dmntk-model-evaluator.workspace = true
-thiserror = "1.0.30"
 walkdir = "2.3.2"
 
 [dev-dependencies]

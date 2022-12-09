@@ -41,8 +41,11 @@ mod tests;
 use self::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
+use std::borrow::Borrow;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::Display;
+use std::sync::Arc;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
 pub const URI_MODEL: &str = "https://www.omg.org/spec/DMN/20191111/MODEL/";
@@ -116,12 +119,12 @@ pub trait BusinessContextElement: NamedElement {
 }
 
 /// [Element] represents an element from another metamodel.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Element;
 
 /// The [ExtensionElement] element is a container to aggregate elements
 /// from other metamodels inside any [DmnElement].
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionElement {
   pub elements: Vec<Element>,
 }
@@ -129,7 +132,7 @@ pub struct ExtensionElement {
 /// The [ExtensionAttribute] element contains an [Element] or a reference
 /// to an [Element] from another metamodel. An [ExtensionAttribute] also has a name
 /// to define the role or purpose of the associated element.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionAttribute {
   /// The name of the extension attribute.
   pub name: String,
@@ -319,6 +322,15 @@ impl DrgElement {
       DrgElement::KnowledgeSource(inner) => inner.id().as_ref().map_or(false, |v| v == id),
     }
   }
+  pub fn get_id(&self) -> Option<String> {
+    match self {
+      DrgElement::Decision(inner) => inner.id().as_ref().cloned(),
+      DrgElement::InputData(inner) => inner.id().as_ref().cloned(),
+      DrgElement::BusinessKnowledgeModel(inner) => inner.id().as_ref().cloned(),
+      DrgElement::DecisionService(inner) => inner.id().as_ref().cloned(),
+      DrgElement::KnowledgeSource(inner) => inner.id().as_ref().cloned(),
+    }
+  }
   /// Checks if this [DrgElement] has a specified name.
   /// If the element with specified name exists and
   /// this name has a value equal to value specified
@@ -353,6 +365,13 @@ impl DrgElement {
   pub fn is_knowledge_source(&self) -> bool {
     matches!(self, DrgElement::KnowledgeSource(_))
   }
+}
+
+#[derive(Debug, Clone)]
+pub enum Requirement {
+  Information(Arc<InformationRequirement>),
+  Knowledge(Arc<KnowledgeRequirement>),
+  Authority(Arc<AuthorityRequirement>),
 }
 
 /// [Definitions] element is the outermost containing object
@@ -397,7 +416,9 @@ pub struct Definitions {
   /// Container for the instances of [ItemDefinition] that are contained in this [Definitions].
   item_definitions: Vec<ItemDefinition>,
   /// Container for the instances of [DrgElement] that are contained in this [Definitions].
-  drg_elements: Vec<DrgElement>,
+  drg_elements: Vec<Arc<DrgElement>>,
+  /// Container for the instances of [DrgElement] indexed by its unique identifier.
+  drg_elements_by_id: HashMap<String, Arc<DrgElement>>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   business_context_elements: Vec<BusinessContextElementInstance>,
   /// Container used to import externally defined elements and make them available
@@ -405,6 +426,8 @@ pub struct Definitions {
   imports: Vec<Import>,
   /// Optional Diagram Interchange information contained within this [Definitions].
   dmndi: Option<Dmndi>,
+  /// Collection of requirements contained in this [Definitions] indexed by identifiers.
+  requirements_by_id: HashMap<String, Requirement>,
 }
 
 impl Definitions {
@@ -446,9 +469,9 @@ impl Definitions {
     self
       .drg_elements
       .iter()
-      .filter_map(|drg_element| {
-        if drg_element.is_decision() {
-          if let DrgElement::Decision(inner) = drg_element {
+      .filter_map(|v| {
+        if v.is_decision() {
+          if let DrgElement::Decision(inner) = v.borrow() {
             return Some(inner);
           }
         }
@@ -461,7 +484,7 @@ impl Definitions {
   pub fn decision_by_id(&self, id: &str) -> Option<&Decision> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_decision() && v.has_id(id) {
-        if let DrgElement::Decision(inner) = v {
+        if let DrgElement::Decision(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -473,7 +496,7 @@ impl Definitions {
   pub fn decision_by_name(&self, name: &str) -> Option<&Decision> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_decision() && v.has_name(name) {
-        if let DrgElement::Decision(inner) = v {
+        if let DrgElement::Decision(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -485,9 +508,9 @@ impl Definitions {
     self
       .drg_elements
       .iter()
-      .filter_map(|drg_element| {
-        if drg_element.is_business_knowledge_model() {
-          if let DrgElement::BusinessKnowledgeModel(inner) = drg_element {
+      .filter_map(|v| {
+        if v.is_business_knowledge_model() {
+          if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
             return Some(inner);
           }
         }
@@ -500,7 +523,7 @@ impl Definitions {
   pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&BusinessKnowledgeModel> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_business_knowledge_model() && v.has_id(id) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v {
+        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -512,7 +535,7 @@ impl Definitions {
   pub fn business_knowledge_model_by_name(&self, name: &str) -> Option<&BusinessKnowledgeModel> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_business_knowledge_model() && v.has_name(name) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v {
+        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -524,9 +547,9 @@ impl Definitions {
     self
       .drg_elements
       .iter()
-      .filter_map(|drg_element| {
-        if drg_element.is_decision_service() {
-          if let DrgElement::DecisionService(inner) = drg_element {
+      .filter_map(|v| {
+        if v.is_decision_service() {
+          if let DrgElement::DecisionService(inner) = v.borrow() {
             return Some(inner);
           }
         }
@@ -539,7 +562,7 @@ impl Definitions {
   pub fn decision_service_by_id(&self, id: &str) -> Option<&DecisionService> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_decision_service() && v.has_id(id) {
-        if let DrgElement::DecisionService(inner) = v {
+        if let DrgElement::DecisionService(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -551,7 +574,7 @@ impl Definitions {
   pub fn decision_service_by_name(&self, name: &str) -> Option<&DecisionService> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_decision_service() && v.has_name(name) {
-        if let DrgElement::DecisionService(inner) = v {
+        if let DrgElement::DecisionService(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -564,7 +587,7 @@ impl Definitions {
   pub fn input_data_by_id(&self, id: &str) -> Option<&InputData> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_input_data() && v.has_id(id) {
-        if let DrgElement::InputData(inner) = v {
+        if let DrgElement::InputData(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -576,7 +599,13 @@ impl Definitions {
     self
       .drg_elements
       .iter()
-      .filter_map(|v| if let DrgElement::InputData(input_data) = v { Some(input_data) } else { None })
+      .filter_map(|v| {
+        if let DrgElement::InputData(input_data) = v.borrow() {
+          Some(input_data)
+        } else {
+          None
+        }
+      })
       .collect::<Vec<&InputData>>()
   }
   /// Returns an optional reference to [KnowledgeSource] with specified identifier
@@ -584,7 +613,7 @@ impl Definitions {
   pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
     self.drg_elements.iter().find_map(|v| {
       if v.is_knowledge_source() && v.has_id(id) {
-        if let DrgElement::KnowledgeSource(inner) = v {
+        if let DrgElement::KnowledgeSource(inner) = v.borrow() {
           return Some(inner);
         }
       }
@@ -604,8 +633,16 @@ impl Definitions {
     &self.dmndi
   }
   /// Returns reference to [DrgElements](DrgElement) container.
-  pub fn drg_elements_mut(&mut self) -> &mut Vec<DrgElement> {
+  pub fn drg_elements_mut(&mut self) -> &mut Vec<Arc<DrgElement>> {
     &mut self.drg_elements
+  }
+  /// Returns reference to [DrgElements](DrgElement) indexed by identifiers.
+  pub fn drg_elements_by_id(&self) -> &HashMap<String, Arc<DrgElement>> {
+    &self.drg_elements_by_id
+  }
+  /// Returns reference to [Requirements](Requirement) indexed by identifiers.
+  pub fn requirements_by_id(&self) -> &HashMap<String, Requirement> {
+    &self.requirements_by_id
   }
 }
 
@@ -790,7 +827,7 @@ impl NamedElement for InputData {
 /// either DMN [DRGElement](DrgElement) or [ItemDefinition] instances contained
 /// in other [Definitions] elements, or non-DMN elements,
 /// such as an XML Schema or a PMML file.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Import {
   /// Optional identifier of this this [Import].
   id: Option<String>,
@@ -908,7 +945,7 @@ pub struct ContextEntry {
 
 /// [LiteralExpression] is used to model a value expression whose value
 /// is specified by text in some specified expression language.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LiteralExpression {
   /// Optional identifier of this this [LiteralExpression].
   id: Option<String>,
@@ -1049,11 +1086,12 @@ pub struct Decision {
   /// The instance of the [Expression] for the [Decision].
   decision_logic: Option<ExpressionInstance>,
   /// Collection of the instances of [InformationRequirement] that compose this [Decision].
-  information_requirements: Vec<InformationRequirement>,
+  information_requirements: Vec<Arc<InformationRequirement>>,
   /// Collection of the instances of [KnowledgeRequirement] that compose this [Decision].
-  knowledge_requirements: Vec<KnowledgeRequirement>,
+  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
+  /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
+  authority_requirements: Vec<Arc<AuthorityRequirement>>,
   //TODO add the following:
-  // authority_requirements
   // supported_objectives
   // impacted_performance_indicator
   // decision_maker
@@ -1080,12 +1118,16 @@ impl Decision {
     &self.decision_logic
   }
   /// Returns a reference to collection of [InformationRequirement].
-  pub fn information_requirements(&self) -> &Vec<InformationRequirement> {
+  pub fn information_requirements(&self) -> &Vec<Arc<InformationRequirement>> {
     &self.information_requirements
   }
   /// Returns a reference to collection of [KnowledgeRequirement].
-  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
     &self.knowledge_requirements
+  }
+  /// Returns a reference to collection of [AuthorityRequirement].
+  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+    &self.authority_requirements
   }
 }
 
@@ -1244,26 +1286,26 @@ pub struct AuthorityRequirement {
   extension_attributes: Vec<ExtensionAttribute>,
   /// The instance of [KnowledgeSource] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource], [Decision] or [BusinessKnowledgeModel] element.
-  required_authority: Option<KnowledgeSource>,
+  required_authority: OptHRef,
   /// The instance of [Decision] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource] element.
-  required_decision: Option<Decision>,
+  required_decision: OptHRef,
   /// The instance of [InputData] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource] element.
-  required_input: Option<InputData>,
+  required_input: OptHRef,
 }
 
 impl AuthorityRequirement {
   /// Returns reference to optional [KnowledgeSource].
-  pub fn required_authority(&self) -> &Option<KnowledgeSource> {
+  pub fn required_authority(&self) -> &OptHRef {
     &self.required_authority
   }
   /// Returns reference to optional [Decision].
-  pub fn required_decision(&self) -> &Option<Decision> {
+  pub fn required_decision(&self) -> &OptHRef {
     &self.required_decision
   }
   /// Returns reference to optional [InputData].
-  pub fn required_input(&self) -> &Option<InputData> {
+  pub fn required_input(&self) -> &OptHRef {
     &self.required_input
   }
 }
@@ -1309,6 +1351,15 @@ pub struct KnowledgeSource {
   name: String,
   /// Optional `FEEL` name of this [KnowledgeSource].
   feel_name: Option<Name>,
+  /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
+  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+}
+
+impl KnowledgeSource {
+  /// Returns a reference to collection of [AuthorityRequirement].
+  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+    &self.authority_requirements
+  }
 }
 
 impl DmnElement for KnowledgeSource {
@@ -1376,9 +1427,9 @@ pub struct BusinessKnowledgeModel {
   /// The function that encapsulates the logic encapsulated by this [BusinessKnowledgeModel].
   encapsulated_logic: Option<FunctionDefinition>,
   /// This attribute lists the instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  knowledge_requirements: Vec<KnowledgeRequirement>,
+  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
   /// This attribute lists the instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  authority_requirements: Vec<AuthorityRequirement>,
+  authority_requirements: Vec<Arc<AuthorityRequirement>>,
 }
 
 impl BusinessKnowledgeModel {
@@ -1387,11 +1438,11 @@ impl BusinessKnowledgeModel {
     &self.encapsulated_logic
   }
   /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
     &self.knowledge_requirements
   }
   /// Returns reference to the collection of instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
+  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
     &self.authority_requirements
   }
 }
@@ -1714,7 +1765,7 @@ impl FunctionItem {
 
 /// Defines the type of the [FunctionDefinition].
 /// The default value is `FEEL`. Supported values also include `Java` and `PMML`.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FunctionKind {
   Feel,
   Java,
@@ -1909,7 +1960,7 @@ impl Expression for List {
 }
 
 /// Decision table.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecisionTable {
   /// Information item name, for which the decision table is its value expression.
   /// This is usually the name of the decision or the name of business knowledge model for
@@ -1943,29 +1994,29 @@ impl std::fmt::Display for DecisionTable {
     buffer.push_str(format!(">> preferred orientation: {}\n", self.preferred_orientation).as_str());
     buffer.push_str(">> information item name: ");
     if let Some(text) = &self.information_item_name {
-      buffer.push_str(format!("\n'{}'\n", text).as_str());
+      buffer.push_str(format!("\n'{text}'\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
     buffer.push_str(format!(">> hit policy: {}\n", self.hit_policy).as_str());
     buffer.push_str(">> aggregation: ");
     if let Some(aggregation) = &self.aggregation {
-      buffer.push_str(format!("{}\n", aggregation).as_str());
+      buffer.push_str(format!("{aggregation}\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
     buffer.push_str(">> output label: ");
     if let Some(text) = &self.output_label {
-      buffer.push_str(format!("\n'{}'\n", text).as_str());
+      buffer.push_str(format!("\n'{text}'\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
-    write!(f, "{}", buffer)
+    write!(f, "{buffer}")
   }
 }
 
 /// Orientation of the decision table.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DecisionTableOrientation {
   /// Decision table is presented horizontally, rules are presented as rows.
   RuleAsRow,
@@ -2000,7 +2051,7 @@ impl TryFrom<&str> for DecisionTableOrientation {
 }
 
 /// Hit policy.
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum HitPolicy {
   /// `UNIQUE` hit policy. No overlapping rules are allowed, only single rule can be matched.
   /// This is the default value for hit policy (DMN 1.2 clause 8.2.10).
@@ -2029,13 +2080,13 @@ pub enum HitPolicy {
 impl std::fmt::Display for HitPolicy {
   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
     match self {
-      HitPolicy::Unique => write!(f, "UNIQUE"),
-      HitPolicy::Any => write!(f, "ANY"),
-      HitPolicy::Priority => write!(f, "PRIORITY"),
-      HitPolicy::First => write!(f, "FIRST"),
-      HitPolicy::Collect(aggregator) => write!(f, "COLLECT {}", aggregator),
-      HitPolicy::OutputOrder => write!(f, "OUTPUT ORDER"),
-      HitPolicy::RuleOrder => write!(f, "RULE ORDER"),
+      HitPolicy::Unique => write!(f, "U"),
+      HitPolicy::Any => write!(f, "A"),
+      HitPolicy::Priority => write!(f, "P"),
+      HitPolicy::First => write!(f, "F"),
+      HitPolicy::Collect(aggregator) => write!(f, "{aggregator}"),
+      HitPolicy::OutputOrder => write!(f, "O"),
+      HitPolicy::RuleOrder => write!(f, "R"),
     }
   }
 }
@@ -2061,8 +2112,8 @@ impl TryFrom<&str> for HitPolicy {
   }
 }
 
-/// Aggregator function for **COLLECT** hit policy.
-#[derive(Debug, PartialEq, Copy, Clone)]
+/// Aggregator function for `COLLECT` hit policy.
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum BuiltinAggregator {
   /// The result of the decision table is a list of output entries.
   List,
@@ -2083,18 +2134,18 @@ impl std::fmt::Display for BuiltinAggregator {
       f,
       "{}",
       match self {
-        BuiltinAggregator::List => "LIST",
-        BuiltinAggregator::Count => "COUNT",
-        BuiltinAggregator::Sum => "SUM",
-        BuiltinAggregator::Min => "MIN",
-        BuiltinAggregator::Max => "MAX",
+        BuiltinAggregator::List => "C",
+        BuiltinAggregator::Count => "C#",
+        BuiltinAggregator::Sum => "C+",
+        BuiltinAggregator::Min => "C<",
+        BuiltinAggregator::Max => "C>",
       }
     )
   }
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputClause {
   /// The subject of this input clause, text representation of unary tests.
   pub input_expression: String,
@@ -2103,7 +2154,7 @@ pub struct InputClause {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OutputClause {
   /// Type reference may specify the type to be used as decision table's output when more than one output clause is present.
   pub type_ref: Option<String>,
@@ -2116,14 +2167,14 @@ pub struct OutputClause {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuleAnnotationClause {
   /// Name that is used as the name of the rule annotation column of the containing decision table.
   pub name: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecisionRule {
   /// Ordered list of input entries that compose this decision rule.
   pub input_entries: Vec<InputEntry>,
@@ -2134,21 +2185,21 @@ pub struct DecisionRule {
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct InputEntry {
   /// Text representation of unary test that composes this input entry.
   pub text: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OutputEntry {
   /// Text representation of literal expression that composes this output entry.
   pub text: String,
 }
 
 ///
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct AnnotationEntry {
   /// Text representing this rule annotation.
   pub text: String,
@@ -2249,7 +2300,7 @@ pub struct DmnEdge {
   /// the connected line segments of the edge. At least two (2) waypoints MUST be specified.
   pub way_points: Vec<DcPoint>,
   /// A reference to a [InformationRequirement], [KnowledgeRequirement],
-  /// [AuthorityRequirement] or an [Association] MUST be specified.
+  /// [AuthorityRequirement] or an [Association], MUST be specified.
   pub dmn_element_ref: Option<String>,
   /// The actual [DmnDiagramElement] this [DmnEdge] is connecting from.
   /// MUST be specified when the [DmnEdge] has a source.
@@ -2331,7 +2382,7 @@ pub struct DmnLabel {
 }
 
 /// Defines RGB color.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct DcColor {
   pub red: u8,
   pub green: u8,
@@ -2339,14 +2390,14 @@ pub struct DcColor {
 }
 
 /// Defines point.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct DcPoint {
   pub x: f64,
   pub y: f64,
 }
 
 /// Defines bounds.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct DcBounds {
   pub x: f64,
   pub y: f64,
@@ -2355,14 +2406,14 @@ pub struct DcBounds {
 }
 
 /// Defines dimensions.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct DcDimension {
   pub width: f64,
   pub height: f64,
 }
 
 /// Defines element kind alignment.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum DcAlignmentKind {
   Start,
   End,
@@ -2370,7 +2421,7 @@ pub enum DcAlignmentKind {
 }
 
 /// Defines known colors.
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum DcKnownColor {
   Maroon = 0x800000,
   Red = 0xFF0000,
@@ -2395,7 +2446,7 @@ mod errors {
   use dmntk_common::DmntkError;
 
   /// Errors related to the model.
-  #[derive(Debug, PartialEq)]
+  #[derive(Debug, PartialEq, Eq)]
   pub enum ModelError {
     InvalidDecisionTableOrientation(String),
     InvalidDecisionTableHitPolicy(String),
@@ -2403,7 +2454,7 @@ mod errors {
 
   impl From<ModelError> for DmntkError {
     fn from(e: ModelError) -> Self {
-      DmntkError::new("ModelError", &format!("{}", e))
+      DmntkError::new("ModelError", &format!("{e}"))
     }
   }
 
@@ -2411,10 +2462,10 @@ mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         ModelError::InvalidDecisionTableOrientation(s) => {
-          write!(f, "invalid decision table orientation: {}", s)
+          write!(f, "invalid decision table orientation: {s}")
         }
         ModelError::InvalidDecisionTableHitPolicy(s) => {
-          write!(f, "invalid decision table hit policy: {}", s)
+          write!(f, "invalid decision table hit policy: {s}")
         }
       }
     }

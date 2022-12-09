@@ -33,9 +33,19 @@
 extern crate dmntk_examples;
 extern crate dmntk_model;
 
+mod dec_tab;
+mod decision_table;
 mod generator;
+mod svg;
 
 #[cfg(test)]
 mod tests;
 
-pub use generator::generate;
+const NL: char = '\n';
+const WS: &str = "";
+const INDENT: usize = 2;
+const INDENT_2: usize = INDENT + INDENT;
+const INDENT_3: usize = INDENT_2 + INDENT;
+
+pub use dec_tab::decision_table_to_html;
+pub use generator::definitions_to_html;

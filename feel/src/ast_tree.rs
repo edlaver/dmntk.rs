@@ -30,32 +30,34 @@
  * limitations under the License.
  */
 
-//! ???
+//! Routines for converting [AstNode] into ASCII tree.
 
 use crate::AstNode;
 use ascii_tree::{write_tree, Tree};
 
-pub fn ast_tree(root: &AstNode) -> String {
+/// Returns ASCII tree representation of the specified node.
+pub fn ast_tree(node: &AstNode) -> String {
   let mut ascii_tree = String::new();
-  let tree = ast_node_to_tree(root);
+  let tree = ast_node_to_tree(node);
   let _ = write_tree(&mut ascii_tree, &tree);
-  ascii_tree.lines().map(|line| format!("\n      {}", line)).collect()
+  ascii_tree.lines().map(|line| format!("\n      {line}")).collect()
 }
 
+/// Converts [AstNode] into ASCII [Tree] node.
 fn ast_node_to_tree(node: &AstNode) -> Tree {
   match node {
     AstNode::Add(lhs, rhs) => node_2("Add", lhs, rhs),
     AstNode::And(lhs, rhs) => node_2("And", lhs, rhs),
-    AstNode::At(mid) => node_and_leaf("At", &format!("`{}`", mid)),
+    AstNode::At(mid) => node_and_leaf("At", &format!("`{mid}`")),
     AstNode::Between(lhs, mid, rhs) => node_3("Between", lhs, mid, rhs),
-    AstNode::Boolean(mid) => node_and_leaf("Boolean", &format!("`{}`", mid)),
+    AstNode::Boolean(mid) => node_and_leaf("Boolean", &format!("`{mid}`")),
     AstNode::CommaList(mid) => node_items("CommaList", mid),
     AstNode::Context(items) => node_items("Context", items),
     AstNode::ContextEntry(lhs, rhs) => node_2("ContextEntry", lhs, rhs),
-    AstNode::ContextEntryKey(mid) => node_and_leaf("ContextEntryKey", &format!("`{}`", mid)),
+    AstNode::ContextEntryKey(mid) => node_and_leaf("ContextEntryKey", &format!("`{mid}`")),
     AstNode::ContextType(items) => node_items("ContextType", items),
     AstNode::ContextTypeEntry(lhs, rhs) => node_2("ContextTypeEntry", lhs, rhs),
-    AstNode::ContextTypeEntryKey(mid) => node_and_leaf("Name", &format!("`{}`", mid)),
+    AstNode::ContextTypeEntryKey(mid) => node_and_leaf("Name", &format!("`{mid}`")),
     AstNode::Div(lhs, rhs) => node_2("Div", lhs, rhs),
     AstNode::Eq(lhs, rhs) => node_2("Eq", lhs, rhs),
     AstNode::EvaluatedExpression(mid) => node_1("EvaluatedExpression", mid),
@@ -87,29 +89,29 @@ fn ast_node_to_tree(node: &AstNode) -> Tree {
     AstNode::ListType(lhs) => node_1("ListType", lhs),
     AstNode::Lt(lhs, rhs) => node_2("Lt", lhs, rhs),
     AstNode::Mul(lhs, rhs) => node_2("Mul", lhs, rhs),
-    AstNode::Name(mid) => node_and_leaf("Name", &format!("`{}`", mid)),
+    AstNode::Name(mid) => node_and_leaf("Name", &format!("`{mid}`")),
     AstNode::NamedParameter(lhs, rhs) => node_2("NamedParameter", lhs, rhs),
     AstNode::NamedParameters(items) => node_items("NamedParameters", items),
     AstNode::Neg(mid) => node_1("Neg", mid),
     AstNode::NegatedList(mid) => node_items("NegatedList", mid),
     AstNode::Nq(lhs, rhs) => node_2("Nq", lhs, rhs),
     AstNode::Null => leaf("Null"),
-    AstNode::Numeric(lhs, rhs) => node_and_leaf("Numeric", &format!("`{}.{}`", lhs, rhs)),
+    AstNode::Numeric(lhs, rhs) => node_and_leaf("Numeric", &format!("`{lhs}.{rhs}`")),
     AstNode::Or(lhs, rhs) => node_2("Or", lhs, rhs),
     AstNode::Out(lhs, rhs) => node_2("Out", lhs, rhs),
-    AstNode::ParameterName(lhs) => node_and_leaf("ParameterName", &format!("`{}`", lhs)),
+    AstNode::ParameterName(lhs) => node_and_leaf("ParameterName", &format!("`{lhs}`")),
     AstNode::ParameterTypes(items) => node_items("ParameterTypes", items),
     AstNode::Path(lhs, rhs) => node_2("Path", lhs, rhs),
     AstNode::PositionalParameters(items) => node_items("PositionalParameters", items),
     AstNode::QualifiedName(items) => node_items("QualifiedName", items),
-    AstNode::QualifiedNameSegment(lhs) => node_and_leaf("Name", &format!("`{}`", lhs)),
+    AstNode::QualifiedNameSegment(lhs) => node_and_leaf("Name", &format!("`{lhs}`")),
     AstNode::QuantifiedContext(lhs, rhs) => node_2("QuantifiedContext", lhs, rhs),
     AstNode::QuantifiedContexts(items) => node_items("QuantifiedContexts", items),
     AstNode::Range(lhs, rhs) => node_2("Range", lhs, rhs),
     AstNode::RangeType(lhs) => node_1("RangeType", lhs),
     AstNode::Satisfies(mid) => node_1("Satisfies", mid),
     AstNode::Some(lhs, rhs) => node_2("Some", lhs, rhs),
-    AstNode::String(mid) => node_and_leaf("String", &format!("`{}`", mid)),
+    AstNode::String(mid) => node_and_leaf("String", &format!("`{mid}`")),
     AstNode::Sub(lhs, rhs) => node_2("Sub", lhs, rhs),
     AstNode::UnaryGe(mid) => node_1("UnaryGe", mid),
     AstNode::UnaryGt(mid) => node_1("UnaryGt", mid),
@@ -154,19 +156,4 @@ fn node_and_label(name: &str, lhs: &AstNode, label_true: &str, label_false: &str
 
 fn leaf(leaf: &str) -> Tree {
   Tree::Leaf(vec![leaf.to_string()])
-}
-
-#[cfg(test)]
-mod tests {
-  use crate::ast_tree::ast_tree;
-  use crate::AstNode;
-
-  #[test]
-  fn test_add() {
-    let node = AstNode::Add(
-      Box::new(AstNode::Numeric("1".to_string(), "".to_string())),
-      Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
-    );
-    println!("{}", ast_tree(&node));
-  }
 }

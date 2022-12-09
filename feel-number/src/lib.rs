@@ -30,10 +30,10 @@
  * limitations under the License.
  */
 
-extern crate lazy_static;
-extern crate libc;
+extern crate dfp_number_sys;
 
-pub mod dec;
-mod number;
+mod dfp_number;
 
-pub use number::FeelNumber;
+mod errors;
+
+pub use dfp_number::FeelNumber;

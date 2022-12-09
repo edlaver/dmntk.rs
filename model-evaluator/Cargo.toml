@@ -14,7 +14,6 @@ dmntk-feel.workspace = true
 dmntk-feel-evaluator.workspace = true
 dmntk-feel-parser.workspace = true
 dmntk-model.workspace = true
-thiserror = "1.0.30"
 
 [dev-dependencies]
 dmntk-examples.workspace = true

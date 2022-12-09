@@ -21,7 +21,7 @@
 
 ## Overview
 
-Evaluator of `FEEL` number type used by other components in [dmntk](https://github.com/dmntk) project.
+`FEEL` number type used by other components in [dmntk](https://github.com/dmntk) project.
 
 ## License
 

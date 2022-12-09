@@ -34,6 +34,8 @@
 
 use crate::values::Value;
 use crate::{Evaluator, Scope};
+use std::fmt;
+use std::fmt::Debug;
 use std::sync::Arc;
 
 /// Type alias of the closure that evaluates `FEEL` or `DMN` function body into [Value].
@@ -41,19 +43,18 @@ pub type FunctionBodyEvaluator = Arc<Evaluator>;
 
 /// Function body may be defined in `FEEL` or `DMN` in many ways.
 /// This enum is the representation of all of these cases.
-#[derive(Derivative, Clone)]
-#[derivative(Debug, PartialEq)]
+#[derive(Clone)]
 pub enum FunctionBody {
   /// Function body created from context defined in `DMN` model.
-  Context(#[derivative(Debug = "ignore", PartialEq = "ignore")] FunctionBodyEvaluator),
+  Context(FunctionBodyEvaluator),
   /// Function body created from `FEEL` textual expression defined in `DMN` model.
-  LiteralExpression(#[derivative(Debug = "ignore", PartialEq = "ignore")] FunctionBodyEvaluator),
+  LiteralExpression(FunctionBodyEvaluator),
   /// Function body created from decision table defined in `DMN` model.
-  DecisionTable(#[derivative(Debug = "ignore", PartialEq = "ignore")] FunctionBodyEvaluator),
+  DecisionTable(FunctionBodyEvaluator),
   /// Function body created from decision service defined in `DMN` model.
-  DecisionService(#[derivative(Debug = "ignore", PartialEq = "ignore")] FunctionBodyEvaluator),
+  DecisionService(FunctionBodyEvaluator),
   /// Function body created from externally defined function (`Java`, `PMML`).
-  External(#[derivative(Debug = "ignore", PartialEq = "ignore")] FunctionBodyEvaluator),
+  External(FunctionBodyEvaluator),
 }
 
 impl FunctionBody {
@@ -69,44 +70,28 @@ impl FunctionBody {
   }
 }
 
-#[cfg(test)]
-mod tests {
-  use crate::values::Value;
-  use crate::{value_number, FeelNumber, FunctionBody, Scope};
-  use std::sync::Arc;
-
-  #[test]
-  fn _0001() {
-    let scope = &Scope::default();
-    let fun_body = FunctionBody::Context(Arc::new(Box::new(|_: &Scope| value_number!(1))));
-    assert_eq!(value_number!(1), fun_body.evaluate(scope));
+impl Debug for FunctionBody {
+  ///
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    match self {
+      FunctionBody::Context(_) => write!(f, "FunctionBodyContext"),
+      FunctionBody::LiteralExpression(_) => write!(f, "FunctionBodyLiteralExpression"),
+      FunctionBody::DecisionTable(_) => write!(f, "FunctionBodyDecisionTable"),
+      FunctionBody::DecisionService(_) => write!(f, "FunctionBodyDecisionService"),
+      FunctionBody::External(_) => write!(f, "FunctionBodyExternal"),
+    }
   }
+}
 
-  #[test]
-  fn _0002() {
-    let scope = &Scope::default();
-    let fun_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
-    assert_eq!(value_number!(2), fun_body.evaluate(scope));
-  }
-
-  #[test]
-  fn _0003() {
-    let scope = &Scope::default();
-    let fun_body = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &Scope| value_number!(3))));
-    assert_eq!(value_number!(3), fun_body.evaluate(scope));
-  }
-
-  #[test]
-  fn _0004() {
-    let scope = &Scope::default();
-    let fun_body = FunctionBody::DecisionService(Arc::new(Box::new(|_: &Scope| value_number!(4))));
-    assert_eq!(value_number!(4), fun_body.evaluate(scope));
-  }
-
-  #[test]
-  fn _0005() {
-    let scope = &Scope::default();
-    let fun_body = FunctionBody::External(Arc::new(Box::new(|_: &Scope| value_number!(5))));
-    assert_eq!(value_number!(5), fun_body.evaluate(scope));
+impl PartialEq for FunctionBody {
+  ///
+  fn eq(&self, other: &Self) -> bool {
+    match self {
+      FunctionBody::Context(_) => matches!(other, FunctionBody::Context(_)),
+      FunctionBody::LiteralExpression(_) => matches!(other, FunctionBody::LiteralExpression(_)),
+      FunctionBody::DecisionTable(_) => matches!(other, FunctionBody::DecisionTable(_)),
+      FunctionBody::DecisionService(_) => matches!(other, FunctionBody::DecisionService(_)),
+      FunctionBody::External(_) => matches!(other, FunctionBody::External(_)),
+    }
   }
 }

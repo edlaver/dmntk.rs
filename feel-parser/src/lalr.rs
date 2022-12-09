@@ -36,7 +36,7 @@
 use dmntk_common::Result;
 
 /// Types of tokens returned by lexer.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub enum TokenType {
   YyEmpty = -2,
   YyEof = 0,

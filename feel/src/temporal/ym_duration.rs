@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! `FEEL` years and months durations.
+//! Implementation of FEEL years and months duration.
 
 use crate::temporal::errors::*;
 use dmntk_common::DmntkError;
@@ -40,18 +40,20 @@ use std::convert::TryFrom;
 /// Regular expression pattern for parsing years and months duration.
 const REGEX_YEARS_AND_MONTHS: &str = r#"^(?P<sign>-)?P((?P<years>[0-9]+)Y)?((?P<months>[0-9]+)M)?$"#;
 
+/// Number of months in a year.
+const MONTHS_IN_YEAR: i64 = 12;
+
 lazy_static! {
+  /// Regular expression for parsing years and months duration.
   static ref RE_YEARS_AND_MONTHS: Regex = Regex::new(REGEX_YEARS_AND_MONTHS).unwrap();
 }
 
-/// Years and months duration in `FEEL`.
+/// Years and months duration in FEEL.
+///
 /// Holds the number of months in the duration.
-#[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
 #[must_use]
 pub struct FeelYearsAndMonthsDuration(i64);
-
-/// Number of months in a year.
-const MONTHS_IN_YEAR: i64 = 12;
 
 impl FeelYearsAndMonthsDuration {
   /// Created a new years and months duration from given number of `years` and `months`.
@@ -88,9 +90,9 @@ impl std::fmt::Display for FeelYearsAndMonthsDuration {
     month -= year * MONTHS_IN_YEAR;
     match (year > 0, month > 0) {
       (false, false) => write!(f, "P0M"),
-      (false, true) => write!(f, "{}P{}M", sign, month),
-      (true, false) => write!(f, "{}P{}Y", sign, year),
-      (true, true) => write!(f, "{}P{}Y{}M", sign, year, month),
+      (false, true) => write!(f, "{sign}P{month}M"),
+      (true, false) => write!(f, "{sign}P{year}Y"),
+      (true, true) => write!(f, "{sign}P{year}Y{month}M"),
     }
   }
 }
@@ -127,7 +129,7 @@ impl TryFrom<&str> for FeelYearsAndMonthsDuration {
 
 #[cfg(test)]
 mod tests {
-  use super::{FeelYearsAndMonthsDuration, MONTHS_IN_YEAR};
+  use super::*;
   use std::convert::TryFrom;
 
   /// Utility function for testing years and months durations equality.

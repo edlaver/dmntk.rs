@@ -66,7 +66,7 @@
 //! % { Customer:"Government", Order:  10.00 }, null
 //! ```
 
-use dmntk_common::Result;
+use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{AstNode, Scope};
@@ -77,14 +77,20 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
   if let Some(separator) = detect_separator(input) {
     let scope = Scope::default();
     for unary_tests in split_test_cases(input, &separator) {
-      if let Ok(AstNode::ExpressionList(nodes)) = dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
-        if nodes.len() == 2 {
-          if let Ok(input_data) = dmntk_feel_evaluator::evaluate_context_node(&scope, &nodes[0]) {
-            if let Ok(expected_result) = dmntk_feel_evaluator::evaluate(&scope, &nodes[1]) {
-              test_cases.push((input_data, expected_result));
+      match dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
+        Ok(ast_node) => match ast_node {
+          AstNode::ExpressionList(nodes) => {
+            if nodes.len() == 2 {
+              if let Ok(input_data) = dmntk_feel_evaluator::evaluate_context_node(&scope, &nodes[0]) {
+                if let Ok(expected_result) = dmntk_feel_evaluator::evaluate(&scope, &nodes[1]) {
+                  test_cases.push((input_data, expected_result));
+                }
+              }
             }
           }
-        }
+          other => return Err(DmntkError::new("Evaluator", &format!("expected expression list, but found '{other}'"))),
+        },
+        Err(reason) => return Err(reason),
       }
     }
   }
@@ -92,7 +98,6 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
 }
 
 /// Splits test cases from input test file using specified separator.
-#[inline(always)]
 fn split_test_cases<'a>(input: &'a str, separator: &'a str) -> Vec<&'a str> {
   let split = input.split(&separator);
   split
@@ -108,7 +113,6 @@ fn split_test_cases<'a>(input: &'a str, separator: &'a str) -> Vec<&'a str> {
 }
 
 /// Detects the separator used in test file.
-#[inline(always)]
 fn detect_separator(input: &str) -> Option<String> {
   let mut separator = String::with_capacity(80);
   let mut found = false;
@@ -131,11 +135,10 @@ fn detect_separator(input: &str) -> Option<String> {
   }
 }
 
-/// Returns `true` when specified character is a separator character.
+/// Returns `true` when specified character is a test case separator character.
 ///
 /// Valid separator characters are: `~` , `!` , `@` , `#` , `$` , `%` , `^` , `&` , `|`.
 ///
-#[inline(always)]
 fn is_separator_character(ch: char) -> bool {
   matches!(ch, '~' | '!' | '@' | '#' | '$' | '%' | '^' | '&' | '|')
 }
@@ -162,6 +165,15 @@ mod tests {
       % { Customer:"Government", Order:  10.00 }, null
     "#;
     assert_eq!(8, evaluate_test_cases(input).unwrap().len())
+  }
+
+  #[test]
+  #[should_panic(expected = r#"DmntkError("Evaluator: expected expression list, but found '\n       Irrelevant\n    '"#)]
+  fn test_evaluate_invalid_test_file() {
+    let input = r#"
+      % -
+    "#;
+    evaluate_test_cases(input).unwrap();
   }
 
   #[test]

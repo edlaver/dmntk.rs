@@ -32,43 +32,35 @@
 
 use dmntk_common::DmntkError;
 
-/// Errors related to `FEEL` expression evaluator.
-#[derive(Error, Debug)]
-pub enum FeelEvaluatorError {
-  #[error("expected FEEL context as an input")]
-  NotAContext,
-  #[error("expected positional or named parameter")]
-  ExpectedPositionalOrNamedParameter,
-  #[error("expected AstNode::ParameterName, actual node is {0}")]
-  ExpectedAstNodeParameterName(String),
-  #[error("expected AST node {0}, actual AST node is {1}")]
-  ExpectedAstNode(String, String),
-  #[error("unexpected AST node in evaluator builder {0}")]
-  UnexpectedAstNode(String),
-}
+/// `FEEL` expressions evaluator errors.
+pub struct FeelEvaluatorError(String);
 
 impl From<FeelEvaluatorError> for DmntkError {
   fn from(e: FeelEvaluatorError) -> Self {
-    DmntkError::new("FeelEvaluatorError", &format!("{}", e))
+    DmntkError::new("FeelEvaluatorError", &e.0)
   }
 }
 
 pub fn err_not_a_context() -> DmntkError {
-  FeelEvaluatorError::NotAContext.into()
+  FeelEvaluatorError("expected FEEL context as an input".to_string()).into()
 }
 
 pub fn err_expected_positional_or_named_parameter() -> DmntkError {
-  FeelEvaluatorError::ExpectedPositionalOrNamedParameter.into()
+  FeelEvaluatorError("expected positional or named parameter".to_string()).into()
 }
 
 pub fn err_expected_ast_node_parameter_name(s: &str) -> DmntkError {
-  FeelEvaluatorError::ExpectedAstNodeParameterName(s.to_string()).into()
+  FeelEvaluatorError(format!("expected AstNode::ParameterName, actual node is {s}")).into()
 }
 
 pub fn err_expected_ast_node(expected: &str, actual: &str) -> DmntkError {
-  FeelEvaluatorError::ExpectedAstNode(expected.to_string(), actual.to_string()).into()
+  FeelEvaluatorError(format!("expected AST node {expected}, actual AST node is {actual}")).into()
 }
 
 pub fn err_unexpected_ast_node(s: &str) -> DmntkError {
-  FeelEvaluatorError::UnexpectedAstNode(s.to_string()).into()
+  FeelEvaluatorError(format!("unexpected AST node in evaluator builder {s}")).into()
+}
+
+pub fn err_invalid_at_literal(s: &str) -> DmntkError {
+  FeelEvaluatorError(format!("invalid at (@) literal '{s}'")).into()
 }

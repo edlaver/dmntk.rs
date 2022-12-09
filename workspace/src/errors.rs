@@ -35,31 +35,23 @@
 use dmntk_common::DmntkError;
 
 /// Errors reported by workspace.
-#[derive(Error, Debug)]
-enum WorkspaceError {
-  #[error("model evaluator for definitions '{0}' is not deployed")]
-  ModelEvaluatorIsNotDeployed(String),
-  #[error("definitions with namespace '{0}' already exist in workspace")]
-  DefinitionsWithNamespaceAlreadyExist(String),
-  #[error("definitions with name '{0}' already exist in workspace")]
-  DefinitionsWithNameAlreadyExist(String),
-}
+struct WorkspaceError(String);
 
 impl From<WorkspaceError> for DmntkError {
-  /// Converts a workspace error into [DmntkError].
+  /// Converts [WorkspaceError] into [DmntkError].
   fn from(e: WorkspaceError) -> Self {
-    DmntkError::new("WorkspaceError", &e.to_string())
+    DmntkError::new("WorkspaceError", &e.0)
   }
 }
 
-pub fn err_model_evaluator_is_not_deployed(definitions_name: &str) -> DmntkError {
-  WorkspaceError::ModelEvaluatorIsNotDeployed(definitions_name.to_string()).into()
+pub fn err_model_evaluator_is_not_deployed(s: &str) -> DmntkError {
+  WorkspaceError(format!("model evaluator for definitions '{s}' is not deployed")).into()
 }
 
-pub fn err_definitions_with_namespace_already_exists(definitions_namespace: &str) -> DmntkError {
-  WorkspaceError::DefinitionsWithNamespaceAlreadyExist(definitions_namespace.to_string()).into()
+pub fn err_definitions_with_namespace_already_exists(s: &str) -> DmntkError {
+  WorkspaceError(format!("definitions with namespace '{s}' already exist in workspace")).into()
 }
 
-pub fn err_definitions_with_name_already_exists(definitions_name: &str) -> DmntkError {
-  WorkspaceError::DefinitionsWithNameAlreadyExist(definitions_name.to_string()).into()
+pub fn err_definitions_with_name_already_exists(s: &str) -> DmntkError {
+  WorkspaceError(format!("definitions with name '{s}' already exist in workspace")).into()
 }

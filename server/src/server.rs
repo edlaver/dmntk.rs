@@ -59,7 +59,7 @@ struct ApplicationData {
 
 /// Data transfer object for an error.
 #[derive(Serialize)]
-pub struct ErrorDto {
+struct ErrorDto {
   /// Error details.
   #[serde(rename = "details")]
   details: String,
@@ -67,7 +67,7 @@ pub struct ErrorDto {
 
 /// Data transfer object for a result.
 #[derive(Serialize)]
-pub struct ResultDto<T> {
+struct ResultDto<T> {
   /// Result containing data.
   #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
   data: Option<T>,
@@ -92,16 +92,16 @@ impl<T: serde::Serialize> ToString for ResultDto<T> {
 
 impl<T> ResultDto<T> {
   /// Creates [ResultDto] with some data inside.
-  pub fn data(d: T) -> ResultDto<T> {
+  fn data(d: T) -> ResultDto<T> {
     ResultDto {
       data: Some(d),
       ..Default::default()
     }
   }
   /// Creates [ResultDto] with single error inside.
-  pub fn error(err: DmntkError) -> ResultDto<T> {
+  fn error(err: DmntkError) -> ResultDto<T> {
     ResultDto {
-      errors: vec![ErrorDto { details: format!("{}", err) }],
+      errors: vec![ErrorDto { details: format!("{err}") }],
       ..Default::default()
     }
   }
@@ -109,7 +109,7 @@ impl<T> ResultDto<T> {
 
 /// System information structure.
 #[derive(Serialize)]
-pub struct SystemInfoDto {
+struct SystemInfoDto {
   /// System name.
   #[serde(rename = "name")]
   name: String,
@@ -134,55 +134,55 @@ impl Default for SystemInfoDto {
 
 /// Parameters for adding DMN™ model definitions to workspace.
 #[derive(Deserialize)]
-pub struct AddDefinitionsParams {
+struct AddDefinitionsParams {
   /// Content of the DMN™ model, encoded in `Base64`.
   #[serde(rename = "content")]
-  pub content: Option<String>,
+  content: Option<String>,
 }
 
 /// Result data sent back to caller after adding definitions.
-#[derive(Debug, Serialize)]
-pub struct AddDefinitionsResult {
+#[derive(Serialize)]
+struct AddDefinitionsResult {
   /// Namespace of added definitions.
   #[serde(rename = "namespace")]
-  pub namespace: String,
+  namespace: String,
   /// Name of added definitions.
   #[serde(rename = "name")]
-  pub name: String,
+  name: String,
 }
 
 /// Parameters for replacing DMN™ model definitions in workspace.
 #[derive(Deserialize)]
-pub struct ReplaceDefinitionsParams {
+struct ReplaceDefinitionsParams {
   /// Content of the DMN™ model, encoded in `Base64`.
   #[serde(rename = "content")]
-  pub content: Option<String>,
+  content: Option<String>,
 }
 
 /// Parameters for removing DMN™ model definitions from workspace.
 #[derive(Deserialize)]
-pub struct RemoveDefinitionsParams {
+struct RemoveDefinitionsParams {
   /// Namespace of the definitions to be removed.
   #[serde(rename = "namespace")]
-  pub namespace: Option<String>,
+  namespace: Option<String>,
   /// Name of the definitions to be removed.
   #[serde(rename = "name")]
-  pub name: Option<String>,
+  name: Option<String>,
 }
 
 /// Operation status sent back to caller after request completion.
-#[derive(Debug, Serialize)]
-pub struct StatusResult {
+#[derive(Serialize)]
+struct StatusResult {
   /// Operation status.
   #[serde(rename = "status")]
-  pub status: String,
+  status: String,
 }
 
 /// Parameters for evaluating invocable in DMN™ model definitions.
 /// The format of input data is compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[derive(Debug, Deserialize)]
-pub struct TckEvaluateParams {
+#[derive(Deserialize)]
+struct TckEvaluateParams {
   /// Name of the model where the invocable will be searched.
   #[serde(rename = "model")]
   model_name: Option<String>,
@@ -195,7 +195,7 @@ pub struct TckEvaluateParams {
 }
 
 /// Parameters for evaluating invocable in DMN™ model definitions.
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct EvaluateParams {
   /// Name of the model.
   #[serde(rename = "model")]
@@ -215,7 +215,8 @@ async fn get_system_info() -> std::io::Result<Json<ResultDto<SystemInfoDto>>> {
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_clear_definitions(&mut workspace) {
+    let result = do_clear_definitions(&mut workspace);
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -228,7 +229,8 @@ async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Re
 #[post("/definitions/add")]
 async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<AddDefinitionsResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_add_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_add_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -241,7 +243,8 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
 #[post("/definitions/replace")]
 async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_replace_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_replace_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -254,7 +257,8 @@ async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: 
 #[post("/definitions/remove")]
 async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_remove_definitions(&mut workspace, &params.into_inner()) {
+    let result = do_remove_definitions(&mut workspace, &params.into_inner());
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -267,7 +271,8 @@ async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: we
 #[post("/definitions/deploy")]
 async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   if let Ok(mut workspace) = data.workspace.write() {
-    match do_deploy_definitions(&mut workspace) {
+    let result = do_deploy_definitions(&mut workspace);
+    match result {
       Ok(result) => Ok(Json(ResultDto::data(result))),
       Err(reason) => Ok(Json(ResultDto::error(reason))),
     }
@@ -297,7 +302,8 @@ async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<Appl
 #[post("/evaluate/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   if let Ok(workspace) = data.workspace.read() {
-    match do_evaluate(&workspace, &params.into_inner(), &request_body) {
+    let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
+    match result {
       Ok(value) => HttpResponse::Ok()
         .content_type("application/json")
         .body(format!("{{\"data\":{}}}", value.jsonify())),
@@ -324,7 +330,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
     workspace: RwLock::new(workspace),
   });
   let address = get_server_address(opt_host, opt_port);
-  println!("dmntk {}", address);
+  println!("dmntk {address}");
   HttpServer::new(move || {
     App::new()
       .app_data(application_data.clone())
@@ -333,7 +339,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
           "",
           HttpResponse::BadRequest()
             .content_type("application/json")
-            .body(ResultDto::<String>::error(err_internal_error(&format!("{:?}", err))).to_string()),
+            .body(ResultDto::<String>::error(err_internal_error(&format!("{err:?}"))).to_string()),
         )
         .into()
       }))
@@ -393,7 +399,7 @@ fn get_server_address(opt_host: Option<String>, opt_port: Option<String>) -> Str
       port = p;
     }
   }
-  format!("{}:{}", host, port)
+  format!("{host}:{port}")
 }
 
 /// Returns root directory for workspace.
@@ -421,7 +427,6 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
 }
 
 ///
-#[inline(always)]
 fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
   workspace.clear();
   Ok(StatusResult {
@@ -430,7 +435,6 @@ fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 }
 
 ///
-#[inline(always)]
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = base64::decode(content) {
@@ -456,14 +460,13 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
 }
 
 ///
-#[inline(always)]
 fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<StatusResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = base64::decode(content) {
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
-            workspace.add(definitions)?;
+            workspace.replace(definitions)?;
             Ok(StatusResult {
               status: "definitions replaced".to_string(),
             })
@@ -482,7 +485,6 @@ fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitions
 }
 
 ///
-#[inline(always)]
 fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsParams) -> Result<StatusResult> {
   if let Some(namespace) = &params.namespace {
     if let Some(name) = &params.name {
@@ -499,7 +501,6 @@ fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsPa
 }
 
 ///
-#[inline(always)]
 fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
   match workspace.deploy() {
     Ok(()) => Ok(StatusResult {
@@ -512,7 +513,6 @@ fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 /// Evaluates the invocable in model and returns the result.
 /// Input and output data format is compatible with
 /// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[inline(always)]
 fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<OutputNodeDto, DmntkError> {
   if let Some(model_name) = &params.model_name {
     if let Some(invocable_name) = &params.invocable_name {
@@ -533,7 +533,6 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
 }
 
 /// Evaluates the artifact specified in parameters and returns the result.
-#[inline(always)]
 fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
   if let Some(model_name) = &params.model_name {
     if let Some(invocable_name) = &params.invocable_name {

@@ -36,7 +36,7 @@
 pub type Result<T, E = DmntkError> = std::result::Result<T, E>;
 
 /// Common error definition used by all `DMNTK` components.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct DmntkError(String);
 
 impl std::fmt::Display for DmntkError {
@@ -49,7 +49,7 @@ impl std::fmt::Display for DmntkError {
 impl DmntkError {
   /// Creates a new [DmntkError] with specified `source` and `message`.
   pub fn new(source: &str, message: &str) -> Self {
-    Self(format!("{}: {}", source, message))
+    Self(format!("{source}: {message}"))
   }
 }
 
@@ -75,11 +75,19 @@ mod tests {
 
   #[test]
   fn test_equal() {
-    assert!((DmntkError::new("ParserError", "unexpected end of file") == DmntkError::new("ParserError", "unexpected end of file")));
+    let err1 = DmntkError::new("ParserError", "unexpected end of file");
+    let err2 = DmntkError::new("ParserError", "unexpected end of file");
+    assert!((err1 == err2));
   }
 
   #[test]
   fn test_not_equal() {
     assert!((DmntkError::new("ParserError", "unexpected end of files") != DmntkError::new("ParserError", "unexpected end of file")));
+  }
+
+  #[test]
+  fn test_total_eq() {
+    let err1 = DmntkError::new("ParserError", "unexpected end of file");
+    err1.assert_receiver_is_total_eq();
   }
 }

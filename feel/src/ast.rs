@@ -36,6 +36,8 @@ use crate::ast_tree::ast_tree;
 use crate::types::FeelType;
 use crate::{Name, Scope};
 use std::borrow::Borrow;
+use std::fmt;
+use std::fmt::Display;
 
 /// Type for optional AST node.
 pub type OptAstNode = Option<AstNode>;
@@ -49,7 +51,7 @@ pub enum AstNode {
   /// Node representing a logical operator `and` (conjunction).
   And(Box<AstNode>, Box<AstNode>),
 
-  /// Node representing `@` (at literal).
+  /// Node representing `@` (at) literal.
   At(String),
 
   /// Node representing a comparison operator `between`.
@@ -58,7 +60,7 @@ pub enum AstNode {
   /// Node representing a value of type `boolean`.
   Boolean(bool),
 
-  /// Node representing a comma separated list of AST nodes, used internally in parser.
+  /// Node representing a comma separated list of AST nodes, used internally by parser.
   CommaList(Vec<AstNode>),
 
   /// Node representing a context.
@@ -93,7 +95,7 @@ pub enum AstNode {
   /// Node representing arithmetic operator `/` (division).
   Div(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `equal` comparison.
   Eq(Box<AstNode>, Box<AstNode>),
 
   /// Node representing an expression evaluated as a body of `for` expression.
@@ -107,10 +109,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing exponential function.
   Exp(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing a list of expressions.
   ExpressionList(Vec<AstNode>),
 
   /// Node representing `FEEL` type.
@@ -157,10 +159,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `greater or equal` comparison.
   Ge(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `greater than` comparison.
   Gt(Box<AstNode>, Box<AstNode>),
 
   /// Node representing `if` expression.
@@ -173,7 +175,7 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `in` operator.
   In(Box<AstNode>, Box<AstNode>),
 
   /// Node representing type checking function.
@@ -214,10 +216,10 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing `less or equal` comparison.
   Le(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing `less than` comparison.
   Lt(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a list.
@@ -249,7 +251,7 @@ pub enum AstNode {
   /// Node representing an unary arithmetic negation `-`.
   Neg(Box<AstNode>),
 
-  ///
+  /// Node representing `not equal` comparison.
   Nq(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a value of type `Null`.
@@ -258,10 +260,10 @@ pub enum AstNode {
   /// Node representing a value of type `number`.
   Numeric(String, String),
 
-  ///
+  /// Node representing a logical operator `or` (disjunction).
   Or(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing expression for selecting decision table's output value.
   Out(Box<AstNode>, Box<AstNode>),
 
   /// Node representing a name of the function's formal parameter.
@@ -293,7 +295,7 @@ pub enum AstNode {
     Box<AstNode>,
   ),
 
-  ///
+  /// Node representing a range of values.
   Range(Box<AstNode>, Box<AstNode>),
 
   /// Node representing range type.
@@ -313,38 +315,38 @@ pub enum AstNode {
   /// Node representing a value of type `string`.
   String(String),
 
-  ///
+  /// Node representing an arithmetic operator `-` (subtraction).
   Sub(Box<AstNode>, Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `greater or equal`.
   UnaryGe(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `greater than`.
   UnaryGt(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `less or equal`.
   UnaryLe(Box<AstNode>),
 
-  ///
+  /// Node representing unary comparison operator `less than`.
   UnaryLt(Box<AstNode>),
 }
 
-impl ToString for AstNode {
+impl Display for AstNode {
   /// Converts [AstNode] to textual representation, including child nodes.
-  fn to_string(&self) -> String {
-    format!("{}\n    ", ast_tree(self))
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{}\n    ", ast_tree(self))
   }
 }
 
 impl AstNode {
-  /// Evaluates the type of the expression represented by this node.
+  /// Evaluates the result type of the expression represented by this node.
   pub fn type_of(&self, scope: &Scope) -> FeelType {
     match self {
       AstNode::Add(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
-      AstNode::And { .. } => FeelType::Any,
+      AstNode::And { .. } => FeelType::Boolean,
       AstNode::At { .. } => FeelType::Any,
-      AstNode::Between { .. } => FeelType::Any,
-      AstNode::Boolean(_) => FeelType::Any,
+      AstNode::Between { .. } => FeelType::Boolean,
+      AstNode::Boolean(_) => FeelType::Boolean,
       AstNode::CommaList { .. } => FeelType::Any,
       AstNode::Context { .. } => FeelType::Any,
       AstNode::ContextEntry { .. } => FeelType::Any,
@@ -361,6 +363,11 @@ impl AstNode {
                   type_entries.push((name, feel_type));
                 }
               }
+              if let AstNode::ContextTypeEntryKey(name) = entry_name.borrow() {
+                if let AstNode::FeelType(feel_type) = entry_type.borrow() {
+                  type_entries.push((name, feel_type));
+                }
+              }
             }
           }
           FeelType::context(&type_entries)
@@ -369,9 +376,8 @@ impl AstNode {
       AstNode::ContextTypeEntry(_, node) => node.type_of(scope),
       AstNode::ContextTypeEntryKey(name) => name.into(),
       AstNode::Div(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
-      AstNode::Eq { .. } => FeelType::Boolean,
       AstNode::EvaluatedExpression { .. } => FeelType::Any,
-      AstNode::Exp { .. } => FeelType::Any,
+      AstNode::Exp { .. } => FeelType::Number,
       AstNode::ExpressionList { .. } => FeelType::Any,
       AstNode::FeelType(feel_type) => feel_type.clone(),
       AstNode::Filter { .. } => FeelType::Any,
@@ -389,8 +395,6 @@ impl AstNode {
           FeelType::Any
         }
       }
-      AstNode::Gt { .. } => FeelType::Any,
-      AstNode::Ge { .. } => FeelType::Any,
       AstNode::If { .. } => FeelType::Any,
       AstNode::In { .. } => FeelType::Any,
       AstNode::InstanceOf { .. } => FeelType::Any,
@@ -398,10 +402,9 @@ impl AstNode {
       AstNode::IterationContexts { .. } => FeelType::Any,
       AstNode::IterationContextSingle { .. } => FeelType::Any,
       AstNode::IterationContextRange { .. } => FeelType::Any,
-      AstNode::Lt { .. } => FeelType::Any,
-      AstNode::Le { .. } => FeelType::Any,
-      AstNode::Neg { .. } => FeelType::Any,
-      AstNode::List(nodes) => {
+      AstNode::Eq { .. } | AstNode::Le { .. } | AstNode::Lt { .. } | AstNode::Ge { .. } | AstNode::Gt { .. } | AstNode::Nq { .. } => FeelType::Boolean,
+      AstNode::Neg { .. } => FeelType::Number,
+      AstNode::List(nodes) | AstNode::NegatedList(nodes) => {
         if nodes.is_empty() {
           FeelType::Any
         } else {
@@ -413,15 +416,13 @@ impl AstNode {
         }
       }
       AstNode::ListType(lhs) => FeelType::List(Box::new(lhs.type_of(scope))),
-      AstNode::Mul { .. } => FeelType::Any,
+      AstNode::Mul { .. } => FeelType::Number,
       AstNode::Name(name) => name.into(),
-      AstNode::NamedParameter { .. } => FeelType::Any,
+      AstNode::NamedParameter(_, rhs) => rhs.type_of(scope),
       AstNode::NamedParameters { .. } => FeelType::Any,
-      AstNode::NegatedList { .. } => FeelType::Any,
-      AstNode::Nq { .. } => FeelType::Boolean,
       AstNode::Null => FeelType::Null,
       AstNode::Numeric(_, _) => FeelType::Number,
-      AstNode::Or { .. } => FeelType::Any,
+      AstNode::Or { .. } => FeelType::Boolean,
       AstNode::Out { .. } => FeelType::Any,
       AstNode::ParameterName(_) => FeelType::Any,
       AstNode::ParameterTypes(_) => FeelType::Any,
@@ -447,18 +448,20 @@ impl AstNode {
       AstNode::RangeType(lhs) => FeelType::Range(Box::new(lhs.type_of(scope))),
       AstNode::Satisfies(mid) => mid.type_of(scope),
       AstNode::String(_) => FeelType::String,
-      AstNode::Sub { .. } => FeelType::Any,
-      AstNode::UnaryGe { .. } => FeelType::Any,
-      AstNode::UnaryGt { .. } => FeelType::Any,
-      AstNode::UnaryLt { .. } => FeelType::Any,
-      AstNode::UnaryLe { .. } => FeelType::Any,
+      AstNode::Sub(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
+      AstNode::UnaryGe { .. } => FeelType::Boolean,
+      AstNode::UnaryGt { .. } => FeelType::Boolean,
+      AstNode::UnaryLt { .. } => FeelType::Boolean,
+      AstNode::UnaryLe { .. } => FeelType::Boolean,
       AstNode::IntervalEnd(_, _) => FeelType::Any,
       AstNode::IntervalStart(_, _) => FeelType::Any,
     }
   }
 
   /// Writes a trace of the AST starting from this node.
-  pub fn trace(&self) {
-    println!("      AST:{}", self.to_string());
+  pub fn trace(&self) -> String {
+    let output = format!("      AST:{self}");
+    println!("{output}");
+    output
   }
 }

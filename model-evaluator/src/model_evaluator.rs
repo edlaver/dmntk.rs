@@ -30,11 +30,8 @@
  * limitations under the License.
  */
 
-use crate::builders::{
-  BusinessKnowledgeModelEvaluator, DecisionEvaluator, DecisionServiceEvaluator, InputDataContextEvaluator, InputDataEvaluator, ItemDefinitionContextEvaluator,
-  ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator,
-};
-use crate::errors::{err_read_lock_failed, err_write_lock_failed};
+use crate::builders::*;
+use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -43,15 +40,14 @@ use dmntk_model::model::Definitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock, RwLockReadGuard};
 
-///
-#[derive(Debug)]
+/// Types of invocable artefacts.
 pub enum InvocableType {
   Decision(String),
   BusinessKnowledgeModel(String, Name),
   DecisionService(String),
 }
 
-///
+/// Model evaluator.
 #[derive(Default)]
 pub struct ModelEvaluator {
   /// Input data evaluator.
@@ -155,7 +151,8 @@ impl ModelEvaluator {
   /// Evaluates an invocable with specified name.
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     if let Ok(invocable_by_name) = self.invocable_by_name.read() {
-      match invocable_by_name.get(invocable_name) {
+      let invocable = invocable_by_name.get(invocable_name);
+      match invocable {
         Some(InvocableType::Decision(id)) => {
           // evaluate decision
           self.evaluate_decision(id, input_data)

@@ -36,7 +36,11 @@ use dmntk_feel::values::Value;
 use dmntk_feel::Scope;
 use std::sync::Arc;
 
+#[cfg(test)]
 mod compliance;
+
+#[cfg(test)]
+mod model;
 
 /// Utility function that creates a `FEEL` context from specified input expression.
 pub fn context(input: &str) -> FeelContext {
@@ -47,9 +51,9 @@ pub fn context(input: &str) -> FeelContext {
         Value::Context(ctx) => ctx,
         other => panic!("ERROR: expected context value, actual value is: {}", other as Value),
       },
-      Err(reason) => panic!("ERROR: building evaluator failed with reason: {}", reason),
+      Err(reason) => panic!("ERROR: building evaluator failed with reason: {reason}"),
     },
-    Err(reason) => panic!("ERROR: parsing context failed with reason: {}", reason),
+    Err(reason) => panic!("ERROR: parsing context failed with reason: {reason}"),
   }
 }
 
@@ -63,8 +67,7 @@ fn assert_decision(model_evaluator: &ModelEvaluator, name: &str, input_data: &Fe
   let actual = model_evaluator.evaluate_invocable(name, input_data).to_string();
   assert_eq!(
     expected, actual,
-    "Assertion error, actual value of the decision does not match the expected value:\n  expected: {}\n    actual: {}\n",
-    expected, actual
+    "Assertion error, actual value of the decision does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
   );
 }
 
@@ -73,8 +76,7 @@ fn assert_business_knowledge_model(model_evaluator: &ModelEvaluator, name: &str,
   let actual = model_evaluator.evaluate_invocable(name, input_data).to_string();
   assert_eq!(
     expected, actual,
-    "Assertion error, actual value of the business knowledge model does not match the expected value:\n  expected: {}\n    actual: {}\n",
-    expected, actual
+    "Assertion error, actual value of the business knowledge model does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
   );
 }
 
@@ -83,7 +85,6 @@ fn assert_decision_service(model_evaluator: &ModelEvaluator, name: &str, input: 
   let actual = model_evaluator.evaluate_invocable(name, &context(input)).to_string();
   assert_eq!(
     expected, actual,
-    "Assertion error, actual value of the decision service does not match the expected value:\n  expected: {}\n    actual: {}\n",
-    expected, actual
+    "Assertion error, actual value of the decision service does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
   );
 }

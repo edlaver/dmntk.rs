@@ -32,6 +32,14 @@
 
 use crate::builder;
 use crate::tests::{EX_01, EX_07};
+use dmntk_examples::decision_tables::H_000010;
+
+#[test]
+fn test_dt_0001() {
+  let _decision_table = builder::build(H_000010).unwrap();
+  // FIXME change to assert
+  // println!("{}", decision_table);
+}
 
 #[test]
 fn ex_0001() {

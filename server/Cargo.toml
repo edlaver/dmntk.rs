@@ -9,8 +9,8 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-actix-web = "3.3.2"
-base64 = "0.13.0"
+actix-web = "4.2.1"
+base64 = "0.13.1"
 dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
 dmntk-feel.workspace = true
@@ -18,6 +18,4 @@ dmntk-feel-parser.workspace = true
 dmntk-model.workspace = true
 dmntk-workspace.workspace = true
 serde.workspace = true
-serde_derive.workspace = true
 serde_json.workspace = true
-thiserror = "1.0.30"

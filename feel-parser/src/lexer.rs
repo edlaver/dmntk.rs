@@ -331,7 +331,7 @@ impl<'lexer> Lexer<'lexer> {
         Ok((TokenType::RightArrow, TokenValue::RightArrow))
       }
       ['.', ch, _, _, _, _, _, _, _, _, _, _] if is_digit(ch) => {
-        self.consume_character(DECIMAL_SEPARATOR)?;
+        self.position += 1;
         Ok((TokenType::Numeric, TokenValue::Numeric("0".to_string(), self.consume_digits())))
       }
       ['.', _, _, _, _, _, _, _, _, _, _, _] => {
@@ -408,7 +408,7 @@ impl<'lexer> Lexer<'lexer> {
         let mut digits_after = String::new();
         digits_before.push_str(&self.consume_digits());
         if self.is_char_at(0, DECIMAL_SEPARATOR) && self.is_digit_at(1) {
-          self.consume_character(DECIMAL_SEPARATOR)?;
+          self.position += 1;
           digits_after.push_str(&self.consume_digits());
         }
         Ok((TokenType::Numeric, TokenValue::Numeric(digits_before, digits_after)))
@@ -480,34 +480,34 @@ impl<'lexer> Lexer<'lexer> {
   /// Consumes the string literal.
   fn consume_string(&mut self) -> Result<(TokenType, TokenValue)> {
     let mut string = "".to_string();
-    self.consume_character('"')?;
+    self.position += 1;
     loop {
       let first = self.char_at(0);
       let second = self.char_at(1);
       match (first, second) {
         (Some('\\'), Some('\'')) => {
-          self.consume_chars(&['\\', '\''])?;
           string.push('\'');
+          self.position += 2;
         }
         (Some('\\'), Some('"')) => {
-          self.consume_chars(&['\\', '"'])?;
           string.push('"');
+          self.position += 2;
         }
         (Some('\\'), Some('\\')) => {
-          self.consume_chars(&['\\', '\\'])?;
           string.push('\\');
+          self.position += 2;
         }
         (Some('\\'), Some('n')) => {
-          self.consume_chars(&['\\', 'n'])?;
           string.push('\n');
+          self.position += 2;
         }
         (Some('\\'), Some('r')) => {
-          self.consume_chars(&['\\', 'r'])?;
           string.push('\r');
+          self.position += 2;
         }
         (Some('\\'), Some('t')) => {
-          self.consume_chars(&['\\', 't'])?;
           string.push('\t');
+          self.position += 2;
         }
         (Some('\\'), Some('u')) => {
           string.push(self.consume_unicode()?);
@@ -516,13 +516,16 @@ impl<'lexer> Lexer<'lexer> {
           string.push(self.consume_unicode()?);
         }
         (Some('"'), _) => {
-          self.consume_character('"')?;
+          self.position += 1;
           break;
         }
-        (Some(ch1), _) if is_vertical_space(ch1) => {
+        (Some(ch), _) if is_vertical_space(ch) => {
           return Ok((TokenType::YyUndef, TokenValue::YyUndef));
         }
-        (Some(ch1), _) => string.push(self.consume_character(ch1)?),
+        (Some(ch), _) => {
+          string.push(ch);
+          self.position += 1;
+        }
         _ => return Ok((TokenType::YyEof, TokenValue::YyEof)),
       }
     }
@@ -555,7 +558,7 @@ impl<'lexer> Lexer<'lexer> {
     // positions of consumed characters
     let mut consumed_positions = vec![];
     // the current character on input is already a name start character, so consume it
-    let mut ch = self.peek_character()?;
+    let mut ch = self.peek_character();
     current_part.push(ch);
     // start parsing the rest of input using a state machine
     let mut state = 1;
@@ -564,7 +567,7 @@ impl<'lexer> Lexer<'lexer> {
         1 => {
           if self.is_next_name_part_char() {
             self.position += 1;
-            ch = self.peek_character()?;
+            ch = self.peek_character();
             current_part.push(ch);
           } else {
             parts.push(current_part.clone());
@@ -588,7 +591,7 @@ impl<'lexer> Lexer<'lexer> {
         3 => {
           if self.is_next_name_part_char() {
             self.position += 1;
-            ch = self.peek_character()?;
+            ch = self.peek_character();
             current_part.push(ch);
           } else {
             parts.push(current_part.clone());
@@ -600,7 +603,7 @@ impl<'lexer> Lexer<'lexer> {
         4 => {
           if self.is_next_additional_name_symbol() {
             self.position += 1;
-            ch = self.peek_character()?;
+            ch = self.peek_character();
             current_part.push(ch);
             consumed_positions.push(self.position);
             parts.push(current_part.clone());
@@ -612,7 +615,7 @@ impl<'lexer> Lexer<'lexer> {
         5 => {
           if self.is_next_whitespace() {
             self.position += 1;
-            self.peek_character()?;
+            self.peek_character();
           } else {
             state = 2;
           }
@@ -707,63 +710,28 @@ impl<'lexer> Lexer<'lexer> {
   /// Consumes a HEX digit from input or reports an error.
   fn consume_hex_digit(&mut self) -> Result<u64> {
     if let Some(ch) = self.char_at(0) {
-      if is_hex_digit(ch) {
+      if ch.is_ascii_hexdigit() {
         self.position += 1;
         Ok(hex_to_decimal(ch))
       } else {
-        Err(expected_hex_digit(ch))
+        Err(err_expected_hex_digit(ch))
       }
     } else {
-      Err(unexpected_eof())
+      Err(err_unexpected_eof())
     }
   }
 
-  /// Peeks the current character from input or returns
-  /// an error when there are no more characters available.
-  fn peek_character(&self) -> Result<char> {
-    match self.char_at(0) {
-      Some(ch) => Ok(ch),
-      None => Err(unexpected_eof()),
-    }
-  }
-
-  /// Consumes expected character from input or reports an error.
-  fn consume_character(&mut self, expected: char) -> Result<char> {
-    match self.char_at(0) {
-      Some(actual) => {
-        if actual == expected {
-          self.position += 1;
-          Ok(actual)
-        } else {
-          Err(expected_character(expected, actual))
-        }
-      }
-      None => Err(unexpected_eof()),
-    }
-  }
-
-  /// Consumes a single character from input when is one from expected
-  /// characters. Reports an error when the current character is not on the list.
-  fn consume_characters(&mut self, expected: &[char]) -> Result<char> {
-    match self.char_at(0) {
-      Some(actual) => {
-        if expected.contains(&actual) {
-          self.position += 1;
-          Ok(actual)
-        } else {
-          Err(expected_characters(expected, actual))
-        }
-      }
-      None => Err(unexpected_eof()),
-    }
+  /// Peeks the current character from input.
+  fn peek_character(&self) -> char {
+    self.char_at(0).unwrap()
   }
 
   /// Consumes Unicode literal in one of the following forms:
   /// - \u0000 ('\' + 'u' + four hexadecimal characters), or
   /// - \U000000 ('\' + 'U' + six hexadecimal characters).
   fn consume_unicode_literal(&mut self) -> Result<u64> {
-    self.consume_character('\\')?;
-    let u = self.consume_characters(&['u', 'U'])?;
+    let u = self.char_at(1).unwrap();
+    self.position += 2;
     let mut value = 0_u64;
     if u == 'U' {
       value = 1048576 * self.consume_hex_digit()?;
@@ -776,7 +744,7 @@ impl<'lexer> Lexer<'lexer> {
     Ok(value)
   }
 
-  /// Consumes the UTF-8 encoded character given in one of the following forms:
+  /// Consumes the UTF-8 encoded character given in one of the following form:
   /// - \u0000 ('\' + 'u' + four hexadecimal characters), or
   /// - \U000000 ('\' + 'U' + six hexadecimal characters).
   fn consume_unicode(&mut self) -> Result<char> {
@@ -785,18 +753,16 @@ impl<'lexer> Lexer<'lexer> {
       // one byte UTF-8 value
       0x0000..=0x007F => {
         let b1 = (value & 0x7F) as u8;
-        if let Ok(s) = String::from_utf8(vec![b1]) {
-          return Ok(s.chars().next().unwrap());
-        }
+        let s = String::from_utf8(vec![b1]).unwrap();
+        Ok(s.chars().next().unwrap())
       }
       // two bytes UTF-8 value
       0x0080..=0x07FF => {
         let b2 = ((value & 0x3F) as u8) | 0x80;
         value >>= 6;
         let b1 = ((value & 0x1F) as u8) | 0xC0;
-        if let Ok(s) = String::from_utf8(vec![b1, b2]) {
-          return Ok(s.chars().next().unwrap());
-        }
+        let s = String::from_utf8(vec![b1, b2]).unwrap();
+        Ok(s.chars().next().unwrap())
       }
       // three bytes UTF-8 value
       0x0800..=0xD7FF | 0xE000..=0xFFFF => {
@@ -805,9 +771,8 @@ impl<'lexer> Lexer<'lexer> {
         let b2 = ((value & 0x3F) as u8) | 0x80;
         value >>= 6;
         let b1 = ((value & 0xF) as u8) | 0xE0;
-        if let Ok(s) = String::from_utf8(vec![b1, b2, b3]) {
-          return Ok(s.chars().next().unwrap());
-        }
+        let s = String::from_utf8(vec![b1, b2, b3]).unwrap();
+        Ok(s.chars().next().unwrap())
       }
       // four bytes UTF-8 value
       0x10000..=0x10FFFF => {
@@ -818,9 +783,8 @@ impl<'lexer> Lexer<'lexer> {
         let b2 = ((value & 0x3F) as u8) | 0x80;
         value >>= 6;
         let b1 = ((value & 0x7) as u8) | 0xF0;
-        if let Ok(s) = String::from_utf8(vec![b1, b2, b3, b4]) {
-          return Ok(s.chars().next().unwrap());
-        }
+        let s = String::from_utf8(vec![b1, b2, b3, b4]).unwrap();
+        Ok(s.chars().next().unwrap())
       }
       // value is the high surrogate of UTF-16
       0xD800..=0xDBFF => {
@@ -835,25 +799,14 @@ impl<'lexer> Lexer<'lexer> {
             let b2 = ((code_point & 0x3F) as u8) | 0x80;
             code_point >>= 6;
             let b1 = ((code_point & 0x7) as u8) | 0xF0;
-            if let Ok(s) = String::from_utf8(vec![b1, b2, b3, b4]) {
-              return Ok(s.chars().next().unwrap());
-            }
+            let s = String::from_utf8(vec![b1, b2, b3, b4]).unwrap();
+            Ok(s.chars().next().unwrap())
           }
-          _ => return Err(unicode_surrogate_out_of_range(value)),
+          other => Err(err_unicode_surrogate_out_of_range(other)),
         }
       }
-      _ => return Err(unicode_value_out_of_range(value)),
+      other => Err(err_unicode_value_out_of_range(other)),
     }
-    Err(unicode_conversion_failed(value))
-  }
-
-  /// Consumes expected characters from input or reports an error.
-  fn consume_chars(&mut self, expected: &[char]) -> Result<String> {
-    let mut consumed_string = String::new();
-    for ch in expected {
-      consumed_string.push(self.consume_character(*ch)?);
-    }
-    Ok(consumed_string)
   }
 
   /// Checks if the next value on input is whitespace character.
@@ -902,7 +855,7 @@ impl<'lexer> Lexer<'lexer> {
     }
   }
 
-  /// Returns **true** when the character at the current
+  /// Returns `true` when the character at the current
   /// position advanced by the offset is a digit.
   fn is_digit_at(&self, offset: usize) -> bool {
     if let Some(ch) = self.char_at(offset) {
@@ -960,11 +913,6 @@ fn is_separator(ch: char) -> bool {
 /// Returns **true** when the specified character is an ASCII digit.
 fn is_digit(ch: char) -> bool {
   ch.is_ascii_digit()
-}
-
-/// Returns **true** when the specified character is a hexadecimal digit.
-fn is_hex_digit(ch: char) -> bool {
-  ch.is_ascii_hexdigit()
 }
 
 /// Returns `true` when the specified character is a keyword `not` separator,
@@ -1058,77 +1006,28 @@ pub mod errors {
   use dmntk_common::DmntkError;
 
   /// Lexer errors.
-  #[derive(Debug, PartialEq)]
-  enum LexerError {
-    UnexpectedEof,
-    ExpectedCharacter(char, char),
-    ExpectedCharacters(Vec<char>, char),
-    ExpectedHexDigit(char),
-    UnicodeValueOutOfRange(u64),
-    UnicodeSurrogateOutOfRange(u64),
-    UnicodeConversionFailed(u64),
-  }
+  struct LexerError(String);
 
   impl From<LexerError> for DmntkError {
     fn from(e: LexerError) -> Self {
-      DmntkError::new("LexerError", &format!("{}", e))
+      DmntkError::new("LexerError", &e.0)
     }
   }
 
-  impl std::fmt::Display for LexerError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        LexerError::UnexpectedEof => {
-          write!(f, "unexpected end of file")
-        }
-        LexerError::ExpectedCharacter(expected, actual) => {
-          write!(f, "expected '{}' character but encountered '{}'", expected, actual)
-        }
-        LexerError::ExpectedCharacters(expected, actual) => {
-          write!(f, "expected '{:?}' characters but encountered '{}'", expected, actual)
-        }
-        LexerError::ExpectedHexDigit(actual) => {
-          write!(f, "expected hex digit but encountered '{}'", actual)
-        }
-        LexerError::UnicodeValueOutOfRange(value) => {
-          write!(f, "Unicode value is out of allowed range 0x0000..0x10FFFF : {:X}", value)
-        }
-        LexerError::UnicodeSurrogateOutOfRange(value) => {
-          write!(f, "UTF-16 surrogate value is out of allowed range 0xD800..0xDFFF : {:X}", value)
-        }
-        LexerError::UnicodeConversionFailed(value) => {
-          write!(f, "conversion of the value {:X} to Unicode character has failed.", value)
-        }
-      }
-    }
+  pub fn err_unexpected_eof() -> DmntkError {
+    LexerError("unexpected end of file".to_string()).into()
   }
 
-  pub fn unexpected_eof() -> DmntkError {
-    LexerError::UnexpectedEof.into()
+  pub fn err_expected_hex_digit(ch: char) -> DmntkError {
+    LexerError(format!("expected hex digit but encountered '{ch}'")).into()
   }
 
-  pub fn expected_character(expected: char, actual: char) -> DmntkError {
-    LexerError::ExpectedCharacter(expected, actual).into()
+  pub fn err_unicode_value_out_of_range(value: u64) -> DmntkError {
+    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {value:X}")).into()
   }
 
-  pub fn expected_characters(expected: &[char], actual: char) -> DmntkError {
-    LexerError::ExpectedCharacters(expected.to_vec(), actual).into()
-  }
-
-  pub fn expected_hex_digit(ch: char) -> DmntkError {
-    LexerError::ExpectedHexDigit(ch).into()
-  }
-
-  pub fn unicode_value_out_of_range(value: u64) -> DmntkError {
-    LexerError::UnicodeValueOutOfRange(value).into()
-  }
-
-  pub fn unicode_surrogate_out_of_range(value: u64) -> DmntkError {
-    LexerError::UnicodeSurrogateOutOfRange(value).into()
-  }
-
-  pub fn unicode_conversion_failed(value: u64) -> DmntkError {
-    LexerError::UnicodeConversionFailed(value).into()
+  pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
+    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {value:X}")).into()
   }
 }
 

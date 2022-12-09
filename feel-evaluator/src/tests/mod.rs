@@ -31,11 +31,12 @@
  */
 
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelYearsAndMonthsDuration, Scope};
+use dmntk_feel::{AstNode, Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelYearsAndMonthsDuration, Month, Scope, Year};
 
 use crate::builders::build_evaluator;
 
 mod addition;
+mod arithmetic_negation;
 mod bifs;
 mod comments;
 mod comparison_between;
@@ -57,6 +58,7 @@ mod for_expression;
 mod function_invocation;
 mod if_expression;
 mod instance_of;
+mod iterations;
 mod join;
 mod list;
 mod literal_at;
@@ -82,26 +84,26 @@ pub fn te_bool(trace: bool, scope: &Scope, s: &str, expected: bool) {
 }
 
 /// Utility function that tests evaluation of date value.
-pub fn te_date(trace: bool, scope: &Scope, s: &str, year: i32, month: u8, day: u8) {
+pub fn te_date(trace: bool, scope: &Scope, s: &str, year: Year, month: Month, day: Day) {
   textual_expression(trace, scope, s, Value::Date(FeelDate::new(year, month, day)));
 }
 
 /// Utility function that tests evaluation of local date and time value.
-pub fn te_date_time_local(trace: bool, scope: &Scope, s: &str, date: (i32, u8, u8), time: (u8, u8, u8, u64)) {
+pub fn te_date_time_local(trace: bool, scope: &Scope, s: &str, date: (Year, Month, Day), time: (u8, u8, u8, u64)) {
   let (year, month, day) = date;
   let (hour, min, sec, nano) = time;
   textual_expression(trace, scope, s, Value::DateTime(FeelDateTime::local(year, month, day, hour, min, sec, nano)));
 }
 
 /// Utility function that tests evaluation of UTC date and time value.
-pub fn te_date_time_utc(trace: bool, scope: &Scope, s: &str, date: (i32, u8, u8), time: (u8, u8, u8, u64)) {
+pub fn te_date_time_utc(trace: bool, scope: &Scope, s: &str, date: (Year, Month, Day), time: (u8, u8, u8, u64)) {
   let (year, month, day) = date;
   let (hour, min, sec, nano) = time;
   textual_expression(trace, scope, s, Value::DateTime(FeelDateTime::utc(year, month, day, hour, min, sec, nano)));
 }
 
 /// Utility function that tests evaluation of date and time value with explicit offset.
-pub fn te_date_time_offset(trace: bool, scope: &Scope, s: &str, date: (i32, u8, u8), time: (u8, u8, u8, u64), offset: i32) {
+pub fn te_date_time_offset(trace: bool, scope: &Scope, s: &str, date: (Year, Month, Day), time: (u8, u8, u8, u64), offset: i32) {
   textual_expression(trace, scope, s, Value::DateTime(FeelDateTime::offset(date, time, offset)));
 }
 
@@ -113,25 +115,30 @@ pub fn te_scope(input: &str) -> Scope {
       Ok(value) => match value {
         Value::Context(ctx) => ctx.into(),
         _ => {
-          println!("ERROR (INVALID VALUE TYPE): {}", value);
+          println!("ERROR (INVALID VALUE TYPE): {value}");
           panic!("te_scope failed");
         }
       },
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_scope failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_scope failed");
     }
   }
 }
 
 /// Utility function that tests evaluation of numeric values.
-pub fn te_number(trace: bool, scope: &Scope, s: &str, num: i128, scale: i32) {
+pub fn te_number(trace: bool, scope: &Scope, s: &str, num: i64, scale: i32) {
   textual_expression(trace, scope, s, Value::Number(FeelNumber::new(num, scale)));
+}
+
+/// Utility function that tests evaluation of numeric values.
+pub fn te_number_x(trace: bool, scope: &Scope, s: &str, num: &str) {
+  textual_expression(trace, scope, s, Value::Number(num.parse::<FeelNumber>().unwrap()));
 }
 
 /// Utility function that tests evaluation to null value.
@@ -184,12 +191,12 @@ pub fn te_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => textual_expression(trace, scope, actual, evaluator(scope)),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("te_value failed");
     }
   }
@@ -201,12 +208,12 @@ pub fn te_be_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => textual_expression(trace, scope, actual, value),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_value failed");
     }
   }
@@ -218,12 +225,12 @@ pub fn be_be_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => boxed_expression(trace, scope, actual, value),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_value failed");
     }
   }
@@ -237,12 +244,12 @@ pub fn boxed_expression(trace: bool, scope: &Scope, text: &str, expected: Value)
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => assert_eq!(value, expected),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("boxed_expression failed");
       }
     },
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("boxed_expression failed");
     }
   }
@@ -256,11 +263,11 @@ fn textual_expression(trace: bool, scope: &Scope, text: &str, expected: Value) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => assert_eq!(evaluator(scope), expected),
       Err(reason) => {
-        panic!("building evaluator for textual expression failed with reason: {}", reason);
+        panic!("building evaluator for textual expression failed with reason: {reason}");
       }
     },
     Err(reason) => {
-      panic!("parsing textual expression failed with reason: {}", reason);
+      panic!("parsing textual expression failed with reason: {reason}");
     }
   }
 }
@@ -271,15 +278,15 @@ pub fn valid_unary_tests(trace: bool, scope: &Scope, text: &str) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
         if let v @ Value::Null(_) = evaluator(scope) {
-          panic!("evaluating unary tests failed, value: {}", v)
+          panic!("evaluating unary tests failed, value: {v}")
         }
       }
       Err(reason) => {
-        panic!("building evaluator for unary tests failed with reason: {}", reason);
+        panic!("building evaluator for unary tests failed with reason: {reason}");
       }
     },
     Err(reason) => {
-      panic!("parsing unary tests failed with reason: {}", reason);
+      panic!("parsing unary tests failed with reason: {reason}");
     }
   }
 }
@@ -298,7 +305,7 @@ pub fn satisfies(trace: bool, scope: &Scope, input_expression: &str, input_value
   match crate::evaluate(scope, &node) {
     Ok(value) => assert_eq!(value, Value::Boolean(expected)),
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("`satisfies` failed");
     }
   }

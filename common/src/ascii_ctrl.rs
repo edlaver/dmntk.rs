@@ -77,55 +77,62 @@ macro_rules! ascii256 {
   }};
 }
 
+#[macro_export]
+macro_rules! ascii_none {
+  () => {{
+    "".to_string()
+  }};
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
 
   fn test_display_8_colors() {
-    print!("{}0{} ", ASCII_BLACK, ASCII_RESET);
-    print!("{}1{} ", ASCII_RED, ASCII_RESET);
-    print!("{}2{} ", ASCII_GREEN, ASCII_RESET);
-    print!("{}3{} ", ASCII_YELLOW, ASCII_RESET);
-    print!("{}4{} ", ASCII_BLUE, ASCII_RESET);
-    print!("{}5{} ", ASCII_MAGENTA, ASCII_RESET);
-    print!("{}6{} ", ASCII_CYAN, ASCII_RESET);
-    print!("{}7{} ", ASCII_WHITE, ASCII_RESET);
+    print!("{ASCII_BLACK}0{ASCII_RESET} ");
+    print!("{ASCII_RED}1{ASCII_RESET} ");
+    print!("{ASCII_GREEN}2{ASCII_RESET} ");
+    print!("{ASCII_YELLOW}3{ASCII_RESET} ");
+    print!("{ASCII_BLUE}4{ASCII_RESET} ");
+    print!("{ASCII_MAGENTA}5{ASCII_RESET} ");
+    print!("{ASCII_CYAN}6{ASCII_RESET} ");
+    print!("{ASCII_WHITE}7{ASCII_RESET} ");
     print!("\n\n");
   }
 
   fn test_display_8_bright_colors() {
-    print!("{}0{} ", ASCII_BRIGHT_BLACK, ASCII_RESET);
-    print!("{}1{} ", ASCII_BRIGHT_RED, ASCII_RESET);
-    print!("{}2{} ", ASCII_BRIGHT_GREEN, ASCII_RESET);
-    print!("{}3{} ", ASCII_BRIGHT_YELLOW, ASCII_RESET);
-    print!("{}4{} ", ASCII_BRIGHT_BLUE, ASCII_RESET);
-    print!("{}5{} ", ASCII_BRIGHT_MAGENTA, ASCII_RESET);
-    print!("{}6{} ", ASCII_BRIGHT_CYAN, ASCII_RESET);
-    print!("{}7{} ", ASCII_BRIGHT_WHITE, ASCII_RESET);
+    print!("{ASCII_BRIGHT_BLACK}0{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_RED}1{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_GREEN}2{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_YELLOW}3{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_BLUE}4{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_MAGENTA}5{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_CYAN}6{ASCII_RESET} ");
+    print!("{ASCII_BRIGHT_WHITE}7{ASCII_RESET} ");
     print!("\n\n");
   }
 
   fn test_display_8_bg_colors() {
-    print!("{} 0 {} ", ASCII_BG_BLACK, ASCII_RESET);
-    print!("{} 1 {} ", ASCII_BG_RED, ASCII_RESET);
-    print!("{} 2 {} ", ASCII_BG_GREEN, ASCII_RESET);
-    print!("{} 3 {} ", ASCII_BG_YELLOW, ASCII_RESET);
-    print!("{} 4 {} ", ASCII_BG_BLUE, ASCII_RESET);
-    print!("{} 5 {} ", ASCII_BG_MAGENTA, ASCII_RESET);
-    print!("{} 6 {} ", ASCII_BG_CYAN, ASCII_RESET);
-    print!("{} 7 {} ", ASCII_BG_WHITE, ASCII_RESET);
+    print!("{ASCII_BG_BLACK} 0 {ASCII_RESET} ");
+    print!("{ASCII_BG_RED} 1 {ASCII_RESET} ");
+    print!("{ASCII_BG_GREEN} 2 {ASCII_RESET} ");
+    print!("{ASCII_BG_YELLOW} 3 {ASCII_RESET} ");
+    print!("{ASCII_BG_BLUE} 4 {ASCII_RESET} ");
+    print!("{ASCII_BG_MAGENTA} 5 {ASCII_RESET} ");
+    print!("{ASCII_BG_CYAN} 6 {ASCII_RESET} ");
+    print!("{ASCII_BG_WHITE} 7 {ASCII_RESET} ");
     print!("\n\n");
   }
 
   fn test_display_8_bg_bright_colors() {
-    print!("{} 0 {} ", ASCII_BG_BRIGHT_BLACK, ASCII_RESET);
-    print!("{} 1 {} ", ASCII_BG_BRIGHT_RED, ASCII_RESET);
-    print!("{} 2 {} ", ASCII_BG_BRIGHT_GREEN, ASCII_RESET);
-    print!("{} 3 {} ", ASCII_BG_BRIGHT_YELLOW, ASCII_RESET);
-    print!("{} 4 {} ", ASCII_BG_BRIGHT_BLUE, ASCII_RESET);
-    print!("{} 5 {} ", ASCII_BG_BRIGHT_MAGENTA, ASCII_RESET);
-    print!("{} 6 {} ", ASCII_BG_BRIGHT_CYAN, ASCII_RESET);
-    print!("{} 7 {} ", ASCII_BG_BRIGHT_WHITE, ASCII_RESET);
+    print!("{ASCII_BG_BRIGHT_BLACK} 0 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_RED} 1 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_GREEN} 2 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_YELLOW} 3 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_BLUE} 4 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_MAGENTA} 5 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_CYAN} 6 {ASCII_RESET} ");
+    print!("{ASCII_BG_BRIGHT_WHITE} 7 {ASCII_RESET} ");
     print!("\n\n");
   }
 
@@ -133,7 +140,7 @@ mod tests {
     for i in 0..16 {
       for j in 0..16 {
         let code = format!("{}", i * 16 + j);
-        print!("\u{001b}[38;5;{}m{:>4}{}", code, code, ASCII_RESET)
+        print!("\u{001b}[38;5;{code}m{code:>4}{ASCII_RESET}")
       }
       println!();
     }

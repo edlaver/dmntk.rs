@@ -39,8 +39,6 @@ extern crate dmntk_recognizer;
 #[cfg(test)]
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
-extern crate thiserror;
 
 mod builders;
 mod errors;

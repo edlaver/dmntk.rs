@@ -11,19 +11,18 @@ cargo clean
 export CARGO_INCREMENTAL=0
 export RUSTDOCFLAGS="-Cpanic=abort"
 export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
+# set DMNTK features
+export CARGO_FEATURE_PARSING_TABLES=1
 
 if [ -n "$1" ]; then
-  # run tests for specified package
+  # run tests only for specified package
   cargo test -p "$1"
 else
-  # run all tests
+  # run all tests including including manual tests
   cargo test
-  # run building feel-parser with features, after reformatting, no changes in source code are expected
-  cargo build -p dmntk-feel-parser --features=parsing-tables
-  cargo fmt -p dmntk-feel-parser
-  # build the whole binary before running manual tests
+  # build the whole binary before running tests
   cargo build
-  # run manual tests to take the coverage of the code executed from command-line
+  # run manual tests to collect the coverage of the code executed from command-line
   echo "$MANUAL_TESTS_DIRECTORY"
   if [[ -d "$MANUAL_TESTS_DIRECTORY" ]]
   then
@@ -43,5 +42,8 @@ grcov . --llvm -s . -t lcov --branch --ignore-not-existing --ignore "*cargo*" --
 genhtml -t "Decision Model and Notation Toolkit" -q -o ./target/coverage ./target/lcov/lcov.info
 # display final message
 echo ""
-echo "open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html"
+echo "Open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html"
 echo ""
+
+# reformat generated code
+cargo fmt -p dmntk-feel-parser

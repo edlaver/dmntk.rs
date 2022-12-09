@@ -41,7 +41,7 @@ fn accept_name(scope: &Scope, name: &str, expected: &str) {
     scope,
     StartTextualExpression,
     name,
-    &format!("\n       Name\n       └─ `{}`\n    ", expected),
+    &format!("\n       Name\n       └─ `{expected}`\n    "),
     false,
   );
 }

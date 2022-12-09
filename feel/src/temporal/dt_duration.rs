@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! `FEEL` days and time durations.
+//! FEEL days and time duration.
 
 use self::errors::*;
 use dmntk_common::DmntkError;
@@ -41,37 +41,41 @@ use std::convert::TryFrom;
 const REGEX_DAYS_AND_TIME: &str =
   r#"^(?P<sign>-)?P((?P<days>[0-9]+)D)?(T((?P<hours>[0-9]+)H)?((?P<minutes>[0-9]+)M)?((?P<seconds>[0-9]+)(?P<fractional>\.[0-9]*)?S)?)?$"#;
 
+/// Number of nanoseconds in a day.
+const NANOSECONDS_IN_DAY: i64 = 24 * NANOSECONDS_IN_HOUR;
+/// Number of nanoseconds in an hour.
+const NANOSECONDS_IN_HOUR: i64 = 60 * NANOSECONDS_IN_MINUTE;
+/// Number of nanoseconds in a minute.
+const NANOSECONDS_IN_MINUTE: i64 = 60 * NANOSECONDS_IN_SECOND;
+/// Number of nanoseconds in a second.
+const NANOSECONDS_IN_SECOND: i64 = 1_000_000_000;
+
 lazy_static! {
   static ref RE_DAYS_AND_TIME: Regex = Regex::new(REGEX_DAYS_AND_TIME).unwrap();
 }
 
-/// Days and time duration in `FEEL`.
-/// Holds the number of nanoseconds in the duration.
-#[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
+/// FEEL days and time duration.
 #[must_use]
-pub struct FeelDaysAndTimeDuration(i128);
-
-/// Number of nanoseconds in a day.
-const NANOSECONDS_IN_DAY: i128 = 24 * NANOSECONDS_IN_HOUR;
-
-/// Number of nanoseconds in an hour.
-const NANOSECONDS_IN_HOUR: i128 = 60 * NANOSECONDS_IN_MINUTE;
-
-/// Number of nanoseconds in a minute.
-const NANOSECONDS_IN_MINUTE: i128 = 60 * NANOSECONDS_IN_SECOND;
-
-/// Number of nanoseconds in a second.
-const NANOSECONDS_IN_SECOND: i128 = 1_000_000_000;
+#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
+pub struct FeelDaysAndTimeDuration(i64);
 
 impl FeelDaysAndTimeDuration {
+  /// Creates [FeelDaysAndTimeDuration] from nanoseconds.
+  pub fn from_n(nanos: i64) -> Self {
+    Self(nanos)
+  }
+  /// Creates [FeelDaysAndTimeDuration] from seconds.
+  pub fn from_s(seconds: i64) -> Self {
+    Self(seconds * NANOSECONDS_IN_SECOND)
+  }
   /// Adds nanoseconds to current duration.
   pub fn nano(&mut self, nano: i64) -> &mut Self {
-    self.0 += nano as i128;
+    self.0 += nano;
     self
   }
   /// Adds seconds to current duration.
   pub fn second(&mut self, sec: i64) -> &mut Self {
-    self.0 += sec as i128 * NANOSECONDS_IN_SECOND;
+    self.0 += sec * NANOSECONDS_IN_SECOND;
     self
   }
   ///
@@ -141,40 +145,40 @@ impl std::fmt::Display for FeelDaysAndTimeDuration {
     nanoseconds -= minute * NANOSECONDS_IN_MINUTE;
     let seconds = nanoseconds / NANOSECONDS_IN_SECOND;
     nanoseconds -= seconds * NANOSECONDS_IN_SECOND;
-    let nanoseconds_str = super::nanoseconds_to_string(nanoseconds as u64);
+    let nanoseconds_str = super::nanos_to_string(nanoseconds as u64);
     match (day > 0, hour > 0, minute > 0, seconds > 0, nanoseconds > 0) {
       (false, false, false, false, false) => write!(f, "PT0S"),
-      (false, false, false, true, false) => write!(f, "{}PT{}S", sign, seconds),
-      (false, false, true, false, false) => write!(f, "{}PT{}M", sign, minute),
-      (false, false, true, true, false) => write!(f, "{}PT{}M{}S", sign, minute, seconds),
-      (false, true, false, false, false) => write!(f, "{}PT{}H", sign, hour),
-      (false, true, false, true, false) => write!(f, "{}PT{}H{}S", sign, hour, seconds),
-      (false, true, true, false, false) => write!(f, "{}PT{}H{}M", sign, hour, minute),
-      (false, true, true, true, false) => write!(f, "{}PT{}H{}M{}S", sign, hour, minute, seconds),
-      (true, false, false, false, false) => write!(f, "{}P{}D", sign, day),
-      (true, false, false, true, false) => write!(f, "{}P{}DT{}S", sign, day, seconds),
-      (true, false, true, false, false) => write!(f, "{}P{}DT{}M", sign, day, minute),
-      (true, false, true, true, false) => write!(f, "{}P{}DT{}M{}S", sign, day, minute, seconds),
-      (true, true, false, false, false) => write!(f, "{}P{}DT{}H", sign, day, hour),
-      (true, true, false, true, false) => write!(f, "{}P{}DT{}H{}S", sign, day, hour, seconds),
-      (true, true, true, false, false) => write!(f, "{}P{}DT{}H{}M", sign, day, hour, minute),
-      (true, true, true, true, false) => write!(f, "{}P{}DT{}H{}M{}S", sign, day, hour, minute, seconds),
-      (false, false, false, false, true) => write!(f, "{}PT0.{}S", sign, nanoseconds_str),
-      (false, false, false, true, true) => write!(f, "{}PT{}.{}S", sign, seconds, nanoseconds_str),
-      (false, false, true, false, true) => write!(f, "{}PT{}M0.{}S", sign, minute, nanoseconds_str),
-      (false, false, true, true, true) => write!(f, "{}PT{}M{}.{}S", sign, minute, seconds, nanoseconds_str),
-      (false, true, false, false, true) => write!(f, "{}PT{}H0.{}S", sign, hour, nanoseconds_str),
-      (false, true, false, true, true) => write!(f, "{}PT{}H{}.{}S", sign, hour, seconds, nanoseconds_str),
-      (false, true, true, false, true) => write!(f, "{}PT{}H{}M0.{}S", sign, hour, minute, nanoseconds_str),
-      (false, true, true, true, true) => write!(f, "{}PT{}H{}M{}.{}S", sign, hour, minute, seconds, nanoseconds_str),
-      (true, false, false, false, true) => write!(f, "{}P{}DT0.{}S", sign, day, nanoseconds_str),
-      (true, false, false, true, true) => write!(f, "{}P{}DT{}.{}S", sign, day, seconds, nanoseconds_str),
-      (true, false, true, false, true) => write!(f, "{}P{}DT{}M0.{}S", sign, day, minute, nanoseconds_str),
-      (true, false, true, true, true) => write!(f, "{}P{}DT{}M{}.{}S", sign, day, minute, seconds, nanoseconds_str),
-      (true, true, false, false, true) => write!(f, "{}P{}DT{}H0.{}S", sign, day, hour, nanoseconds_str),
-      (true, true, false, true, true) => write!(f, "{}P{}DT{}H{}.{}S", sign, day, hour, seconds, nanoseconds_str),
-      (true, true, true, false, true) => write!(f, "{}P{}DT{}H{}M0.{}S", sign, day, hour, minute, nanoseconds_str),
-      (true, true, true, true, true) => write!(f, "{}P{}DT{}H{}M{}.{}S", sign, day, hour, minute, seconds, nanoseconds_str),
+      (false, false, false, true, false) => write!(f, "{sign}PT{seconds}S"),
+      (false, false, true, false, false) => write!(f, "{sign}PT{minute}M"),
+      (false, false, true, true, false) => write!(f, "{sign}PT{minute}M{seconds}S"),
+      (false, true, false, false, false) => write!(f, "{sign}PT{hour}H"),
+      (false, true, false, true, false) => write!(f, "{sign}PT{hour}H{seconds}S"),
+      (false, true, true, false, false) => write!(f, "{sign}PT{hour}H{minute}M"),
+      (false, true, true, true, false) => write!(f, "{sign}PT{hour}H{minute}M{seconds}S"),
+      (true, false, false, false, false) => write!(f, "{sign}P{day}D"),
+      (true, false, false, true, false) => write!(f, "{sign}P{day}DT{seconds}S"),
+      (true, false, true, false, false) => write!(f, "{sign}P{day}DT{minute}M"),
+      (true, false, true, true, false) => write!(f, "{sign}P{day}DT{minute}M{seconds}S"),
+      (true, true, false, false, false) => write!(f, "{sign}P{day}DT{hour}H"),
+      (true, true, false, true, false) => write!(f, "{sign}P{day}DT{hour}H{seconds}S"),
+      (true, true, true, false, false) => write!(f, "{sign}P{day}DT{hour}H{minute}M"),
+      (true, true, true, true, false) => write!(f, "{sign}P{day}DT{hour}H{minute}M{seconds}S"),
+      (false, false, false, false, true) => write!(f, "{sign}PT0.{nanoseconds_str}S"),
+      (false, false, false, true, true) => write!(f, "{sign}PT{seconds}.{nanoseconds_str}S"),
+      (false, false, true, false, true) => write!(f, "{sign}PT{minute}M0.{nanoseconds_str}S"),
+      (false, false, true, true, true) => write!(f, "{sign}PT{minute}M{seconds}.{nanoseconds_str}S"),
+      (false, true, false, false, true) => write!(f, "{sign}PT{hour}H0.{nanoseconds_str}S"),
+      (false, true, false, true, true) => write!(f, "{sign}PT{hour}H{seconds}.{nanoseconds_str}S"),
+      (false, true, true, false, true) => write!(f, "{sign}PT{hour}H{minute}M0.{nanoseconds_str}S"),
+      (false, true, true, true, true) => write!(f, "{sign}PT{hour}H{minute}M{seconds}.{nanoseconds_str}S"),
+      (true, false, false, false, true) => write!(f, "{sign}P{day}DT0.{nanoseconds_str}S"),
+      (true, false, false, true, true) => write!(f, "{sign}P{day}DT{seconds}.{nanoseconds_str}S"),
+      (true, false, true, false, true) => write!(f, "{sign}P{day}DT{minute}M0.{nanoseconds_str}S"),
+      (true, false, true, true, true) => write!(f, "{sign}P{day}DT{minute}M{seconds}.{nanoseconds_str}S"),
+      (true, true, false, false, true) => write!(f, "{sign}P{day}DT{hour}H0.{nanoseconds_str}S",),
+      (true, true, false, true, true) => write!(f, "{sign}P{day}DT{hour}H{seconds}.{nanoseconds_str}S"),
+      (true, true, true, false, true) => write!(f, "{sign}P{day}DT{hour}H{minute}M0.{nanoseconds_str}S"),
+      (true, true, true, true, true) => write!(f, "{sign}P{day}DT{hour}H{minute}M{seconds}.{nanoseconds_str}S"),
     }
   }
 }
@@ -185,34 +189,38 @@ impl TryFrom<&str> for FeelDaysAndTimeDuration {
   fn try_from(value: &str) -> Result<Self, Self::Error> {
     if let Some(captures) = RE_DAYS_AND_TIME.captures(value) {
       let mut is_valid = false;
-      let mut nanoseconds = 0_i128;
+      let mut nanoseconds = 0_i64;
       if let Some(days_match) = captures.name("days") {
-        if let Ok(days) = days_match.as_str().parse::<u64>() {
-          nanoseconds += (days as i128) * NANOSECONDS_IN_DAY;
-          is_valid = true;
+        if let Ok(days_u64) = days_match.as_str().parse::<u64>() {
+          if let Ok(days) = <u64 as TryInto<i64>>::try_into(days_u64) {
+            if let Some(a) = days.checked_mul(NANOSECONDS_IN_DAY) {
+              nanoseconds += a;
+              is_valid = true;
+            }
+          }
         }
       }
       if let Some(hours_match) = captures.name("hours") {
         if let Ok(hours) = hours_match.as_str().parse::<u64>() {
-          nanoseconds += (hours as i128) * NANOSECONDS_IN_HOUR;
+          nanoseconds += (hours as i64) * NANOSECONDS_IN_HOUR;
           is_valid = true;
         }
       }
       if let Some(minutes_match) = captures.name("minutes") {
         if let Ok(minutes) = minutes_match.as_str().parse::<u64>() {
-          nanoseconds += (minutes as i128) * NANOSECONDS_IN_MINUTE;
+          nanoseconds += (minutes as i64) * NANOSECONDS_IN_MINUTE;
           is_valid = true;
         }
       }
       if let Some(seconds_match) = captures.name("seconds") {
         if let Ok(seconds) = seconds_match.as_str().parse::<u64>() {
-          nanoseconds += (seconds as i128) * NANOSECONDS_IN_SECOND;
+          nanoseconds += (seconds as i64) * NANOSECONDS_IN_SECOND;
           is_valid = true;
         }
       }
       if let Some(fractional_match) = captures.name("fractional") {
         if let Ok(fractional) = fractional_match.as_str().parse::<f64>() {
-          nanoseconds += (fractional * NANOSECONDS_IN_SECOND as f64).trunc() as i128;
+          nanoseconds += (fractional * NANOSECONDS_IN_SECOND as f64).trunc() as i64;
           is_valid = true;
         }
       }
@@ -239,7 +247,7 @@ pub mod errors {
 
   impl From<DtDurationError> for DmntkError {
     fn from(e: DtDurationError) -> Self {
-      DmntkError::new("DtDurationError", &format!("{}", e))
+      DmntkError::new("DtDurationError", &format!("{e}"))
     }
   }
 
@@ -247,7 +255,7 @@ pub mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         DtDurationError::InvalidDateAndTimeDurationLiteral(literal) => {
-          write!(f, "invalid date and time duration literal: {}", literal)
+          write!(f, "invalid date and time duration literal: {literal}")
         }
       }
     }
@@ -260,8 +268,7 @@ pub mod errors {
 
 #[cfg(test)]
 mod tests {
-  use super::super::nanoseconds_to_string;
-  use super::FeelDaysAndTimeDuration;
+  use super::*;
   use std::cmp::Ordering;
   use std::convert::TryFrom;
 
@@ -426,21 +433,6 @@ mod tests {
     equals_str("-P1DT23H59M59S", true, 172_799, 0);
     equals_str("P1DT23H59M59.123S", false, 172_799, 123_000_000);
     equals_str("-P1DT23H59M59.123S", true, 172_799, 123_000_000);
-  }
-
-  #[test]
-  fn converting_nanos_to_string_should_pass() {
-    assert_eq!("", nanoseconds_to_string(0));
-    assert_eq!("000000001", nanoseconds_to_string(1));
-    assert_eq!("00000001", nanoseconds_to_string(10));
-    assert_eq!("0000001", nanoseconds_to_string(100));
-    assert_eq!("000001", nanoseconds_to_string(1_000));
-    assert_eq!("00001", nanoseconds_to_string(10_000));
-    assert_eq!("0001", nanoseconds_to_string(100_000));
-    assert_eq!("001", nanoseconds_to_string(1_000_000));
-    assert_eq!("01", nanoseconds_to_string(10_000_000));
-    assert_eq!("1", nanoseconds_to_string(100_000_000));
-    assert_eq!("", nanoseconds_to_string(1_000_000_000));
   }
 
   #[test]

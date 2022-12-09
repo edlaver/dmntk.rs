@@ -34,16 +34,17 @@ use super::super::point::*;
 
 #[test]
 fn point_zero() {
-  let point = POINT_ZERO;
-  assert_eq!(point.x, 0);
-  assert_eq!(point.y, 0);
+  let p = POINT_ZERO;
+  assert_eq!(p.x, 0);
+  assert_eq!(p.y, 0);
 }
 
 #[test]
 fn point_new() {
-  let point = Point::new(1, 2);
-  assert_eq!(point.x, 1);
-  assert_eq!(point.y, 2);
+  let p = Point::new(1, 2);
+  assert_eq!(p.x, 1);
+  assert_eq!(p.y, 2);
+  p.assert_receiver_is_total_eq();
 }
 
 #[test]
@@ -57,12 +58,29 @@ fn point_overlays() {
 
 #[test]
 fn point_display() {
-  assert_eq!(format!("{}", Point::new(10, 20)), "(10,20)");
-  assert_eq!(format!("{}", Point::new(0, 0)), "(0,0)");
+  assert_eq!("(10,20)", format!("{}", Point::new(10, 20)));
+  assert_eq!("(0,0)", format!("{}", Point::new(0, 0)));
 }
 
 #[test]
 fn point_debug() {
-  assert_eq!(format!("{:?}", Point::new(10, 20)), "(10,20)");
-  assert_eq!(format!("{:?}", Point::new(0, 0)), "(0,0)");
+  assert_eq!("(10,20)", format!("{:?}", Point::new(10, 20)));
+  assert_eq!("(0,0)", format!("{:?}", Point::new(0, 0)));
+}
+
+#[test]
+fn point_compare() {
+  let p1 = Point::new(1, 2);
+  let p2 = Point::new(1, 2);
+  let p3 = Point::new(2, 1);
+  assert!((p1 == p2));
+  assert!((p1 != p3));
+}
+
+#[test]
+#[allow(clippy::clone_on_copy)]
+fn point_clone() {
+  let p1 = Point::new(1, 2);
+  let p2 = p1.clone();
+  assert!((p1 == p2));
 }

@@ -346,7 +346,7 @@ impl Canvas {
             }
           }
           if !found {
-            return Err(canvas_region_not_found(rect));
+            return Err(err_canvas_region_not_found(rect));
           }
           col += 1;
         }
@@ -415,7 +415,7 @@ impl Canvas {
     if closing.overlays(top_left) {
       Ok(Rect::new(top_left.x, top_left.y, bottom_right.x + 1, bottom_right.y + 1))
     } else {
-      Err(canvas_rectangle_not_closed(closing, top_left))
+      Err(err_canvas_rectangle_not_closed(closing, top_left))
     }
   }
 
@@ -479,7 +479,7 @@ impl Canvas {
         }
       }
     }
-    Err(canvas_expected_characters_not_found(searched.to_vec()))
+    Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
   fn search_up(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
@@ -492,10 +492,10 @@ impl Canvas {
         return Ok((ch, self.cursor));
       }
       if !allowed.contains(&ch) {
-        return Err(canvas_character_is_not_allowed(ch, allowed.to_vec()));
+        return Err(err_canvas_character_is_not_allowed(ch, allowed.to_vec()));
       }
     }
-    Err(canvas_expected_characters_not_found(searched.to_vec()))
+    Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
   fn search_left(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
@@ -508,10 +508,10 @@ impl Canvas {
         return Ok((ch, self.cursor));
       }
       if !allowed.contains(&ch) {
-        return Err(canvas_character_is_not_allowed(ch, allowed.to_vec()));
+        return Err(err_canvas_character_is_not_allowed(ch, allowed.to_vec()));
       }
     }
-    Err(canvas_expected_characters_not_found(searched.to_vec()))
+    Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
   fn search_right(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
@@ -524,10 +524,10 @@ impl Canvas {
         return Ok((ch, self.cursor));
       }
       if !allowed.contains(&ch) {
-        return Err(canvas_character_is_not_allowed(ch, allowed.to_vec()));
+        return Err(err_canvas_character_is_not_allowed(ch, allowed.to_vec()));
       }
     }
-    Err(canvas_expected_characters_not_found(searched.to_vec()))
+    Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
   fn search_down(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
@@ -540,10 +540,10 @@ impl Canvas {
         return Ok((ch, self.cursor));
       }
       if !allowed.contains(&ch) {
-        return Err(canvas_character_is_not_allowed(ch, allowed.to_vec()));
+        return Err(err_canvas_character_is_not_allowed(ch, allowed.to_vec()));
       }
     }
-    Err(canvas_expected_characters_not_found(searched.to_vec()))
+    Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
   /// Retrieves the text enclosed inside a **rectangle** in selected **layer**.

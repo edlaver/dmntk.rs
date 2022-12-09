@@ -11,3 +11,6 @@ edition.workspace = true
 [dependencies]
 dmntk-common.workspace = true
 dmntk-model.workspace = true
+
+[dev-dependencies]
+dmntk-examples.workspace = true

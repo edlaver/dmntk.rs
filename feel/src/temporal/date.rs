@@ -30,46 +30,44 @@
  * limitations under the License.
  */
 
-//! `FEEL` date.
+//! Implementation of FEEL date.
 
-use self::errors::*;
-use crate::temporal::ym_duration::FeelYearsAndMonthsDuration;
-use crate::temporal::{after, after_or_equal, before, before_or_equal, between, equal, weekday, FeelDateTime, FeelTime};
-use crate::FeelNumber;
-use chrono::{DateTime, Datelike, FixedOffset, Local};
+use super::errors::{err_invalid_date, err_invalid_date_literal};
+use super::ym_duration::FeelYearsAndMonthsDuration;
+use super::{Day, FeelDateTime, FeelTime, Month, Year, RE_DATE};
+use crate::temporal::{DayOfWeek, MonthOfYear};
+use crate::{DayOfYear, FeelNumber, WeekOfYear};
+use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveDate, Weekday};
 use dmntk_common::DmntkError;
-use regex::Regex;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
-
-lazy_static! {
-  static ref RE_DATE: Regex = Regex::new(format!("^{}$", super::DATE_PATTERN).as_str()).unwrap();
-}
+use std::str::FromStr;
 
 /// FEEL date.
 #[derive(Debug, Clone)]
-pub struct FeelDate(i32, u8, u8);
+pub struct FeelDate(Year, Month, Day);
 
 impl std::fmt::Display for FeelDate {
+  /// Converts [FeelDate] into [String].
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     write!(f, "{:04}-{:02}-{:02}", self.0, self.1, self.2)
   }
 }
 
-impl TryFrom<&str> for FeelDate {
-  type Error = DmntkError;
-  /// Converts string into [FeelDate].
-  fn try_from(value: &str) -> Result<Self, Self::Error> {
-    if let Some(captures) = RE_DATE.captures(value) {
+impl FromStr for FeelDate {
+  type Err = DmntkError;
+  /// Converts [String] into [FeelDate].
+  fn from_str(date: &str) -> Result<Self, Self::Err> {
+    if let Some(captures) = RE_DATE.captures(date) {
       if let Some(year_match) = captures.name("year") {
-        if let Ok(mut year) = year_match.as_str().parse::<i32>() {
+        if let Ok(mut year) = year_match.as_str().parse::<Year>() {
           if captures.name("sign").is_some() {
             year = -year;
           }
           if let Some(month_match) = captures.name("month") {
-            if let Ok(month) = month_match.as_str().parse::<u8>() {
+            if let Ok(month) = month_match.as_str().parse::<Month>() {
               if let Some(day_match) = captures.name("day") {
-                if let Ok(day) = day_match.as_str().parse::<u8>() {
+                if let Ok(day) = day_match.as_str().parse::<Day>() {
                   if is_valid_date(year, month, day) {
                     return Ok(FeelDate(year, month, day));
                   }
@@ -80,7 +78,7 @@ impl TryFrom<&str> for FeelDate {
         }
       }
     }
-    Err(invalid_date_literal(value.to_string()))
+    Err(err_invalid_date_literal(date))
   }
 }
 
@@ -88,42 +86,40 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
   type Error = DmntkError;
   /// Converts a tuple of numbers into [FeelDate].
   fn try_from(value: (FeelNumber, FeelNumber, FeelNumber)) -> Result<Self, Self::Error> {
-    let year = value.0.into();
+    let year = value.0.try_into()?;
     if value.1 > FeelNumber::zero() && value.2 > FeelNumber::zero() {
-      let month = value.1.into();
-      let day = value.2.into();
+      let month = value.1.try_into()?;
+      let day = value.2.try_into()?;
       if is_valid_date(year, month, day) {
         return Ok(Self(year, month, day));
       }
     }
-    Err(invalid_date(value.0.into(), value.1.into(), value.2.into()))
+    Err(err_invalid_date(value.0, value.1, value.2))
   }
 }
 
 impl PartialEq for FeelDate {
-  ///
+  /// Returns `true` when two dated are equal.
   fn eq(&self, other: &Self) -> bool {
     self.0 == other.0 && self.1 == other.1 && self.2 == other.2
   }
 }
 
 impl PartialOrd for FeelDate {
-  ///
+  /// Returns the ordering of two dates.
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-    if self == other {
-      return Some(Ordering::Equal);
+    let y = self.0.cmp(&other.0);
+    let m = self.1.cmp(&other.1);
+    let d = self.2.cmp(&other.2);
+    match (y, m, d) {
+      (Ordering::Equal, Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
+      (Ordering::Equal, Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
+      (Ordering::Equal, Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
+      (Ordering::Equal, Ordering::Less, _) => Some(Ordering::Less),
+      (Ordering::Equal, Ordering::Greater, _) => Some(Ordering::Greater),
+      (Ordering::Less, _, _) => Some(Ordering::Less),
+      (Ordering::Greater, _, _) => Some(Ordering::Greater),
     }
-    if let Some(before) = self.before(other) {
-      if before {
-        return Some(Ordering::Less);
-      }
-    }
-    if let Some(after) = self.after(other) {
-      if after {
-        return Some(Ordering::Greater);
-      }
-    }
-    None
   }
 }
 
@@ -138,11 +134,11 @@ impl TryFrom<FeelDate> for DateTime<FixedOffset> {
 
 impl FeelDate {
   ///
-  pub fn new(year: i32, month: u8, day: u8) -> Self {
+  pub fn new(year: Year, month: Month, day: Day) -> Self {
     Self(year, month, day)
   }
   ///
-  pub fn new_opt(year: i32, month: u8, day: u8) -> Option<Self> {
+  pub fn new_opt(year: Year, month: Month, day: Day) -> Option<Self> {
     if is_valid_date(year, month, day) {
       Some(Self(year, month, day))
     } else {
@@ -152,43 +148,7 @@ impl FeelDate {
   ///
   pub fn today_local() -> Self {
     let today = Local::now();
-    Self(today.year(), today.month() as u8, today.day() as u8)
-  }
-  ///
-  pub fn equal(&self, other: &Self) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    equal(&FeelDateTime(self.clone(), midnight.clone()), &FeelDateTime(other.clone(), midnight))
-  }
-  ///
-  pub fn before(&self, other: &Self) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    before(&FeelDateTime(self.clone(), midnight.clone()), &FeelDateTime(other.clone(), midnight))
-  }
-  ///
-  pub fn before_or_equal(&self, other: &Self) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    before_or_equal(&FeelDateTime(self.clone(), midnight.clone()), &FeelDateTime(other.clone(), midnight))
-  }
-  ///
-  pub fn after(&self, other: &Self) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    after(&FeelDateTime(self.clone(), midnight.clone()), &FeelDateTime(other.clone(), midnight))
-  }
-  ///
-  pub fn after_or_equal(&self, other: &Self) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    after_or_equal(&FeelDateTime(self.clone(), midnight.clone()), &FeelDateTime(other.clone(), midnight))
-  }
-  ///
-  pub fn between(&self, left: &Self, right: &Self, left_closed: bool, right_closed: bool) -> Option<bool> {
-    let midnight = FeelTime::utc(0, 0, 0, 0);
-    between(
-      &FeelDateTime(self.clone(), midnight.clone()),
-      &FeelDateTime(left.clone(), midnight.clone()),
-      &FeelDateTime(right.clone(), midnight),
-      left_closed,
-      right_closed,
-    )
+    Self(today.year() as Year, today.month() as Month, today.day() as Day)
   }
   ///
   pub fn ym_duration(&self, other: &FeelDate) -> FeelYearsAndMonthsDuration {
@@ -208,32 +168,67 @@ impl FeelDate {
     FeelYearsAndMonthsDuration::new_m(months)
   }
   ///
-  pub fn year(&self) -> i32 {
+  pub fn year(&self) -> Year {
     self.0
   }
   ///
-  pub fn month(&self) -> u8 {
+  pub fn month(&self) -> Month {
     self.1
   }
   ///
-  pub fn day(&self) -> u8 {
+  pub fn day(&self) -> Day {
     self.2
   }
   ///
-  pub fn weekday(&self) -> Option<u32> {
-    weekday(&FeelDateTime(self.clone(), FeelTime::utc(0, 0, 0, 0)))
+  pub fn day_of_week(&self) -> Option<DayOfWeek> {
+    NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| match naive_date.weekday() {
+      Weekday::Mon => ("Monday".to_string(), 1_u8),
+      Weekday::Tue => ("Tuesday".to_string(), 2_u8),
+      Weekday::Wed => ("Wednesday".to_string(), 3_u8),
+      Weekday::Thu => ("Thursday".to_string(), 4_u8),
+      Weekday::Fri => ("Friday".to_string(), 5_u8),
+      Weekday::Sat => ("Saturday".to_string(), 6_u8),
+      Weekday::Sun => ("Sunday".to_string(), 7_u8),
+    })
   }
   ///
-  pub fn as_tuple(&self) -> (i32, u32, u32) {
-    (self.0, self.1 as u32, self.2 as u32)
+  pub fn day_of_year(&self) -> Option<DayOfYear> {
+    NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| naive_date.ordinal() as u16)
+  }
+  ///
+  pub fn week_of_year(&self) -> Option<WeekOfYear> {
+    NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| naive_date.iso_week().week() as u8)
+  }
+  ///
+  pub fn month_of_year(&self) -> Option<MonthOfYear> {
+    if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      match naive_date.month() {
+        1 => Some(("January".to_string(), 1_u8)),
+        2 => Some(("February".to_string(), 2_u8)),
+        3 => Some(("March".to_string(), 3_u8)),
+        4 => Some(("April".to_string(), 4_u8)),
+        5 => Some(("May".to_string(), 5_u8)),
+        6 => Some(("June".to_string(), 6_u8)),
+        7 => Some(("July".to_string(), 7_u8)),
+        8 => Some(("August".to_string(), 8_u8)),
+        9 => Some(("September".to_string(), 9_u8)),
+        10 => Some(("October".to_string(), 10_u8)),
+        11 => Some(("November".to_string(), 11_u8)),
+        12 => Some(("December".to_string(), 12_u8)),
+        _ => None,
+      }
+    } else {
+      None
+    }
+  }
+  ///
+  pub fn as_tuple(&self) -> (Year, Month, Day) {
+    (self.0, self.1, self.2)
   }
 }
 
 ///
-pub fn is_valid_date(year: i32, month: u8, day: u8) -> bool {
-  if DateTime::try_from(FeelDate(year, month, day)).is_ok() {
-    return true;
-  }
+pub fn is_valid_date(year: Year, month: Month, day: Day) -> bool {
   if (-999_999_999..=999_999_999).contains(&year) {
     if let Some(last_day_of_month) = last_day_of_month(year, month) {
       return day <= last_day_of_month;
@@ -243,12 +238,12 @@ pub fn is_valid_date(year: i32, month: u8, day: u8) -> bool {
 }
 
 ///
-pub fn is_leap_year(year: i32) -> bool {
+pub fn is_leap_year(year: Year) -> bool {
   year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
 
 ///
-pub fn last_day_of_month(year: i32, month: u8) -> Option<u8> {
+pub fn last_day_of_month(year: Year, month: Month) -> Option<Day> {
   match month {
     1 | 3 | 5 | 7 | 8 | 10 | 12 => Some(31),
     4 | 6 | 9 | 11 => Some(30),
@@ -257,48 +252,9 @@ pub fn last_day_of_month(year: i32, month: u8) -> Option<u8> {
   }
 }
 
-/// Definitions of date errors.
-pub mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Date errors.
-  #[derive(Debug, PartialEq)]
-  enum FeelDateError {
-    InvalidDateLiteral(String),
-    InvalidDate(i32, u8, u8),
-  }
-
-  impl From<FeelDateError> for DmntkError {
-    fn from(e: FeelDateError) -> Self {
-      DmntkError::new("FeelDateError", &format!("{}", e))
-    }
-  }
-
-  impl std::fmt::Display for FeelDateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        FeelDateError::InvalidDateLiteral(literal) => {
-          write!(f, "invalid date literal: {}", literal)
-        }
-        FeelDateError::InvalidDate(y, m, d) => {
-          write!(f, "invalid date: {}-{}-{}", y, m, d)
-        }
-      }
-    }
-  }
-
-  pub fn invalid_date_literal(literal: String) -> DmntkError {
-    FeelDateError::InvalidDateLiteral(literal).into()
-  }
-
-  pub fn invalid_date(y: i32, m: u8, d: u8) -> DmntkError {
-    FeelDateError::InvalidDate(y, m, d).into()
-  }
-}
-
 #[cfg(test)]
 mod tests {
-  use super::{is_leap_year, is_valid_date, last_day_of_month};
+  use super::*;
 
   #[test]
   fn test_is_valid_date() {
@@ -355,5 +311,29 @@ mod tests {
     assert_eq!(31, last_day_of_month(2020, 12).unwrap());
     assert_eq!(None, last_day_of_month(2020, 13));
     assert_eq!(None, last_day_of_month(2020, 0));
+  }
+
+  #[test]
+  fn test_eq() {
+    assert!((FeelDate(2021, 2, 1) == FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 1) != FeelDate(2021, 2, 2)));
+    assert!((FeelDate(2021, 2, 1) != FeelDate(2021, 3, 1)));
+    assert!((FeelDate(2021, 2, 1) != FeelDate(2022, 2, 1)));
+    assert!((FeelDate(999_999_999, 12, 31) != FeelDate(-999_999_999, 1, 1)));
+  }
+
+  #[test]
+  fn test_compare() {
+    assert!((FeelDate(2021, 2, 1) == FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 1) < FeelDate(2021, 2, 2)));
+    assert!((FeelDate(2021, 2, 1) < FeelDate(2021, 3, 1)));
+    assert!((FeelDate(2021, 2, 5) < FeelDate(2022, 2, 5)));
+    assert!((FeelDate(2021, 2, 2) > FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 3, 1) > FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2022, 2, 1) > FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 1) >= FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 2) >= FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 1)));
+    assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 2)));
   }
 }

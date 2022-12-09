@@ -33,18 +33,14 @@
 //! Common definitions for components of Decision Model and Notation Toolkit.
 
 extern crate serde;
-extern crate serde_derive;
 extern crate serde_yaml;
 extern crate uriparse;
 
 pub mod ascii_ctrl;
 mod errors;
-mod examples;
 mod href;
 mod jsonify;
-mod macros;
 
 pub use errors::{DmntkError, Result};
-pub use examples::{EXAMPLE_0001_CTX, EXAMPLE_0001_DTB, EXAMPLE_0002_CTX, EXAMPLE_0002_DTB};
 pub use href::{HRef, OptHRef};
 pub use jsonify::Jsonify;
