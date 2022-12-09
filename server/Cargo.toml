@@ -18,4 +18,5 @@ dmntk-feel-parser.workspace = true
 dmntk-model.workspace = true
 dmntk-workspace.workspace = true
 serde.workspace = true
+serde_derive.workspace = true
 serde_json.workspace = true

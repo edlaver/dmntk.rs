@@ -40,7 +40,6 @@ use dmntk_feel::values::Value;
 use dmntk_feel::Scope;
 use dmntk_model::model::NamedElement;
 use dmntk_workspace::Workspace;
-use serde::{Deserialize, Serialize};
 use std::env;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;

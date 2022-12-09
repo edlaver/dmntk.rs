@@ -35,7 +35,6 @@ use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
 use dmntk_feel::values::{Value, Values};
-use serde::{Deserialize, Serialize};
 use std::convert::{TryFrom, TryInto};
 
 pub struct WrappedValue(pub Value);

@@ -39,7 +39,7 @@ dmntk-model-evaluator = { path = "model-evaluator" }
 dmntk-recognizer = { path = "recognizer" }
 dmntk-server = { path = "server" }
 dmntk-workspace = { path = "workspace" }
-serde = { version = "1.0.147", features = ["derive"] }
-serde_derive = "1.0.147"
+serde = { version = "1.0.149" }
+serde_derive = "1.0.149"
 serde_yaml = "0.9.14"
-serde_json = "1.0.88"
+serde_json = "1.0.89"
