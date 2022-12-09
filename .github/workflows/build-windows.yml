@@ -1,4 +1,4 @@
-name: Build
+name: Build-Windows
 
 on:
   push:
@@ -13,8 +13,9 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo build --release
+      - run: cargo build
+      - run: cargo test
