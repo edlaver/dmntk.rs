@@ -15,7 +15,7 @@ tck = []
 [dependencies]
 actix-web = "4.2.1"
 base64 = "0.13.0"
-clap = { version = "3.2.23", features = ["cargo"] }
+clap = { version = "4.0.29", features = ["cargo"] }
 difference = "2.0.0"
 dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
@@ -28,5 +28,4 @@ dmntk-server.workspace = true
 dmntk-workspace.workspace = true
 serde.workspace = true
 serde_derive.workspace = true
-serde_yaml.workspace = true
 thiserror = "1.0.37"

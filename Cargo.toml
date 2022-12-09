@@ -19,7 +19,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.48"
+version = "0.0.48-dev"
 authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
@@ -41,5 +41,4 @@ dmntk-server = { path = "server" }
 dmntk-workspace = { path = "workspace" }
 serde = { version = "1.0.149" }
 serde_derive = "1.0.149"
-serde_yaml = "0.9.14"
 serde_json = "1.0.89"
