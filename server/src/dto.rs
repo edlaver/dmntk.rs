@@ -348,7 +348,7 @@ impl TryFrom<&SimpleDto> for WrappedValue {
           "xsd:time" => Ok(WrappedValue(Value::try_from_xsd_time(text)?)),
           "xsd:dateTime" => Ok(WrappedValue(Value::try_from_xsd_date_time(text)?)),
           "xsd:duration" => Ok(WrappedValue(Value::try_from_xsd_duration(text)?)),
-          _ => Err(invalid_parameter(&format!("unrecognized type: `{}` in value", typ))),
+          _ => Err(invalid_parameter(&format!("unrecognized type: `{typ}` in value"))),
         };
       }
     }
@@ -407,7 +407,7 @@ mod errors {
 
   impl From<DtoError> for DmntkError {
     fn from(e: DtoError) -> Self {
-      DmntkError::new("DTOError", &format!("{}", e))
+      DmntkError::new("DTOError", &format!("{e}"))
     }
   }
 
@@ -415,10 +415,10 @@ mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         DtoError::MissingParameter(name) => {
-          write!(f, "missing parameter: {}", name)
+          write!(f, "missing parameter: {name}")
         }
         DtoError::InvalidParameter(name) => {
-          write!(f, "invalid parameter: {}", name)
+          write!(f, "invalid parameter: {name}")
         }
       }
     }

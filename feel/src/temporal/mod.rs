@@ -75,13 +75,13 @@ pub type MonthOfYear = (String, u8);
 
 lazy_static! {
   /// Regular expression pattern for parsing time zone.
-  static ref TIME_ZONE_PATTERN: String = format!("{}|{}|{}", ZULU_PATTERN, ZONE_PATTERN, OFFSET_PATTERN);
+  static ref TIME_ZONE_PATTERN: String = format!("{ZULU_PATTERN}|{ZONE_PATTERN}|{OFFSET_PATTERN}");
   /// Regular expression for parsing date.
-  static ref RE_DATE: Regex = Regex::new(format!("^{}$", DATE_PATTERN).as_str()).unwrap();
+  static ref RE_DATE: Regex = Regex::new(&format!("^{DATE_PATTERN}$")).unwrap();
   /// Regular expression for parsing time.
-  static ref RE_TIME: Regex = Regex::new(format!("^{}({})?$", TIME_PATTERN, TIME_ZONE_PATTERN.as_str()).as_str()).unwrap();
+  static ref RE_TIME: Regex = Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str()) ).unwrap();
   /// Regular expression for parsing date and time.
-  static ref RE_DATE_AND_TIME: Regex = Regex::new(format!("^{}T{}({})?$", DATE_PATTERN, TIME_PATTERN, TIME_ZONE_PATTERN.as_str()).as_str()).unwrap();
+  static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
 }
 
 pub fn subtract(me: &FeelDateTime, other: &FeelDateTime) -> Option<i64> {

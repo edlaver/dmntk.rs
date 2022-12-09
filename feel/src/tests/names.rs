@@ -12,13 +12,13 @@ fn test_default_name() {
 #[test]
 fn test_display() {
   let name: Name = vec!["   x   ".to_string(), " y      \t".to_string(), "  \n  z  \t  ".to_string()].into();
-  assert_eq!("x y z", format!("{}", name));
+  assert_eq!("x y z", format!("{name}"));
 }
 
 #[test]
 fn test_debug() {
   let name: Name = vec!["   x   ".to_string(), " y      \t".to_string(), "  \n  z  \t  ".to_string()].into();
-  assert_eq!(r#"Name("x y z")"#, format!("{:?}", name));
+  assert_eq!(r#"Name("x y z")"#, format!("{name:?}"));
 }
 
 #[test]

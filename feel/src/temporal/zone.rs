@@ -64,12 +64,12 @@ impl std::fmt::Display for FeelZone {
         let minutes = offset.abs().rem(3_600).div(60);
         let seconds = offset.abs().rem(3_600).rem(60);
         if seconds > 0 {
-          write!(f, "{:+03}:{:02}:{:02}", hours, minutes, seconds)
+          write!(f, "{hours:+03}:{minutes:02}:{seconds:02}")
         } else {
-          write!(f, "{:+03}:{:02}", hours, minutes)
+          write!(f, "{hours:+03}:{minutes:02}")
         }
       }
-      FeelZone::Zone(zone) => write!(f, "@{}", zone),
+      FeelZone::Zone(zone) => write!(f, "@{zone}"),
     }
   }
 }

@@ -158,11 +158,11 @@ impl Row {
   /// Writes a row to HTML output when contains any cells
   fn write(&self, html: &mut String, indent: usize) {
     if !self.cells.is_empty() {
-      let _ = write!(html, r#"{:i$}<tr>{}"#, WS, NL, i = indent);
+      let _ = write!(html, r#"{WS:indent$}<tr>{NL}"#);
       for cell in &self.cells {
         cell.write(html, indent + INDENT);
       }
-      let _ = write!(html, r#"{:i$}</tr>{}"#, WS, NL, i = indent);
+      let _ = write!(html, r#"{WS:indent$}</tr>{NL}"#);
     }
   }
 }
@@ -226,15 +226,15 @@ pub fn decision_table_to_html(decision_table: &DecisionTable) -> String {
 /// Returns HTML code containing the definition of decision table.
 fn get_decision_table_html(decision_table: &DecisionTable, decision_table_attr: &DecisionTableAttr) -> String {
   let mut html = String::new();
-  let _ = write!(html, r#"<table class="decision-table horizontal">{}"#, NL);
-  let _ = write!(html, r#"  <tbody>{}"#, NL);
+  let _ = write!(html, r#"<table class="decision-table horizontal">{NL}"#);
+  let _ = write!(html, r#"  <tbody>{NL}"#);
   match decision_table.preferred_orientation {
     DecisionTableOrientation::RuleAsRow => write_horizontal_decision_table(INDENT, &mut html, decision_table, decision_table_attr),
     DecisionTableOrientation::RuleAsColumn => {}
     DecisionTableOrientation::CrossTable => {}
   }
-  let _ = write!(html, r#"  </tbody>{}"#, NL);
-  let _ = write!(html, r#"</table>{}"#, NL);
+  let _ = write!(html, r#"  </tbody>{NL}"#);
+  let _ = write!(html, r#"</table>{NL}"#);
   html
 }
 
@@ -394,7 +394,7 @@ fn write_horizontal_decision_table(indent: usize, html: &mut String, decision_ta
 /// Returns HTML code containing a row with information item name.
 fn get_information_item_name_html(indent: usize, content: &str, colspan: usize) -> String {
   let mut html = String::new();
-  let _ = write!(html, r#"{:i$}<tr>{}"#, WS, NL, i = indent);
+  let _ = write!(html, r#"{WS:indent$}<tr>{NL}"#);
   let _ = write!(
     html,
     r#"{:i$}<td colspan="{}" class="information-item">{}"#,
@@ -403,7 +403,7 @@ fn get_information_item_name_html(indent: usize, content: &str, colspan: usize) 
     NL,
     i = indent + INDENT
   );
-  let _ = write!(html, r#"{:i$}<div class="information-item-name-container">{}"#, WS, NL, i = indent + INDENT_2);
+  let _ = write!(html, r#"{WS:i$}<div class="information-item-name-container">{NL}"#, i = indent + INDENT_2);
   let _ = write!(
     html,
     r#"{:i$}<div class="information-item-name">{}</div>{}"#,
@@ -412,9 +412,9 @@ fn get_information_item_name_html(indent: usize, content: &str, colspan: usize) 
     NL,
     i = indent + INDENT_3
   );
-  let _ = write!(html, r#"{:i$}</div>{}"#, WS, NL, i = indent + INDENT_2);
-  let _ = write!(html, r#"{:i$}</td>{}"#, WS, NL, i = indent + INDENT);
-  let _ = write!(html, r#"{:i$}</tr>{}"#, WS, NL, i = indent);
+  let _ = write!(html, r#"{WS:i$}</div>{NL}"#, i = indent + INDENT_2);
+  let _ = write!(html, r#"{WS:i$}</td>{NL}"#, i = indent + INDENT);
+  let _ = write!(html, r#"{WS:indent$}</tr>{NL}"#);
   html
 }
 
@@ -670,7 +670,7 @@ fn indent_content(content: &str) -> String {
       indented_content.push('\n');
     }
     first = false;
-    let _ = write!(indented_content, "    {}", line);
+    let _ = write!(indented_content, "    {line}");
   }
   indented_content
 }

@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 fn test_context_default() {
   let ctx: FeelContext = Default::default();
   assert_eq!("{}", ctx.to_string());
-  assert_eq!("FeelContext({})", format!("{:?}", ctx));
+  assert_eq!("FeelContext({})", format!("{ctx:?}"));
   assert!(ctx.flatten_keys().is_empty());
   assert_eq!(None, ctx.get_first());
   assert_eq!(0, ctx.len());

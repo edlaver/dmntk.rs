@@ -57,16 +57,14 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   let input_expression_count = recognizer.input_expressions.len();
   if input_expression_count != input_clauses_count {
     return size_err(&format!(
-      "number of input expressions ({}) must be equal to the number of input clauses ({})",
-      input_expression_count, input_clauses_count
+      "number of input expressions ({input_expression_count}) must be equal to the number of input clauses ({input_clauses_count})"
     ));
   }
   // when input values are present, then the number of input values must be equal to the number input expressions
   let input_values_count = recognizer.input_values.len();
   if input_values_count > 0 && input_values_count != input_clauses_count {
     return size_err(&format!(
-      "number of input values ({}) must be equal to the number of input clauses ({})",
-      input_values_count, input_clauses_count
+      "number of input values ({input_values_count}) must be equal to the number of input clauses ({input_clauses_count})"
     ));
   }
   // decision table must have minimum one output clause
@@ -79,8 +77,7 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   if output_clauses_count > 1 {
     if output_components_count != output_clauses_count {
       return size_err(&format!(
-        "number of output components ({}) must be equal to the number of output clauses ({})",
-        output_components_count, output_clauses_count
+        "number of output components ({output_components_count}) must be equal to the number of output clauses ({output_clauses_count})"
       ));
     }
   } else if output_components_count != 0 {
@@ -90,8 +87,7 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   let output_values_count = recognizer.output_values.len();
   if output_values_count > 0 && output_values_count != output_clauses_count {
     return size_err(&format!(
-      "number of output values ({}) must be equal to the number of output clauses ({})",
-      output_values_count, output_clauses_count
+      "number of output values ({output_values_count}) must be equal to the number of output clauses ({output_clauses_count})"
     ));
   }
   // decision table must contain minimum one rule
@@ -103,18 +99,15 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   let input_entries_row_count = recognizer.input_entries.len();
   if input_entries_row_count != rule_count {
     return size_err(&format!(
-      "number of input entries ({}) must be equal to the number of rules ({})",
-      input_entries_row_count, rule_count
+      "number of input entries ({input_entries_row_count}) must be equal to the number of rules ({rule_count})",
     ));
   }
   // number of input entries in each row must be equal to the number of input clauses
   for (row_index, row) in recognizer.input_entries.iter().enumerate() {
     if row.len() != input_clauses_count {
       return size_err(&format!(
-        "number of input entries ({}) must be equal to the number of input clauses ({}) in row {}",
+        "number of input entries ({}) must be equal to the number of input clauses ({input_clauses_count}) in row {row_index}",
         row.len(),
-        input_clauses_count,
-        row_index
       ));
     }
   }
@@ -122,18 +115,15 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   let output_entries_row_count = recognizer.output_entries.len();
   if output_entries_row_count != rule_count {
     return size_err(&format!(
-      "number of output entries ({}) must be equal to the number of rules ({})",
-      output_entries_row_count, rule_count
+      "number of output entries ({output_entries_row_count}) must be equal to the number of rules ({rule_count})"
     ));
   }
   // number of output entries in each row must be equal to the number of output clauses
   for (row_index, row) in recognizer.output_entries.iter().enumerate() {
     if row.len() != output_clauses_count {
       return size_err(&format!(
-        "number of output entries ({}) must be equal to the number of output clauses ({}) in row {}",
-        row.len(),
-        output_clauses_count,
-        row_index
+        "number of output entries ({}) must be equal to the number of output clauses ({output_clauses_count}) in row {row_index}",
+        row.len()
       ));
     }
   }
@@ -144,8 +134,7 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
     let annotation_entries_row_count = recognizer.annotation_entries.len();
     if annotation_entries_row_count != rule_count {
       return size_err(&format!(
-        "number of annotation entries ({}) must be equal to the number of rules ({})",
-        annotation_entries_row_count, rule_count
+        "number of annotation entries ({annotation_entries_row_count}) must be equal to the number of rules ({rule_count})"
       ));
     }
     // number of annotation entries in each row must be equal to the number of annotation clauses

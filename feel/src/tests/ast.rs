@@ -64,12 +64,12 @@ macro_rules! eqt {
 
 /// Utility function for comparing debug strings.
 fn eqd(expected: &str, node: &AstNode) {
-  assert_eq!(expected, format!("{:?}", node));
+  assert_eq!(expected, format!("{node:?}"));
 }
 
 /// Utility function for comparing ASCII tree strings.
 fn eqs(expected: &str, node: &AstNode) {
-  let actual = format!("{}", node);
+  let actual = format!("{node}");
   assert_eq!(expected, actual);
 }
 
@@ -93,7 +93,7 @@ fn test_clone() {
        └─ Numeric
           └─ `2.`
     "#,
-    format!("{}", node_b),
+    format!("{node_b}"),
   );
 }
 

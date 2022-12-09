@@ -83,16 +83,16 @@ fn add_svg_content(html: &str, definitions: &Definitions) -> String {
                 match requirement {
                   Requirement::Information(_) => {
                     // information requirement is depicted as solid line with dark-filled arrow
-                    svg_content = format!("{}\n{}", svg_content, svg_edge_solid_with_black_arrow(&edge.way_points))
+                    svg_content = format!("{svg_content}\n{}", svg_edge_solid_with_black_arrow(&edge.way_points))
                   }
                   Requirement::Knowledge(_) => {
                     // knowledge requirement is depicted as dashed line with thin arrow, or
                     // with dashed line with black-filled arrow when required knowledge is decision service
-                    svg_content = format!("{}\n{}", svg_content, svg_edge_dashed_with_thin_arrow(&edge.way_points))
+                    svg_content = format!("{svg_content}\n{}", svg_edge_dashed_with_thin_arrow(&edge.way_points))
                   }
                   Requirement::Authority(_) => {
                     // authority requirement is depicted as dashed line with dark-filled end-point
-                    svg_content = format!("{}\n{}", svg_content, svg_edge_dashed_with_end_point(&edge.way_points))
+                    svg_content = format!("{svg_content}\n{}", svg_edge_dashed_with_end_point(&edge.way_points))
                   }
                 }
               }
@@ -114,7 +114,7 @@ fn svg_edge_solid_with_black_arrow(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  let _ = write!(svg_content, r#"<polyline points="{}" stroke="black"/>"#, points);
+  let _ = write!(svg_content, r#"<polyline points="{points}" stroke="black"/>"#);
   // prepare arrow
   let start_point = &way_points[way_points.len() - 2];
   let end_point = &way_points[way_points.len() - 1];
@@ -141,7 +141,7 @@ fn svg_edge_dashed_with_thin_arrow(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  let _ = write!(svg_content, r#"<polyline points="{}" stroke-dasharray="5 3"/>"#, points);
+  let _ = write!(svg_content, r#"<polyline points="{points}" stroke-dasharray="5 3"/>"#);
   // prepare arrow
   let start_point = &way_points[way_points.len() - 2];
   let end_point = &way_points[way_points.len() - 1];
@@ -163,7 +163,7 @@ fn svg_edge_dashed_with_end_point(way_points: &[DcPoint]) -> String {
   let mut svg_content = String::new();
   // prepare line
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
-  let _ = write!(svg_content, r#"<polyline points="{}" stroke="black" stroke-dasharray="5 3"/>"#, points);
+  let _ = write!(svg_content, r#"<polyline points="{points}" stroke="black" stroke-dasharray="5 3"/>"#);
   let end_point = &way_points[way_points.len() - 1];
   let _ = write!(
     svg_content,
@@ -209,24 +209,12 @@ fn svg_styles(styles: &[DmnStyle]) -> String {
         "".to_string()
       };
       let svg_style = format!(
-        ".{} {{ {} {} {} {} {} {} {} {} {} {} {} }}",
-        style_id,
-        fill_color,
-        stroke_color,
-        font_color,
-        font_family,
-        font_size,
-        font_italic,
-        font_bold,
-        font_underline,
-        font_strike_through,
-        label_horizontal_alignment,
-        label_vertical_alignment
+        ".{style_id} {{ {fill_color} {stroke_color} {font_color} {font_family} {font_size} {font_italic} {font_bold} {font_underline} {font_strike_through} {label_horizontal_alignment} {label_vertical_alignment} }}",
       );
-      svg_styles = format!("{}{}", svg_styles, svg_style);
+      svg_styles = format!("{svg_styles}{svg_style}");
     }
   }
-  svg_styles = format!("{}</style>\n", svg_styles);
+  svg_styles = format!("{svg_styles}</style>\n");
   svg_styles
 }
 

@@ -97,39 +97,39 @@ impl std::fmt::Display for FeelType {
   ///
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
-      FeelType::Any => write!(f, "{}", FEEL_TYPE_NAME_ANY),
-      FeelType::Boolean => write!(f, "{}", FEEL_TYPE_NAME_BOOLEAN),
+      FeelType::Any => write!(f, "{FEEL_TYPE_NAME_ANY}"),
+      FeelType::Boolean => write!(f, "{FEEL_TYPE_NAME_BOOLEAN}"),
       FeelType::Context(entries) => {
         let entries_str = entries
           .iter()
-          .map(|(entry_name, entry_type)| format!("{}: {}", entry_name, entry_type))
+          .map(|(entry_name, entry_type)| format!("{entry_name}: {entry_type}"))
           .collect::<Vec<String>>()
           .join(", ");
-        write!(f, "context<{}>", entries_str)
+        write!(f, "context<{entries_str}>",)
       }
-      FeelType::Date => write!(f, "{}", FEEL_TYPE_NAME_DATE),
-      FeelType::DateTime => write!(f, "{}", FEEL_TYPE_NAME_DATE_AND_TIME),
-      FeelType::DaysAndTimeDuration => write!(f, "{}", FEEL_TYPE_NAME_DAYS_AND_TIME_DURATION),
+      FeelType::Date => write!(f, "{FEEL_TYPE_NAME_DATE}"),
+      FeelType::DateTime => write!(f, "{FEEL_TYPE_NAME_DATE_AND_TIME}"),
+      FeelType::DaysAndTimeDuration => write!(f, "{FEEL_TYPE_NAME_DAYS_AND_TIME_DURATION}"),
       FeelType::Function(parameter_types, result_type) => {
         let parameter_types_str = parameter_types
           .iter()
-          .map(|parameter_type| format!("{}", parameter_type))
+          .map(|parameter_type| format!("{parameter_type}"))
           .collect::<Vec<String>>()
           .join(", ");
         let result_type_str = result_type.to_string();
-        write!(f, "function<{}>->{}", parameter_types_str, result_type_str)
+        write!(f, "function<{parameter_types_str}>->{result_type_str}")
       }
       FeelType::List(item_type) => {
-        write!(f, "list<{}>", item_type)
+        write!(f, "list<{item_type}>")
       }
-      FeelType::Null => write!(f, "{}", FEEL_TYPE_NAME_NULL),
-      FeelType::Number => write!(f, "{}", FEEL_TYPE_NAME_NUMBER),
+      FeelType::Null => write!(f, "{FEEL_TYPE_NAME_NULL}"),
+      FeelType::Number => write!(f, "{FEEL_TYPE_NAME_NUMBER}"),
       FeelType::Range(range_type) => {
-        write!(f, "range<{}>", range_type)
+        write!(f, "range<{range_type}>")
       }
-      FeelType::String => write!(f, "{}", FEEL_TYPE_NAME_STRING),
-      FeelType::Time => write!(f, "{}", FEEL_TYPE_NAME_TIME),
-      FeelType::YearsAndMonthsDuration => write!(f, "{}", FEEL_TYPE_NAME_YEARS_AND_MONTHS_DURATION),
+      FeelType::String => write!(f, "{FEEL_TYPE_NAME_STRING}"),
+      FeelType::Time => write!(f, "{FEEL_TYPE_NAME_TIME}"),
+      FeelType::YearsAndMonthsDuration => write!(f, "{FEEL_TYPE_NAME_YEARS_AND_MONTHS_DURATION}"),
     }
   }
 }
@@ -508,11 +508,11 @@ mod errors {
 
   /// Creates an invalid `FEEL` type name error.
   pub fn err_invalid_feel_type_name(s: &str) -> DmntkError {
-    TypesError(format!("invalid FEEL type name: {}", s)).into()
+    TypesError(format!("invalid FEEL type name: {s}")).into()
   }
 
   /// Creates an error indicating value non conformant with type.
   pub fn err_invalid_value_for_retrieving_using_feel_type(s1: &str, s2: &str) -> DmntkError {
-    TypesError(format!("invalid value for retrieving with type check, type = '{}', value = '{}'", s1, s2)).into()
+    TypesError(format!("invalid value for retrieving with type check, type = '{s1}', value = '{s2}'")).into()
   }
 }

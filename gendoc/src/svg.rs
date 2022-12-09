@@ -41,15 +41,15 @@ const AMPLITUDE: f64 = 20.0;
 /// Prepares `<svg>` element with specified dimension.
 pub fn svg_begin(indent: usize, dimension: &Option<DcDimension>) -> String {
   if let Some(size) = dimension {
-    format!(r#"{}{:i$}<svg width="{}" height="{}">{}"#, NL, WS, size.width, size.height, NL, i = indent)
+    format!(r#"{NL}{WS:indent$}<svg width="{}" height="{}">{NL}"#, size.width, size.height)
   } else {
-    format!(r#"{:i$}<svg>{}"#, WS, NL, i = indent)
+    format!(r#"{WS:indent$}<svg>{NL}"#)
   }
 }
 
 /// Prepares `</svg>` element.
 pub fn svg_end(indent: usize) -> String {
-  format!(r#"{:i$}</svg>{}"#, WS, NL, i = indent)
+  format!(r#"{WS:indent$}</svg>{NL}"#)
 }
 
 /// Prepares decision shape.
@@ -98,15 +98,7 @@ pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, busines
     x,
     y + h
   );
-  let _ = write!(
-    svg_content,
-    r#"{:i$}<polygon points="{}" class="{}"/>{}"#,
-    WS,
-    points,
-    shape_class,
-    NL,
-    i = indent
-  );
+  let _ = write!(svg_content, r#"{WS:indent$}<polygon points="{points}" class="{shape_class}"/>{NL}"#);
   svg_content.push_str(&svg_multiline_text(indent, &shape.bounds, &label_class, &text));
   svg_content
 }
@@ -119,7 +111,7 @@ pub fn svg_knowledge_source(mut indent: usize, shape: &DmnShape, knowledge_sourc
   let path = get_path_to_knowledge_source(&shape.bounds);
   let shape_class = get_shape_shared_style_id(shape);
   let label_class = get_shape_label_shared_style_id(shape);
-  let _ = write!(svg_content, "<path d=\"{}\" class=\"{}\"/>", path, shape_class);
+  let _ = write!(svg_content, "<path d=\"{path}\" class=\"{shape_class}\"/>");
   let bounds = DcBounds {
     height: shape.bounds.height - AMPLITUDE / 2.0,
     ..shape.bounds

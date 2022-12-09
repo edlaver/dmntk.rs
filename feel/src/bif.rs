@@ -232,6 +232,6 @@ mod errors {
 
   /// Creates an instance of `UnknownFunctionName` error.
   pub fn err_unknown_function_name(name: &str) -> DmntkError {
-    BifError(format!("unknown built-in function name: {}", name)).into()
+    BifError(format!("unknown built-in function name: {name}")).into()
   }
 }

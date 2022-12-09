@@ -173,13 +173,13 @@ impl Workspace {
                   }
                   Err(reason) => {
                     // TODO update status report
-                    eprintln!("{}", reason);
+                    eprintln!("{reason}");
                   }
                 }
               }
               Err(reason) => {
                 // TODO update status report
-                eprintln!("{}", reason);
+                eprintln!("{reason}");
               }
             }
           }
@@ -192,7 +192,7 @@ impl Workspace {
       }
       Err(reason) => {
         // TODO update status report
-        eprintln!("{}", reason);
+        eprintln!("{reason}");
       }
     }
     self.model_evaluators_by_name.len()

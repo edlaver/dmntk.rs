@@ -1250,11 +1250,11 @@ mod errors {
 
   /// Creates an error when `FEEL` name was expected on input, but something else encountered.
   pub fn err_not_a_feel_name(s: &str) -> DmntkError {
-    ParserError(format!("expected `FEEL` name on input but found `{}`", s)).into()
+    ParserError(format!("expected `FEEL` name on input but found `{s}`")).into()
   }
 
   /// Creates syntax error on specified input.
   pub fn err_syntax_error(input: &str) -> DmntkError {
-    ParserError(format!("syntax error: {}", input)).into()
+    ParserError(format!("syntax error: {input}")).into()
   }
 }

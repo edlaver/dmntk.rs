@@ -86,7 +86,7 @@ impl std::fmt::Display for FeelContext {
       self
         .0
         .iter()
-        .map(|(name, value)| { format!(r#"{}: {}"#, name, value) })
+        .map(|(name, value)| { format!(r#"{name}: {value}"#) })
         .collect::<Vec<String>>()
         .join(", ")
     )
@@ -102,13 +102,13 @@ impl ToFeelString for FeelContext {
         .0
         .iter()
         .map(|(name, value)| {
-          let name_str = format!("{}", name);
+          let name_str = format!("{name}");
           let padded_name_str = match name_str.as_str() {
-            "{" | "}" | ":" | "," => format!("\"{}\"", name_str),
+            "{" | "}" | ":" | "," => format!("\"{name_str}\""),
             "\"" => "\"\\\"\"".to_string(),
             _ => name_str,
           };
-          format!(r#"{}: {}"#, padded_name_str, value)
+          format!(r#"{padded_name_str}: {value}"#)
         })
         .collect::<Vec<String>>()
         .join(", ")
@@ -197,7 +197,7 @@ impl FeelContext {
         if !sub_keys.is_empty() {
           for sub_key in sub_keys {
             keys.insert(sub_key.clone());
-            keys.insert(format!("{} . {}", key, sub_key));
+            keys.insert(format!("{key} . {sub_key}"));
           }
         }
       }
@@ -208,7 +208,7 @@ impl FeelContext {
             if !sub_keys.is_empty() {
               for sub_key in sub_keys {
                 keys.insert(sub_key.clone());
-                keys.insert(format!("{} . {}", key, sub_key));
+                keys.insert(format!("{key} . {sub_key}"));
               }
             }
           }
@@ -218,7 +218,7 @@ impl FeelContext {
         for name in type_entries.keys() {
           let sub_key = name.to_string();
           keys.insert(sub_key.clone());
-          keys.insert(format!("{} . {}", key, sub_key));
+          keys.insert(format!("{key} . {sub_key}"));
         }
       }
     }
@@ -302,6 +302,6 @@ mod errors {
 
   /// Creates an instance of `value is not a context` error.
   pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
-    ContextError(format!("'{}' is not a value containing context", value)).into()
+    ContextError(format!("'{value}' is not a value containing context")).into()
   }
 }

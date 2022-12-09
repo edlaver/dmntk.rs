@@ -1994,24 +1994,24 @@ impl std::fmt::Display for DecisionTable {
     buffer.push_str(format!(">> preferred orientation: {}\n", self.preferred_orientation).as_str());
     buffer.push_str(">> information item name: ");
     if let Some(text) = &self.information_item_name {
-      buffer.push_str(format!("\n'{}'\n", text).as_str());
+      buffer.push_str(format!("\n'{text}'\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
     buffer.push_str(format!(">> hit policy: {}\n", self.hit_policy).as_str());
     buffer.push_str(">> aggregation: ");
     if let Some(aggregation) = &self.aggregation {
-      buffer.push_str(format!("{}\n", aggregation).as_str());
+      buffer.push_str(format!("{aggregation}\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
     buffer.push_str(">> output label: ");
     if let Some(text) = &self.output_label {
-      buffer.push_str(format!("\n'{}'\n", text).as_str());
+      buffer.push_str(format!("\n'{text}'\n").as_str());
     } else {
       buffer.push_str("none\n");
     }
-    write!(f, "{}", buffer)
+    write!(f, "{buffer}")
   }
 }
 
@@ -2084,7 +2084,7 @@ impl std::fmt::Display for HitPolicy {
       HitPolicy::Any => write!(f, "A"),
       HitPolicy::Priority => write!(f, "P"),
       HitPolicy::First => write!(f, "F"),
-      HitPolicy::Collect(aggregator) => write!(f, "{}", aggregator),
+      HitPolicy::Collect(aggregator) => write!(f, "{aggregator}"),
       HitPolicy::OutputOrder => write!(f, "O"),
       HitPolicy::RuleOrder => write!(f, "R"),
     }
@@ -2454,7 +2454,7 @@ mod errors {
 
   impl From<ModelError> for DmntkError {
     fn from(e: ModelError) -> Self {
-      DmntkError::new("ModelError", &format!("{}", e))
+      DmntkError::new("ModelError", &format!("{e}"))
     }
   }
 
@@ -2462,10 +2462,10 @@ mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         ModelError::InvalidDecisionTableOrientation(s) => {
-          write!(f, "invalid decision table orientation: {}", s)
+          write!(f, "invalid decision table orientation: {s}")
         }
         ModelError::InvalidDecisionTableHitPolicy(s) => {
-          write!(f, "invalid decision table hit policy: {}", s)
+          write!(f, "invalid decision table hit policy: {s}")
         }
       }
     }

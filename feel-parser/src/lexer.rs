@@ -1019,15 +1019,15 @@ pub mod errors {
   }
 
   pub fn err_expected_hex_digit(ch: char) -> DmntkError {
-    LexerError(format!("expected hex digit but encountered '{}'", ch)).into()
+    LexerError(format!("expected hex digit but encountered '{ch}'")).into()
   }
 
   pub fn err_unicode_value_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {:X}", value)).into()
+    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {value:X}")).into()
   }
 
   pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {:X}", value)).into()
+    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {value:X}")).into()
   }
 }
 

@@ -339,8 +339,8 @@ fn get_cli_action() -> Action {
   if let Some(_matches) = matches.subcommand_matches("exs") {
     return Action::GenerateExamples;
   }
-  println!("dmntk {}", DMNTK_VERSION);
-  println!("{}", DMNTK_DESCRIPTION);
+  println!("dmntk {DMNTK_VERSION}");
+  println!("{DMNTK_DESCRIPTION}");
   println!("dmntk: missing subcommand");
   println!("Try 'dmntk --help' for more information.");
   Action::DoNothing
@@ -355,13 +355,13 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
           Ok(ast_root_node) => {
             println!("    AST:{}", ast_root_node.to_string().trim_end());
           }
-          Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing expression failed with reason: {reason}"),
         },
-        Err(reason) => eprintln!("evaluating context failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating context failed with reason: {reason}"),
       },
-      Err(reason) => eprintln!("loading context file `{}` failed with reason: {}", ctx_file_name, reason),
+      Err(reason) => eprintln!("loading context file `{ctx_file_name}` failed with reason: {reason}"),
     },
-    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{feel_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -373,17 +373,17 @@ fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.clone().into(), &textual_expression, false) {
           Ok(ast_root_node) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
             Ok(result) => {
-              println!("{}", result);
+              println!("{result}");
             }
-            Err(reason) => eprintln!("evaluating expression failed with reason: {}", reason),
+            Err(reason) => eprintln!("evaluating expression failed with reason: {reason}"),
           },
-          Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing expression failed with reason: {reason}"),
         },
-        Err(reason) => eprintln!("evaluating context failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating context failed with reason: {reason}"),
       },
-      Err(reason) => eprintln!("loading context file `{}` failed with reason: {}", ctx_file_name, reason),
+      Err(reason) => eprintln!("loading context file `{ctx_file_name}` failed with reason: {reason}"),
     },
-    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{feel_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -400,18 +400,18 @@ fn test_feel_expression(test_file_name: &str, feel_file_name: &str, summary_only
             match dmntk_feel_parser::parse_expression(&scope, &feel_file_content, false) {
               Ok(node) => match dmntk_evaluator::evaluate(&scope, &node) {
                 Ok(actual) => display_test_case_result(&actual, expected, &test_no, &mut passed, &mut failed, summary_only, color),
-                Err(reason) => eprintln!("evaluating expression failed with reason: {}", reason),
+                Err(reason) => eprintln!("evaluating expression failed with reason: {reason}"),
               },
-              Err(reason) => eprintln!("parsing expression failed with reason: {}", reason),
+              Err(reason) => eprintln!("parsing expression failed with reason: {reason}"),
             }
           }
           display_test_summary(passed, failed, summary_only, color);
         }
-        Err(reason) => eprintln!("evaluation of test cases failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluation of test cases failed with reason: {reason}"),
       },
-      Err(reason) => eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason),
+      Err(reason) => eprintln!("loading test file `{test_file_name}` failed with reason: {reason}"),
     },
-    Err(reason) => eprintln!("loading expression file `{}` failed with reason: {}", feel_file_name, reason),
+    Err(reason) => eprintln!("loading expression file `{feel_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -430,13 +430,13 @@ fn parse_decision_table(dectab_file_name: &str) {
         canvas.display_body_layer();
         canvas.display_grid_layer();
         match canvas.plane() {
-          Ok(plane) => println!("PLANE\n{}", plane),
-          Err(reason) => eprintln!("ERROR: {}", reason),
+          Ok(plane) => println!("PLANE\n{plane}"),
+          Err(reason) => eprintln!("ERROR: {reason}"),
         };
       }
-      Err(reason) => eprintln!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {reason}"),
     },
-    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{dectab_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -445,28 +445,28 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
   let input_file_content = match std::fs::read_to_string(input_file_name) {
     Ok(input_file_content) => input_file_content,
     Err(reason) => {
-      eprintln!("loading input file `{}` failed with reason: {}", input_file_name, reason);
+      eprintln!("loading input file `{input_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let input_data = match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
     Ok(input_data) => input_data,
     Err(reason) => {
-      eprintln!("evaluating input data failed with reason: {}", reason);
+      eprintln!("evaluating input data failed with reason: {reason}");
       return;
     }
   };
   let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
-      eprintln!("loading input file `{}` failed with reason: {}", dectab_file_name, reason);
+      eprintln!("loading input file `{dectab_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
-      eprintln!("building decision table failed with reason: {}", reason);
+      eprintln!("building decision table failed with reason: {reason}");
       return;
     }
   };
@@ -474,7 +474,7 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
   let evaluator = match dmntk_evaluator::build_decision_table_evaluator(&scope, &decision_table) {
     Ok(evaluator) => evaluator,
     Err(reason) => {
-      eprintln!("building decision table evaluator failed with reason: {}", reason);
+      eprintln!("building decision table evaluator failed with reason: {reason}");
       return;
     }
   };
@@ -487,28 +487,28 @@ fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_onl
   let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
-      eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason);
+      eprintln!("loading decision table file `{dectab_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
-      eprintln!("building decision table failed with reason: {}", reason);
+      eprintln!("building decision table failed with reason: {reason}");
       return;
     }
   };
   let test_file_content = match std::fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
-      eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason);
+      eprintln!("loading test file `{test_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let test_cases = match dmntk_evaluator::evaluate_test_cases(&test_file_content) {
     Ok(test_cases) => test_cases,
     Err(reason) => {
-      eprintln!("evaluating test file failed with reason: {}", reason);
+      eprintln!("evaluating test file failed with reason: {reason}");
       return;
     }
   };
@@ -519,7 +519,7 @@ fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_onl
     let evaluator = match dmntk_evaluator::build_decision_table_evaluator(&scope, &decision_table) {
       Ok(evaluator) => evaluator,
       Err(reason) => {
-        eprintln!("building decision table evaluator failed with reason: {}", reason);
+        eprintln!("building decision table evaluator failed with reason: {reason}");
         return;
       }
     };
@@ -536,12 +536,12 @@ fn export_decision_table(dectab_file_name: &str, html_file_name: &str) {
       Ok(decision_table) => {
         let output = dmntk_gendoc::decision_table_to_html(&decision_table);
         if let Err(reason) = std::fs::write(html_file_name, output) {
-          println!("writing output HTML file `{}` failed with reason: {}", html_file_name, reason)
+          println!("writing output HTML file `{html_file_name}` failed with reason: {reason}")
         }
       }
-      Err(reason) => eprintln!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {reason}"),
     },
-    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dectab_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{dectab_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -552,9 +552,9 @@ fn recognize_decision_table(dtb_file_name: &str) {
       Ok(recognizer) => {
         recognizer.trace();
       }
-      Err(reason) => eprintln!("ERROR: {}", reason),
+      Err(reason) => eprintln!("ERROR: {reason}"),
     },
-    Err(reason) => eprintln!("loading decision table file `{}` failed with reason: {}", dtb_file_name, reason),
+    Err(reason) => eprintln!("loading decision table file `{dtb_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -571,36 +571,36 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
-        println!("\n{}Model{}", color_a, color_r);
-        println!("{} ├─ name:{} {}{}", color_a, color_b, definitions.name(), color_r);
-        println!("{} ├─ namespace:{} {}{}", color_a, color_b, definitions.namespace(), color_r);
-        println!("{} └─ id:{} {}{}", color_a, color_b, definitions.id().as_ref().unwrap_or(&none), color_r);
+        println!("\n{color_a}Model{color_r}");
+        println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
+        println!("{color_a} ├─ namespace:{} {color_b}{color_r}", definitions.namespace());
+        println!("{color_a} └─ id:{color_b} {}{color_r}", definitions.id().as_ref().unwrap_or(&none));
         // definitions
         if definitions.decisions().is_empty() {
-          println!("\n{}Decisions{} {}{}", color_a, color_c, none, color_r);
+          println!("\n{color_a}Decisions{color_c} {none}{color_r}");
         } else {
-          println!("\n{}Decisions{}", color_a, color_r);
+          println!("\n{color_a}Decisions{color_r}");
           let decision_count = definitions.decisions().len();
           for (i, decision) in definitions.decisions().iter().enumerate() {
             if i < decision_count - 1 {
-              print!(" {}├─{}", color_a, color_r);
+              print!(" {color_a}├─{color_r}");
             } else {
-              print!(" {}└─{}", color_a, color_r);
+              print!(" {color_a}└─{color_r}");
             }
-            println!(" {}{}{}", color_c, decision.name(), color_r);
+            println!(" {color_c}{}{color_r}", decision.name());
           }
         }
         // item data
         if definitions.input_data().is_empty() {
-          println!("\n{}Input data{} {}{}", color_a, color_c, none, color_r);
+          println!("\n{color_a}Input data{color_c} {none}{color_r}");
         } else {
-          println!("\n{}Input data{}", color_a, color_r);
+          println!("\n{color_a}Input data{color_r}");
           let input_data_count = definitions.input_data().len();
           for (i, input_data) in definitions.input_data().iter().enumerate() {
             if i < input_data_count - 1 {
-              print!(" {}├─{}", color_a, color_r);
+              print!(" {color_a}├─{color_r}");
             } else {
-              print!(" {}└─{}", color_a, color_r);
+              print!(" {color_a}└─{color_r}");
             }
             println!(
               " {}{} ({}){}",
@@ -612,11 +612,11 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
           }
         }
         // more...
-        print!("\n{}MORE DETAILS WILL BE IMPLEMENTED...{}\n\n", color_e, color_r);
+        print!("\n{color_e}MORE DETAILS WILL BE IMPLEMENTED...{color_r}\n\n");
       }
-      Err(reason) => eprintln!("parsing model file failed with reason: {}", reason),
+      Err(reason) => eprintln!("parsing model file failed with reason: {reason}"),
     },
-    Err(reason) => eprintln!("loading model file `{}` failed with reason: {:?}", dmn_file_name, reason),
+    Err(reason) => eprintln!("loading model file `{dmn_file_name}` failed with reason: {reason:?}"),
   }
 }
 
@@ -631,15 +631,15 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
               let result = model_evaluator.evaluate_invocable(invocable_name, &input_data);
               println!("{}", result.jsonify())
             }
-            Err(reason) => eprintln!("evaluating invocable {} failed with reason: {}", invocable_name, reason),
+            Err(reason) => eprintln!("evaluating invocable {invocable_name} failed with reason: {reason}"),
           },
-          Err(reason) => eprintln!("parsing model failed with reason: {}", reason),
+          Err(reason) => eprintln!("parsing model failed with reason: {reason}"),
         },
-        Err(reason) => eprintln!("evaluating input data failed with reason: {}", reason),
+        Err(reason) => eprintln!("evaluating input data failed with reason: {reason}"),
       },
-      Err(reason) => eprintln!("loading input data file `{}` failed with reason: {}", input_file_name, reason),
+      Err(reason) => eprintln!("loading input data file `{input_file_name}` failed with reason: {reason}"),
     },
-    Err(reason) => eprintln!("loading model file `{}` failed with reason: {}", dmn_file_name, reason),
+    Err(reason) => eprintln!("loading model file `{dmn_file_name}` failed with reason: {reason}"),
   }
 }
 
@@ -648,35 +648,35 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   let dmn_file_content = match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => dmn_file_content,
     Err(reason) => {
-      eprintln!("loading model file `{}` failed with reason: {}", dmn_file_name, reason);
+      eprintln!("loading model file `{dmn_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let definitions = match dmntk_model::parse(&dmn_file_content) {
     Ok(definitions) => definitions,
     Err(reason) => {
-      eprintln!("parsing model file failed with reason: {}", reason);
+      eprintln!("parsing model file failed with reason: {reason}");
       return;
     }
   };
   let model_evaluator = match dmntk_evaluator::ModelEvaluator::new(&definitions) {
     Ok(model_evaluator) => model_evaluator,
     Err(reason) => {
-      eprintln!("preparing model evaluator failed with reason: {}", reason);
+      eprintln!("preparing model evaluator failed with reason: {reason}");
       return;
     }
   };
   let test_file_content = match std::fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
-      eprintln!("loading test file `{}` failed with reason: {}", test_file_name, reason);
+      eprintln!("loading test file `{test_file_name}` failed with reason: {reason}");
       return;
     }
   };
   let test_cases = match dmntk_evaluator::evaluate_test_cases(&test_file_content) {
     Ok(test_cases) => test_cases,
     Err(reason) => {
-      eprintln!("evaluating test file failed with reason: {}", reason);
+      eprintln!("evaluating test file failed with reason: {reason}");
       return;
     }
   };
@@ -732,9 +732,9 @@ fn display_test_case_result(actual: &Value, expected: &Value, test_no: &usize, p
   } else {
     *failed += 1;
     if !summary_only {
-      println!("test {} ... {}FAILED{}", test_no + 1, color_red, color_reset);
-      println!("    {}expected{}: {}", color_green, color_reset, expected);
-      println!("      {}actual{}: {}", color_red, color_reset, actual);
+      println!("test {} ... {color_red}FAILED{color_reset}", test_no + 1);
+      println!("    {color_green}expected{color_reset}: {expected}");
+      println!("      {color_red}actual{color_reset}: {actual}");
       if use_color {
         // showing the difference is reasonable only with colors enabled
         println!(
@@ -756,13 +756,13 @@ fn display_test_summary(passed: usize, failed: usize, summary_only: bool, color:
   let color_reset = if use_color { ASCII_RESET } else { "" };
   if failed > 0 {
     if summary_only {
-      println!("test result: {}FAILED{}. {} passed; {} failed.\n", color_red, color_reset, passed, failed);
+      println!("test result: {color_red}FAILED{color_reset}. {passed} passed; {failed} failed.\n");
     } else {
-      println!("\ntest result: {}FAILED{}. {} passed; {} failed.\n", color_red, color_reset, passed, failed);
+      println!("\ntest result: {color_red}FAILED{color_reset}. {passed} passed; {failed} failed.\n");
     }
   } else if summary_only {
-    println!("test result: {}ok{}. {} passed; {} failed.\n", color_green, color_reset, passed, failed);
+    println!("test result: {color_green}ok{color_reset}. {passed} passed; {failed} failed.\n");
   } else {
-    println!("\ntest result: {}ok{}. {} passed; {} failed.\n", color_green, color_reset, passed, failed);
+    println!("\ntest result: {color_green}ok{color_reset}. {passed} passed; {failed} failed.\n");
   }
 }

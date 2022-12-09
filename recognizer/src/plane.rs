@@ -223,7 +223,7 @@ impl Plane {
     if let Cell::Region(_, _, text) = cell {
       Ok(text.clone())
     } else {
-      Err(err_plane_cell_is_not_region(&format!("row={} col={} cell={:?}", row, col, cell)))
+      Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
   /// Returns the region number of a region pointed by row and column.
@@ -232,7 +232,7 @@ impl Plane {
     if let Cell::Region(number, _, _) = cell {
       Ok(*number)
     } else {
-      Err(err_plane_cell_is_not_region(&format!("row={} col={} cell={:?}", row, col, cell)))
+      Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
   /// Returns the number of cells in specified **row**.
@@ -561,6 +561,6 @@ impl std::fmt::Display for Plane {
       }
       buffer.push('\n');
     }
-    write!(f, "{}", buffer)
+    write!(f, "{buffer}")
   }
 }

@@ -148,37 +148,37 @@ impl std::fmt::Display for FeelDaysAndTimeDuration {
     let nanoseconds_str = super::nanos_to_string(nanoseconds as u64);
     match (day > 0, hour > 0, minute > 0, seconds > 0, nanoseconds > 0) {
       (false, false, false, false, false) => write!(f, "PT0S"),
-      (false, false, false, true, false) => write!(f, "{}PT{}S", sign, seconds),
-      (false, false, true, false, false) => write!(f, "{}PT{}M", sign, minute),
-      (false, false, true, true, false) => write!(f, "{}PT{}M{}S", sign, minute, seconds),
-      (false, true, false, false, false) => write!(f, "{}PT{}H", sign, hour),
-      (false, true, false, true, false) => write!(f, "{}PT{}H{}S", sign, hour, seconds),
-      (false, true, true, false, false) => write!(f, "{}PT{}H{}M", sign, hour, minute),
-      (false, true, true, true, false) => write!(f, "{}PT{}H{}M{}S", sign, hour, minute, seconds),
-      (true, false, false, false, false) => write!(f, "{}P{}D", sign, day),
-      (true, false, false, true, false) => write!(f, "{}P{}DT{}S", sign, day, seconds),
-      (true, false, true, false, false) => write!(f, "{}P{}DT{}M", sign, day, minute),
-      (true, false, true, true, false) => write!(f, "{}P{}DT{}M{}S", sign, day, minute, seconds),
-      (true, true, false, false, false) => write!(f, "{}P{}DT{}H", sign, day, hour),
-      (true, true, false, true, false) => write!(f, "{}P{}DT{}H{}S", sign, day, hour, seconds),
-      (true, true, true, false, false) => write!(f, "{}P{}DT{}H{}M", sign, day, hour, minute),
-      (true, true, true, true, false) => write!(f, "{}P{}DT{}H{}M{}S", sign, day, hour, minute, seconds),
-      (false, false, false, false, true) => write!(f, "{}PT0.{}S", sign, nanoseconds_str),
-      (false, false, false, true, true) => write!(f, "{}PT{}.{}S", sign, seconds, nanoseconds_str),
-      (false, false, true, false, true) => write!(f, "{}PT{}M0.{}S", sign, minute, nanoseconds_str),
-      (false, false, true, true, true) => write!(f, "{}PT{}M{}.{}S", sign, minute, seconds, nanoseconds_str),
-      (false, true, false, false, true) => write!(f, "{}PT{}H0.{}S", sign, hour, nanoseconds_str),
-      (false, true, false, true, true) => write!(f, "{}PT{}H{}.{}S", sign, hour, seconds, nanoseconds_str),
-      (false, true, true, false, true) => write!(f, "{}PT{}H{}M0.{}S", sign, hour, minute, nanoseconds_str),
-      (false, true, true, true, true) => write!(f, "{}PT{}H{}M{}.{}S", sign, hour, minute, seconds, nanoseconds_str),
-      (true, false, false, false, true) => write!(f, "{}P{}DT0.{}S", sign, day, nanoseconds_str),
-      (true, false, false, true, true) => write!(f, "{}P{}DT{}.{}S", sign, day, seconds, nanoseconds_str),
-      (true, false, true, false, true) => write!(f, "{}P{}DT{}M0.{}S", sign, day, minute, nanoseconds_str),
-      (true, false, true, true, true) => write!(f, "{}P{}DT{}M{}.{}S", sign, day, minute, seconds, nanoseconds_str),
-      (true, true, false, false, true) => write!(f, "{}P{}DT{}H0.{}S", sign, day, hour, nanoseconds_str),
-      (true, true, false, true, true) => write!(f, "{}P{}DT{}H{}.{}S", sign, day, hour, seconds, nanoseconds_str),
-      (true, true, true, false, true) => write!(f, "{}P{}DT{}H{}M0.{}S", sign, day, hour, minute, nanoseconds_str),
-      (true, true, true, true, true) => write!(f, "{}P{}DT{}H{}M{}.{}S", sign, day, hour, minute, seconds, nanoseconds_str),
+      (false, false, false, true, false) => write!(f, "{sign}PT{seconds}S"),
+      (false, false, true, false, false) => write!(f, "{sign}PT{minute}M"),
+      (false, false, true, true, false) => write!(f, "{sign}PT{minute}M{seconds}S"),
+      (false, true, false, false, false) => write!(f, "{sign}PT{hour}H"),
+      (false, true, false, true, false) => write!(f, "{sign}PT{hour}H{seconds}S"),
+      (false, true, true, false, false) => write!(f, "{sign}PT{hour}H{minute}M"),
+      (false, true, true, true, false) => write!(f, "{sign}PT{hour}H{minute}M{seconds}S"),
+      (true, false, false, false, false) => write!(f, "{sign}P{day}D"),
+      (true, false, false, true, false) => write!(f, "{sign}P{day}DT{seconds}S"),
+      (true, false, true, false, false) => write!(f, "{sign}P{day}DT{minute}M"),
+      (true, false, true, true, false) => write!(f, "{sign}P{day}DT{minute}M{seconds}S"),
+      (true, true, false, false, false) => write!(f, "{sign}P{day}DT{hour}H"),
+      (true, true, false, true, false) => write!(f, "{sign}P{day}DT{hour}H{seconds}S"),
+      (true, true, true, false, false) => write!(f, "{sign}P{day}DT{hour}H{minute}M"),
+      (true, true, true, true, false) => write!(f, "{sign}P{day}DT{hour}H{minute}M{seconds}S"),
+      (false, false, false, false, true) => write!(f, "{sign}PT0.{nanoseconds_str}S"),
+      (false, false, false, true, true) => write!(f, "{sign}PT{seconds}.{nanoseconds_str}S"),
+      (false, false, true, false, true) => write!(f, "{sign}PT{minute}M0.{nanoseconds_str}S"),
+      (false, false, true, true, true) => write!(f, "{sign}PT{minute}M{seconds}.{nanoseconds_str}S"),
+      (false, true, false, false, true) => write!(f, "{sign}PT{hour}H0.{nanoseconds_str}S"),
+      (false, true, false, true, true) => write!(f, "{sign}PT{hour}H{seconds}.{nanoseconds_str}S"),
+      (false, true, true, false, true) => write!(f, "{sign}PT{hour}H{minute}M0.{nanoseconds_str}S"),
+      (false, true, true, true, true) => write!(f, "{sign}PT{hour}H{minute}M{seconds}.{nanoseconds_str}S"),
+      (true, false, false, false, true) => write!(f, "{sign}P{day}DT0.{nanoseconds_str}S"),
+      (true, false, false, true, true) => write!(f, "{sign}P{day}DT{seconds}.{nanoseconds_str}S"),
+      (true, false, true, false, true) => write!(f, "{sign}P{day}DT{minute}M0.{nanoseconds_str}S"),
+      (true, false, true, true, true) => write!(f, "{sign}P{day}DT{minute}M{seconds}.{nanoseconds_str}S"),
+      (true, true, false, false, true) => write!(f, "{sign}P{day}DT{hour}H0.{nanoseconds_str}S",),
+      (true, true, false, true, true) => write!(f, "{sign}P{day}DT{hour}H{seconds}.{nanoseconds_str}S"),
+      (true, true, true, false, true) => write!(f, "{sign}P{day}DT{hour}H{minute}M0.{nanoseconds_str}S"),
+      (true, true, true, true, true) => write!(f, "{sign}P{day}DT{hour}H{minute}M{seconds}.{nanoseconds_str}S"),
     }
   }
 }
@@ -247,7 +247,7 @@ pub mod errors {
 
   impl From<DtDurationError> for DmntkError {
     fn from(e: DtDurationError) -> Self {
-      DmntkError::new("DtDurationError", &format!("{}", e))
+      DmntkError::new("DtDurationError", &format!("{e}"))
     }
   }
 
@@ -255,7 +255,7 @@ pub mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         DtDurationError::InvalidDateAndTimeDurationLiteral(literal) => {
-          write!(f, "invalid date and time duration literal: {}", literal)
+          write!(f, "invalid date and time duration literal: {literal}")
         }
       }
     }

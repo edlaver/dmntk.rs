@@ -101,7 +101,7 @@ impl<T> ResultDto<T> {
   /// Creates [ResultDto] with single error inside.
   fn error(err: DmntkError) -> ResultDto<T> {
     ResultDto {
-      errors: vec![ErrorDto { details: format!("{}", err) }],
+      errors: vec![ErrorDto { details: format!("{err}") }],
       ..Default::default()
     }
   }
@@ -330,7 +330,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
     workspace: RwLock::new(workspace),
   });
   let address = get_server_address(opt_host, opt_port);
-  println!("dmntk {}", address);
+  println!("dmntk {address}");
   HttpServer::new(move || {
     App::new()
       .app_data(application_data.clone())
@@ -339,7 +339,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
           "",
           HttpResponse::BadRequest()
             .content_type("application/json")
-            .body(ResultDto::<String>::error(err_internal_error(&format!("{:?}", err))).to_string()),
+            .body(ResultDto::<String>::error(err_internal_error(&format!("{err:?}"))).to_string()),
         )
         .into()
       }))
@@ -399,7 +399,7 @@ fn get_server_address(opt_host: Option<String>, opt_port: Option<String>) -> Str
       port = p;
     }
   }
-  format!("{}:{}", host, port)
+  format!("{host}:{port}")
 }
 
 /// Returns root directory for workspace.

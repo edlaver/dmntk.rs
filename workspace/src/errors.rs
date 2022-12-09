@@ -45,13 +45,13 @@ impl From<WorkspaceError> for DmntkError {
 }
 
 pub fn err_model_evaluator_is_not_deployed(s: &str) -> DmntkError {
-  WorkspaceError(format!("model evaluator for definitions '{}' is not deployed", s)).into()
+  WorkspaceError(format!("model evaluator for definitions '{s}' is not deployed")).into()
 }
 
 pub fn err_definitions_with_namespace_already_exists(s: &str) -> DmntkError {
-  WorkspaceError(format!("definitions with namespace '{}' already exist in workspace", s)).into()
+  WorkspaceError(format!("definitions with namespace '{s}' already exist in workspace")).into()
 }
 
 pub fn err_definitions_with_name_already_exists(s: &str) -> DmntkError {
-  WorkspaceError(format!("definitions with name '{}' already exist in workspace", s)).into()
+  WorkspaceError(format!("definitions with name '{s}' already exist in workspace")).into()
 }

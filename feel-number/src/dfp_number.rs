@@ -85,7 +85,7 @@ impl FeelNumber {
   }
   /// Creates a new [FeelNumber] from [isize].
   fn from_isize(n: isize) -> Self {
-    Self(bid128_from_string(&format!("{}", n), round!(), flags!()), false)
+    Self(bid128_from_string(&format!("{n}"), round!(), flags!()), false)
   }
   /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
@@ -422,7 +422,7 @@ impl Display for FeelNumber {
 impl Jsonify for FeelNumber {
   /// Converts [FeelNumber] to JSON string.
   fn jsonify(&self) -> String {
-    format!("{}", self)
+    format!("{self}")
   }
 }
 

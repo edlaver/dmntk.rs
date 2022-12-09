@@ -7,7 +7,7 @@ tasks:
   bench:
     desc: Runs all benchmarks
     cmds:
-      - cmd: cargo bench -q | grep 'bench'
+      - cmd: cargo +nightly bench -q | grep 'bench'
 
   benchmarks:
     desc: Runs all compliance benchmarks
@@ -17,7 +17,7 @@ tasks:
   build:
     desc: Builds in debug mode
     cmds:
-      - cmd: cargo build --workspace
+      - cmd: cargo +stable build --workspace
 
   clean:
     desc: Cleans all targets
@@ -27,7 +27,7 @@ tasks:
   clippy:
     desc: Runs clippy for all targets
     cmds:
-      - cmd: cargo clippy --workspace --all-targets
+      - cmd: cargo +nightly clippy --workspace --all-targets
 
   cov:
     desc: Runs code coverage using grcov

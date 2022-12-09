@@ -121,7 +121,7 @@ pub fn build_evaluator(node: &AstNode) -> Result<Evaluator> {
     | AstNode::PositionalParameters { .. }
     | AstNode::QuantifiedContext { .. }
     | AstNode::QuantifiedContexts { .. }
-    | AstNode::Satisfies { .. } => Err(err_unexpected_ast_node(&format!("{:?}", node))),
+    | AstNode::Satisfies { .. } => Err(err_unexpected_ast_node(&format!("{node:?}"))),
   }
 }
 
@@ -742,7 +742,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
     }
   } else {
-    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{:?}", lhs)));
+    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
     let satisfies_evaluator = build_evaluator(satisfies)?;
@@ -754,7 +754,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{:?}", lhs)))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
   }
 }
 
@@ -1160,7 +1160,7 @@ fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::NamedParameter(Box::new(lhv.clone()), Box::new(rhv))
     }))
   } else {
-    Err(err_expected_ast_node_parameter_name(&format!("{:?}", lhs)))
+    Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
   }
 }
 
@@ -1219,11 +1219,11 @@ fn build_null() -> Result<Evaluator> {
 
 ///
 fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
-  let text = format!("{}.{}", lhs, rhs);
+  let text = format!("{lhs}.{rhs}");
   if let Ok(num) = text.parse::<FeelNumber>() {
     Ok(Box::new(move |_: &Scope| Value::Number(num)))
   } else {
-    Ok(Box::new(move |_: &Scope| value_null!("failed to convert text '{}' into number", text)))
+    Ok(Box::new(move |_: &Scope| value_null!("failed to convert text '{text}' into number")))
   }
 }
 
@@ -1512,7 +1512,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
     }
   } else {
-    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{:?}", lhs)));
+    return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
     let satisfies_evaluator = build_evaluator(satisfies)?;
@@ -1524,7 +1524,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{:?}", lhs)))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
   }
 }
 

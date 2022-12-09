@@ -41,7 +41,7 @@ fn generate_html(dec_tab: &str, output_file_name: &str) {
   let html = crate::decision_table_to_html(&decision_table);
   assert_eq!("<!DOCTYPE html>", &html[0..15]);
   std::fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
-  let mut file = File::create(format!("{}/{}.html", TARGET_DIR, output_file_name)).expect("creating HTML file failed");
+  let mut file = File::create(format!("{TARGET_DIR}/{output_file_name}.html")).expect("creating HTML file failed");
   file.write_all(html.as_bytes()).expect("saving HTML file failed");
 }
 

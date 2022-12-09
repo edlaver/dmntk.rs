@@ -48,7 +48,7 @@ pub fn err_endpoint_not_found() -> DmntkError {
 }
 
 pub fn err_missing_parameter(name: &str) -> DmntkError {
-  ServerError(format!("missing parameter '{}'", name)).into()
+  ServerError(format!("missing parameter '{name}'")).into()
 }
 
 pub fn err_invalid_base64_encoding() -> DmntkError {

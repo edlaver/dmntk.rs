@@ -45,7 +45,7 @@ fn test_2_0001_html() {
   let html = crate::definitions_to_html(&definitions);
   assert_eq!("<!DOCTYPE html>", &html[0..15]);
   fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
-  let mut file = File::create(format!("{}/2_0001.html", TARGET_DIR)).expect("creating file 2_0001.html failed");
+  let mut file = File::create(format!("{TARGET_DIR}/2_0001.html")).expect("creating file 2_0001.html failed");
   file.write_all(html.as_bytes()).expect("saving file 2_0001.html failed");
 }
 
@@ -55,6 +55,6 @@ fn test_3_0087_html() {
   let html = crate::definitions_to_html(&definitions);
   assert_eq!("<!DOCTYPE html>", &html[0..15]);
   fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
-  let mut file = File::create(format!("{}/3_0087.html", TARGET_DIR)).expect("creating file 3_0087.html failed");
+  let mut file = File::create(format!("{TARGET_DIR}/3_0087.html")).expect("creating file 3_0087.html failed");
   file.write_all(html.as_bytes()).expect("saving file 2_0001.html failed");
 }

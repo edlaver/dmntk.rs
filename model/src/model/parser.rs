@@ -1254,7 +1254,7 @@ mod errors {
 
   impl From<ModelParserError> for DmntkError {
     fn from(e: ModelParserError) -> Self {
-      DmntkError::new("ModelParserError", &format!("{}", e))
+      DmntkError::new("ModelParserError", &format!("{e}"))
     }
   }
 
@@ -1262,29 +1262,28 @@ mod errors {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
       match self {
         ModelParserError::InvalidFunctionKind(s) => {
-          write!(f, "'{}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`", s)
+          write!(f, "'{s}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`")
         }
         ModelParserError::InvalidHitPolicy(s) => {
           write!(
             f,
-            "'{}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`",
-            s
+            "'{s}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`"
           )
         }
         ModelParserError::InvalidAggregation(s) => {
-          write!(f, "'{}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`", s)
+          write!(f, "'{s}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`")
         }
         ModelParserError::InvalidColorValue(s) => {
-          write!(f, "conversion to valid color value failed with reason: {}", s)
+          write!(f, "conversion to valid color value failed with reason: {s}")
         }
         ModelParserError::InvalidDoubleValue(reason) => {
-          write!(f, "conversion to valid double value failed with reason: {}", reason)
+          write!(f, "conversion to valid double value failed with reason: {reason}")
         }
         ModelParserError::RequiredInputExpressionIsMissing => {
           write!(f, "required input expression in decision table's input clause is missing")
         }
         ModelParserError::RequiredChildNodeIsMissing(s1, s2) => {
-          write!(f, "required child node '{}' in parent node '{}' is missing", s2, s1)
+          write!(f, "required child node '{s2}' in parent node '{s1}' is missing")
         }
         ModelParserError::RequiredExpressionInstanceIsMissing => {
           write!(f, "required expression instance in context entry is missing")
@@ -1293,19 +1292,19 @@ mod errors {
           write!(f, "number of elements in a row differs from the number of columns defined in a relation")
         }
         ModelParserError::XmlParsingModelFailed(s) => {
-          write!(f, "parsing model from XML failed with reason: {}", s)
+          write!(f, "parsing model from XML failed with reason: {s}")
         }
         ModelParserError::XmlUnexpectedNode(s1, s2) => {
-          write!(f, "unexpected XML node, expected: {}, actual: {}", s1, s2)
+          write!(f, "unexpected XML node, expected: {s1}, actual: {s2}")
         }
         ModelParserError::XmlExpectedMandatoryAttribute(s1, s2) => {
-          write!(f, "expected value for mandatory attribute `{}` in node `{}`", s2, s1)
+          write!(f, "expected value for mandatory attribute `{s2}` in node `{s1}`")
         }
         ModelParserError::XmlExpectedMandatoryChildNode(s1, s2) => {
-          write!(f, "expected mandatory child node '{}' in parent node '{}'", s2, s1)
+          write!(f, "expected mandatory child node '{s2}' in parent node '{s1}'")
         }
         ModelParserError::XmlExpectedMandatoryTextContent(s) => {
-          write!(f, "expected mandatory text content in node: {}", s)
+          write!(f, "expected mandatory text content in node: {s}")
         }
       }
     }

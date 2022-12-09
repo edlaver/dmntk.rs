@@ -76,11 +76,11 @@ fn td(class: &str, other_attributes: &str, content: &[String]) -> String {
 }
 
 fn write_element(element_name: &str, class: &str, other_attributes: &str, content: &[String]) -> String {
-  let mut str = format!("<{} class=\"{}\" {}>", element_name, class, other_attributes);
+  let mut str = format!("<{element_name} class=\"{class}\" {other_attributes}>");
   for c in content {
     str.push_str(c);
   }
-  let _ = write!(str, "</{}>", element_name);
+  let _ = write!(str, "</{element_name}>");
   str
 }
 

@@ -968,7 +968,7 @@ pub fn matches(input_string_value: &Value, pattern_string_value: &Value, flags_s
   if let Value::String(input_string) = input_string_value {
     if let Value::String(pattern_string) = pattern_string_value {
       if let Value::String(flags_string) = flags_string_value {
-        if let Ok(re) = Regex::new(format!("(?{}){}", flags_string, pattern_string).as_str()) {
+        if let Ok(re) = Regex::new(format!("(?{flags_string}){pattern_string}").as_str()) {
           return Value::Boolean(re.is_match(input_string));
         }
       } else if let Ok(re) = Regex::new(pattern_string) {
@@ -1452,7 +1452,7 @@ pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replace
               let result = re.replace_all(input_string.as_str(), repl.as_str()).trim().to_string();
               return Value::String(result);
             }
-          } else if let Ok(re) = Regex::new(format!("(?{}){}", flags, patt).as_str()) {
+          } else if let Ok(re) = Regex::new(format!("(?{flags}){patt}").as_str()) {
             let result = re.replace_all(input_string.as_str(), repl.as_str()).trim().to_string();
             return Value::String(result);
           }
@@ -1836,12 +1836,6 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let h = hour.try_into().unwrap();
               let m = minute.try_into().unwrap();
               let s = seconds.try_into().unwrap();
-              println!("kuku");
-              println!("{}", second.frac());
-              println!("{}", second.frac() * FeelNumber::billion());
-              println!("{}", (second.frac() * FeelNumber::billion()).trunc());
-              let a: u64 = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
-              println!("{}", a);
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
                 Value::DaysAndTimeDuration(offset) => {

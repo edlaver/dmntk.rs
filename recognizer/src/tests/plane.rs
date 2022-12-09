@@ -37,10 +37,10 @@ use crate::tests::{EX_04, EX_07};
 fn plane_pivot_horizontal() {
   let mut canvas = canvas::scan(&String::from(EX_04)).unwrap();
   let mut plane = canvas.plane().unwrap();
-  let before = format!("{}", plane);
+  let before = format!("{plane}");
   plane.pivot();
   plane.pivot();
-  let after = format!("{}", plane);
+  let after = format!("{plane}");
   assert_eq!(before, after);
 }
 
@@ -48,9 +48,9 @@ fn plane_pivot_horizontal() {
 fn plane_pivot_vertical() {
   let mut canvas = canvas::scan(&String::from(EX_07)).unwrap();
   let mut plane = canvas.plane().unwrap();
-  let before = format!("{}", plane);
+  let before = format!("{plane}");
   plane.pivot();
   plane.pivot();
-  let after = format!("{}", plane);
+  let after = format!("{plane}");
   assert_eq!(before, after);
 }

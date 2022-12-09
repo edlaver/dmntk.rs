@@ -90,9 +90,9 @@ impl std::fmt::Display for FeelYearsAndMonthsDuration {
     month -= year * MONTHS_IN_YEAR;
     match (year > 0, month > 0) {
       (false, false) => write!(f, "P0M"),
-      (false, true) => write!(f, "{}P{}M", sign, month),
-      (true, false) => write!(f, "{}P{}Y", sign, year),
-      (true, true) => write!(f, "{}P{}Y{}M", sign, year, month),
+      (false, true) => write!(f, "{sign}P{month}M"),
+      (true, false) => write!(f, "{sign}P{year}Y"),
+      (true, true) => write!(f, "{sign}P{year}Y{month}M"),
     }
   }
 }

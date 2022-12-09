@@ -43,55 +43,55 @@ impl From<ModelEvaluatorError> for DmntkError {
 }
 
 pub fn err_business_knowledge_model_with_reference_not_found(s: &str) -> DmntkError {
-  ModelEvaluatorError(format!("business knowledge model with reference '{}' was not found", s)).into()
+  ModelEvaluatorError(format!("business knowledge model with reference '{s}' was not found")).into()
 }
 
 pub fn err_input_data_without_type_reference(s: &str) -> DmntkError {
-  ModelEvaluatorError(format!("input data with identifier '{}' has no type reference definition", s)).into()
+  ModelEvaluatorError(format!("input data with identifier '{s}' has no type reference definition")).into()
 }
 
 pub fn err_empty_feel_name() -> DmntkError {
-  ModelEvaluatorError("empty FEEL name".to_string()).into()
+  ModelEvaluatorError("empty FEEL name".into()).into()
 }
 
 pub fn err_empty_identifier() -> DmntkError {
-  ModelEvaluatorError("empty identifier".to_string()).into()
+  ModelEvaluatorError("empty identifier".into()).into()
 }
 
 pub fn err_empty_literal_expression() -> DmntkError {
-  ModelEvaluatorError("empty literal expression".to_string()).into()
+  ModelEvaluatorError("empty literal expression".into()).into()
 }
 
 pub fn err_empty_decision_logic() -> DmntkError {
-  ModelEvaluatorError("empty decision logic in decision".to_string()).into()
+  ModelEvaluatorError("empty decision logic in decision".into()).into()
 }
 
 pub fn err_empty_encapsulated_logic() -> DmntkError {
-  ModelEvaluatorError("empty encapsulated logic in business knowledge model".to_string()).into()
+  ModelEvaluatorError("empty encapsulated logic in business knowledge model".into()).into()
 }
 
 pub fn err_invalid_item_definition_type(s: &str) -> DmntkError {
-  ModelEvaluatorError(format!("invalid item definition type for '{}'", s)).into()
+  ModelEvaluatorError(format!("invalid item definition type for '{s}'")).into()
 }
 
 pub fn err_unsupported_feel_type(feel_type: FeelType) -> DmntkError {
-  ModelEvaluatorError(format!("unsupported FEEL type: {}", feel_type)).into()
+  ModelEvaluatorError(format!("unsupported FEEL type: {feel_type}")).into()
 }
 
 pub fn err_empty_feel_type() -> DmntkError {
-  ModelEvaluatorError("empty FEEL type".to_string()).into()
+  ModelEvaluatorError("empty FEEL type".into()).into()
 }
 
 pub fn err_empty_reference() -> DmntkError {
-  ModelEvaluatorError("empty reference".to_string()).into()
+  ModelEvaluatorError("empty reference".into()).into()
 }
 
 pub fn err_empty_function_body() -> DmntkError {
-  ModelEvaluatorError("empty function definition body".to_string()).into()
+  ModelEvaluatorError("empty function definition body".into()).into()
 }
 
 pub fn err_empty_value_expression() -> DmntkError {
-  ModelEvaluatorError("empty value expression".to_string()).into()
+  ModelEvaluatorError("empty value expression".into()).into()
 }
 
 pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {

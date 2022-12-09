@@ -73,23 +73,23 @@ fn lalr_c_tables() -> String {
     // create required directory structure in `target`
     fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
     // create the grammar file
-    let grammar_file_name = format!("{}/{}", TARGET_DIR, GRAMMAR_FILE_NAME);
+    let grammar_file_name = format!("{TARGET_DIR}/{GRAMMAR_FILE_NAME}");
     let mut grammar_file = File::create(grammar_file_name).expect("creating grammar file failed");
     grammar_file.write_all(FEEL_GRAMMAR.as_bytes()).expect("writing grammar file failed");
     // create the 'C' grammar generation script
-    let script_file_name = format!("{}/{}", TARGET_DIR, GEN_SCRIPT_FILE_NAME);
+    let script_file_name = format!("{TARGET_DIR}/{GEN_SCRIPT_FILE_NAME}");
     let mut script_file = File::create(&script_file_name).expect("creating script file failed");
     script_file.write_all(GEN_SCRIPT.as_bytes()).expect("writing script file failed");
     set_file_permissions(&script_file_name);
   }
   {
-    let mut command_process = std::process::Command::new(format!("./{}", GEN_SCRIPT_FILE_NAME))
+    let mut command_process = std::process::Command::new(format!("./{GEN_SCRIPT_FILE_NAME}"))
       .current_dir(TARGET_DIR)
       .spawn()
       .expect("executing script failed");
     command_process.wait().expect("waiting for command process failed");
   }
-  fs::read_to_string(format!("{}/{}", TARGET_DIR, TABLES_FILE_NAME)).expect("generating parsing tables failed")
+  fs::read_to_string(format!("{TARGET_DIR}/{TABLES_FILE_NAME}")).expect("generating parsing tables failed")
 }
 
 /// Writes to file the source code of parsing tables for `Rust` language,
@@ -140,7 +140,7 @@ mod tests {
   }
 
   fn test_lalr_rust_tables() {
-    let output_file = format!("{}/lalr.rs", TARGET_DIR);
+    let output_file = format!("{TARGET_DIR}/lalr.rs");
     lalr_rust_tables(&output_file);
     let lalr = fs::read_to_string(output_file).expect("reading Rust LALR tables failed");
     assert!(lalr.len() > 1000);

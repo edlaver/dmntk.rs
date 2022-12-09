@@ -460,8 +460,8 @@ impl AstNode {
 
   /// Writes a trace of the AST starting from this node.
   pub fn trace(&self) -> String {
-    let output = format!("      AST:{}", self);
-    println!("{}", output);
+    let output = format!("      AST:{self}");
+    println!("{output}");
     output
   }
 }

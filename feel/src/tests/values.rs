@@ -387,7 +387,7 @@ fn test_values_new() {
 fn test_values_add() {
   let mut v = Values::default();
   v.add(Value::Boolean(true));
-  assert_eq!("Values([Boolean(true)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(true)])", format!("{v:?}"));
 }
 
 #[test]
@@ -395,7 +395,7 @@ fn test_values_insert() {
   let mut v = Values::default();
   v.add(Value::Boolean(true));
   v.insert(0, Value::Boolean(false));
-  assert_eq!("Values([Boolean(false), Boolean(true)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(false), Boolean(true)])", format!("{v:?}"));
 }
 
 #[test]
@@ -404,7 +404,7 @@ fn test_values_reverse() {
   v.add(Value::Boolean(true));
   v.insert(0, Value::Boolean(false));
   v.reverse();
-  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{v:?}"));
 }
 
 #[test]
@@ -412,12 +412,12 @@ fn test_values_remove() {
   let mut v = Values::default();
   v.add(Value::Boolean(true));
   v.add(Value::Boolean(false));
-  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{v:?}"));
   v.remove(0);
-  assert_eq!("Values([Boolean(false)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(false)])", format!("{v:?}"));
   v.add(Value::Boolean(true));
   v.remove(1);
-  assert_eq!("Values([Boolean(false)])", format!("{:?}", v));
+  assert_eq!("Values([Boolean(false)])", format!("{v:?}"));
 }
 
 #[test]

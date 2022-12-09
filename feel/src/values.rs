@@ -231,19 +231,19 @@ impl std::fmt::Display for Value {
   ///
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
-      Value::Boolean(value) => write!(f, "{}", value),
+      Value::Boolean(value) => write!(f, "{value}"),
       Value::BuiltInFunction(_) => write!(f, "BuiltInFunction"),
-      Value::ExpressionList(items) => write!(f, "{}", items),
-      Value::Context(context) => write!(f, "{}", context),
+      Value::ExpressionList(items) => write!(f, "{items}"),
+      Value::Context(context) => write!(f, "{context}"),
       Value::ContextEntry(_, _) => write!(f, "ContextEntry"),
-      Value::ContextEntryKey(name) => write!(f, "{}", name),
+      Value::ContextEntryKey(name) => write!(f, "{name}"),
       Value::ContextType(_) => write!(f, "ContextType"),
-      Value::ContextTypeEntry(name, feel_type) => write!(f, "{}: {}", name, feel_type),
-      Value::ContextTypeEntryKey(name) => write!(f, "{}", name),
-      Value::Date(date) => write!(f, "{}", date),
-      Value::DateTime(date_time) => write!(f, "{}", date_time),
-      Value::DaysAndTimeDuration(dt_duration) => write!(f, "{}", dt_duration),
-      Value::FeelType(feel_type) => write!(f, "type({})", feel_type),
+      Value::ContextTypeEntry(name, feel_type) => write!(f, "{name}: {feel_type}"),
+      Value::ContextTypeEntryKey(name) => write!(f, "{name}"),
+      Value::Date(date) => write!(f, "{date}"),
+      Value::DateTime(date_time) => write!(f, "{date_time}"),
+      Value::DaysAndTimeDuration(dt_duration) => write!(f, "{dt_duration}"),
+      Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
       Value::FunctionBody(_) => write!(f, "FunctionBody"),
@@ -251,24 +251,24 @@ impl std::fmt::Display for Value {
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
       Value::Irrelevant => write!(f, "Irrelevant"),
-      Value::List(items) => write!(f, "{}", items),
+      Value::List(items) => write!(f, "{items}"),
       Value::NamedParameter(_, _) => write!(f, "NamedParameter"),
       Value::NamedParameters(_) => write!(f, "NamedParameters"),
       Value::NegatedCommaList(_) => write!(f, "NegatedCommaList"),
-      Value::Number(value) => write!(f, "{}", value),
-      Value::Null(trace) => write!(f, "null{}", trace.as_ref().map_or("".to_string(), |s| format!("({})", s))),
+      Value::Number(value) => write!(f, "{value}"),
+      Value::Null(trace) => write!(f, "null{}", trace.as_ref().map_or("".to_string(), |s| format!("({s})"))),
       Value::ParameterName(_) => write!(f, "ParameterName"),
       Value::ParameterTypes(_) => write!(f, "ParameterTypes"),
       Value::PositionalParameters(_) => write!(f, "PositionalParameters"),
       Value::QualifiedNameSegment(_) => write!(f, "QualifiedNameSegment"),
       Value::Range(v1, c1, v2, c2) => write!(f, "{}{}..{}{}", if *c1 { '[' } else { '(' }, v1, v2, if *c2 { ']' } else { ')' }),
-      Value::String(s) => write!(f, "\"{}\"", s),
-      Value::Time(time) => write!(f, "{}", time),
+      Value::String(s) => write!(f, "\"{s}\""),
+      Value::Time(time) => write!(f, "{time}"),
       Value::UnaryGreater(_) => write!(f, "UnaryGreater"),
       Value::UnaryGreaterOrEqual(_) => write!(f, "UnaryGreaterOrEqual"),
       Value::UnaryLess(_) => write!(f, "UnaryLess"),
-      Value::UnaryLessOrEqual(value) => write!(f, "UnaryLessOrEqual({})", value),
-      Value::YearsAndMonthsDuration(ym_duration) => write!(f, "{}", ym_duration),
+      Value::UnaryLessOrEqual(value) => write!(f, "UnaryLessOrEqual({value})"),
+      Value::YearsAndMonthsDuration(ym_duration) => write!(f, "{ym_duration}"),
     }
   }
 }
@@ -289,15 +289,15 @@ impl Jsonify for Value {
   /// Converts a [Value] to its `JSON` representation.
   fn jsonify(&self) -> String {
     match self {
-      Value::Boolean(value) => format!("{}", value),
+      Value::Boolean(value) => format!("{value}"),
       Value::ExpressionList(items) => items.to_string(),
       Value::Context(ctx) => ctx.jsonify(),
       Value::ContextEntryKey(name) => name.to_string(),
       Value::List(items) => items.jsonify(),
       Value::Number(value) => value.jsonify(),
       Value::Null(_) => "null".to_string(),
-      Value::String(s) => format!("\"{}\"", s),
-      _ => format!("jsonify not implemented for: {}", self),
+      Value::String(s) => format!("\"{s}\""),
+      _ => format!("jsonify not implemented for: {self}"),
     }
   }
 }
@@ -518,34 +518,34 @@ mod errors {
 
   /// Error used when parsed text is not acceptable `xsd:integer` representation.
   pub fn err_invalid_xsd_integer(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:integer representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:integer representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:decimal` representation.
   pub fn err_invalid_xsd_decimal(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:decimal representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:decimal representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:double` representation.
   pub fn err_invalid_xsd_double(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:double representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:double representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:boolean` representation.
   pub fn err_invalid_xsd_boolean(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:boolean representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:boolean representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:date` representation.
   pub fn err_invalid_xsd_date(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:date representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:date representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:time` representation.
   pub fn err_invalid_xsd_time(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:time representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:time representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:dateTime` representation.
   pub fn err_invalid_xsd_date_time(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:dateTime representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:dateTime representation")).into()
   }
   /// Error used when parsed text is not acceptable `xsd:duration` representation.
   pub fn err_invalid_xsd_duration(text: &str) -> DmntkError {
-    ValueError(format!("'{}' is not valid xsd:duration representation", text)).into()
+    ValueError(format!("'{text}' is not valid xsd:duration representation")).into()
   }
 }

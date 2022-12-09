@@ -114,7 +114,7 @@ pub fn extract(input: &str) -> String {
     output.push_str("pub enum TokenType {\n");
     for (name, value) in &token_types {
       if !name.starts_with("Prec") {
-        let _ = writeln!(output, "  {} = {},", name, value);
+        let _ = writeln!(output, "  {name} = {value},");
       }
     }
     output.push_str("}\n")
@@ -126,7 +126,7 @@ pub fn extract(input: &str) -> String {
     output.push_str("pub enum SymbolKind {\n");
     for (name, value) in &symbol_kinds {
       if name.starts_with("Yy") {
-        let _ = writeln!(output, "  {} = {},", name, value);
+        let _ = writeln!(output, "  {name} = {value},");
       }
     }
     output.push_str("}\n")
@@ -134,15 +134,15 @@ pub fn extract(input: &str) -> String {
   {
     // generate constants
     output.push_str("\n///\n");
-    let _ = writeln!(output, "pub const YY_PACT_N_INF: i16 = {};", yy_pact_n_inf);
+    let _ = writeln!(output, "pub const YY_PACT_N_INF: i16 = {yy_pact_n_inf};");
     output.push_str("\n///\n");
-    let _ = writeln!(output, "pub const YY_TABLE_N_INF: i16 = {};", yy_table_n_inf);
+    let _ = writeln!(output, "pub const YY_TABLE_N_INF: i16 = {yy_table_n_inf};");
     output.push_str("\n///\n");
-    let _ = writeln!(output, "pub const YY_FINAL: usize = {};", yy_final);
+    let _ = writeln!(output, "pub const YY_FINAL: usize = {yy_final};");
     output.push_str("\n///\n");
-    let _ = writeln!(output, "pub const YY_LAST: i16 = {};", yy_last);
+    let _ = writeln!(output, "pub const YY_LAST: i16 = {yy_last};");
     output.push_str("\n///\n");
-    let _ = writeln!(output, "pub const YY_N_TOKENS: usize = {};", yy_n_tokens);
+    let _ = writeln!(output, "pub const YY_N_TOKENS: usize = {yy_n_tokens};");
   }
   // generate tables
   {
@@ -150,14 +150,14 @@ pub fn extract(input: &str) -> String {
     output.push_str("\n/// `YY_TRANSLATE[TOKEN-NUM]` - symbol number corresponding to TOKEN-NUM as returned by lexer.\n");
     let _ = writeln!(output, "pub const YY_TRANSLATE: [{}; {}] = [", yy_translate.0, yy_translate.1.len());
     for value in &yy_translate.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_PACT
     output.push_str("\n/// `YY_PACT[STATE-NUM]` - index in YY_TABLE of the portion describing STATE-NUM.\n");
     let _ = writeln!(output, "pub const YY_PACT: [{}; {}] = [", yy_pact.0, yy_pact.1.len());
     for value in &yy_pact.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_DEF_ACT
@@ -166,21 +166,21 @@ pub fn extract(input: &str) -> String {
     output.push_str("/// Zero means the default is an error.\n");
     let _ = writeln!(output, "pub const YY_DEF_ACT: [{}; {}] = [", yy_def_act.0, yy_def_act.1.len());
     for value in &yy_def_act.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_P_GOTO
     output.push_str("\n/// `YY_P_GOTO[NTERM-NUM]`\n");
     let _ = writeln!(output, "pub const YY_P_GOTO: [{}; {}] = [", yy_p_goto.0, yy_p_goto.1.len());
     for value in &yy_p_goto.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_DEF_GOTO
     output.push_str("\n/// `YY_DEF_GOTO[NTERM-NUM]`\n");
     let _ = writeln!(output, "pub const YY_DEF_GOTO: [{}; {}] = [", yy_def_goto.0, yy_def_goto.1.len());
     for value in &yy_def_goto.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_TABLE
@@ -190,28 +190,28 @@ pub fn extract(input: &str) -> String {
     output.push_str("/// If `YY_TABLE_N_INF`, syntax error.\n");
     let _ = writeln!(output, "pub const YY_TABLE: [{}; {}] = [", yy_table.0, yy_table.1.len());
     for value in &yy_table.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_CHECK
     output.push_str("\n/// ???\n");
     let _ = writeln!(output, "pub const YY_CHECK: [{}; {}] = [", yy_check.0, yy_check.1.len());
     for value in &yy_check.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_R1
     output.push_str("\n/// `YY_R1[YYN]` - symbol number of symbol that rule YYN derives.\n");
     let _ = writeln!(output, "pub const YY_R1: [{}; {}] = [", yy_r1.0, yy_r1.1.len());
     for value in &yy_r1.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
     // YY_R2
     output.push_str("\n/// `YY_R2[YYN]` - number of symbols on the right hand side of rule YYN.\n");
     let _ = writeln!(output, "pub const YY_R2: [{}; {}] = [", yy_r2.0, yy_r2.1.len());
     for value in &yy_r2.1 {
-      let _ = write!(output, "{}, ", value);
+      let _ = write!(output, "{value}, ");
     }
     output.push_str("\n];\n");
   }
@@ -223,7 +223,7 @@ pub fn extract(input: &str) -> String {
     let mut sorted_rule_names = rule_names.iter().collect::<Vec<&String>>();
     sorted_rule_names.sort();
     for rule_name in sorted_rule_names {
-      let _ = writeln!(output, "  fn action_{}(&mut self) -> Result<()>;", rule_name);
+      let _ = writeln!(output, "  fn action_{rule_name}(&mut self) -> Result<()>;");
     }
     output.push_str("}\n");
   }
@@ -233,7 +233,7 @@ pub fn extract(input: &str) -> String {
     output.push_str("pub fn reduce(reduce_actions: &mut impl ReduceActions, rule_number: i16) -> Result<()> {\n");
     output.push_str("  match rule_number {\n");
     for (num, comment, rule) in &actions {
-      let _ = writeln!(output, "    {} => reduce_actions.action_{}(), // {}", num, rule, comment);
+      let _ = writeln!(output, "    {num} => reduce_actions.action_{rule}(), // {comment}");
     }
     output.push_str("    _ => Ok(())\n");
     output.push_str("  }\n");
@@ -278,7 +278,7 @@ fn extract_symbol_kinds(input: &str) -> Vec<(String, i64)> {
               let value = value_match.as_str().parse::<i64>().unwrap();
               let symbol_name = name_match.as_str().to_string();
               let updated_name = if symbol_name.to_lowercase() == symbol_name {
-                format!("LHS_{}", symbol_name).to_string()
+                format!("LHS_{symbol_name}").to_string()
               } else {
                 symbol_name
               };
@@ -295,12 +295,12 @@ fn extract_symbol_kinds(input: &str) -> Vec<(String, i64)> {
 }
 
 fn extract_define_paren(input: &str, name: &str) -> i64 {
-  let pattern = format!(".*#define\\s+{}\\s+\\((?P<value>-?[0-9]+)\\)", name);
+  let pattern = format!(".*#define\\s+{name}\\s+\\((?P<value>-?[0-9]+)\\)");
   extract_value(input, &pattern)
 }
 
 fn extract_define(input: &str, name: &str) -> i64 {
-  let pattern = format!(".*#define\\s+{}\\s+(?P<value>-?[0-9]+)", name);
+  let pattern = format!(".*#define\\s+{name}\\s+(?P<value>-?[0-9]+)");
   extract_value(input, &pattern)
 }
 
@@ -316,10 +316,7 @@ fn extract_value(input: &str, pattern: &str) -> i64 {
 }
 
 fn extract_numeric_table(input: &str, table_name: &str) -> (String, Vec<i64>) {
-  let pattern = format!(
-    "(?m).*static\\s+const\\s+(?P<type>[a-zA-Z_0-9]+)\\s+{}\\[\\]\\s+=[^{{]+\\{{(?P<values>[^}}]+)\\}};",
-    table_name
-  );
+  let pattern = format!("(?m).*static\\s+const\\s+(?P<type>[a-zA-Z_0-9]+)\\s+{table_name}\\[\\]\\s+=[^{{]+\\{{(?P<values>[^}}]+)\\}};");
   let re: Regex = Regex::new(&pattern).unwrap();
   if let Some(captures) = re.captures(input) {
     let type_match = captures.name("type").unwrap(); // unwrap is ok, `type` group always exists
@@ -336,7 +333,7 @@ fn extract_numeric_table(input: &str, table_name: &str) -> (String, Vec<i64>) {
     let s = values_match.as_str().split(',');
     return (table_type, s.map(|a| a.trim().parse::<i64>().unwrap()).collect());
   }
-  panic!("no table elements found for table `{}`", table_name);
+  panic!("no table elements found for table `{table_name}`");
 }
 
 fn extract_semantic_actions(input: &str) -> Vec<(i64, String, String)> {

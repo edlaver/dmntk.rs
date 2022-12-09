@@ -9,6 +9,7 @@ fn test_comparison_001() {
 }
 
 #[test]
+#[allow(clippy::neg_cmp_op_on_partial_ord)]
 fn test_comparison_002() {
   assert!(!(num!(0) > num!(0)));
 }
