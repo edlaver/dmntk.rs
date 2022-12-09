@@ -49,7 +49,7 @@ impl std::fmt::Display for DmntkError {
 impl DmntkError {
   /// Creates a new [DmntkError] with specified `source` and `message`.
   pub fn new(source: &str, message: &str) -> Self {
-    Self(format!("{}: {}", source, message))
+    Self(format!("{source}: {message}"))
   }
 }
 

@@ -115,17 +115,17 @@ pub fn te_scope(input: &str) -> Scope {
       Ok(value) => match value {
         Value::Context(ctx) => ctx.into(),
         _ => {
-          println!("ERROR (INVALID VALUE TYPE): {}", value);
+          println!("ERROR (INVALID VALUE TYPE): {value}");
           panic!("te_scope failed");
         }
       },
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_scope failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_scope failed");
     }
   }
@@ -191,12 +191,12 @@ pub fn te_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => textual_expression(trace, scope, actual, evaluator(scope)),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("te_value failed");
     }
   }
@@ -208,12 +208,12 @@ pub fn te_be_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => textual_expression(trace, scope, actual, value),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_value failed");
     }
   }
@@ -225,12 +225,12 @@ pub fn be_be_value(trace: bool, scope: &Scope, actual: &str, expected: &str) {
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => boxed_expression(trace, scope, actual, value),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("te_value failed");
       }
     },
     Err(reason) => {
-      println!("ERROR (REASON): {}", reason);
+      println!("ERROR (REASON): {reason}");
       panic!("te_value failed");
     }
   }
@@ -244,12 +244,12 @@ pub fn boxed_expression(trace: bool, scope: &Scope, text: &str, expected: Value)
     Ok(node) => match crate::evaluate(scope, &node) {
       Ok(value) => assert_eq!(value, expected),
       Err(reason) => {
-        println!("{}", reason);
+        println!("{reason}");
         panic!("boxed_expression failed");
       }
     },
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("boxed_expression failed");
     }
   }
@@ -263,11 +263,11 @@ fn textual_expression(trace: bool, scope: &Scope, text: &str, expected: Value) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => assert_eq!(evaluator(scope), expected),
       Err(reason) => {
-        panic!("building evaluator for textual expression failed with reason: {}", reason);
+        panic!("building evaluator for textual expression failed with reason: {reason}");
       }
     },
     Err(reason) => {
-      panic!("parsing textual expression failed with reason: {}", reason);
+      panic!("parsing textual expression failed with reason: {reason}");
     }
   }
 }
@@ -278,15 +278,15 @@ pub fn valid_unary_tests(trace: bool, scope: &Scope, text: &str) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
         if let v @ Value::Null(_) = evaluator(scope) {
-          panic!("evaluating unary tests failed, value: {}", v)
+          panic!("evaluating unary tests failed, value: {v}")
         }
       }
       Err(reason) => {
-        panic!("building evaluator for unary tests failed with reason: {}", reason);
+        panic!("building evaluator for unary tests failed with reason: {reason}");
       }
     },
     Err(reason) => {
-      panic!("parsing unary tests failed with reason: {}", reason);
+      panic!("parsing unary tests failed with reason: {reason}");
     }
   }
 }
@@ -305,7 +305,7 @@ pub fn satisfies(trace: bool, scope: &Scope, input_expression: &str, input_value
   match crate::evaluate(scope, &node) {
     Ok(value) => assert_eq!(value, Value::Boolean(expected)),
     Err(reason) => {
-      println!("ERROR: {}", reason);
+      println!("ERROR: {reason}");
       panic!("`satisfies` failed");
     }
   }
