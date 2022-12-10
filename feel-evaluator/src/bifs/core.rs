@@ -784,9 +784,93 @@ pub fn exp(value: &Value) -> Value {
   value_null!("exp")
 }
 
-/// ???
-pub fn finishes(_value1: &Value, _value2: &Value) -> Value {
-  value_null!("unimplemented")
+/// Returns `true` when point is the end of a range or ranges have the same end value.
+pub fn finishes(value1: &Value, value2: &Value) -> Value {
+  match value1 {
+    Value::Number(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::Number(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::Date(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::Date(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::Time(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::Time(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::DateTime(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::DateTime(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::DaysAndTimeDuration(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::DaysAndTimeDuration(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::YearsAndMonthsDuration(point) => {
+      if let Value::Range(_, _, range_end, closed_end) = value2 {
+        if let Value::YearsAndMonthsDuration(point2) = range_end.borrow() {
+          return Value::Boolean(*closed_end && point == point2);
+        }
+      }
+    }
+    Value::Range(_, _, range1_end, closed1_end) => {
+      if let Value::Range(_, _, range2_end, closed2_end) = value2 {
+        match range1_end.borrow() {
+          Value::Number(r1_end) => {
+            if let Value::Number(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          Value::Date(r1_end) => {
+            if let Value::Date(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          Value::Time(r1_end) => {
+            if let Value::Time(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          Value::DateTime(r1_end) => {
+            if let Value::DateTime(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          Value::DaysAndTimeDuration(r1_end) => {
+            if let Value::DaysAndTimeDuration(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          Value::YearsAndMonthsDuration(r1_end) => {
+            if let Value::YearsAndMonthsDuration(r2_end) = range2_end.borrow() {
+              return Value::Boolean(*closed1_end == *closed2_end && r1_end == r2_end);
+            }
+          }
+          _ => {}
+        }
+      } else {
+        return invalid_argument_type!("finishes", "range of scalars", value2.type_of());
+      }
+    }
+    _ => {}
+  }
+  invalid_argument_type!("finishes", "scalar or range of scalars", value1.type_of())
 }
 
 /// ???

@@ -261,7 +261,10 @@ pub fn boxed_expression(trace: bool, scope: &Scope, text: &str, expected: Value)
 fn textual_expression(trace: bool, scope: &Scope, text: &str, expected: Value) {
   match dmntk_feel_parser::parse_textual_expression(scope, text, trace) {
     Ok(node) => match build_evaluator(&node) {
-      Ok(evaluator) => assert_eq!(evaluator(scope), expected),
+      Ok(evaluator) => {
+        let actual = evaluator(scope) as Value;
+        assert_eq!(actual, expected, "ERROR\nexpected: {expected}\n  actual: {actual}\n");
+      }
       Err(reason) => {
         panic!("building evaluator for textual expression failed with reason: {reason}");
       }

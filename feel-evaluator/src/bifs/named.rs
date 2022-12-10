@@ -393,9 +393,9 @@ fn bif_finished_by(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_finishes(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, 1), (value2, 2))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
     core::finishes(value1, value2)
-  } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
+  } else if let Some(((value1, 1), (value2, 2))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::finishes(value1, value2)
   } else {
     value_null!("[named::finishes] invalid named parameters")
