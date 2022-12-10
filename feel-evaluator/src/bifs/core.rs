@@ -1196,51 +1196,48 @@ pub fn median(values: &[Value]) -> Value {
 /// Returns `true` when range2 is `met by` range1.
 pub fn met_by(value1: &Value, value2: &Value) -> Value {
   if let Value::Range(range1_start, closed1_start, range1_end, _) = value1 {
-    match (range1_start.borrow(), range1_end.borrow()) {
-      (Value::Number(point1_start), Value::Number(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+    if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+      return match (range1_start.borrow(), range1_end.borrow()) {
+        (Value::Number(point1_start), Value::Number(_)) => {
           if let (Value::Number(_), Value::Number(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<number>", value2.type_of())
         }
-      }
-      (Value::Date(point1_start), Value::Date(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+        (Value::Date(point1_start), Value::Date(_)) => {
           if let (Value::Date(_), Value::Date(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<date>", value2.type_of())
         }
-      }
-      (Value::Time(point1_start), Value::Time(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+        (Value::Time(point1_start), Value::Time(_)) => {
           if let (Value::Time(_), Value::Time(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<time>", value2.type_of())
         }
-      }
-      (Value::DateTime(point1_start), Value::DateTime(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+        (Value::DateTime(point1_start), Value::DateTime(_)) => {
           if let (Value::DateTime(_), Value::DateTime(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<date and time>", value2.type_of())
         }
-      }
-      (Value::DaysAndTimeDuration(point1_start), Value::DaysAndTimeDuration(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+        (Value::DaysAndTimeDuration(point1_start), Value::DaysAndTimeDuration(_)) => {
           if let (Value::DaysAndTimeDuration(_), Value::DaysAndTimeDuration(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<days and time duration>", value2.type_of())
         }
-      }
-      (Value::YearsAndMonthsDuration(point1_start), Value::YearsAndMonthsDuration(_)) => {
-        if let Value::Range(range2_start, _, range2_end, closed2_end) = value2 {
+        (Value::YearsAndMonthsDuration(point1_start), Value::YearsAndMonthsDuration(_)) => {
           if let (Value::YearsAndMonthsDuration(_), Value::YearsAndMonthsDuration(point2_end)) = (range2_start.borrow(), range2_end.borrow()) {
             return Value::Boolean(point1_start == point2_end && closed1_start == closed2_end);
           }
+          invalid_argument_type!("meets", "range<years and months duration>", value2.type_of())
         }
-      }
-      _ => {}
+        _ => invalid_argument_type!("meets", "range of scalars", value1.type_of()),
+      };
     }
+    return invalid_argument_type!("meets", "range of scalars", value2.type_of());
   }
   invalid_argument_type!("meets", "range of scalars", value1.type_of())
 }
