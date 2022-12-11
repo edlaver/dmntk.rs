@@ -873,9 +873,87 @@ pub fn finishes(value1: &Value, value2: &Value) -> Value {
   invalid_argument_type!("finishes", "scalar or range of scalars", value1.type_of())
 }
 
-/// ???
-pub fn finished_by(_value1: &Value, _value2: &Value) -> Value {
-  value_null!("unimplemented")
+/// Returns `true` when two ranges or range and point have the same ending point.
+pub fn finished_by(value1: &Value, value2: &Value) -> Value {
+  if let Value::Range(_, _, range1_end, closed1_end) = value1 {
+    match range1_end.borrow() {
+      Value::Number(point1) => match value2 {
+        Value::Number(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::Number(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<number>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "number or range<number>", value2.type_of()),
+      },
+      Value::Date(point1) => match value2 {
+        Value::Date(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::Date(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<date>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "date or range<date>", value2.type_of()),
+      },
+      Value::Time(point1) => match value2 {
+        Value::Time(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::Time(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<time>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "time or range<time>", value2.type_of()),
+      },
+      Value::DateTime(point1) => match value2 {
+        Value::DateTime(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::DateTime(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<date and time>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "date and time or range<date and time>", value2.type_of()),
+      },
+      Value::DaysAndTimeDuration(point1) => match value2 {
+        Value::DaysAndTimeDuration(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::DaysAndTimeDuration(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<days and time duration>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "days and time duration or range<days and time duration>", value2.type_of()),
+      },
+      Value::YearsAndMonthsDuration(point1) => match value2 {
+        Value::YearsAndMonthsDuration(point2) => {
+          return Value::Boolean(*closed1_end && point1 == point2);
+        }
+        Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
+          Value::YearsAndMonthsDuration(point2) => {
+            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
+          }
+          _ => invalid_argument_type!("finished by", "range<years and months duration>", value2.type_of()),
+        },
+        _ => invalid_argument_type!("finished by", "years and months duration or range<years and months duration>", value2.type_of()),
+      },
+      _ => invalid_argument_type!("finished by", "range of scalars", value1.type_of()),
+    }
+  } else {
+    invalid_argument_type!("finished by", "range of scalars", value1.type_of())
+  }
 }
 
 /// Returns new list with flattened nested lists.
