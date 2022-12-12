@@ -153,6 +153,7 @@ pub const DMN_3_1116: &str = include_str!("level_3/3_1116.dmn");
 pub const DMN_3_1117: &str = include_str!("level_3/3_1117.dmn");
 pub const DMN_3_1120: &str = include_str!("level_3/3_1120.dmn");
 pub const DMN_3_1121: &str = include_str!("level_3/3_1121.dmn");
+pub const DMN_3_1130: &str = include_str!("level_3/3_1130.dmn");
 pub const DMN_3_2891: &str = include_str!("level_3/3_2891.dmn");
 pub const DMN_3_2892: &str = include_str!("level_3/3_2892.dmn");
 pub const DMN_3_2893: &str = include_str!("level_3/3_2893.dmn");

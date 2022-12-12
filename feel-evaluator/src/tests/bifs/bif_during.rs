@@ -50,26 +50,36 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  te_bool(false, &scope!(), r#"during(point: 10, range: [1..20])"#, true);
+  te_bool(false, &scope!(), r#"during((1..5),(1..10])"#, true);
 }
 
 #[test]
 fn _0005() {
-  te_bool(false, &scope!(), r#"during(range: [1..20], point: 10)"#, true);
+  te_bool(false, &scope!(), r#"during((1..10),[1..10])"#, true);
 }
 
 #[test]
 fn _0006() {
-  te_bool(false, &scope!(), r#"during(date("2011-06-16"),[date("2011-01-01")..date("2011-12-31")])"#, true);
+  te_bool(false, &scope!(), r#"during(point: 10, range: [1..20])"#, true);
 }
 
 #[test]
 fn _0007() {
-  te_bool(false, &scope!(), r#"during(time("12:13:14"),[time("00:00:00")..time("23:59:59")])"#, true);
+  te_bool(false, &scope!(), r#"during(range: [1..20], point: 10)"#, true);
 }
 
 #[test]
 fn _0008() {
+  te_bool(false, &scope!(), r#"during(date("2011-06-16"),[date("2011-01-01")..date("2011-12-31")])"#, true);
+}
+
+#[test]
+fn _0009() {
+  te_bool(false, &scope!(), r#"during(time("12:13:14"),[time("00:00:00")..time("23:59:59")])"#, true);
+}
+
+#[test]
+fn _0010() {
   te_bool(
     false,
     &scope!(),
@@ -79,77 +89,77 @@ fn _0008() {
 }
 
 #[test]
-fn _0009() {
+fn _0011() {
   te_bool(false, &scope!(), r#"during(duration("P1DT12H"),[duration("P1D")..duration("P2D")])"#, true);
 }
 
 #[test]
-fn _0010() {
+fn _0012() {
   te_bool(false, &scope!(), r#"during(duration("P1Y6M"),[duration("P1Y")..duration("P2Y")])"#, true);
 }
 
 #[test]
-fn _0011() {
+fn _0013() {
   te_bool(false, &scope!(), r#"during(10,[10..20])"#, true);
 }
 
 #[test]
-fn _0012() {
+fn _0014() {
   te_bool(false, &scope!(), r#"during(20,[10..20])"#, true);
 }
 
 #[test]
-fn _0013() {
+fn _0015() {
   te_bool(false, &scope!(), r#"during(10,[20..10])"#, false);
 }
 
 #[test]
-fn _0014() {
+fn _0016() {
   te_bool(false, &scope!(), r#"during([1..20],[1..20])"#, true);
 }
 
 #[test]
-fn _0015() {
+fn _0017() {
   te_bool(false, &scope!(), r#"during((2..19),[1..20])"#, true);
 }
 
 #[test]
-fn _0016() {
+fn _0018() {
   te_bool(false, &scope!(), r#"during([2..19],(1..20))"#, true);
 }
 
 #[test]
-fn _0017() {
+fn _0019() {
   te_bool(false, &scope!(), r#"during(range1: [2..19], range2: (1..20))"#, true);
 }
 
 #[test]
-fn _0018() {
+fn _0020() {
   te_bool(false, &scope!(), r#"during([0..20],[1..20])"#, false);
 }
 
 #[test]
-fn _0019() {
+fn _0021() {
   te_bool(false, &scope!(), r#"during(range1: [0..20],range2: [1..20])"#, false);
 }
 
 #[test]
-fn _0020() {
+fn _0022() {
   te_bool(false, &scope!(), r#"during([1..21],[1..20])"#, false);
 }
 
 #[test]
-fn _0021() {
+fn _0023() {
   te_bool(false, &scope!(), r#"during([0..21],[1..20])"#, false);
 }
 
 #[test]
-fn _0022() {
+fn _0024() {
   te_bool(false, &scope!(), r#"during([1..12],[13..20])"#, false);
 }
 
 #[test]
-fn _0023() {
+fn _0025() {
   te_bool(
     false,
     &scope!(),
@@ -159,7 +169,7 @@ fn _0023() {
 }
 
 #[test]
-fn _0024() {
+fn _0026() {
   te_bool(
     false,
     &scope!(),
@@ -169,7 +179,7 @@ fn _0024() {
 }
 
 #[test]
-fn _0025() {
+fn _0027() {
   te_bool(
     false,
     &scope!(),
@@ -179,7 +189,7 @@ fn _0025() {
 }
 
 #[test]
-fn _0026() {
+fn _0028() {
   te_bool(
     false,
     &scope!(),
@@ -189,7 +199,7 @@ fn _0026() {
 }
 
 #[test]
-fn _0027() {
+fn _0029() {
   te_bool(
     false,
     &scope!(),
@@ -199,7 +209,7 @@ fn _0027() {
 }
 
 #[test]
-fn _0028() {
+fn _0030() {
   te_bool(
     false,
     &scope!(),
@@ -209,7 +219,7 @@ fn _0028() {
 }
 
 #[test]
-fn _0029() {
+fn _0031() {
   te_bool(
     false,
     &scope!(),
@@ -219,7 +229,7 @@ fn _0029() {
 }
 
 #[test]
-fn _0030() {
+fn _0032() {
   te_bool(
     false,
     &scope!(),
@@ -229,7 +239,7 @@ fn _0030() {
 }
 
 #[test]
-fn _0031() {
+fn _0033() {
   te_bool(
     false,
     &scope!(),
@@ -239,7 +249,7 @@ fn _0031() {
 }
 
 #[test]
-fn _0032() {
+fn _0034() {
   te_bool(
     false,
     &scope!(),
@@ -249,7 +259,7 @@ fn _0032() {
 }
 
 #[test]
-fn _0033() {
+fn _0035() {
   te_bool(
     false,
     &scope!(),
@@ -259,12 +269,12 @@ fn _0033() {
 }
 
 #[test]
-fn _0034() {
+fn _0036() {
   te_null(false, &scope!(), r#"during()"#, "expected 2 parameters, actual number of parameters is 0");
 }
 
 #[test]
-fn _0035() {
+fn _0037() {
   te_null(
     false,
     &scope!(),
@@ -274,7 +284,7 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0038() {
   te_null(
     false,
     &scope!(),
@@ -284,7 +294,7 @@ fn _0036() {
 }
 
 #[test]
-fn _0037() {
+fn _0039() {
   te_null(
     false,
     &scope!(),
@@ -294,12 +304,12 @@ fn _0037() {
 }
 
 #[test]
-fn _0038() {
+fn _0040() {
   te_null(false, &scope!(), r#"during(p: 150, r: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]
-fn _0039() {
+fn _0041() {
   te_null(
     false,
     &scope!(),
@@ -309,7 +319,7 @@ fn _0039() {
 }
 
 #[test]
-fn _0040() {
+fn _0042() {
   te_null(
     false,
     &scope!(),
@@ -319,7 +329,7 @@ fn _0040() {
 }
 
 #[test]
-fn _0041() {
+fn _0043() {
   te_null(
     false,
     &scope!(),
@@ -329,7 +339,7 @@ fn _0041() {
 }
 
 #[test]
-fn _0042() {
+fn _0044() {
   te_null(
     false,
     &scope!(),

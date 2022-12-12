@@ -75,48 +75,53 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  te_bool(false, &scope!(), r#"includes([1..20],[5..15])"#, true);
+  te_bool(false, &scope!(), r#"includes((1..10],(1..5])"#, true);
 }
 
 #[test]
 fn _0010() {
-  te_bool(false, &scope!(), r#"includes([1..20],[1..21])"#, false);
+  te_bool(false, &scope!(), r#"includes([1..20],[5..15])"#, true);
 }
 
 #[test]
 fn _0011() {
-  te_bool(false, &scope!(), r#"includes([1..20],[0..20])"#, false);
+  te_bool(false, &scope!(), r#"includes([1..20],[1..21])"#, false);
 }
 
 #[test]
 fn _0012() {
-  te_bool(false, &scope!(), r#"includes([1..20],[1..20))"#, true);
+  te_bool(false, &scope!(), r#"includes([1..20],[0..20])"#, false);
 }
 
 #[test]
 fn _0013() {
-  te_bool(false, &scope!(), r#"includes([1..20],(1..20])"#, true);
+  te_bool(false, &scope!(), r#"includes([1..20],[1..20))"#, true);
 }
 
 #[test]
 fn _0014() {
-  te_bool(false, &scope!(), r#"includes((1..20],[1..20])"#, false);
+  te_bool(false, &scope!(), r#"includes([1..20],(1..20])"#, true);
 }
 
 #[test]
 fn _0015() {
-  te_bool(false, &scope!(), r#"includes([1..20),[1..20])"#, false);
+  te_bool(false, &scope!(), r#"includes((1..20],[1..20])"#, false);
 }
 
 #[test]
 fn _0016() {
+  te_bool(false, &scope!(), r#"includes([1..20),[1..20])"#, false);
+}
+
+#[test]
+fn _0017() {
   te_bool(false, &scope!(), r#"includes(range1: [1..20], range2: [1..20])"#, true);
 }
 
 //
 
 #[test]
-fn _0017() {
+fn _0018() {
   te_bool(
     false,
     &scope!(),
@@ -126,7 +131,7 @@ fn _0017() {
 }
 
 #[test]
-fn _0018() {
+fn _0019() {
   te_bool(
     false,
     &scope!(),
@@ -136,7 +141,7 @@ fn _0018() {
 }
 
 #[test]
-fn _0019() {
+fn _0020() {
   te_bool(
     false,
     &scope!(),
@@ -146,7 +151,7 @@ fn _0019() {
 }
 
 #[test]
-fn _0020() {
+fn _0021() {
   te_bool(
     false,
     &scope!(),
@@ -158,17 +163,17 @@ fn _0020() {
 //
 
 #[test]
-fn _0021() {
+fn _0022() {
   te_bool(false, &scope!(), r#"includes([time("00:00:00")..time("23:59:59")],time("00:00:00"))"#, true);
 }
 
 #[test]
-fn _0022() {
+fn _0023() {
   te_bool(false, &scope!(), r#"includes([time("01:00:00")..time("23:59:59")],time("00:59:59"))"#, false);
 }
 
 #[test]
-fn _0023() {
+fn _0024() {
   te_bool(
     false,
     &scope!(),
@@ -178,7 +183,7 @@ fn _0023() {
 }
 
 #[test]
-fn _0024() {
+fn _0025() {
   te_bool(
     false,
     &scope!(),
@@ -190,7 +195,7 @@ fn _0024() {
 //
 
 #[test]
-fn _0025() {
+fn _0026() {
   te_bool(
     false,
     &scope!(),
@@ -200,7 +205,7 @@ fn _0025() {
 }
 
 #[test]
-fn _0026() {
+fn _0027() {
   te_bool(
     false,
     &scope!(),
@@ -210,7 +215,7 @@ fn _0026() {
 }
 
 #[test]
-fn _0027() {
+fn _0028() {
   te_bool(
     false,
     &scope!(),
@@ -220,7 +225,7 @@ fn _0027() {
 }
 
 #[test]
-fn _0028() {
+fn _0029() {
   te_bool(
     false,
     &scope!(),
@@ -232,17 +237,17 @@ fn _0028() {
 //
 
 #[test]
-fn _0029() {
+fn _0030() {
   te_bool(false, &scope!(), r#"includes([duration("P1D")..duration("P10D")],duration("P5D"))"#, true);
 }
 
 #[test]
-fn _0030() {
+fn _0031() {
   te_bool(false, &scope!(), r#"includes([duration("P1D")..duration("P2D")],duration("P2DT1H"))"#, false);
 }
 
 #[test]
-fn _0031() {
+fn _0032() {
   te_bool(
     false,
     &scope!(),
@@ -252,7 +257,7 @@ fn _0031() {
 }
 
 #[test]
-fn _0032() {
+fn _0033() {
   te_bool(
     false,
     &scope!(),
@@ -262,17 +267,17 @@ fn _0032() {
 }
 
 #[test]
-fn _0033() {
+fn _0034() {
   te_bool(false, &scope!(), r#"includes([duration("P1Y")..duration("P10Y")],duration("P5Y"))"#, true);
 }
 
 #[test]
-fn _0034() {
+fn _0035() {
   te_bool(false, &scope!(), r#"includes([duration("P1Y")..duration("P2Y")],duration("P2Y1M"))"#, false);
 }
 
 #[test]
-fn _0035() {
+fn _0036() {
   te_bool(
     false,
     &scope!(),
@@ -282,7 +287,7 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0037() {
   te_bool(
     false,
     &scope!(),
@@ -292,12 +297,12 @@ fn _0036() {
 }
 
 #[test]
-fn _0037() {
+fn _0038() {
   te_null(false, &scope!(), r#"includes()"#, "expected 2 parameters, actual number of parameters is 0");
 }
 
 #[test]
-fn _0038() {
+fn _0039() {
   te_null(
     false,
     &scope!(),
@@ -307,7 +312,7 @@ fn _0038() {
 }
 
 #[test]
-fn _0039() {
+fn _0040() {
   te_null(
     false,
     &scope!(),
@@ -317,7 +322,7 @@ fn _0039() {
 }
 
 #[test]
-fn _0040() {
+fn _0041() {
   te_null(
     false,
     &scope!(),
@@ -327,12 +332,12 @@ fn _0040() {
 }
 
 #[test]
-fn _0041() {
+fn _0042() {
   te_null(false, &scope!(), r#"includes(r: [1..20],p: 20)"#, "[named::includes] invalid named parameters");
 }
 
 #[test]
-fn _0042() {
+fn _0043() {
   te_null(
     false,
     &scope!(),
@@ -342,7 +347,7 @@ fn _0042() {
 }
 
 #[test]
-fn _0043() {
+fn _0044() {
   te_null(
     false,
     &scope!(),
@@ -352,7 +357,7 @@ fn _0043() {
 }
 
 #[test]
-fn _0044() {
+fn _0045() {
   te_null(
     false,
     &scope!(),
@@ -362,7 +367,7 @@ fn _0044() {
 }
 
 #[test]
-fn _0045() {
+fn _0046() {
   te_null(
     false,
     &scope!(),
@@ -372,7 +377,7 @@ fn _0045() {
 }
 
 #[test]
-fn _0046() {
+fn _0047() {
   te_null(
     false,
     &scope!(),
@@ -382,7 +387,7 @@ fn _0046() {
 }
 
 #[test]
-fn _0047() {
+fn _0048() {
   te_null(
     false,
     &scope!(),
@@ -392,7 +397,7 @@ fn _0047() {
 }
 
 #[test]
-fn _0048() {
+fn _0049() {
   te_null(
     false,
     &scope!(),
@@ -402,7 +407,7 @@ fn _0048() {
 }
 
 #[test]
-fn _0049() {
+fn _0050() {
   te_null(
     false,
     &scope!(),
@@ -412,7 +417,7 @@ fn _0049() {
 }
 
 #[test]
-fn _0050() {
+fn _0051() {
   te_null(
     false,
     &scope!(),
@@ -422,7 +427,7 @@ fn _0050() {
 }
 
 #[test]
-fn _0051() {
+fn _0052() {
   te_null(
     false,
     &scope!(),
@@ -432,7 +437,7 @@ fn _0051() {
 }
 
 #[test]
-fn _0052() {
+fn _0053() {
   te_null(
     false,
     &scope!(),
@@ -442,7 +447,7 @@ fn _0052() {
 }
 
 #[test]
-fn _0053() {
+fn _0054() {
   te_null(
     false,
     &scope!(),
@@ -452,7 +457,7 @@ fn _0053() {
 }
 
 #[test]
-fn _0054() {
+fn _0055() {
   te_null(
     false,
     &scope!(),
@@ -462,7 +467,7 @@ fn _0054() {
 }
 
 #[test]
-fn _0055() {
+fn _0056() {
   te_null(
     false,
     &scope!(),
@@ -472,7 +477,7 @@ fn _0055() {
 }
 
 #[test]
-fn _0056() {
+fn _0057() {
   te_null(
     false,
     &scope!(),
@@ -482,7 +487,7 @@ fn _0056() {
 }
 
 #[test]
-fn _0057() {
+fn _0058() {
   te_null(
     false,
     &scope!(),
@@ -492,7 +497,7 @@ fn _0057() {
 }
 
 #[test]
-fn _0058() {
+fn _0059() {
   te_null(
     false,
     &scope!(),
