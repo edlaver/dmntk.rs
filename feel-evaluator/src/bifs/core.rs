@@ -1560,7 +1560,7 @@ pub fn odd(value: &Value) -> Value {
 /// Evaluates the value of the `overlaps` function for two ranges.
 macro_rules! overlaps_rr {
   ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
-    !(($r1e < $r2s || ($r1e == $r2s && (*$c1e != *$c2s || (!*$c1e && !*$c2s)))) || ($r2e < $r1s || ($r2e == $r1s && (*$c2e != *$c1s || (!*$c2e && !*$c1s)))))
+    (($r1e >= $r2s && ($r1e != $r2s || (*$c1e == *$c2s && (*$c1e || *$c2s)))) && ($r2e >= $r1s && ($r2e != $r1s || (*$c2e == *$c1s && (*$c2e || *$c1s)))))
   };
 }
 
