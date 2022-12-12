@@ -34,33 +34,37 @@ use super::super::*;
 use dmntk_feel::scope;
 
 #[test]
-#[ignore]
 fn _0001() {
   te_bool(false, &scope!(), r#"overlaps([1..5],[3..8])"#, true);
 }
 
 #[test]
 fn _0002() {
-  te_null(false, &scope!(), r#"overlaps([1..5],[3..8])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps([3..8],[1..5])"#, true);
 }
 
 #[test]
 fn _0003() {
-  te_null(false, &scope!(), r#"overlaps(range1: [1..5], range2: [3..8])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps([1..5],[6..8])"#, false);
 }
 
 #[test]
 fn _0004() {
-  te_null(false, &scope!(), r#"overlaps(range2: [3..8], range1: [1..5])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps(range1: [1..5], range2: [3..8])"#, true);
 }
 
 #[test]
 fn _0005() {
-  te_null(false, &scope!(), r#"overlaps()"#, "expected 2 parameters, actual number of parameters is 0");
+  te_bool(false, &scope!(), r#"overlaps(range2: [3..8], range1: [1..5])"#, true);
 }
 
 #[test]
 fn _0006() {
+  te_null(false, &scope!(), r#"overlaps()"#, "expected 2 parameters, actual number of parameters is 0");
+}
+
+#[test]
+fn _0007() {
   te_null(
     false,
     &scope!(),
@@ -70,16 +74,16 @@ fn _0006() {
 }
 
 #[test]
-fn _0007() {
+fn _0008() {
   te_null(false, &scope!(), r#"overlaps(range1: [1..5],r2: [3..8])"#, "parameter 'range2' not found");
 }
 
 #[test]
-fn _0008() {
+fn _0009() {
   te_null(false, &scope!(), r#"overlaps(r1: [1..5],range2: [3..8])"#, "parameter 'range1' not found");
 }
 
 #[test]
-fn _0009() {
+fn _0010() {
   te_null(false, &scope!(), r#"overlaps(r1: [1..5], r2: [3..8])"#, "parameter 'range1' not found");
 }

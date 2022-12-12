@@ -61,10 +61,14 @@ fn _0002() {
 }
 
 #[test]
-#[ignore]
 fn _0003() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "started by", &ctx, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "started by",
+    &ctx,
+    r#"{startedbyRPF: false, startedbyRPF2: false, startedbyRPT: true, startedbyRRF: false, startedbyRRF2: false, startedbyRRT: true, startedbyRRT2: true, startedbyRRT3: true, startedbyRRT4: true, startedbyRRT5: true}"#,
+  );
 }
 
 #[test]
@@ -75,5 +79,38 @@ fn _0004() {
     "includes",
     &ctx,
     r#"{includesRPF: false, includesRPF2: false, includesRPF3: false, includesRPT: true, includesRPT2: true, includesRPT3: true, includesRRT: true, includesRRT2: true, includesRRT3: true, includesRRT4: true, includesRRT5: true, includesRRT6: true, includesRRT7: true, includesRRT8: true}"#,
+  );
+}
+
+#[test]
+fn _0005() {
+  let ctx = context(r#"{}"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "met by",
+    &ctx,
+    r#"{metbyRRF: false, metbyRRF2: false, metbyRRF3: false, metbyRRT: true}"#,
+  );
+}
+
+#[test]
+fn _0006() {
+  let ctx = context(r#"{}"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "before",
+    &ctx,
+    r#"{beforPPF: false, beforePPT: true, beforePRF: false, beforePRT: true, beforePRT2: true, beforeRPF: false, beforeRPT: true, beforeRPT2: true, beforeRRF: false, beforeRRT: true, beforeRRT2: true, beforeRRT3: true}"#,
+  );
+}
+
+#[test]
+fn _0007() {
+  let ctx = context(r#"{}"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "overlaps",
+    &ctx,
+    r#"{overlapsRRF: false, overlapsRRF2: false, overlapsRRF3: false, overlapsRRF4: false, overlapsRRF5: false, overlapsRRF6: false, overlapsRRF7: false, overlapsRRF8: false, overlapsRRT: true, overlapsRRT2: true, overlapsRRT3: true, overlapsRRT4: true, overlapsRRT5: true, overlapsRRT6: true}"#,
   );
 }

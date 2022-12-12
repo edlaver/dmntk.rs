@@ -34,24 +34,23 @@ use super::super::*;
 use dmntk_feel::scope;
 
 #[test]
-#[ignore]
 fn _0001() {
-  te_bool(false, &scope!(), r#"started by([1..20],20)"#, true);
+  te_bool(false, &scope!(), r#"started by([1..20],1)"#, true);
 }
 
 #[test]
 fn _0002() {
-  te_null(false, &scope!(), r#"started by([1..20],20)"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by((1..20],1)"#, false);
 }
 
 #[test]
 fn _0003() {
-  te_null(false, &scope!(), r#"started by(range: [1..20],point: 20)"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by(range: [1..20],point: 1)"#, true);
 }
 
 #[test]
 fn _0004() {
-  te_null(false, &scope!(), r#"started by(range1: [1..20],range2: [5..20])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by(range1: [1..20],range2: [1..10])"#, true);
 }
 
 #[test]

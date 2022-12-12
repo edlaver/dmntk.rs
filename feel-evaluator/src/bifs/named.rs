@@ -768,7 +768,7 @@ fn bif_sqrt(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_started_by(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE).zip(get_param(parameters, &NAME_POINT)) {
     core::started_by(value1, value2)
   } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::started_by(value1, value2)

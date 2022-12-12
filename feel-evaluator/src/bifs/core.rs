@@ -867,73 +867,49 @@ pub fn finished_by(value1: &Value, value2: &Value) -> Value {
   if let Value::Range(_, _, range1_end, closed1_end) = value1 {
     match range1_end.borrow() {
       Value::Number(point1) => match value2 {
-        Value::Number(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::Number(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::Number(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::Number(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<number>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "number or range<number>", value2.type_of()),
       },
       Value::Date(point1) => match value2 {
-        Value::Date(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::Date(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::Date(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::Date(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<date>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "date or range<date>", value2.type_of()),
       },
       Value::Time(point1) => match value2 {
-        Value::Time(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::Time(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::Time(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::Time(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<time>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "time or range<time>", value2.type_of()),
       },
       Value::DateTime(point1) => match value2 {
-        Value::DateTime(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::DateTime(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::DateTime(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::DateTime(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<date and time>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "date and time or range<date and time>", value2.type_of()),
       },
       Value::DaysAndTimeDuration(point1) => match value2 {
-        Value::DaysAndTimeDuration(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::DaysAndTimeDuration(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::DaysAndTimeDuration(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::DaysAndTimeDuration(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<days and time duration>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "days and time duration or range<days and time duration>", value2.type_of()),
       },
       Value::YearsAndMonthsDuration(point1) => match value2 {
-        Value::YearsAndMonthsDuration(point2) => {
-          return Value::Boolean(*closed1_end && point1 == point2);
-        }
+        Value::YearsAndMonthsDuration(point2) => Value::Boolean(*closed1_end && point1 == point2),
         Value::Range(_, _, range2_end, closed2_end) => match range2_end.borrow() {
-          Value::YearsAndMonthsDuration(point2) => {
-            return Value::Boolean(*closed1_end == *closed2_end && point1 == point2);
-          }
+          Value::YearsAndMonthsDuration(point2) => Value::Boolean(*closed1_end == *closed2_end && point1 == point2),
           _ => invalid_argument_type!("finished by", "range<years and months duration>", value2.type_of()),
         },
         _ => invalid_argument_type!("finished by", "years and months duration or range<years and months duration>", value2.type_of()),
@@ -1014,7 +990,7 @@ pub fn get_value(context: &Value, key: &Value) -> Value {
   }
 }
 
-/// Evaluates the value of the `includes` function for two range and point.
+/// Evaluates the value of the `includes` function for range and point.
 macro_rules! includes_rp {
   ($rs:expr, $cs:expr, $re:expr, $ce:expr, $p:expr) => {
     ($p > $rs || (*$cs && $p >= $rs)) && ($p < $re || (*$ce && $p <= $re))
@@ -1039,9 +1015,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<number>", value2.type_of())
         }
-        Value::Number(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::Number(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "number or range<number>", value2.type_of()),
       },
       (Value::Date(r1s), Value::Date(r1e)) => match value2 {
@@ -1051,9 +1025,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<date>", value2.type_of())
         }
-        Value::Date(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::Date(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "date or range<date>", value2.type_of()),
       },
       (Value::Time(r1s), Value::Time(r1e)) => match value2 {
@@ -1063,9 +1035,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<time>", value2.type_of())
         }
-        Value::Time(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::Time(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "time or range<time>", value2.type_of()),
       },
       (Value::DateTime(r1s), Value::DateTime(r1e)) => match value2 {
@@ -1075,9 +1045,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<date and time>", value2.type_of())
         }
-        Value::DateTime(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::DateTime(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "date and time or range<date and time>", value2.type_of()),
       },
       (Value::DaysAndTimeDuration(r1s), Value::DaysAndTimeDuration(r1e)) => match value2 {
@@ -1087,9 +1055,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<days and time duration>", value2.type_of())
         }
-        Value::DaysAndTimeDuration(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::DaysAndTimeDuration(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "days and time duration or range<days and time duration>", value2.type_of()),
       },
       (Value::YearsAndMonthsDuration(r1s), Value::YearsAndMonthsDuration(r1e)) => match value2 {
@@ -1099,9 +1065,7 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
           }
           invalid_argument_type!("includes", "range<years and months duration>", value2.type_of())
         }
-        Value::YearsAndMonthsDuration(point2) => {
-          return Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2));
-        }
+        Value::YearsAndMonthsDuration(point2) => Value::Boolean(includes_rp!(r1s, c1s, r1e, c1e, point2)),
         _ => invalid_argument_type!("includes", "years and months duration or range<years and months duration>", value2.type_of()),
       },
       _ => invalid_argument_type!("includes", "scalar or range<scalar>", value1.type_of()),
@@ -1593,17 +1557,87 @@ pub fn odd(value: &Value) -> Value {
   }
 }
 
-/// ???
-pub fn overlaps(_value1: &Value, _value2: &Value) -> Value {
-  value_null!("unimplemented")
+/// Evaluates the value of the `overlaps` function for two ranges.
+macro_rules! overlaps_rr {
+  ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
+    !(($r1e < $r2s || ($r1e == $r2s && (*$c1e != *$c2s || (!*$c1e && !*$c2s)))) || ($r2e < $r1s || ($r2e == $r1s && (*$c2e != *$c1s || (!*$c2e && !*$c1s)))))
+  };
 }
 
-/// ???
+/// Returns `true` when two ranges overlap.
+pub fn overlaps(value1: &Value, value2: &Value) -> Value {
+  if let Value::Range(range1_start, c1s, range1_end, c1e) = value1 {
+    if let Value::Range(range2_start, c2s, range2_end, c2e) = value2 {
+      match (range1_start.borrow(), range1_end.borrow()) {
+        (Value::Number(r1s), Value::Number(r1e)) => {
+          return if let (Value::Number(r2s), Value::Number(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<number>", value2.type_of())
+          }
+        }
+        (Value::Date(r1s), Value::Date(r1e)) => {
+          return if let (Value::Date(r2s), Value::Date(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<date>", value2.type_of())
+          }
+        }
+        (Value::Time(r1s), Value::Time(r1e)) => {
+          return if let (Value::Time(r2s), Value::Time(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<time>", value2.type_of())
+          }
+        }
+        (Value::DateTime(r1s), Value::DateTime(r1e)) => {
+          return if let (Value::DateTime(r2s), Value::DateTime(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<date and time>", value2.type_of())
+          }
+        }
+        (Value::DaysAndTimeDuration(r1s), Value::DaysAndTimeDuration(r1e)) => {
+          return if let (Value::DaysAndTimeDuration(r2s), Value::DaysAndTimeDuration(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<days and time duration>", value2.type_of())
+          }
+        }
+        (Value::YearsAndMonthsDuration(r1s), Value::YearsAndMonthsDuration(r1e)) => {
+          return if let (Value::YearsAndMonthsDuration(r2s), Value::YearsAndMonthsDuration(r2e)) = (range2_start.borrow(), range2_end.borrow()) {
+            Value::Boolean(overlaps_rr!(r1s, c1s, r1e, c1e, r2s, c2s, r2e, c2e))
+          } else {
+            invalid_argument_type!("overlaps", "range<years and months duration>", value2.type_of())
+          }
+        }
+        _ => {}
+      }
+    }
+  }
+  invalid_argument_type!("overlaps", "range<scalar>", value1.type_of())
+}
+
+/// Evaluates the value of the `overlaps_after` function for two ranges.
+macro_rules! overlaps_after_rr {
+  ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
+    false
+  };
+}
+
+/// Returns `true` when first range overlaps the end of the second range.
 pub fn overlaps_after(_value1: &Value, _value2: &Value) -> Value {
   value_null!("unimplemented")
 }
 
-/// ???
+/// Evaluates the value of the `overlaps_before` function for two ranges.
+macro_rules! overlaps_after_rr {
+  ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
+    false
+  };
+}
+
+/// Returns `true` when first range overlaps the beginning of the second range.
 pub fn overlaps_before(_value1: &Value, _value2: &Value) -> Value {
   value_null!("unimplemented")
 }
@@ -1782,9 +1816,89 @@ pub fn sqrt(value: &Value) -> Value {
   }
 }
 
-/// ???
-pub fn started_by(_value1: &Value, _value2: &Value) -> Value {
-  value_null!("unimplemented")
+/// Evaluates the value of the `started by` function for range and point.
+macro_rules! started_by_rp {
+  ($rs:expr, $cs:expr, $p:expr) => {
+    *$cs && $rs == $p
+  };
+}
+
+/// Evaluates the value of the `started by` function for two ranges.
+macro_rules! started_by_rr {
+  ($r1s:expr, $c1s:expr, $r2s:expr, $c2s:expr) => {
+    $c1s == $c2s && $r1s == $r2s
+  };
+}
+
+/// Returns `true` when range is _started_ by point or other range.
+pub fn started_by(value1: &Value, value2: &Value) -> Value {
+  if let Value::Range(range1_start, c1s, _, _) = value1 {
+    match range1_start.borrow() {
+      Value::Number(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::Number(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<number>", value2.type_of())
+        }
+        Value::Number(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "number or range<number>", value2.type_of()),
+      },
+      Value::Date(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::Date(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<date>", value2.type_of())
+        }
+        Value::Date(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "date or range<date>", value2.type_of()),
+      },
+      Value::Time(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::Time(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<time>", value2.type_of())
+        }
+        Value::Time(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "time or range<time>", value2.type_of()),
+      },
+      Value::DateTime(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::DateTime(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<date and time>", value2.type_of())
+        }
+        Value::DateTime(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "date and time or range<date and time>", value2.type_of()),
+      },
+      Value::DaysAndTimeDuration(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::DaysAndTimeDuration(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<days and time duration>", value2.type_of())
+        }
+        Value::DaysAndTimeDuration(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "days and time duration or range<days and time duration>", value2.type_of()),
+      },
+      Value::YearsAndMonthsDuration(r1s) => match value2 {
+        Value::Range(range2_start, c2s, _, _) => {
+          if let Value::YearsAndMonthsDuration(r2s) = range2_start.borrow() {
+            return Value::Boolean(started_by_rr!(r1s, c1s, r2s, c2s));
+          }
+          invalid_argument_type!("started by", "range<years and months duration>", value2.type_of())
+        }
+        Value::YearsAndMonthsDuration(point2) => Value::Boolean(started_by_rp!(r1s, c1s, point2)),
+        _ => invalid_argument_type!("started by", "years and months duration or range<years and months duration>", value2.type_of()),
+      },
+      _ => invalid_argument_type!("started by", "scalar or range<scalar>", value1.type_of()),
+    }
+  } else {
+    invalid_argument_type!("started by", "range<scalar>", value1.type_of())
+  }
 }
 
 /// ???
