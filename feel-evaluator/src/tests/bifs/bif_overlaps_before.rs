@@ -40,16 +40,19 @@ fn _0001() {
 }
 
 #[test]
+#[ignore]
 fn _0002() {
   te_null(false, &scope!(), r#"overlaps before([1..5],[3..8])"#, "unimplemented");
 }
 
 #[test]
+#[ignore]
 fn _0003() {
   te_null(false, &scope!(), r#"overlaps before(range1: [1..5], range2: [3..8])"#, "unimplemented");
 }
 
 #[test]
+#[ignore]
 fn _0004() {
   te_null(false, &scope!(), r#"overlaps before(range2: [3..8], range1: [1..5])"#, "unimplemented");
 }
