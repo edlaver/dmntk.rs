@@ -439,7 +439,7 @@ fn bif_get_value(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_includes(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE).zip(get_param(parameters, &NAME_POINT)) {
     core::includes(value1, value2)
   } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::includes(value1, value2)
