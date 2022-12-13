@@ -167,6 +167,24 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
   // both cases are handled below
   let type_ref = variable.type_ref.as_ref().unwrap().clone();
   Ok(match type_ref.as_str() {
+    "Any" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
+      if let Value::Context(ctx) = value {
+        if let Some(v) = ctx.get_entry(&variable_name) {
+          return (variable_name.clone(), v.clone());
+        }
+      }
+      (variable_name.clone(), value_null!())
+    }),
+    "Null" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
+      if let Value::Context(ctx) = value {
+        if let Some(v) = ctx.get_entry(&variable_name) {
+          if let Value::Null(_) = v {
+            return (variable_name.clone(), v.clone());
+          }
+        }
+      }
+      (variable_name.clone(), value_null!())
+    }),
     "string" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {

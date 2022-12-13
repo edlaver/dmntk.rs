@@ -4,9 +4,10 @@
              id="_beec708e-1f83-4af2-b464-9ea97bd09392"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
     <description>FEEL equality</description>
-    <!-- some test cases always supply value `null` for this InputData -->
+
     <inputData name="null_input" id="_null_input">
-        <variable name="null_input" typeRef="Any"/>
+        <!-- some test cases always supply value `null` for this InputData -->
+        <variable typeRef="Any" name="null_input"/>
     </inputData>
 
     <decision name="null_001" id="_null_001">
