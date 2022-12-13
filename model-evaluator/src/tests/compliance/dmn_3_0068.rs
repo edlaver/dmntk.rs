@@ -469,3 +469,9 @@ fn _0072() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "deep_007", &ctx, r#"false"#);
 }
+
+#[test]
+fn _0073() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_006", &ctx, r#"true"#);
+}
