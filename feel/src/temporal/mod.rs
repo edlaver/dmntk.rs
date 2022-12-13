@@ -240,7 +240,7 @@ fn nanos_to_string(nano: u64) -> String {
 }
 
 fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
-  hour < 24 && minute < 60 && second < 60
+  (hour < 24 && minute < 60 && second < 60) || (hour == 24 && minute == 0 && second == 0)
 }
 
 #[cfg(test)]

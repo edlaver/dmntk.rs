@@ -93,46 +93,56 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  te_time(false, &scope!(), r#"  time  (  "23:59:00"         )   "#, FeelTime::local(23, 59, 0, 0));
+  te_time(false, &scope!(), r#"time("23:59:59")"#, FeelTime::local(23, 59, 59, 0));
 }
 
 #[test]
 fn _0009() {
-  te_time(false, &scope!(), r#"time("23:59:00Z")"#, FeelTime::utc(23, 59, 0, 0));
+  te_time(false, &scope!(), r#"time("24:00:00")"#, FeelTime::local(0, 0, 0, 0));
 }
 
 #[test]
 fn _0010() {
-  te_time(false, &scope!(), r#"time("23:59:00z")"#, FeelTime::utc(23, 59, 0, 0));
+  te_time(false, &scope!(), r#"  time  (  "23:59:00"         )   "#, FeelTime::local(23, 59, 0, 0));
 }
 
 #[test]
 fn _0011() {
-  te_time(false, &scope!(), r#"time("11:22:33-00:00")"#, FeelTime::utc(11, 22, 33, 0));
+  te_time(false, &scope!(), r#"time("23:59:00Z")"#, FeelTime::utc(23, 59, 0, 0));
 }
 
 #[test]
 fn _0012() {
-  te_time(false, &scope!(), r#"time(from: "11:22:33-00:00")"#, FeelTime::utc(11, 22, 33, 0));
+  te_time(false, &scope!(), r#"time("23:59:00z")"#, FeelTime::utc(23, 59, 0, 0));
 }
 
 #[test]
 fn _0013() {
-  te_time(false, &scope!(), r#"time("11:22:33+00:00")"#, FeelTime::utc(11, 22, 33, 0));
+  te_time(false, &scope!(), r#"time("11:22:33-00:00")"#, FeelTime::utc(11, 22, 33, 0));
 }
 
 #[test]
 fn _0014() {
-  te_time(false, &scope!(), r#"time(time("11:00:00"))"#, FeelTime::local(11, 0, 0, 0));
+  te_time(false, &scope!(), r#"time(from: "11:22:33-00:00")"#, FeelTime::utc(11, 22, 33, 0));
 }
 
 #[test]
 fn _0015() {
-  te_time(false, &scope!(), r#"time(from: time("11:00:00"))"#, FeelTime::local(11, 0, 0, 0));
+  te_time(false, &scope!(), r#"time("11:22:33+00:00")"#, FeelTime::utc(11, 22, 33, 0));
 }
 
 #[test]
 fn _0016() {
+  te_time(false, &scope!(), r#"time(time("11:00:00"))"#, FeelTime::local(11, 0, 0, 0));
+}
+
+#[test]
+fn _0017() {
+  te_time(false, &scope!(), r#"time(from: time("11:00:00"))"#, FeelTime::local(11, 0, 0, 0));
+}
+
+#[test]
+fn _0018() {
   te_time(
     false,
     &scope!(),
@@ -142,12 +152,12 @@ fn _0016() {
 }
 
 #[test]
-fn _0017() {
+fn _0019() {
   te_time(false, &scope!(), r#"time(date and time("2019-12-06T11:00:00Z"))"#, FeelTime::utc(11, 0, 0, 0));
 }
 
 #[test]
-fn _0018() {
+fn _0020() {
   te_time(
     false,
     &scope!(),
@@ -157,68 +167,48 @@ fn _0018() {
 }
 
 #[test]
-fn _0019() {
+fn _0021() {
   te_time(false, &scope!(), r#"time(date and time("2019-12-06T11:00:00z"))"#, FeelTime::utc(11, 0, 0, 0));
 }
 
 #[test]
-fn _0020() {
+fn _0022() {
   te_time(false, &scope!(), r#"time(date("2019-12-06"))"#, FeelTime::utc(0, 0, 0, 0));
 }
 
 #[test]
-fn _0021() {
+fn _0023() {
   te_bool(false, &scope!(), r#"time("12:21:12") in [time("12:21:12")..time("12:21:12")]"#, true);
 }
 
 #[test]
-fn _0022() {
+fn _0024() {
   te_bool(false, &scope!(), r#"time("12:21:11") in [time("12:21:12")..time("12:21:12")]"#, false);
 }
 
 #[test]
-fn _0023() {
+fn _0025() {
   te_bool(false, &scope!(), r#"time("12:21:13") in [time("12:21:12")..time("12:21:12")]"#, false);
 }
 
 #[test]
-fn _0024() {
+fn _0026() {
   te_bool(false, &scope!(), r#"time("12:21:12") in (time("12:21:11")..time("12:21:13"))"#, true);
 }
 
 #[test]
-fn _0025() {
+fn _0027() {
   te_null(false, &scope!(), r#"time("22:63:12")"#, "time_1");
 }
 
 #[test]
-fn _0026() {
+fn _0028() {
   te_null(false, &scope!(), r#"time("22:10:12+15:00")"#, "time_1");
 }
 
 #[test]
-fn _0027() {
-  te_null(false, &scope!(), r#"time("22:10:12-15:00")"#, "time_1");
-}
-
-#[test]
-fn _0028() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(24,59,45,null)"#,
-    "[core::time_4] hour must be 0..23, current value is: 24",
-  );
-}
-
-#[test]
 fn _0029() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(23,60,45,null)"#,
-    "[core::time_4] minute must be 0..59, current value is: 60",
-  );
+  te_null(false, &scope!(), r#"time("22:10:12-15:00")"#, "time_1");
 }
 
 #[test]
@@ -246,13 +236,33 @@ fn _0032() {
   te_null(
     false,
     &scope!(),
+    r#"time(24,59,45,null)"#,
+    "[core::time_4] hour must be 0..23, current value is: 24",
+  );
+}
+
+#[test]
+fn _0033() {
+  te_null(
+    false,
+    &scope!(),
+    r#"time(23,60,45,null)"#,
+    "[core::time_4] minute must be 0..59, current value is: 60",
+  );
+}
+
+#[test]
+fn _0034() {
+  te_null(
+    false,
+    &scope!(),
     r#"time(23,59,60,null)"#,
     "[core::time_4] second must be 0..59, current value is: 60",
   );
 }
 
 #[test]
-fn _0033() {
+fn _0035() {
   te_null(
     false,
     &scope!(),
@@ -262,7 +272,7 @@ fn _0033() {
 }
 
 #[test]
-fn _0034() {
+fn _0036() {
   te_null(
     false,
     &scope!(),
@@ -272,7 +282,7 @@ fn _0034() {
 }
 
 #[test]
-fn _0035() {
+fn _0037() {
   te_null(
     false,
     &scope!(),
@@ -282,17 +292,17 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0038() {
   te_time(false, &scope!(), r#"time(11,59,45)"#, FeelTime::local(11, 59, 45, 0));
 }
 
 #[test]
-fn _0037() {
+fn _0039() {
   te_null(false, &scope!(), r#"time()"#, r#"expected 1,3,4 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
-fn _0038() {
+fn _0040() {
   te_null(
     false,
     &scope!(),
@@ -302,7 +312,7 @@ fn _0038() {
 }
 
 #[test]
-fn _0039() {
+fn _0041() {
   te_null(
     false,
     &scope!(),
@@ -312,12 +322,12 @@ fn _0039() {
 }
 
 #[test]
-fn _0040() {
+fn _0042() {
   te_null(false, &scope!(), r#"time(f: "11:22:33-00:00")"#, r#"invalid parameters in bif time"#);
 }
 
 #[test]
-fn _0041() {
+fn _0043() {
   te_null(
     false,
     &scope!(),
@@ -327,7 +337,7 @@ fn _0041() {
 }
 
 #[test]
-fn _0042() {
+fn _0044() {
   te_null(
     false,
     &scope!(),
@@ -337,7 +347,7 @@ fn _0042() {
 }
 
 #[test]
-fn _0043() {
+fn _0045() {
   te_null(
     false,
     &scope!(),
@@ -347,7 +357,7 @@ fn _0043() {
 }
 
 #[test]
-fn _0044() {
+fn _0046() {
   te_null(
     false,
     &scope!(),
@@ -357,7 +367,7 @@ fn _0044() {
 }
 
 #[test]
-fn _0045() {
+fn _0047() {
   te_null(
     false,
     &scope!(),
@@ -367,7 +377,7 @@ fn _0045() {
 }
 
 #[test]
-fn _0046() {
+fn _0048() {
   te_null(
     false,
     &scope!(),
@@ -377,7 +387,7 @@ fn _0046() {
 }
 
 #[test]
-fn _0047() {
+fn _0049() {
   te_null(
     false,
     &scope!(),
@@ -388,6 +398,6 @@ fn _0047() {
 
 #[test]
 #[ignore]
-fn _0048() {
+fn _0050() {
   te_null(false, &scope!(), r#"time(23,59,45,@"P3000000000000000000D")"#, "aaa");
 }

@@ -58,8 +58,8 @@ impl std::fmt::Display for FeelDateTime {
 impl TryFrom<&str> for FeelDateTime {
   type Error = DmntkError;
   /// Converts string into [FeelDateTime].
-  fn try_from(value: &str) -> Result<Self, Self::Error> {
-    if let Some(captures) = RE_DATE_AND_TIME.captures(value) {
+  fn try_from(s: &str) -> Result<Self, Self::Error> {
+    if let Some(captures) = RE_DATE_AND_TIME.captures(s) {
       if let Some(year_match) = captures.name("year") {
         if let Ok(mut year) = year_match.as_str().parse::<Year>() {
           if captures.name("sign").is_some() {
@@ -70,7 +70,7 @@ impl TryFrom<&str> for FeelDateTime {
               if let Some(day_match) = captures.name("day") {
                 if let Ok(day) = day_match.as_str().parse::<Day>() {
                   if let Some(hour_match) = captures.name("hours") {
-                    if let Ok(hour) = hour_match.as_str().parse::<u8>() {
+                    if let Ok(mut hour) = hour_match.as_str().parse::<u8>() {
                       if let Some(min_match) = captures.name("minutes") {
                         if let Ok(min) = min_match.as_str().parse::<u8>() {
                           if let Some(sec_match) = captures.name("seconds") {
@@ -86,6 +86,13 @@ impl TryFrom<&str> for FeelDateTime {
                                 let date = FeelDate::new(year, month, day);
                                 if let Some(zone) = FeelZone::from_captures(&captures) {
                                   if is_valid_time(hour, min, sec) {
+                                    if hour == 24 {
+                                      if min != 0 || sec != 0 || nanos != 0 {
+                                        // fix for hour == 24 //TODO make it more reasonably
+                                        return Err(err_invalid_date_time_literal(s));
+                                      }
+                                      hour = 0;
+                                    }
                                     let time = FeelTime(hour, min, sec, nanos, zone);
                                     return Ok(FeelDateTime(date, time));
                                   }
@@ -104,7 +111,7 @@ impl TryFrom<&str> for FeelDateTime {
         }
       }
     }
-    Err(err_invalid_date_time_literal(value))
+    Err(err_invalid_date_time_literal(s))
   }
 }
 

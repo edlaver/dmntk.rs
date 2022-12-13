@@ -62,8 +62,8 @@ pub fn err_empty_literal_expression() -> DmntkError {
   ModelEvaluatorError("empty literal expression".into()).into()
 }
 
-pub fn err_empty_decision_logic() -> DmntkError {
-  ModelEvaluatorError("empty decision logic in decision".into()).into()
+pub fn err_empty_decision_logic(s: &str) -> DmntkError {
+  ModelEvaluatorError(format!("empty decision logic in decision id = {s}")).into()
 }
 
 pub fn err_empty_encapsulated_logic() -> DmntkError {
