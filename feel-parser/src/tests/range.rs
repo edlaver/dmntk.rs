@@ -88,3 +88,27 @@ fn _0002() {
     false,
   );
 }
+
+#[test]
+fn _0003() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"(<=10) = [1..10]"#,
+    r#"
+       Eq
+       ├─ UnaryLe
+       │  └─ Numeric
+       │     └─ `10.`
+       └─ Range
+          ├─ IntervalStart (closed)
+          │  └─ Numeric
+          │     └─ `1.`
+          └─ IntervalEnd (closed)
+             └─ Numeric
+                └─ `10.`
+    "#,
+    false,
+  );
+}
