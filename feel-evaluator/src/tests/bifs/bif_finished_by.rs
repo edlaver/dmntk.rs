@@ -205,12 +205,7 @@ fn _0025() {
 
 #[test]
 fn _0026() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by(range2: [1..20],range1: [5..20])"#,
-    "[named::finished by] invalid named parameters",
-  );
+  te_bool(false, &scope!(), r#"finished by(range2: [1..20],range1: [5..20])"#, true);
 }
 
 #[test]

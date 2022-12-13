@@ -300,12 +300,7 @@ fn _0036() {
 
 #[test]
 fn _0037() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(range: [1..20], point: 20)"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_bool(false, &scope!(), r#"finishes(range: [1..20], point: 20)"#, true);
 }
 
 #[test]
@@ -365,12 +360,7 @@ fn _0044() {
 
 #[test]
 fn _0045() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(range2: [1..20], range1: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_bool(false, &scope!(), r#"finishes(range2: [1..20], range1: [1..20])"#, true);
 }
 
 #[test]
