@@ -133,8 +133,9 @@ impl Workspace {
           let name = definitions.name().to_string();
           self.model_evaluators_by_name.insert(name, model_evaluator);
         }
-        Err(_reason) => {
+        Err(reason) => {
           //TODO prepare status report
+          eprintln!("{reason}");
         }
       }
     }
