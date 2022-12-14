@@ -44,7 +44,6 @@ use std::env;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
-use time::OffsetDateTime;
 
 const DMNTK_NAME: &str = env!("CARGO_PKG_NAME");
 const DMNTK_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -330,7 +329,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
     workspace: RwLock::new(workspace),
   });
   let address = get_server_address(opt_host, opt_port);
-  println!("dmntk {address} [{}]", OffsetDateTime::now_local().unwrap());
+  println!("dmntk {address}");
   HttpServer::new(move || {
     App::new()
       .app_data(application_data.clone())

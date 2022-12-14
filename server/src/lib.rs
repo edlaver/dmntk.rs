@@ -23,7 +23,6 @@ extern crate dmntk_feel_parser;
 extern crate dmntk_model;
 extern crate dmntk_workspace;
 extern crate serde;
-extern crate time;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
