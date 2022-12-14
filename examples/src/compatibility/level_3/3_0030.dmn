@@ -2,7 +2,10 @@
 <definitions namespace="https://github.com/dmn-tck/tck"
              name="0030-user-defined-functions"
              id="_3cc4a1ee-68b8-4fc3-b686-e690f8fa7dcc"
-             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/">
     <description>Tests definition of functions in a boxed expression and invocation of those.</description>
     <decision name="simple function invocation" id="_WdFa8IDoEee-MeWXoLgrYg">
         <variable typeRef="string" name="simple function invocation" id="_0zDvUYDyEeehqsf_bU54Lw"/>
@@ -74,4 +77,37 @@
     <inputData name="stringInputB" id="_vfL7kIDqEeehqsf_bU54Lw">
         <variable typeRef="string" name="stringInputB" id="_xZw4QYDyEeehqsf_bU54Lw"/>
     </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_pKGjoH6LEeePe9Zmt-encA_D1">
+            <dmndi:Size height="650.0" width="668.0"/>
+            <dmndi:DMNShape dmnElementRef="_WdFa8IDoEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_GNiCIIDzEeehqsf_bU54Lw" id="_pKGjoH6LEeePe9Zmt-encA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_Aq8u4IDpEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s3">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_vfL7kIDqEeehqsf_bU54Lw" id="_pKGjoH6LEeePe9Zmt-encA_s4">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2" id="_pKGjoH6LEeePe9Zmt-encA_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_80651cb0-93f7-44bd-b3b5-a7a2b52193c7" id="_pKGjoH6LEeePe9Zmt-encA_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_22db6269-f1f9-47c7-ad84-00274956556c" id="_pKGjoH6LEeePe9Zmt-encA_e3">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="e61c8236-e671-4ced-a93a-994e3b318364" id="_pKGjoH6LEeePe9Zmt-encA_e4">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
 </definitions>
