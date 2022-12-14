@@ -705,10 +705,10 @@
         </literalExpression>
     </decision>
     <decision name="datetime_009" id="_datetime_009">
-        <description>Tests FEEL expression: 'date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC")' and expects result: 'false (boolean)'</description>
+        <description>Tests FEEL expression: 'date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC")' and expects result: 'true (boolean)'</description>
         <question>Result of FEEL expression 'date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC")'?</question>
-        <allowedAnswers>false (boolean)</allowedAnswers>
-        <variable typeRef="boolean" name="datetime_009"/>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable name="datetime_009"/>
         <literalExpression>
             <text>date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC")</text>
         </literalExpression>

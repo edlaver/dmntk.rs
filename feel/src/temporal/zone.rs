@@ -39,6 +39,8 @@ use regex::Captures;
 use std::fmt;
 use std::ops::{Div, Rem};
 
+const ETC_UTC: &str = "Etc/UTC";
+
 /// FEEL time zone.
 #[derive(Debug, Clone)]
 pub enum FeelZone {
@@ -81,6 +83,7 @@ impl PartialEq for FeelZone {
   fn eq(&self, other: &Self) -> bool {
     match (self, other) {
       (FeelZone::Utc, FeelZone::Utc) => true,
+      (FeelZone::Utc, FeelZone::Zone(zone_name)) => zone_name == ETC_UTC,
       (FeelZone::Local, FeelZone::Local) => true,
       (FeelZone::Offset(offset1), FeelZone::Offset(offset2)) => offset1 == offset2,
       (FeelZone::Offset(offset1), FeelZone::Zone(zone_name)) => {
@@ -98,6 +101,7 @@ impl PartialEq for FeelZone {
           false
         }
       }
+      (FeelZone::Zone(zone_name), FeelZone::Utc) => zone_name == ETC_UTC,
       _ => false,
     }
   }
