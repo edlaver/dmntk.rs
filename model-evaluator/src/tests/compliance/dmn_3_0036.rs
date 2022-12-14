@@ -38,56 +38,49 @@ lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0036);
 }
 
+const CTX_1: &str = r#"
+  {
+    "Another Date": @"2018-07-31",
+    "Another Date and Time": @"2018-07-31T17:13:00Z",
+    "Another Days and Time Duration": @"PT12H",
+    "Another String": "Hello",
+    "Another Time": @"17:13:00",
+    "Another Years and Months Duration": @"P8M",
+    "Another boolean": false,
+    "Another number": 15,
+    Complex: {
+      aBoolean: true,
+      aDate: @"2018-07-30",
+      aDateTime: @"2018-07-30T16:12:00Z",
+      aDaysAndTimeDuration: @"PT10H",
+      aNumber: 10,
+      aString: "Hi",
+      aTime: @"16:11:00",
+      aYearsAndMonthsDuration: @"P5M"
+    }
+  }"#;
+
 #[test]
-#[ignore]
 fn _0001() {
-  let ctx = context(
-    r#"
-      {
-        "Another Date":  @"2018-07-31",
-        "Another Date and Time":  @"2018-07-31T17: 13: 00Z",
-        "Another Days and Time Duration":  @"PT12H",
-        "Another String":  "Hello",
-        "Another Time":  @"17: 13: 00",
-        "Another Years and Months Duration":  @"P8M",
-        "Another boolean":  false,
-        "Another number":  15,
-        Complex:  {
-          aBoolean:  true,
-          aDate:  @"2018-07-30",
-          aDateTime:  @"2018-07-30T16: 12: 00Z",
-          aDaysAndTimeDuration:  @"PT10H",
-          aNumber:  10,
-          aString:  "Hi",
-          aTime:  @"16: 11: 00",
-          aYearsAndMonthsDuration:  @"P5M"
-        }
-      }
-    "#,
-  );
-  assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#""foo""#);
+  let ctx = context(CTX_1);
+  assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#""Not same boolean""#);
 }
 
-/*
-
 #[test]
-fn _000() {
-
-  let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
+fn _0002() {
+  let ctx = context(CTX_1);
   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Different String""#);
 }
 
-
 #[test]
-fn _000() {
-
-  let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time:  7: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
+fn _0003() {
+  let ctx = context(CTX_1);
   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Future Date""#);
 }
-
+/*
 
 #[test]
-fn _000() {
+fn _0004() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Bigger""#);
@@ -95,7 +88,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0005() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Future date time""#);
@@ -103,7 +96,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0006() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Longer duration""#);
@@ -111,7 +104,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0007() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Longer duration""#);
@@ -119,7 +112,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0008() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Future Time""#);
@@ -127,7 +120,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0009() {
 
   let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#"null(no rules matched, no output value defined)"#);
@@ -135,7 +128,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0010() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Different String""#);
@@ -143,7 +136,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0011() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Past Date""#);
@@ -151,7 +144,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0012() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Smaller""#);
@@ -159,7 +152,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0013() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Past date time""#);
@@ -167,7 +160,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0014() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Shorter duration""#);
@@ -175,7 +168,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0015() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Shorter duration""#);
@@ -183,7 +176,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0016() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Past Time""#);
@@ -191,7 +184,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0017() {
 
   let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#"null(no rules matched, no output value defined)"#);
@@ -199,7 +192,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0018() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Same String""#);
@@ -207,7 +200,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0019() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Same Date""#);
@@ -215,7 +208,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0020() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Equals""#);
@@ -223,7 +216,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0021() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Same date time""#);
@@ -231,7 +224,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0022() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Same duration""#);
@@ -239,7 +232,7 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0023() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Same duration""#);
@@ -247,18 +240,40 @@ fn _000() {
 
 
 #[test]
-fn _000() {
+fn _0024() {
 
   let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Same Time""#);
 }
 
 
-#[test]
-fn _000() {
+*/
 
-  let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
+#[test]
+fn _0025() {
+  let ctx = context(
+    r#"
+    {
+      "Another Date": "2018-07-30",
+      "Another Date and Time": "2018-07-30T16:12:00Z",
+       Another Days and Time Duration: "PT10H",
+       Another String: "Hi",
+       Another Time: "16:11:00",
+       Another Years and Months Duration: "P5M",
+       Another boolean: true,
+       Another number: 10,
+       Complex: {
+         aBoolean: true,
+         aDate: "2018-07-30",
+         aDateTime: "2018-07-30T16:12:00Z",
+         aDaysAndTimeDuration: "PT10H",
+         aNumber: 10,
+         aString: "Hi",
+         aTime: "16:11:00",
+         aYearsAndMonthsDuration: "P5M"
+      }
+    }
+  "#,
+  );
   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#""Same boolean""#);
 }
-
- */

@@ -1834,7 +1834,7 @@ fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
 fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::Number(_) | inner @ Value::String(_) => {
+      inner @ Value::Number(_) | inner @ Value::String(_) | inner @ Value::Boolean(_) => {
         if let Value::Boolean(true) = eval_in_equal(left, inner) {
           return Value::Boolean(false);
         }
