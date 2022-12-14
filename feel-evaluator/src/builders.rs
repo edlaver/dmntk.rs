@@ -1694,6 +1694,46 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
       Value::Null(_) => Some(false),
       _ => None,
     },
+    Value::UnaryGreater(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && !*ce && re.is_null() {
+          eval_ternary_equality(end, rs)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryLess(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && !*ce && rs.is_null() {
+          eval_ternary_equality(end, re)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryGreaterOrEqual(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if *cs && !*ce && re.is_null() {
+          eval_ternary_equality(end, rs)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryLessOrEqual(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && *ce && rs.is_null() {
+          eval_ternary_equality(end, re)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
     _ => None,
   }
 }

@@ -1072,45 +1072,44 @@
         </literalExpression>
     </decision>
 
-    <!--
-        <decision name="range_007" id="_range_007">
-            <description>Tests FEEL expression: "(&lt;= 10) = (null_input..10]" and expects result: 'true (boolean)'</description>
-            <question>Tests FEEL expression: '(&lt;= 10) = (null_input..10]'?</question>
-            <allowedAnswers>true (boolean)</allowedAnswers>
-            <variable name="range_007"/>
-            <informationRequirement>
-                <requiredInput href="#_null_input"/>
-            </informationRequirement>
-            <literalExpression>
-                <text>(&lt;= 10) = (null_input..10]</text>
-            </literalExpression>
-        </decision>
+    <decision name="range_007" id="_range_007">
+        <description>Tests FEEL expression: "(&lt;= 10) = (null_input..10]" and expects result: 'true (boolean)'</description>
+        <question>Tests FEEL expression: '(&lt;= 10) = (null_input..10]'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable name="range_007"/>
+        <informationRequirement>
+            <requiredInput href="#_null_input"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>(&lt;= 10) = (null_input..10]</text>
+        </literalExpression>
+    </decision>
 
-        <decision name="range_008" id="_range_008">
-            <description>Tests FEEL expression: "(&gt; 10) = (10..null_input)" and expects result: 'true (boolean)'</description>
-            <question>Tests FEEL expression: '(&gt; 10) = (10..null_input)'?</question>
-            <allowedAnswers>true (boolean)</allowedAnswers>
-            <variable name="range_008"/>
-            <informationRequirement>
-                <requiredInput href="#_null_input"/>
-            </informationRequirement>
-            <literalExpression>
-                <text>(&gt; 10) = (10..null_input)</text>
-            </literalExpression>
-        </decision>
+    <decision name="range_008" id="_range_008">
+        <description>Tests FEEL expression: "(&gt; 10) = (10..null_input)" and expects result: 'true (boolean)'</description>
+        <question>Tests FEEL expression: '(&gt; 10) = (10..null_input)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable name="range_008"/>
+        <informationRequirement>
+            <requiredInput href="#_null_input"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>(&gt; 10) = (10..null_input)</text>
+        </literalExpression>
+    </decision>
 
-        <decision name="range_009" id="_range_009">
-            <description>Tests FEEL expression: "(&gt;= 10) = [10..null_input)" and expects result: 'true (boolean)'</description>
-            <question>Tests FEEL expression: '(&gt;= 10) = [10..null_input)'?</question>
-            <allowedAnswers>true (boolean)</allowedAnswers>
-            <variable name="range_009"/>
-            <informationRequirement>
-                <requiredInput href="#_null_input"/>
-            </informationRequirement>
-            <literalExpression>
-                <text>(&gt;= 10) = [10..null_input)</text>
-            </literalExpression>
-        </decision> -->
+    <decision name="range_009" id="_range_009">
+        <description>Tests FEEL expression: "(&gt;= 10) = [10..null_input)" and expects result: 'true (boolean)'</description>
+        <question>Tests FEEL expression: '(&gt;= 10) = [10..null_input)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable name="range_009"/>
+        <informationRequirement>
+            <requiredInput href="#_null_input"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>(&gt;= 10) = [10..null_input)</text>
+        </literalExpression>
+    </decision>
 
 </definitions>
 

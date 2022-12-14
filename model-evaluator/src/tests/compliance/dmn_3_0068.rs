@@ -475,3 +475,21 @@ fn _0073() {
   let ctx = context(r#"{null_input: null}"#);
   assert_decision(&MODEL_EVALUATOR, "range_006", &ctx, r#"true"#);
 }
+
+#[test]
+fn _0074() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_007", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0075() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_008", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0076() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_009", &ctx, r#"true"#);
+}
