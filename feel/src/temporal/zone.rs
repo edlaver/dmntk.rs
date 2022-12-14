@@ -33,12 +33,14 @@
 //! Implementation of FEEL timezone.
 
 use crate::temporal::errors::err_invalid_time_zone_offset;
+use crate::temporal::get_zone_offset;
 use dmntk_common::DmntkError;
 use regex::Captures;
+use std::fmt;
 use std::ops::{Div, Rem};
 
 /// FEEL time zone.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub enum FeelZone {
   /// UTC time zone.
   Utc,
@@ -53,9 +55,9 @@ pub enum FeelZone {
   Zone(String),
 }
 
-impl std::fmt::Display for FeelZone {
+impl fmt::Display for FeelZone {
   /// Converts [FeelZone] into its text representation.
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       FeelZone::Utc => write!(f, "Z"),
       FeelZone::Local => write!(f, ""),
@@ -70,6 +72,33 @@ impl std::fmt::Display for FeelZone {
         }
       }
       FeelZone::Zone(zone) => write!(f, "@{zone}"),
+    }
+  }
+}
+
+impl PartialEq for FeelZone {
+  /// Returns `true` when two time zones are considered equal.
+  fn eq(&self, other: &Self) -> bool {
+    match (self, other) {
+      (FeelZone::Utc, FeelZone::Utc) => true,
+      (FeelZone::Local, FeelZone::Local) => true,
+      (FeelZone::Offset(offset1), FeelZone::Offset(offset2)) => offset1 == offset2,
+      (FeelZone::Offset(offset1), FeelZone::Zone(zone_name)) => {
+        if let Some(offset2) = get_zone_offset(zone_name) {
+          *offset1 == offset2
+        } else {
+          false
+        }
+      }
+      (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => get_zone_offset(zone_name1) == get_zone_offset(zone_name2),
+      (FeelZone::Zone(zone_name), FeelZone::Offset(offset2)) => {
+        if let Some(offset1) = get_zone_offset(zone_name) {
+          offset1 == *offset2
+        } else {
+          false
+        }
+      }
+      _ => false,
     }
   }
 }

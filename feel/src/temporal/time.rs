@@ -101,7 +101,8 @@ impl FromStr for FeelTime {
 
 impl PartialEq for FeelTime {
   fn eq(&self, other: &Self) -> bool {
-    self.0 == other.0 && self.1 == other.1 && self.2 == other.2 && self.3 == other.3 && self.4 == other.4
+    /* nanoseconds are omitted during time comparison */
+    self.0 == other.0 && self.1 == other.1 && self.2 == other.2 && self.4 == other.4
   }
 }
 

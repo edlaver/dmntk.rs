@@ -200,6 +200,15 @@ fn get_zone_offset_t(zone_name: &str, time: (u32, u32, u32, u32)) -> Option<i32>
   get_zone_offset_dt(zone_name, (today.year(), today.month(), today.day()), time)
 }
 
+/// Returns time offset (in seconds) of the named time zone and UTC time zone.
+fn get_zone_offset(zone_name: &str) -> Option<i32> {
+  let now = Utc::now();
+  let time = now.time();
+  let t = (time.hour(), time.minute(), time.second(), time.nanosecond());
+  let d = (now.year(), now.month(), now.day());
+  get_zone_offset_dt(zone_name, d, t)
+}
+
 /// Converts nanoseconds into string.
 ///
 /// Calculates the remaining number of nanoseconds in a second (modulo),

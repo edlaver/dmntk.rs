@@ -11,6 +11,7 @@ edition.workspace = true
 [dependencies]
 actix-web = "4.2.1"
 base64 = "0.13.1"
+time = { versiojn = "0.3.17", features = ["local-offset"] }
 dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
 dmntk-feel.workspace = true

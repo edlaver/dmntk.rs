@@ -1734,6 +1734,17 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
       }
       _ => None,
     },
+    Value::Range(r1s, c1s, r1e, c1e) => match rhs {
+      Value::Range(r2s, c2s, r2e, c2e) => {
+        if *c1s == *c2s && *c1e == *c2e {
+          if let Some(true) = eval_ternary_equality(r1s, r2s) {
+            return eval_ternary_equality(r1e, r2e);
+          }
+        }
+        Some(false)
+      }
+      _ => None,
+    },
     _ => None,
   }
 }
