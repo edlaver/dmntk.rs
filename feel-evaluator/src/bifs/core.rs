@@ -59,10 +59,11 @@ macro_rules! invalid_argument_type {
 
 /// Returns the absolute value of the argument.
 pub fn abs(value: &Value) -> Value {
-  if let Value::Number(v) = value {
-    Value::Number(v.abs())
-  } else {
-    invalid_argument_type!("abs", "number", value.type_of())
+  match value {
+    Value::Number(v) => Value::Number(v.abs()),
+    Value::DaysAndTimeDuration(v) => Value::DaysAndTimeDuration(v.abs()),
+    Value::YearsAndMonthsDuration(v) => Value::YearsAndMonthsDuration(v.abs()),
+    _ => invalid_argument_type!("abs", "number", value.type_of()),
   }
 }
 
