@@ -162,8 +162,13 @@ pub fn te_years_and_months_duration(trace: bool, scope: &Scope, s: &str, years: 
     trace,
     scope,
     s,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(years, months)),
+    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(years, months)),
   );
+}
+
+/// Utility function that tests evaluation of year and months duration.
+pub fn te_years_and_months_duration_x(trace: bool, scope: &Scope, s: &str, expected: &str) {
+  textual_expression(trace, scope, s, Value::YearsAndMonthsDuration(expected.try_into().unwrap()));
 }
 
 /// Utility function that tests evaluation of days and time duration.
@@ -178,6 +183,11 @@ pub fn te_days_and_time_duration(trace: bool, scope: &Scope, s: &str, neg: bool,
       FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
     }),
   );
+}
+
+/// Utility function that tests evaluation of days and time duration.
+pub fn te_days_and_time_duration_x(trace: bool, scope: &Scope, s: &str, expected: &str) {
+  textual_expression(trace, scope, s, Value::DaysAndTimeDuration(expected.try_into().unwrap()));
 }
 
 /// Utility function that tests evaluation of time.

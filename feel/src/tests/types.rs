@@ -695,7 +695,7 @@ fn test_type_get_conformant_value() {
   let v_time = Value::Time(FeelTime::new_hms_opt(9, 2, 0, 0).unwrap());
   // years and months duration
   let t_years_and_months_duration = FeelType::YearsAndMonthsDuration;
-  let v_years_and_months_duration = Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 3));
+  let v_years_and_months_duration = Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3));
   // list
   let t_list_a = FeelType::List(Box::new(FeelType::Boolean));
   let v_list_a = Value::List(Values::new(vec![v_boolean_true.clone(), v_boolean_false.clone()]));

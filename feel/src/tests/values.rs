@@ -38,7 +38,7 @@ fn test_debug() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_dbg!(r#"Boolean(false)"#, Value::Boolean(false));
   eq_dbg!(r#"BuiltInFunction(Time)"#, Value::BuiltInFunction(Bif::Time));
   eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
@@ -111,7 +111,7 @@ fn test_display() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_dsp!(r#"false"#, Value::Boolean(false));
   eq_dsp!(r#"BuiltInFunction"#, Value::BuiltInFunction(Bif::Time));
   eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
@@ -171,7 +171,7 @@ fn test_type_of() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_typ!(FeelType::Boolean, Value::Boolean(false));
   eq_typ!(FeelType::Any, Value::BuiltInFunction(Bif::Time));
   eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
@@ -306,7 +306,7 @@ fn test_jsonify() {
   assert_eq!(r#""beta""#, Value::String("beta".to_string()).jsonify());
   assert_eq!(
     r#"jsonify not implemented for: P3Y2M"#,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(3, 2)).jsonify()
+    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(3, 2)).jsonify()
   );
 }
 

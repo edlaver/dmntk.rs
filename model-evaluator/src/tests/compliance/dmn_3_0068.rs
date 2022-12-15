@@ -525,7 +525,7 @@ fn _0080() {
 #[test]
 fn _0081() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_007", &ctx, r#"null(equal err 'PT0S' =?= '0')"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_007", &ctx, r#"null(equal err 'P0D' =?= '0')"#);
 }
 
 #[test]
@@ -573,7 +573,7 @@ fn _0088() {
 #[test]
 fn _0089() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_008", &ctx, r#"null(equal err 'P0M' =?= '0')"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_008", &ctx, r#"null(equal err 'P0Y' =?= '0')"#);
 }
 
 #[test]

@@ -94,37 +94,37 @@ fn _0008() {
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_009_cef3c1ed26", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_009_cef3c1ed26", &ctx, r#"P0D"#);
 }
 
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_010_5b452a4975", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_010_5b452a4975", &ctx, r#"P0D"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_011_2169615b94", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_011_2169615b94", &ctx, r#"P0D"#);
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_012_2affe6d169", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_012_2affe6d169", &ctx, r#"P0D"#);
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_013_0e8e26513c", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_013_0e8e26513c", &ctx, r#"P0D"#);
 }
 
 #[test]
 fn _0014() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_014_598ba6fabd", &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_014_598ba6fabd", &ctx, r#"P0D"#);
 }
 
 #[test]
@@ -202,13 +202,13 @@ fn _0026() {
 #[test]
 fn _0027() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_027_33b7fb8704", &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_027_33b7fb8704", &ctx, r#"P0Y"#);
 }
 
 #[test]
 fn _0028() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_028_971b94f16d", &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-duration-function_028_971b94f16d", &ctx, r#"P0Y"#);
 }
 
 #[test]

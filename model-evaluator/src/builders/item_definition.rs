@@ -598,7 +598,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Growth", "Duration"])).unwrap();
     assert_eq!(
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 5)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 5)),
       evaluator.eval("tGrowthDuration", value).unwrap()
     );
   }
@@ -742,8 +742,8 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
     let expected = Value::List(Values::new(vec![
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 3)),
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 4)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 4)),
     ]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }

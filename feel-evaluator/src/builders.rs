@@ -1129,6 +1129,44 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Number(lh * rh),
+        Value::DaysAndTimeDuration(ref rh) => {
+          let val = lh * FeelNumber::from(rh.as_nanos());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        Value::YearsAndMonthsDuration(ref rh) => {
+          let val = lh * FeelNumber::from(rh.as_months());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::DaysAndTimeDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          let val = rh * FeelNumber::from(lh.as_nanos());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::YearsAndMonthsDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          let val = rh * FeelNumber::from(lh.as_months());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
       },
       value @ Value::Null(_) => value,

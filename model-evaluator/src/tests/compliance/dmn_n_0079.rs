@@ -172,7 +172,7 @@ fn _0019() {
 #[test]
 fn _0020() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_003", &ctx, r#""PT0S""#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_003", &ctx, r#""P0D""#);
 }
 
 #[test]
@@ -202,7 +202,7 @@ fn _0024() {
 #[test]
 fn _0025() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#""P0M""#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#""P0Y""#);
 }
 
 #[test]

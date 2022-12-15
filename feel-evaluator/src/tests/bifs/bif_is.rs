@@ -115,12 +115,7 @@ fn _0014() {
 
 #[test]
 fn _0015() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(time(12,13,15))"#,
-    "expected 2 parameters, actual number of parameters is 1",
-  );
+  te_bool(false, &scope!(), r#"is(time(12,13,15))"#, false);
 }
 
 #[test]
@@ -135,32 +130,17 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(10,time(12,13,15))"#,
-    "[core::is] invalid argument type, expected date or time, actual type is number",
-  );
+  te_bool(false, &scope!(), r#"is(10,time(12,13,15))"#, false);
 }
 
 #[test]
 fn _0018() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(time(12,13,15), 10)"#,
-    "[core::is] invalid argument type, expected time, actual type is number",
-  );
+  te_bool(false, &scope!(), r#"is(time(12,13,15), 10)"#, false);
 }
 
 #[test]
 fn _0019() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(date(2012,11,15), 10)"#,
-    "[core::is] invalid argument type, expected date, actual type is number",
-  );
+  te_bool(false, &scope!(), r#"is(date(2012,11,15), 10)"#, false);
 }
 
 #[test]

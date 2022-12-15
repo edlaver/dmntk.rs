@@ -165,7 +165,7 @@ impl FeelDate {
         months -= 1;
       }
     }
-    FeelYearsAndMonthsDuration::new_m(months)
+    FeelYearsAndMonthsDuration::from_m(months)
   }
   ///
   pub fn year(&self) -> Year {

@@ -55,7 +55,6 @@ lazy_static! {
 }
 
 /// FEEL days and time duration.
-#[must_use]
 #[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
 pub struct FeelDaysAndTimeDuration(i64);
 
@@ -102,6 +101,10 @@ impl FeelDaysAndTimeDuration {
   pub fn as_seconds(&self) -> isize {
     (self.0 / NANOSECONDS_IN_SECOND) as isize
   }
+  /// Returns the this duration as nanoseconds.
+  pub fn as_nanos(&self) -> i64 {
+    self.0
+  }
   /// Returns absolute value of the duration.
   pub fn abs(&self) -> Self {
     Self(self.0.abs())
@@ -147,7 +150,7 @@ impl std::fmt::Display for FeelDaysAndTimeDuration {
     nanoseconds -= seconds * NANOSECONDS_IN_SECOND;
     let nanoseconds_str = super::nanos_to_string(nanoseconds as u64);
     match (day > 0, hour > 0, minute > 0, seconds > 0, nanoseconds > 0) {
-      (false, false, false, false, false) => write!(f, "PT0S"),
+      (false, false, false, false, false) => write!(f, "P0D"),
       (false, false, false, true, false) => write!(f, "{sign}PT{seconds}S"),
       (false, false, true, false, false) => write!(f, "{sign}PT{minute}M"),
       (false, false, true, true, false) => write!(f, "{sign}PT{minute}M{seconds}S"),
@@ -350,7 +353,7 @@ mod tests {
   #[test]
   fn converting_to_string_should_pass() {
     equals_str("PT0.999S", false, 0, 999_000_000);
-    equals_str("PT0S", false, 0, 0);
+    equals_str("P0D", false, 0, 0);
     equals_str("PT1S", false, 1, 0);
     equals_str("-PT1S", true, 1, 0);
     equals_str("PT1.123S", false, 1, 123_000_000);
