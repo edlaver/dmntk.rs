@@ -86,10 +86,6 @@ pub fn err_empty_function_body() -> DmntkError {
   ModelEvaluatorError("empty function definition body".into()).into()
 }
 
-pub fn err_empty_value_expression() -> DmntkError {
-  ModelEvaluatorError("empty value expression".into()).into()
-}
-
 pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {
   ModelEvaluatorError(format!("read lock failed with reason '{}'", reason.to_string())).into()
 }

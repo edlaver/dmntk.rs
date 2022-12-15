@@ -342,8 +342,8 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   let function_evaluator = build_expression_instance_evaluator(scope, Some(body))?;
   for parameter in function_definition.formal_parameters() {
     let name = parameter.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-    let value_expression = parameter.value_expression().as_ref().ok_or_else(err_empty_value_expression)?;
-    let evaluator = build_expression_instance_evaluator(scope, Some(value_expression))?;
+    let value_expression = parameter.value_expression().as_ref();
+    let evaluator = build_expression_instance_evaluator(scope, value_expression)?;
     parameters.push((name, evaluator));
   }
   Ok(Box::new(move |scope: &Scope| {
