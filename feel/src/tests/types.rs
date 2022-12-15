@@ -2,7 +2,8 @@ use crate::context::FeelContext;
 use crate::names::Name;
 use crate::types::{is_built_in_type_name, FeelType};
 use crate::values::{Value, Values};
-use crate::{value_null, value_number, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelYearsAndMonthsDuration, FunctionBody, Scope};
+use crate::{value_null, value_number, FeelNumber, FunctionBody, Scope};
+use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::sync::Arc;
 
 #[test]

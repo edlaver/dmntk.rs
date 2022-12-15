@@ -37,10 +37,8 @@ use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{
-  subtract, value_null, AstNode, Evaluator, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelType, FeelYearsAndMonthsDuration,
-  FunctionBody, Name, Scope,
-};
+use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, Scope};
+use dmntk_feel_temporal::{subtract, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;

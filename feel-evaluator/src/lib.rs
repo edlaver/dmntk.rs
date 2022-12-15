@@ -35,6 +35,7 @@
 extern crate dmntk_common;
 extern crate dmntk_feel;
 extern crate dmntk_feel_parser;
+extern crate dmntk_feel_temporal;
 #[macro_use]
 extern crate lazy_static;
 extern crate regex;

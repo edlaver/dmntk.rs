@@ -37,8 +37,7 @@ extern crate chrono;
 extern crate chrono_tz;
 extern crate dmntk_common;
 extern crate dmntk_feel_number;
-#[macro_use]
-extern crate lazy_static;
+extern crate dmntk_feel_temporal;
 extern crate regex;
 
 pub use ast::{AstNode, OptAstNode};
@@ -49,13 +48,6 @@ pub use names::Name;
 pub use qualified_names::QualifiedName;
 pub use scope::Scope;
 pub use strings::ToFeelString;
-pub use temporal::date::FeelDate;
-pub use temporal::date_time::FeelDateTime;
-pub use temporal::dt_duration::FeelDaysAndTimeDuration;
-pub use temporal::time::FeelTime;
-pub use temporal::ym_duration::FeelYearsAndMonthsDuration;
-pub use temporal::zone::FeelZone;
-pub use temporal::{subtract, Day, DayOfWeek, DayOfYear, Month, MonthOfYear, WeekOfYear, Year};
 pub use types::{is_built_in_type_name, FeelType};
 
 mod ast;
@@ -68,7 +60,6 @@ mod names;
 mod qualified_names;
 mod scope;
 mod strings;
-mod temporal;
 #[cfg(test)]
 mod tests;
 mod types;

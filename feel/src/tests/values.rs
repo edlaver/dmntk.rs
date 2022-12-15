@@ -2,10 +2,9 @@ use crate::bif::Bif;
 use crate::context::FeelContext;
 use crate::function::FunctionBody;
 use crate::values::{Value, Values};
-use crate::{
-  value_number, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelType, FeelYearsAndMonthsDuration, Name, Scope, ToFeelString,
-};
+use crate::{value_number, FeelNumber, FeelType, Name, Scope, ToFeelString};
 use dmntk_common::Jsonify;
+use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::collections::BTreeMap;
 use std::sync::Arc;
 

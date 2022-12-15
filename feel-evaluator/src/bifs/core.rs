@@ -35,9 +35,9 @@
 use crate::evaluate_equals;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{
-  value_null, value_number, value_string, DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime,
-  FeelYearsAndMonthsDuration, MonthOfYear, Name, Scope, ToFeelString, WeekOfYear,
+use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
+use dmntk_feel_temporal::{
+  DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear,
 };
 use regex::Regex;
 use std::borrow::Borrow;

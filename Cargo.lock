@@ -587,7 +587,7 @@ dependencies = [
  "chrono-tz",
  "dmntk-common",
  "dmntk-feel-number",
- "lazy_static",
+ "dmntk-feel-temporal",
  "regex",
 ]
 
@@ -598,6 +598,7 @@ dependencies = [
  "dmntk-common",
  "dmntk-feel",
  "dmntk-feel-parser",
+ "dmntk-feel-temporal",
  "lazy_static",
  "regex",
 ]
@@ -669,6 +670,7 @@ dependencies = [
  "dmntk-feel",
  "dmntk-feel-evaluator",
  "dmntk-feel-parser",
+ "dmntk-feel-temporal",
  "dmntk-model",
  "dmntk-recognizer",
  "lazy_static",

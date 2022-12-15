@@ -31,7 +31,8 @@
  */
 
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelYearsAndMonthsDuration, Month, Scope, Year};
+use dmntk_feel::{AstNode, FeelNumber, Scope};
+use dmntk_feel_temporal::{Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, Month, Year};
 
 use crate::builders::build_evaluator;
 
