@@ -83,7 +83,7 @@ fn _0007() {
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-lower-case-function_008_9913ad454f", &ctx, r#""xyz""#);
+  assert_decision(&MODEL_EVALUATOR, "feel-lower-case-function_008_9913ad454f", &ctx, r#""xyz ""#);
 }
 
 #[test]

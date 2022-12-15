@@ -77,7 +77,7 @@ fn _0006() {
 #[test]
 fn _0007() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-upper-case-function_007_31fc6c1967", &ctx, r#""XYZ""#);
+  assert_decision(&MODEL_EVALUATOR, "feel-upper-case-function_007_31fc6c1967", &ctx, r#""XYZ ""#);
 }
 
 #[test]

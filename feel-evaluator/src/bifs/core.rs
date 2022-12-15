@@ -1165,7 +1165,7 @@ pub fn log(number: &Value) -> Value {
 /// Returns lower-cased string.
 pub fn lower_case(input_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
-    Value::String(input_string.to_lowercase().trim().to_string())
+    Value::String(input_string.to_lowercase())
   } else {
     invalid_argument_type!("lower case", "string", input_string_value.type_of())
   }
@@ -2463,7 +2463,7 @@ pub fn union(lists: &[Value]) -> Value {
 /// Returns upper-cased string.
 pub fn upper_case(input_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
-    Value::String(input_string.to_uppercase().trim().to_string())
+    Value::String(input_string.to_uppercase())
   } else {
     invalid_argument_type!("upper case", "string", input_string_value.type_of())
   }

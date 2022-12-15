@@ -35,12 +35,12 @@ use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
-  te_string(false, &scope!(), r#"lower case("xyZ ")"#, r#"xyz"#);
+  te_string(false, &scope!(), r#"lower case("xyZ ")"#, r#"xyz "#);
 }
 
 #[test]
 fn _0002() {
-  te_string(false, &scope!(), r#"lower case(string:"xyZ ")"#, r#"xyz"#);
+  te_string(false, &scope!(), r#"lower case(string:"xyZ ")"#, r#"xyz "#);
 }
 
 #[test]
