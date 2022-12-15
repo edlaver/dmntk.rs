@@ -629,6 +629,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dmntk-feel-temporal"
+version = "0.0.48-dev"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "dmntk-common",
+ "dmntk-feel-number",
+ "lazy_static",
+ "regex",
+]
+
+[[package]]
 name = "dmntk-gendoc"
 version = "0.0.48-dev"
 dependencies = [
