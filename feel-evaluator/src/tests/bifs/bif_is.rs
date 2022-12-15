@@ -84,9 +84,7 @@ fn _0010() {
 }
 
 #[test]
-#[ignore]
 fn _0011() {
-  //TODO It is not precisely defined if `z` offset, +00:00 offset and Etc/UTC should be treated equally. Time is the same, but specification says that these values should be treated not equal. Check it.
   te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50@Etc/UTC"))"#, true);
 }
 
@@ -162,5 +160,15 @@ fn _0019() {
     &scope!(),
     r#"is(date(2012,11,15), 10)"#,
     "[core::is] invalid argument type, expected date, actual type is number",
+  );
+}
+
+#[test]
+fn _0020() {
+  te_null(
+    false,
+    &scope!(),
+    r#"is(value1:time(12,13,14), value2:time("12:13:15"), value3:time("12:13:16"))"#,
+    "expected 2 parameters, actual number of parameters is 3",
   );
 }

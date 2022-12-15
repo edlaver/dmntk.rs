@@ -1117,22 +1117,41 @@ pub fn insert_before(list: &Value, position_value: &Value, new_item_value: &Valu
 }
 
 /// Returns `true` if both values are the same element in the FEEL semantic domain.
-///
-/// This function is rudimentary described in the specification,
-/// so the current version compares only `date` and `time` types
-/// for equality. This function may be easily extended for other types
-/// when more details are available.
 pub fn is(value1: &Value, value2: &Value) -> Value {
   match value1 {
-    Value::Date(date1) => match value2 {
-      Value::Date(date2) => Value::Boolean(date1 == date2),
-      _ => invalid_argument_type!("is", "date", value2.type_of()),
+    Value::Number(v1) => match value2 {
+      Value::Number(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
     },
-    Value::Time(time1) => match value2 {
-      Value::Time(time2) => Value::Boolean(time1 == time2),
-      _ => invalid_argument_type!("is", "time", value2.type_of()),
+    Value::String(v1) => match value2 {
+      Value::String(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
     },
-    _ => invalid_argument_type!("is", "date or time", value1.type_of()),
+    Value::Boolean(v1) => match value2 {
+      Value::Boolean(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    Value::Date(v1) => match value2 {
+      Value::Date(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    Value::Time(v1) => match value2 {
+      Value::Time(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    Value::DateTime(v1) => match value2 {
+      Value::DateTime(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    Value::DaysAndTimeDuration(v1) => match value2 {
+      Value::DaysAndTimeDuration(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    Value::YearsAndMonthsDuration(v1) => match value2 {
+      Value::YearsAndMonthsDuration(v2) => Value::Boolean(v1 == v2),
+      _ => Value::Boolean(false),
+    },
+    _ => invalid_argument_type!("is", "", value1.type_of()),
   }
 }
 
