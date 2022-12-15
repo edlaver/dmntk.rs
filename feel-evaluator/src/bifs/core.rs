@@ -1826,17 +1826,17 @@ pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replace
           }
           if flags.is_empty() {
             if let Ok(re) = Regex::new(&patt) {
-              let result = re.replace_all(input_string.as_str(), repl.as_str()).trim().to_string();
+              let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
               return Value::String(result);
             }
           } else if let Ok(re) = Regex::new(format!("(?{flags}){patt}").as_str()) {
-            let result = re.replace_all(input_string.as_str(), repl.as_str()).trim().to_string();
+            let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
             return Value::String(result);
           }
         }
         // replace without any flags
         if let Ok(re) = Regex::new(pattern_string) {
-          let result = re.replace_all(input_string.as_str(), repl.as_str()).trim().to_string();
+          let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
           return Value::String(result);
         }
       }

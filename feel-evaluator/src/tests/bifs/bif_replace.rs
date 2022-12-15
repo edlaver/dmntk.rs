@@ -145,12 +145,12 @@ fn _0021() {
 
 #[test]
 fn _0022() {
-  te_string(false, &scope!(), r##"replace("a b c d ","[a-z]","#","x")"##, r##"# # # #"##);
+  te_string(false, &scope!(), r##"replace("a b c d ","[a-z]","#","x")"##, r##"# # # # "##);
 }
 
 #[test]
 fn _0023() {
-  te_string(false, &scope!(), r##"replace("a b c d ","[a-z]","#")"##, r##"# # # #"##);
+  te_string(false, &scope!(), r##"replace("a b c d ","[a-z]","#")"##, r##"# # # # "##);
 }
 
 #[test]
