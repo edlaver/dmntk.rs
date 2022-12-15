@@ -427,6 +427,54 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
         _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
       },
+      Value::DaysAndTimeDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          if rh.is_zero() {
+            value_null!("[division] division by zero")
+          } else {
+            let vl = FeelNumber::from(lh.as_nanos()) / rh;
+            if let Ok(v) = FeelNumber::try_into(vl) {
+              Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+            } else {
+              value_null!("[division] error: {} * {}", lhv, rhv)
+            }
+          }
+        }
+        Value::DaysAndTimeDuration(rh) => {
+          if rh.as_nanos() == 0 {
+            value_null!("[division] division by zero")
+          } else {
+            let lvl = FeelNumber::from(lh.as_nanos());
+            let rvl = FeelNumber::from(rh.as_nanos());
+            Value::Number(lvl / rvl)
+          }
+        }
+        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::YearsAndMonthsDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          if rh.is_zero() {
+            value_null!("[division] division by zero")
+          } else {
+            let vl = FeelNumber::from(lh.as_months()) / rh;
+            if let Ok(v) = FeelNumber::try_into(vl) {
+              Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+            } else {
+              value_null!("[division] error: {} * {}", lhv, rhv)
+            }
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
+          if rh.as_months() == 0 {
+            value_null!("[division] division by zero")
+          } else {
+            let lvl = FeelNumber::from(lh.as_months());
+            let rvl = FeelNumber::from(rh.as_months());
+            Value::Number(lvl / rvl)
+          }
+        }
+        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
+      },
       _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
     }
   }))
@@ -1149,7 +1197,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       },
       Value::DaysAndTimeDuration(ref lh) => match rhv {
         Value::Number(rh) => {
-          let val = rh * FeelNumber::from(lh.as_nanos());
+          let val = FeelNumber::from(lh.as_nanos()) * rh;
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
           } else {
@@ -1160,7 +1208,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       },
       Value::YearsAndMonthsDuration(ref lh) => match rhv {
         Value::Number(rh) => {
-          let val = rh * FeelNumber::from(lh.as_months());
+          let val = FeelNumber::from(lh.as_months()) * rh;
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
           } else {

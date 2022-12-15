@@ -965,7 +965,7 @@ fn get_param<'a>(parameters: &'a NamedParameters, name: &'a Name) -> Option<(&'a
 /// Returns the number of named parameters.
 fn get_param_count(parameters: &NamedParameters) -> usize {
   if let Value::NamedParameters(map) = parameters {
-    return map.len();
+    map.len()
   } else {
     0
   }
