@@ -82,6 +82,30 @@ impl FeelYearsAndMonthsDuration {
   }
 }
 
+impl std::ops::Add<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the sum of durations.
+  fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self {
+    Self(self.0 + rhs.0)
+  }
+}
+
+impl std::ops::Sub<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the subtraction of durations.
+  fn sub(self, rhs: FeelYearsAndMonthsDuration) -> Self {
+    Self(self.0 - rhs.0)
+  }
+}
+
+impl std::ops::Neg for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the arithmetic negation of this duration.
+  fn neg(self) -> Self {
+    Self(-self.0)
+  }
+}
+
 impl std::fmt::Display for FeelYearsAndMonthsDuration {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let sign = if self.0 < 0 { "-" } else { "" };

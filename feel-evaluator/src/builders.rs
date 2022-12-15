@@ -153,6 +153,13 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           value_null!("addition err 3")
         }
       }
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(rh) = rhv {
+          Value::YearsAndMonthsDuration(lh + rh)
+        } else {
+          value_null!("addition err 4")
+        }
+      }
       value @ Value::Null(_) => value,
       _ => value_null!("addition err"),
     }
@@ -1645,6 +1652,16 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(a) = subtract(&lh, &rh) {
             return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().nano(a).build());
           }
+        }
+      }
+      Value::DaysAndTimeDuration(lh) => {
+        if let Value::DaysAndTimeDuration(rh) = rhv {
+          return Value::DaysAndTimeDuration(lh - rh);
+        }
+      }
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(rh) = rhv {
+          return Value::YearsAndMonthsDuration(lh - rh);
         }
       }
       _ => {}
