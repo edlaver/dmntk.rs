@@ -96,7 +96,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   // prepare output variable type for this decision
   let output_variable_type = output_variable.feel_type(&item_definition_type_evaluator);
   // prepare expression instance for this decision
-  let expression_instance = decision.decision_logic().as_ref().ok_or_else(|| err_empty_decision_logic(decision.name()))?;
+  let expression_instance = decision.decision_logic().as_ref();
   // this context contains null values to all variable names, just to bring only the names into scope
   let mut ctx = FeelContext::default();
   // bring into context the variables from this decision's knowledge requirements
