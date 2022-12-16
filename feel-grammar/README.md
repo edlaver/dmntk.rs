@@ -10,6 +10,8 @@
 ![build MacOs][build-badge-macos]
 ![Code coverage][coverage-badge]
 
+![Release][release-badge]
+
 [crates-badge]: https://img.shields.io/crates/v/dmntk-feel-grammar.svg
 [crates-url]: https://crates.io/crates/dmntk-feel-grammar
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg
@@ -20,6 +22,7 @@
 [build-badge-windows]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-windows.yml/badge.svg
 [build-badge-macos]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-macos.yml/badge.svg
 [coverage-badge]: https://img.shields.io/badge/Coverage-100%25-green.svg
+[release-badge]: https://img.shields.io/badge/ALPHA-c48793.svg
 
 ## Overview
 
