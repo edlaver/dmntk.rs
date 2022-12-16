@@ -616,7 +616,7 @@ dependencies = [
  "chrono-tz",
  "dmntk-common 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-number 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.51 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex",
 ]
 
@@ -631,7 +631,7 @@ dependencies = [
  "chrono-tz",
  "dmntk-common 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-number 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.50",
  "regex",
 ]
 
@@ -642,7 +642,7 @@ dependencies = [
  "dmntk-common 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.51 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static",
  "regex",
 ]
@@ -656,7 +656,7 @@ dependencies = [
  "dmntk-common 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.50",
  "lazy_static",
  "regex",
 ]
@@ -721,6 +721,8 @@ dependencies = [
 [[package]]
 name = "dmntk-feel-temporal"
 version = "0.0.50"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed75d0d78381098fdc57522070018ce592b517d0e2e5a8a7f0a5a295108e74a0"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -732,9 +734,21 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-temporal"
-version = "0.0.50"
+version = "0.0.51"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "dmntk-common 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-number 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "lazy_static",
+ "regex",
+]
+
+[[package]]
+name = "dmntk-feel-temporal"
+version = "0.0.51"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed75d0d78381098fdc57522070018ce592b517d0e2e5a8a7f0a5a295108e74a0"
+checksum = "137fba26ed11a6e6e830a2ec99c44e73cb20d036803d37c4c738e71072cfc1cd"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -796,7 +810,7 @@ dependencies = [
  "dmntk-feel 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-evaluator 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.51 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-model 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-recognizer 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static",
@@ -812,7 +826,7 @@ dependencies = [
  "dmntk-feel 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-evaluator 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
  "dmntk-feel-parser 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
- "dmntk-feel-temporal 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dmntk-feel-temporal 0.0.50",
  "dmntk-model 0.0.50 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
