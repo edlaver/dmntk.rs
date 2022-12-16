@@ -6,6 +6,7 @@
 ![build Windows][build-badge-windows]
 ![build MacOs][build-badge-macos]
 ![Code coverage][coverage-badge]
+
 [![Contributor Covenant][coc-badge]](https://github.com/dmntk/dmntk.rs/blob/main/CODE_OF_CONDUCT.md)
 
 ![Release][release-badge]
