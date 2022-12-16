@@ -2,7 +2,7 @@
 
 # set variables
 NAME=dmntk
-VERSION=0.0.46-dev
+VERSION=0.0.53-dev
 
 # clean before proceeding
 cargo clean
@@ -10,8 +10,8 @@ docker stop $NAME
 docker rm $NAME
 docker rmi "$(docker images | grep $VERSION | awk '{print $3}')"
 
-# build musl target
-cargo build --target x86_64-unknown-linux-musl --release
+# build the toolkit
+cargo +stable build --release --target x86_64-unknown-linux-musl
 
 # build the docker image
 docker build -t $NAME:$VERSION .
