@@ -24,7 +24,7 @@
 
 ## Project status
 
-Released ![Release][release-badge] version, check this [README](dmntk/README.md) for details.
+Released **ALPHA** version, check this [README](dmntk/README.md) for details.
 
 ## License
 
