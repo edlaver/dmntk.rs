@@ -20,19 +20,19 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.50"
+version = "0.0.52"
 authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [workspace.dependencies]
-dmntk-common = "0.0.50"
+dmntk-common = "=0.0.52"
 dmntk-evaluator = "0.0.50"
-dmntk-examples = "0.0.50"
+dmntk-examples = "=0.0.52"
 dmntk-feel = "0.0.50"
 dmntk-feel-evaluator = "0.0.50"
 dmntk-feel-grammar = "0.0.50"
-dmntk-feel-number = "0.0.50"
+dmntk-feel-number = "=0.0.50"
 dmntk-feel-parser = "0.0.50"
 dmntk-feel-temporal = "0.0.51"
 dmntk-gendoc = "0.0.50"

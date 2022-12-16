@@ -1,6 +1,6 @@
 [package]
 name = "dmntk-feel-temporal"
-version = "0.0.51"
+version.workspace = true
 authors.workspace = true
 description = "DMNTK | FEEL temporal"
 documentation = "https://docs.rs/dmntk-feel-temporal"
