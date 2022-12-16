@@ -34,24 +34,23 @@ use super::super::*;
 use dmntk_feel::scope;
 
 #[test]
-#[ignore]
 fn _0001() {
-  te_bool(false, &scope!(), r#"started by([1..20],20)"#, true);
+  te_bool(false, &scope!(), r#"started by([1..20],1)"#, true);
 }
 
 #[test]
 fn _0002() {
-  te_null(false, &scope!(), r#"started by([1..20],20)"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by((1..20],1)"#, false);
 }
 
 #[test]
 fn _0003() {
-  te_null(false, &scope!(), r#"started by(range: [1..20],point: 20)"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by(range: [1..20],point: 1)"#, true);
 }
 
 #[test]
 fn _0004() {
-  te_null(false, &scope!(), r#"started by(range1: [1..20],range2: [5..20])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"started by(range1: [1..20],range2: [1..10])"#, true);
 }
 
 #[test]
@@ -61,42 +60,22 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"started by([1..20],20,10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"started by([1..20],20,10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
 fn _0007() {
-  te_null(
-    false,
-    &scope!(),
-    r#"started by(range: [1..20],p: 20)"#,
-    "[named::started by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"started by(range: [1..20],p: 20)"#, "[named::started by] invalid named parameters");
 }
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    r#"started by(r: [1..20],point: 20)"#,
-    "[named::started by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"started by(r: [1..20],point: 20)"#, "[named::started by] invalid named parameters");
 }
 
 #[test]
 fn _0009() {
-  te_null(
-    false,
-    &scope!(),
-    r#"started by(r: [1..20],p: 20)"#,
-    "[named::started by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"started by(r: [1..20],p: 20)"#, "[named::started by] invalid named parameters");
 }
 
 #[test]
@@ -121,10 +100,5 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"started by(r1: [1..20],r2: [1..20])"#,
-    "[named::started by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"started by(r1: [1..20],r2: [1..20])"#, "[named::started by] invalid named parameters");
 }

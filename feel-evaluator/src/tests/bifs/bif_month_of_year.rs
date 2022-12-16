@@ -165,12 +165,7 @@ fn _0026() {
 
 #[test]
 fn _0027() {
-  te_null(
-    false,
-    &scope!(),
-    r#"month of year()"#,
-    "expected 1 parameters, actual number of parameters is 0",
-  );
+  te_null(false, &scope!(), r#"month of year()"#, "expected 1 parameters, actual number of parameters is 0");
 }
 
 #[test]

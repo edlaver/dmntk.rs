@@ -252,12 +252,7 @@ fn _0026(b: &mut Bencher) {
 fn _0027(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "Decision27";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([multiplication] incompatible types: 10 * null)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([multiplication] incompatible types: 10 * null)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

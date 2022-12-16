@@ -57,12 +57,7 @@ fn _0001(b: &mut Bencher) {
 fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_002_9b9e6085ce";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 1,3 parameters, actual number of parameters is 2)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 1,3 parameters, actual number of parameters is 2)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -161,12 +156,7 @@ fn _0009(b: &mut Bencher) {
 fn _0010(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_010_6d4d58d23a";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 1,3 parameters, actual number of parameters is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 1,3 parameters, actual number of parameters is 0)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -334,12 +324,7 @@ fn _0030(b: &mut Bencher) {
 fn _0031(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_031_4f5ec70669";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '2012-12-25T')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '2012-12-25T')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -363,12 +348,7 @@ fn _0033(b: &mut Bencher) {
 fn _0034(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_034_7d2e18a10c";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '0000-12-25T')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '0000-12-25T')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -376,12 +356,7 @@ fn _0034(b: &mut Bencher) {
 fn _0035(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_035_e6c1bb43fd";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '9999999999-12-25')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '9999999999-12-25')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -413,12 +388,7 @@ fn _0038(b: &mut Bencher) {
 fn _0039(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_039_67a6eafa3f";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '01211-12-31')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '01211-12-31')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -426,12 +396,7 @@ fn _0039(b: &mut Bencher) {
 fn _0040(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_040_dd2a2ed4a2";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '2012T-12-2511:00:00Z')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '2012T-12-2511:00:00Z')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -439,12 +404,7 @@ fn _0040(b: &mut Bencher) {
 fn _0041(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_041_9e7e388146";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date] invalid date string '+2012-12-02')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date string '+2012-12-02')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

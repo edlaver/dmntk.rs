@@ -173,7 +173,7 @@ fn _0022() {
 #[test]
 fn _0023() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-replace-function_023_5c337d3725", &ctx, r##""# # # #""##);
+  assert_decision(&MODEL_EVALUATOR, "feel-replace-function_023_5c337d3725", &ctx, r##""# # # # ""##);
 }
 
 #[test]

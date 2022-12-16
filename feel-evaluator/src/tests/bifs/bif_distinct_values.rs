@@ -70,10 +70,5 @@ fn _0006() {
 
 #[test]
 fn _0007() {
-  te_null(
-    false,
-    &scope!(),
-    r#"distinct values()"#,
-    r#"expected 1 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"distinct values()"#, r#"expected 1 parameters, actual number of parameters is 0"#);
 }

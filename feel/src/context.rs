@@ -83,12 +83,7 @@ impl std::fmt::Display for FeelContext {
     write!(
       f,
       "{{{}}}",
-      self
-        .0
-        .iter()
-        .map(|(name, value)| { format!(r#"{name}: {value}"#) })
-        .collect::<Vec<String>>()
-        .join(", ")
+      self.0.iter().map(|(name, value)| { format!(r#"{name}: {value}"#) }).collect::<Vec<String>>().join(", ")
     )
   }
 }

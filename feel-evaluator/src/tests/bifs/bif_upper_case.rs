@@ -35,12 +35,12 @@ use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
-  te_string(false, &scope!(), r#"upper case("xyZ ")"#, r#"XYZ"#);
+  te_string(false, &scope!(), r#"upper case("xyZ ")"#, r#"XYZ "#);
 }
 
 #[test]
 fn _0002() {
-  te_string(false, &scope!(), r#"upper case(string:"xyZ ")"#, r#"XYZ"#);
+  te_string(false, &scope!(), r#"upper case(string:"xyZ ")"#, r#"XYZ "#);
 }
 
 #[test]
@@ -50,22 +50,12 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  te_null(
-    false,
-    &scope!(),
-    r#"upper case()"#,
-    r#"expected 1 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"upper case()"#, r#"expected 1 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"upper case("ABC",4)"#,
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"upper case("ABC",4)"#, r#"expected 1 parameters, actual number of parameters is 2"#);
 }
 
 #[test]

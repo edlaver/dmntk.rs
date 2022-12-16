@@ -599,13 +599,7 @@ impl Definitions {
     self
       .drg_elements
       .iter()
-      .filter_map(|v| {
-        if let DrgElement::InputData(input_data) = v.borrow() {
-          Some(input_data)
-        } else {
-          None
-        }
-      })
+      .filter_map(|v| if let DrgElement::InputData(input_data) = v.borrow() { Some(input_data) } else { None })
       .collect::<Vec<&InputData>>()
   }
   /// Returns an optional reference to [KnowledgeSource] with specified identifier
@@ -1587,6 +1581,7 @@ pub enum ItemDefinitionType {
   CollectionOfSimpleType(FeelType),
   CollectionOfReferencedType(String),
   CollectionOfComponentType,
+  FunctionType,
 }
 
 /// [ItemDefinition] is used to model the inputs of a decision,

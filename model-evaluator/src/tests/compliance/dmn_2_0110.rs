@@ -58,10 +58,5 @@ fn _0002() {
 #[test]
 fn _0003() {
   let ctx = context(r#"{Age: 10,RiskCategory: "Low",isAffordable: true}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "Approval Status",
-    &ctx,
-    r#"[{Approved/Declined: "Declined", Rate: "Standard"}]"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#"[{Approved/Declined: "Declined", Rate: "Standard"}]"#);
 }

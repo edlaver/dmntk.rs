@@ -34,9 +34,10 @@
 
 use super::date::FeelDate;
 use super::zone::FeelZone;
-use super::{date_time_offset_t, feel_time_offset, feel_time_zone, get_local_offset_t, get_zone_offset_t, is_valid_time, nanos_to_string, RE_TIME};
-use crate::temporal::errors::err_invalid_time_literal;
-use crate::{FeelDateTime, FeelDaysAndTimeDuration};
+use crate::date_time::FeelDateTime;
+use crate::defs::*;
+use crate::dt_duration::FeelDaysAndTimeDuration;
+use crate::errors::*;
 use chrono::{DateTime, FixedOffset};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
@@ -63,7 +64,7 @@ impl FromStr for FeelTime {
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     if let Some(captures) = RE_TIME.captures(s) {
       if let Some(hour_match) = captures.name("hours") {
-        if let Ok(hour) = hour_match.as_str().parse::<u8>() {
+        if let Ok(mut hour) = hour_match.as_str().parse::<u8>() {
           if let Some(min_match) = captures.name("minutes") {
             if let Ok(min) = min_match.as_str().parse::<u8>() {
               if let Some(sec_match) = captures.name("seconds") {
@@ -76,6 +77,13 @@ impl FromStr for FeelTime {
                   }
                   let nanos = (fractional * 1e9).trunc() as u64;
                   if let Some(zone) = FeelZone::from_captures(&captures) {
+                    if hour == 24 {
+                      if min != 0 || sec != 0 || nanos != 0 {
+                        // fix for hour == 24 //TODO make it more reasonably
+                        return Err(err_invalid_time_literal(s));
+                      }
+                      hour = 0;
+                    }
                     let time = FeelTime(hour, min, sec, nanos, zone);
                     // even if parsing from string was successful, the time may still be invalid, so another check
                     let _: DateTime<FixedOffset> = time.clone().try_into().map_err(|_| err_invalid_time_literal(s))?;
@@ -94,7 +102,8 @@ impl FromStr for FeelTime {
 
 impl PartialEq for FeelTime {
   fn eq(&self, other: &Self) -> bool {
-    self.0 == other.0 && self.1 == other.1 && self.2 == other.2 && self.3 == other.3 && self.4 == other.4
+    /* nanoseconds are omitted during time comparison */
+    self.0 == other.0 && self.1 == other.1 && self.2 == other.2 && self.4 == other.4
   }
 }
 
@@ -167,7 +176,7 @@ impl FeelTime {
   pub fn new_hmso_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
     if is_valid_time(hour, minute, second) {
       if let Ok(zone) = FeelZone::try_from(offset) {
-        return Some(Self(hour, minute, second, nano, zone));
+        return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
       }
     }
     None
@@ -175,7 +184,7 @@ impl FeelTime {
 
   pub fn new_hms_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
     if is_valid_time(hour, minute, second) {
-      Some(Self(hour, minute, second, nano, FeelZone::Local))
+      Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
     } else {
       None
     }

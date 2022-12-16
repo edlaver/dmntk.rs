@@ -88,16 +88,16 @@ fn item_definition_type(item_definition: &ItemDefinition) -> Result<ItemDefiniti
     feel_type.is_some(),
     !item_definition.item_components().is_empty(),
     item_definition.is_collection(),
+    item_definition.function_item().is_some(),
   );
   match condition {
-    (_, true, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
-    (true, false, false, false) => Ok(ItemDefinitionType::ReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
-    (false, false, true, false) => Ok(ItemDefinitionType::ComponentType),
-    (_, true, false, true) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
-    (false, false, true, true) => Ok(ItemDefinitionType::CollectionOfComponentType),
-    (true, false, false, true) => Ok(ItemDefinitionType::CollectionOfReferencedType(
-      item_definition.type_ref().as_ref().unwrap().clone(),
-    )),
+    (_, true, false, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
+    (true, false, false, false, false) => Ok(ItemDefinitionType::ReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
+    (false, false, true, false, false) => Ok(ItemDefinitionType::ComponentType),
+    (_, true, false, true, false) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
+    (false, false, true, true, false) => Ok(ItemDefinitionType::CollectionOfComponentType),
+    (true, false, false, true, false) => Ok(ItemDefinitionType::CollectionOfReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
+    (false, false, false, false, true) => Ok(ItemDefinitionType::FunctionType),
     _ => Err(err_invalid_item_definition_type(item_definition.name())),
   }
 }
@@ -167,6 +167,24 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
   // both cases are handled below
   let type_ref = variable.type_ref.as_ref().unwrap().clone();
   Ok(match type_ref.as_str() {
+    "Any" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
+      if let Value::Context(ctx) = value {
+        if let Some(v) = ctx.get_entry(&variable_name) {
+          return (variable_name.clone(), v.clone());
+        }
+      }
+      (variable_name.clone(), value_null!())
+    }),
+    "Null" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
+      if let Value::Context(ctx) = value {
+        if let Some(v) = ctx.get_entry(&variable_name) {
+          if let Value::Null(_) = v {
+            return (variable_name.clone(), v.clone());
+          }
+        }
+      }
+      (variable_name.clone(), value_null!())
+    }),
     "string" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
@@ -265,14 +283,15 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
 }
 
 ///
-fn build_expression_instance_evaluator(scope: &Scope, expression_instance: &ExpressionInstance) -> Result<Evaluator> {
+fn build_expression_instance_evaluator(scope: &Scope, expression_instance: Option<&ExpressionInstance>) -> Result<Evaluator> {
   match expression_instance {
-    ExpressionInstance::Context(context) => build_context_evaluator(scope, context),
-    ExpressionInstance::DecisionTable(decision_table) => build_decision_table_evaluator(scope, decision_table),
-    ExpressionInstance::FunctionDefinition(function_definition) => build_function_definition_evaluator(scope, function_definition),
-    ExpressionInstance::Invocation(invocation) => build_invocation_evaluator(scope, invocation),
-    ExpressionInstance::LiteralExpression(literal_expression) => crate::builders::build_literal_expression_evaluator(scope, literal_expression),
-    ExpressionInstance::Relation(relation) => build_relation_evaluator(scope, relation),
+    Some(ExpressionInstance::Context(context)) => build_context_evaluator(scope, context),
+    Some(ExpressionInstance::DecisionTable(decision_table)) => build_decision_table_evaluator(scope, decision_table),
+    Some(ExpressionInstance::FunctionDefinition(function_definition)) => build_function_definition_evaluator(scope, function_definition),
+    Some(ExpressionInstance::Invocation(invocation)) => build_invocation_evaluator(scope, invocation),
+    Some(ExpressionInstance::LiteralExpression(literal_expression)) => crate::builders::build_literal_expression_evaluator(scope, literal_expression),
+    Some(ExpressionInstance::Relation(relation)) => build_relation_evaluator(scope, relation),
+    None => Ok(Box::new(move |_: &Scope| value_null!("no expression instance defined"))),
   }
 }
 
@@ -283,11 +302,11 @@ fn build_context_evaluator(scope: &Scope, context: &Context) -> Result<Evaluator
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
       let name = variable.feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
-      let evaluator = build_expression_instance_evaluator(scope, &context_entry.value)?;
+      let evaluator = build_expression_instance_evaluator(scope, Some(&context_entry.value))?;
       scope.insert_null(name.clone());
       entry_evaluators.push((Some(name.clone()), evaluator));
     } else {
-      let evaluator = build_expression_instance_evaluator(scope, &context_entry.value)?;
+      let evaluator = build_expression_instance_evaluator(scope, Some(&context_entry.value))?;
       entry_evaluators.push((None, evaluator));
     }
   }
@@ -320,10 +339,10 @@ fn build_decision_table_evaluator(scope: &Scope, decision_table: &DecisionTable)
 fn build_function_definition_evaluator(scope: &Scope, function_definition: &FunctionDefinition) -> Result<Evaluator> {
   let mut parameters = vec![];
   let body = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
-  let function_evaluator = build_expression_instance_evaluator(scope, body)?;
+  let function_evaluator = build_expression_instance_evaluator(scope, Some(body))?;
   for parameter in function_definition.formal_parameters() {
     let name = parameter.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-    let value_expression = parameter.value_expression().as_ref().ok_or_else(err_empty_value_expression)?;
+    let value_expression = parameter.value_expression().as_ref();
     let evaluator = build_expression_instance_evaluator(scope, value_expression)?;
     parameters.push((name, evaluator));
   }
@@ -344,11 +363,11 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
 ///
 fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation) -> Result<Evaluator> {
   let mut bindings = vec![];
-  let function_evaluator = build_expression_instance_evaluator(scope, invocation.called_function())?;
+  let function_evaluator = build_expression_instance_evaluator(scope, Some(invocation.called_function()))?;
   for binding in invocation.bindings() {
     if let Some(binding_formula) = binding.binding_formula() {
       let name = binding.parameter().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-      let evaluator = build_expression_instance_evaluator(scope, binding_formula)?;
+      let evaluator = build_expression_instance_evaluator(scope, Some(binding_formula))?;
       bindings.push((name, evaluator));
     }
   }
@@ -381,7 +400,7 @@ fn build_relation_evaluator(scope: &Scope, relation: &Relation) -> Result<Evalua
     for (i, element) in row.elements().iter().enumerate() {
       if let Some(column) = relation.columns().get(i) {
         let name = column.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        let evaluator = build_expression_instance_evaluator(scope, element)?;
+        let evaluator = build_expression_instance_evaluator(scope, Some(element))?;
         evaluators.push((name, evaluator));
       }
     }

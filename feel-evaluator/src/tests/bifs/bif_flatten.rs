@@ -45,12 +45,7 @@ fn _0002() {
 
 #[test]
 fn _0003() {
-  te_be_value(
-    false,
-    &scope!(),
-    r#"flatten([["w","x"],["y",["a","b","c"]],["z"]])"#,
-    r#"["w","x","y","a","b","c","z"]"#,
-  );
+  te_be_value(false, &scope!(), r#"flatten([["w","x"],["y",["a","b","c"]],["z"]])"#, r#"["w","x","y","a","b","c","z"]"#);
 }
 
 #[test]

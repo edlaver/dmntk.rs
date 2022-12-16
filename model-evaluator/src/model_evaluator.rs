@@ -74,45 +74,17 @@ impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator].
   pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
     let model_evaluator = Arc::new(ModelEvaluator::default());
-    model_evaluator
-      .input_data_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions)?;
-    model_evaluator
-      .input_data_context_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions)?;
-    model_evaluator
-      .item_definition_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions)?;
-    model_evaluator
-      .item_definition_context_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions)?;
-    model_evaluator
-      .item_definition_type_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions)?;
-    model_evaluator
-      .business_knowledge_model_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions, &model_evaluator)?;
-    model_evaluator
-      .decision_evaluator
-      .write()
-      .map_err(err_write_lock_failed)?
-      .build(definitions, &model_evaluator)?;
+    model_evaluator.input_data_evaluator.write().unwrap().build(definitions)?;
+    model_evaluator.input_data_context_evaluator.write().unwrap().build(definitions)?;
+    model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;
+    model_evaluator.item_definition_context_evaluator.write().unwrap().build(definitions)?;
+    model_evaluator.item_definition_type_evaluator.write().unwrap().build(definitions)?;
+    model_evaluator.business_knowledge_model_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
+    model_evaluator.decision_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
     model_evaluator
       .decision_service_evaluator
       .write()
-      .map_err(err_write_lock_failed)?
+      .unwrap()
       .build(definitions, Arc::clone(&model_evaluator))?;
     Ok(model_evaluator)
   }

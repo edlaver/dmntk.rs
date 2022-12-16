@@ -570,3 +570,65 @@ fn _0018() {
     false,
   );
 }
+
+#[test]
+fn _0019() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartContext,
+    r#"{Another Date: "2018-07-30"}"#,
+    r#"
+       Context
+       └─ ContextEntry
+          ├─ ContextEntryKey
+          │  └─ `Another Date`
+          └─ String
+             └─ `2018-07-30`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0020() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartContext,
+    r#"{Another Date and Time: "2018-07-30"}"#,
+    r#"
+       Context
+       └─ ContextEntry
+          ├─ ContextEntryKey
+          │  └─ `Another Date and Time`
+          └─ String
+             └─ `2018-07-30`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0021() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartContext,
+    r#"{"Another Date": "2018-07-30", "Another Date and Time": "2018-07-30T16:00:00"}"#,
+    r#"
+       Context
+       ├─ ContextEntry
+       │  ├─ ContextEntryKey
+       │  │  └─ `Another Date`
+       │  └─ String
+       │     └─ `2018-07-30`
+       └─ ContextEntry
+          ├─ ContextEntryKey
+          │  └─ `Another Date and Time`
+          └─ String
+             └─ `2018-07-30T16:00:00`
+    "#,
+    false,
+  );
+}

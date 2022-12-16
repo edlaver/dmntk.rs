@@ -43,5 +43,5 @@ pub mod model;
 
 /// Parses the XML document containing [Definitions] serialized to interchange format.
 pub fn parse(xml: &str) -> Result<Definitions> {
-  crate::model::parser::ModelParser::default().parse(xml)
+  model::parser::ModelParser::default().parse(xml)
 }

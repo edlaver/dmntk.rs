@@ -62,10 +62,6 @@ pub fn err_empty_literal_expression() -> DmntkError {
   ModelEvaluatorError("empty literal expression".into()).into()
 }
 
-pub fn err_empty_decision_logic() -> DmntkError {
-  ModelEvaluatorError("empty decision logic in decision".into()).into()
-}
-
 pub fn err_empty_encapsulated_logic() -> DmntkError {
   ModelEvaluatorError("empty encapsulated logic in business knowledge model".into()).into()
 }
@@ -90,14 +86,6 @@ pub fn err_empty_function_body() -> DmntkError {
   ModelEvaluatorError("empty function definition body".into()).into()
 }
 
-pub fn err_empty_value_expression() -> DmntkError {
-  ModelEvaluatorError("empty value expression".into()).into()
-}
-
 pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {
   ModelEvaluatorError(format!("read lock failed with reason '{}'", reason.to_string())).into()
-}
-
-pub fn err_write_lock_failed(reason: impl ToString) -> DmntkError {
-  ModelEvaluatorError(format!("write lock failed with reason '{}'", reason.to_string())).into()
 }

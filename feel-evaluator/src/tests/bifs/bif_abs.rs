@@ -89,22 +89,12 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  te_null(
-    false,
-    &scope!(),
-    r#"abs(duration("-P1D"))"#,
-    r#"[core::abs] invalid argument type, expected number, actual type is days and time duration"#,
-  );
+  te_days_and_time_duration(false, &scope!(), r#"abs(duration("-P1D"))"#, false, 24 * 60 * 60, 0);
 }
 
 #[test]
 fn _0011() {
-  te_null(
-    false,
-    &scope!(),
-    r#"abs(duration("-P1Y"))"#,
-    r#"[core::abs] invalid argument type, expected number, actual type is years and months duration"#,
-  );
+  te_years_and_months_duration(false, &scope!(), r#"abs(duration("-P1Y"))"#, 1, 0);
 }
 
 #[test]

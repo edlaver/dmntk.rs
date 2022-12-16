@@ -32,8 +32,9 @@
 
 //! Implementation of FEEL years and months duration.
 
-use crate::temporal::errors::*;
+use crate::errors::*;
 use dmntk_common::DmntkError;
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::convert::TryFrom;
 
@@ -57,11 +58,11 @@ pub struct FeelYearsAndMonthsDuration(i64);
 
 impl FeelYearsAndMonthsDuration {
   /// Created a new years and months duration from given number of `years` and `months`.
-  pub fn new_ym(years: i64, months: i64) -> Self {
+  pub fn from_ym(years: i64, months: i64) -> Self {
     Self(years * MONTHS_IN_YEAR + months)
   }
   /// Created a new years and months duration from given number of `months`.
-  pub fn new_m(months: i64) -> Self {
+  pub fn from_m(months: i64) -> Self {
     Self(months)
   }
   /// Returns the number of years in this duration.
@@ -82,6 +83,30 @@ impl FeelYearsAndMonthsDuration {
   }
 }
 
+impl std::ops::Add<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the sum of durations.
+  fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self {
+    Self(self.0 + rhs.0)
+  }
+}
+
+impl std::ops::Sub<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the subtraction of durations.
+  fn sub(self, rhs: FeelYearsAndMonthsDuration) -> Self {
+    Self(self.0 - rhs.0)
+  }
+}
+
+impl std::ops::Neg for FeelYearsAndMonthsDuration {
+  type Output = Self;
+  /// Returns the arithmetic negation of this duration.
+  fn neg(self) -> Self {
+    Self(-self.0)
+  }
+}
+
 impl std::fmt::Display for FeelYearsAndMonthsDuration {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let sign = if self.0 < 0 { "-" } else { "" };
@@ -89,7 +114,7 @@ impl std::fmt::Display for FeelYearsAndMonthsDuration {
     let year = month / MONTHS_IN_YEAR;
     month -= year * MONTHS_IN_YEAR;
     match (year > 0, month > 0) {
-      (false, false) => write!(f, "P0M"),
+      (false, false) => write!(f, "P0Y"),
       (false, true) => write!(f, "{sign}P{month}M"),
       (true, false) => write!(f, "{sign}P{year}Y"),
       (true, true) => write!(f, "{sign}P{year}Y{month}M"),
@@ -159,8 +184,8 @@ mod tests {
     equals(-12, "-P1Y");
     equals(15, "P1Y3M");
     equals(-15, "-P1Y3M");
-    equals(999999999 * super::MONTHS_IN_YEAR, "P999999999Y");
-    equals(-999999999 * super::MONTHS_IN_YEAR, "-P999999999Y");
+    equals(999999999 * MONTHS_IN_YEAR, "P999999999Y");
+    equals(-999999999 * MONTHS_IN_YEAR, "-P999999999Y");
   }
 
   #[test]
@@ -183,7 +208,7 @@ mod tests {
 
   #[test]
   fn test_converting_to_string_should_pass() {
-    equals_str("P0M", 0, 0);
+    equals_str("P0Y", 0, 0);
     equals_str("P1M", 0, 1);
     equals_str("-P1M", 0, -1);
     equals_str("P1Y", 1, 0);
@@ -194,85 +219,85 @@ mod tests {
 
   #[test]
   fn test_eq_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 0);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 0);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 0);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 0);
     assert!((a == b));
-    let a = FeelYearsAndMonthsDuration::new_ym(2, 3);
-    let b = FeelYearsAndMonthsDuration::new_ym(2, 3);
+    let a = FeelYearsAndMonthsDuration::from_ym(2, 3);
+    let b = FeelYearsAndMonthsDuration::from_ym(2, 3);
     assert!((a == b));
-    let a = FeelYearsAndMonthsDuration::new_ym(-3, 4);
-    let b = FeelYearsAndMonthsDuration::new_ym(-3, 4);
+    let a = FeelYearsAndMonthsDuration::from_ym(-3, 4);
+    let b = FeelYearsAndMonthsDuration::from_ym(-3, 4);
     assert!((a == b));
-    let a = FeelYearsAndMonthsDuration::new_m(0);
-    let b = FeelYearsAndMonthsDuration::new_m(0);
+    let a = FeelYearsAndMonthsDuration::from_m(0);
+    let b = FeelYearsAndMonthsDuration::from_m(0);
     assert!((a == b));
-    let a = FeelYearsAndMonthsDuration::new_m(-0);
-    let b = FeelYearsAndMonthsDuration::new_m(0);
+    let a = FeelYearsAndMonthsDuration::from_m(-0);
+    let b = FeelYearsAndMonthsDuration::from_m(0);
     assert!((a == b));
-    let a = FeelYearsAndMonthsDuration::new_m(-15);
-    let b = FeelYearsAndMonthsDuration::new_m(-15);
+    let a = FeelYearsAndMonthsDuration::from_m(-15);
+    let b = FeelYearsAndMonthsDuration::from_m(-15);
     assert!((a == b));
   }
 
   #[test]
   fn test_ne_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 0);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 1);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 0);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 1);
     assert!((a != b));
-    let a = FeelYearsAndMonthsDuration::new_m(1);
-    let b = FeelYearsAndMonthsDuration::new_m(0);
+    let a = FeelYearsAndMonthsDuration::from_m(1);
+    let b = FeelYearsAndMonthsDuration::from_m(0);
     assert!((a != b));
   }
 
   #[test]
   fn test_lt_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 0);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 1);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 0);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 1);
     assert!(a < b);
-    let a = FeelYearsAndMonthsDuration::new_m(4);
-    let b = FeelYearsAndMonthsDuration::new_m(5);
+    let a = FeelYearsAndMonthsDuration::from_m(4);
+    let b = FeelYearsAndMonthsDuration::from_m(5);
     assert!(a < b);
   }
 
   #[test]
   fn test_le_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 0);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 1);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 0);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 1);
     assert!(a <= b);
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 1);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 1);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 1);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 1);
     assert!(a <= b);
-    let a = FeelYearsAndMonthsDuration::new_m(12);
-    let b = FeelYearsAndMonthsDuration::new_m(18);
+    let a = FeelYearsAndMonthsDuration::from_m(12);
+    let b = FeelYearsAndMonthsDuration::from_m(18);
     assert!(a <= b);
-    let a = FeelYearsAndMonthsDuration::new_m(16);
-    let b = FeelYearsAndMonthsDuration::new_m(16);
+    let a = FeelYearsAndMonthsDuration::from_m(16);
+    let b = FeelYearsAndMonthsDuration::from_m(16);
     assert!(a <= b);
   }
 
   #[test]
   fn test_gt_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 1);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 0);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 1);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 0);
     assert!(a > b);
-    let a = FeelYearsAndMonthsDuration::new_m(5);
-    let b = FeelYearsAndMonthsDuration::new_m(4);
+    let a = FeelYearsAndMonthsDuration::from_m(5);
+    let b = FeelYearsAndMonthsDuration::from_m(4);
     assert!(a > b);
   }
 
   #[test]
   fn test_ge_should_pass() {
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 1);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 0);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 1);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 0);
     assert!(a >= b);
-    let a = FeelYearsAndMonthsDuration::new_ym(0, 1);
-    let b = FeelYearsAndMonthsDuration::new_ym(0, 1);
+    let a = FeelYearsAndMonthsDuration::from_ym(0, 1);
+    let b = FeelYearsAndMonthsDuration::from_ym(0, 1);
     assert!(a >= b);
-    let a = FeelYearsAndMonthsDuration::new_m(18);
-    let b = FeelYearsAndMonthsDuration::new_m(12);
+    let a = FeelYearsAndMonthsDuration::from_m(18);
+    let b = FeelYearsAndMonthsDuration::from_m(12);
     assert!(a >= b);
-    let a = FeelYearsAndMonthsDuration::new_m(16);
-    let b = FeelYearsAndMonthsDuration::new_m(16);
+    let a = FeelYearsAndMonthsDuration::from_m(16);
+    let b = FeelYearsAndMonthsDuration::from_m(16);
     assert!(a >= b);
   }
 

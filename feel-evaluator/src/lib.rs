@@ -35,6 +35,7 @@
 extern crate dmntk_common;
 extern crate dmntk_feel;
 extern crate dmntk_feel_parser;
+extern crate dmntk_feel_temporal;
 #[macro_use]
 extern crate lazy_static;
 extern crate regex;
@@ -47,6 +48,4 @@ mod iterations;
 #[cfg(test)]
 mod tests;
 
-pub use crate::evaluators::{
-  evaluate, evaluate_context, evaluate_context_node, evaluate_equals, evaluate_max, evaluate_min, evaluate_node_type, evaluate_sum, prepare,
-};
+pub use crate::evaluators::{evaluate, evaluate_context, evaluate_context_node, evaluate_equals, evaluate_max, evaluate_min, evaluate_node_type, evaluate_sum, prepare};

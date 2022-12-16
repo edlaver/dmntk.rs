@@ -121,6 +121,10 @@ impl FeelNumber {
     bid128_quiet_equal(self.0, bid128_round_integral_zero(self.0, flags!()), flags!())
   }
   ///
+  pub fn is_zero(&self) -> bool {
+    bid128_quiet_equal(self.0, Self::zero().0, flags!())
+  }
+  ///
   pub fn is_one(&self) -> bool {
     bid128_quiet_equal(self.0, Self::one().0, flags!())
   }

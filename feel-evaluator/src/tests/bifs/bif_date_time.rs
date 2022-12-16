@@ -93,6 +93,11 @@ fn _0008() {
 
 #[test]
 fn _0009() {
+  te_date_time_local(false, &scope!(), r#"date and time("2016-01-30T24:00:00")"#, (2016, 1, 30), (0, 0, 0, 0));
+}
+
+#[test]
+fn _0010() {
   te_date_time_local(
     false,
     &scope!(),
@@ -103,18 +108,12 @@ fn _0009() {
 }
 
 #[test]
-fn _0010() {
-  te_date_time_local(
-    false,
-    &scope!(),
-    r#"date and time("2018-10-01T12:32:59.111111")"#,
-    (2018, 10, 1),
-    (12, 32, 59, 111_111_000),
-  );
+fn _0011() {
+  te_date_time_local(false, &scope!(), r#"date and time("2018-10-01T12:32:59.111111")"#, (2018, 10, 1), (12, 32, 59, 111_111_000));
 }
 
 #[test]
-fn _0011() {
+fn _0012() {
   te_date_time_local(
     false,
     &scope!(),
@@ -125,29 +124,22 @@ fn _0011() {
 }
 
 #[test]
-fn _0012() {
+fn _0013() {
   te_date_time_utc(false, &scope!(), r#"date and time("2012-12-24T23:59:00Z")"#, (2012, 12, 24), (23, 59, 0, 0));
 }
 
 #[test]
-fn _0013() {
+fn _0014() {
   te_date_time_utc(false, &scope!(), r#"date and time("2012-12-24T23:59:00z")"#, (2012, 12, 24), (23, 59, 0, 0));
 }
 
 #[test]
-fn _0014() {
-  te_date_time_offset(
-    false,
-    &scope!(),
-    r#"date and time("2016-12-24T23:59:00-08:00")"#,
-    (2016, 12, 24),
-    (23, 59, 0, 0),
-    -28800,
-  );
+fn _0015() {
+  te_date_time_offset(false, &scope!(), r#"date and time("2016-12-24T23:59:00-08:00")"#, (2016, 12, 24), (23, 59, 0, 0), -28800);
 }
 
 #[test]
-fn _0015() {
+fn _0016() {
   te_bool(
     false,
     &scope!(),
@@ -157,88 +149,53 @@ fn _0015() {
 }
 
 #[test]
-fn _0016() {
+fn _0017() {
   te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00"))"#, "2016-12-24T23:59:00");
 }
 
 #[test]
-fn _0017() {
+fn _0018() {
   te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00Z"))"#, "2016-12-24T23:59:00Z");
 }
 
 #[test]
-fn _0018() {
+fn _0019() {
   te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00z"))"#, "2016-12-24T23:59:00Z");
 }
 
 #[test]
-fn _0019() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00-08:00"))"#,
-    "2016-12-24T23:59:00-08:00",
-  );
-}
-
-#[test]
 fn _0020() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00+02:12"))"#,
-    "2016-12-24T23:59:00+02:12",
-  );
+  te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00-08:00"))"#, "2016-12-24T23:59:00-08:00");
 }
 
 #[test]
 fn _0021() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00+14:00"))"#,
-    "2016-12-24T23:59:00+14:00",
-  );
+  te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00+02:12"))"#, "2016-12-24T23:59:00+02:12");
 }
 
 #[test]
 fn _0022() {
-  te_null(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00+14:01"))"#, r#""#);
+  te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00+14:00"))"#, "2016-12-24T23:59:00+14:00");
 }
 
 #[test]
 fn _0023() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00-14:00"))"#,
-    "2016-12-24T23:59:00-14:00",
-  );
+  te_null(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00+14:01"))"#, r#""#);
 }
 
 #[test]
 fn _0024() {
-  te_null(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00-14:01"))"#, r#""#);
+  te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00-14:00"))"#, "2016-12-24T23:59:00-14:00");
 }
 
 #[test]
 fn _0025() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00@Etc/UTC"))"#,
-    "2016-12-24T23:59:00@Etc/UTC",
-  );
+  te_null(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00-14:01"))"#, r#""#);
 }
 
 #[test]
 fn _0026() {
-  te_string(
-    false,
-    &scope!(),
-    r#"string(date and time("2016-12-24T23:59:00@Europe/Warsaw"))"#,
-    "2016-12-24T23:59:00@Europe/Warsaw",
-  );
+  te_string(false, &scope!(), r#"string(date and time("2016-12-24T23:59:00@Etc/UTC"))"#, "2016-12-24T23:59:00@Etc/UTC");
 }
 
 #[test]
@@ -246,8 +203,8 @@ fn _0027() {
   te_string(
     false,
     &scope!(),
-    r#"string(date and time("999999999-12-31T23:59:59.999999999@Europe/Paris"))"#,
-    "999999999-12-31T23:59:59.999999999@Europe/Paris",
+    r#"string(date and time("2016-12-24T23:59:00@Europe/Warsaw"))"#,
+    "2016-12-24T23:59:00@Europe/Warsaw",
   );
 }
 
@@ -263,12 +220,22 @@ fn _0028() {
 
 #[test]
 fn _0029() {
+  te_string(
+    false,
+    &scope!(),
+    r#"string(date and time("999999999-12-31T23:59:59.999999999@Europe/Paris"))"#,
+    "999999999-12-31T23:59:59.999999999@Europe/Paris",
+  );
+}
+
+#[test]
+fn _0030() {
   let scope = &te_scope(r#"{dateTimeString:"2016-12-24T23:59:00-08:00"}"#);
   te_string(false, scope, r#"string(date and time(dateTimeString))"#, "2016-12-24T23:59:00-08:00");
 }
 
 #[test]
-fn _0030() {
+fn _0031() {
   te_null(
     false,
     &scope!(),
@@ -278,7 +245,7 @@ fn _0030() {
 }
 
 #[test]
-fn _0031() {
+fn _0032() {
   te_null(
     false,
     &scope!(),
@@ -288,7 +255,7 @@ fn _0031() {
 }
 
 #[test]
-fn _0032() {
+fn _0033() {
   te_null(
     false,
     &scope!(),
@@ -298,7 +265,7 @@ fn _0032() {
 }
 
 #[test]
-fn _0033() {
+fn _0034() {
   te_null(
     false,
     &scope!(),
@@ -308,7 +275,7 @@ fn _0033() {
 }
 
 #[test]
-fn _0034() {
+fn _0035() {
   te_null(
     false,
     &scope!(),
@@ -318,7 +285,7 @@ fn _0034() {
 }
 
 #[test]
-fn _0035() {
+fn _0036() {
   te_null(
     false,
     &scope!(),
@@ -328,7 +295,7 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0037() {
   te_date_time_offset(
     false,
     &scope!(),
@@ -340,7 +307,7 @@ fn _0036() {
 }
 
 #[test]
-fn _0037() {
+fn _0038() {
   te_date_time_offset(
     false,
     &scope!(),
@@ -352,7 +319,7 @@ fn _0037() {
 }
 
 #[test]
-fn _0038() {
+fn _0039() {
   te_null(
     false,
     &scope!(),
@@ -362,7 +329,7 @@ fn _0038() {
 }
 
 #[test]
-fn _0039() {
+fn _0040() {
   te_null(
     false,
     &scope!(),
@@ -372,7 +339,7 @@ fn _0039() {
 }
 
 #[test]
-fn _0040() {
+fn _0041() {
   te_null(
     false,
     &scope!(),
@@ -382,17 +349,12 @@ fn _0040() {
 }
 
 #[test]
-fn _0041() {
-  te_null(
-    false,
-    &scope!(),
-    r#"date and time()"#,
-    "expected 1,2 parameters, actual number of parameters is 0",
-  );
+fn _0042() {
+  te_null(false, &scope!(), r#"date and time()"#, "expected 1,2 parameters, actual number of parameters is 0");
 }
 
 #[test]
-fn _0042() {
+fn _0043() {
   te_null(
     false,
     &scope!(),
@@ -402,11 +364,6 @@ fn _0042() {
 }
 
 #[test]
-fn _0043() {
-  te_null(
-    false,
-    &scope!(),
-    r#"date and time(f: "2012-12-24")"#,
-    r#"invalid parameters in named::bif_date_and_time"#,
-  );
+fn _0044() {
+  te_null(false, &scope!(), r#"date and time(f: "2012-12-24")"#, r#"invalid parameters in named::bif_date_and_time"#);
 }

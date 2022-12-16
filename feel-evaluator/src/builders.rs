@@ -37,10 +37,8 @@ use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{
-  subtract, value_null, AstNode, Evaluator, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelType, FeelYearsAndMonthsDuration,
-  FunctionBody, Name, Scope,
-};
+use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, Scope};
+use dmntk_feel_temporal::{subtract, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
@@ -151,6 +149,13 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           Value::DaysAndTimeDuration(lh + rh)
         } else {
           value_null!("addition err 3")
+        }
+      }
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(rh) = rhv {
+          Value::YearsAndMonthsDuration(lh + rh)
+        } else {
+          value_null!("addition err 4")
         }
       }
       value @ Value::Null(_) => value,
@@ -426,6 +431,54 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
+      },
+      Value::DaysAndTimeDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          if rh.is_zero() {
+            value_null!("[division] division by zero")
+          } else {
+            let vl = FeelNumber::from(lh.as_nanos()) / rh;
+            if let Ok(v) = FeelNumber::try_into(vl) {
+              Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+            } else {
+              value_null!("[division] error: {} * {}", lhv, rhv)
+            }
+          }
+        }
+        Value::DaysAndTimeDuration(rh) => {
+          if rh.as_nanos() == 0 {
+            value_null!("[division] division by zero")
+          } else {
+            let lvl = FeelNumber::from(lh.as_nanos());
+            let rvl = FeelNumber::from(rh.as_nanos());
+            Value::Number(lvl / rvl)
+          }
+        }
+        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::YearsAndMonthsDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          if rh.is_zero() {
+            value_null!("[division] division by zero")
+          } else {
+            let vl = FeelNumber::from(lh.as_months()) / rh;
+            if let Ok(v) = FeelNumber::try_into(vl) {
+              Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+            } else {
+              value_null!("[division] error: {} * {}", lhv, rhv)
+            }
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
+          if rh.as_months() == 0 {
+            value_null!("[division] division by zero")
+          } else {
+            let lvl = FeelNumber::from(lh.as_months());
+            let rvl = FeelNumber::from(rh.as_months());
+            Value::Number(lvl / rvl)
+          }
+        }
+        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
       },
       _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
     }
@@ -817,13 +870,7 @@ fn build_function_type(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       if let Value::FeelType(result_type) = rhv {
         let parameter_types = types
           .iter()
-          .filter_map(|value| {
-            if let Value::FeelType(feel_type) = value {
-              Some(feel_type.clone())
-            } else {
-              None
-            }
-          })
+          .filter_map(|value| if let Value::FeelType(feel_type) = value { Some(feel_type.clone()) } else { None })
           .collect();
         Value::FeelType(FeelType::Function(parameter_types, Box::new(result_type)))
       } else {
@@ -1129,6 +1176,44 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Number(lh * rh),
+        Value::DaysAndTimeDuration(ref rh) => {
+          let val = lh * FeelNumber::from(rh.as_nanos());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        Value::YearsAndMonthsDuration(ref rh) => {
+          let val = lh * FeelNumber::from(rh.as_months());
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::DaysAndTimeDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          let val = FeelNumber::from(lh.as_nanos()) * rh;
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
+        _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      },
+      Value::YearsAndMonthsDuration(ref lh) => match rhv {
+        Value::Number(rh) => {
+          let val = FeelNumber::from(lh.as_months()) * rh;
+          if let Ok(v) = FeelNumber::try_into(val) {
+            Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
+          } else {
+            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+          }
+        }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
       },
       value @ Value::Null(_) => value,
@@ -1561,6 +1646,16 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
       }
+      Value::DaysAndTimeDuration(lh) => {
+        if let Value::DaysAndTimeDuration(rh) = rhv {
+          return Value::DaysAndTimeDuration(lh - rh);
+        }
+      }
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(rh) = rhv {
+          return Value::YearsAndMonthsDuration(lh - rh);
+        }
+      }
       _ => {}
     }
     value_null!("[subtraction] incompatible types: {} - {}", lhe(scope) as Value, rhe(scope) as Value)
@@ -1694,6 +1789,57 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
       Value::Null(_) => Some(false),
       _ => None,
     },
+    Value::UnaryGreater(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && !*ce && re.is_null() {
+          eval_ternary_equality(end, rs)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryLess(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && !*ce && rs.is_null() {
+          eval_ternary_equality(end, re)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryGreaterOrEqual(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if *cs && !*ce && re.is_null() {
+          eval_ternary_equality(end, rs)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::UnaryLessOrEqual(end) => match rhs {
+      Value::Range(rs, cs, re, ce) => {
+        if !*cs && *ce && rs.is_null() {
+          eval_ternary_equality(end, re)
+        } else {
+          Some(false)
+        }
+      }
+      _ => None,
+    },
+    Value::Range(r1s, c1s, r1e, c1e) => match rhs {
+      Value::Range(r2s, c2s, r2e, c2e) => {
+        if *c1s == *c2s && *c1e == *c2e {
+          if let Some(true) = eval_ternary_equality(r1s, r2s) {
+            return eval_ternary_equality(r1e, r2e);
+          }
+        }
+        Some(false)
+      }
+      _ => None,
+    },
     _ => None,
   }
 }
@@ -1783,7 +1929,14 @@ fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
 fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::Number(_) | inner @ Value::String(_) => {
+      inner @ Value::String(_)
+      | inner @ Value::Number(_)
+      | inner @ Value::Boolean(_)
+      | inner @ Value::Date(_)
+      | inner @ Value::Time(_)
+      | inner @ Value::DateTime(_)
+      | inner @ Value::DaysAndTimeDuration(_)
+      | inner @ Value::YearsAndMonthsDuration(_) => {
         if let Value::Boolean(true) = eval_in_equal(left, inner) {
           return Value::Boolean(false);
         }

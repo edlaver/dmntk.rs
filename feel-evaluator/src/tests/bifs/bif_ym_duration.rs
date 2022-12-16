@@ -73,13 +73,7 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_years_and_months_duration(
-    false,
-    &scope!(),
-    r#"years and months duration(from: date("2013-08-24"),to: date("2017-12-15"))"#,
-    4,
-    3,
-  );
+  te_years_and_months_duration(false, &scope!(), r#"years and months duration(from: date("2013-08-24"),to: date("2017-12-15"))"#, 4, 3);
 }
 
 #[test]

@@ -142,13 +142,13 @@ fn _0011() {
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_012_331ef38ce0", &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_012_331ef38ce0", &ctx, r#"P0Y"#);
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_013_2f3cc46d9d", &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_013_2f3cc46d9d", &ctx, r#"P0Y"#);
 }
 
 #[test]
@@ -184,12 +184,7 @@ fn _0018() {
 #[test]
 fn _0019() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "feel-years-and-months-duration-function_019_90c2084588",
-    &ctx,
-    r#"-P4035Y11M"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_019_90c2084588", &ctx, r#"-P4035Y11M"#);
 }
 
 #[test]

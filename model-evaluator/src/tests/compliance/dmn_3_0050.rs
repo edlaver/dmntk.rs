@@ -59,23 +59,13 @@ fn _0003() {
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision004",
-    &ctx,
-    r#"null(expected 1 parameters, actual number of parameters is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision004", &ctx, r#"null(expected 1 parameters, actual number of parameters is 0)"#);
 }
 
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision005",
-    &ctx,
-    r#"null(expected 1 parameters, actual number of parameters is 2)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision005", &ctx, r#"null(expected 1 parameters, actual number of parameters is 2)"#);
 }
 
 #[test]
@@ -126,27 +116,29 @@ fn _0010() {
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision011",
-    &ctx,
-    r#"null([core::abs] invalid argument type, expected number, actual type is days and time duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision011", &ctx, r#"P1D"#);
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision012",
-    &ctx,
-    r#"null([core::abs] invalid argument type, expected number, actual type is years and months duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision011_a", &ctx, r#"P1D"#);
 }
 
 #[test]
 fn _0013() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision012", &ctx, r#"P1Y"#);
+}
+
+#[test]
+fn _0014() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision012_a", &ctx, r#"P1Y"#);
+}
+
+#[test]
+fn _0015() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
@@ -157,7 +149,7 @@ fn _0013() {
 }
 
 #[test]
-fn _0014() {
+fn _0016() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
@@ -168,7 +160,7 @@ fn _0014() {
 }
 
 #[test]
-fn _0015() {
+fn _0017() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,

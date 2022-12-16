@@ -269,12 +269,7 @@ fn _0034() {
 #[test]
 fn _0035() {
   let scope = &scope!();
-  te_null(
-    false,
-    scope,
-    r#"date(2022,1,1,1)"#,
-    r#"expected 1,3 parameters, actual number of parameters is 4"#,
-  );
+  te_null(false, scope, r#"date(2022,1,1,1)"#, r#"expected 1,3 parameters, actual number of parameters is 4"#);
 }
 
 #[test]
@@ -286,12 +281,7 @@ fn _0036() {
 #[test]
 fn _0037() {
   let scope = &scope!();
-  te_null(
-    false,
-    scope,
-    r#"date(f: date and time("2012-12-25T12:23:18"))"#,
-    r#"invalid parameters in named::bif_date"#,
-  );
+  te_null(false, scope, r#"date(f: date and time("2012-12-25T12:23:18"))"#, r#"invalid parameters in named::bif_date"#);
 }
 
 #[test]
@@ -303,12 +293,7 @@ fn _0038() {
 #[test]
 fn _0039() {
   let scope = &scope!();
-  te_null(
-    false,
-    scope,
-    r#"date(month: 12, d: 25, year: 2012)"#,
-    r#"invalid parameters in named::bif_date"#,
-  );
+  te_null(false, scope, r#"date(month: 12, d: 25, year: 2012)"#, r#"invalid parameters in named::bif_date"#);
 }
 
 #[test]

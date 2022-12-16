@@ -84,30 +84,18 @@ fn _0010() {
 }
 
 #[test]
-#[ignore]
 fn _0011() {
-  //TODO It is not precisely defined if `z` offset, +00:00 offset and Etc/UTC should be treated equally. Time is the same, but specification says that these values should be treated not equal. Check it.
   te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50@Etc/UTC"))"#, true);
 }
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#,
-    "parameter 'value1' not found",
-  );
+  te_null(false, &scope!(), r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#, "parameter 'value1' not found");
 }
 
 #[test]
 fn _0013() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#,
-    "parameter 'value2' not found",
-  );
+  te_null(false, &scope!(), r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#, "parameter 'value2' not found");
 }
 
 #[test]
@@ -117,12 +105,7 @@ fn _0014() {
 
 #[test]
 fn _0015() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(time(12,13,15))"#,
-    "expected 2 parameters, actual number of parameters is 1",
-  );
+  te_bool(false, &scope!(), r#"is(time(12,13,15))"#, false);
 }
 
 #[test]
@@ -137,30 +120,25 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(10,time(12,13,15))"#,
-    "[core::is] invalid argument type, expected date or time, actual type is number",
-  );
+  te_bool(false, &scope!(), r#"is(10,time(12,13,15))"#, false);
 }
 
 #[test]
 fn _0018() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(time(12,13,15), 10)"#,
-    "[core::is] invalid argument type, expected time, actual type is number",
-  );
+  te_bool(false, &scope!(), r#"is(time(12,13,15), 10)"#, false);
 }
 
 #[test]
 fn _0019() {
+  te_bool(false, &scope!(), r#"is(date(2012,11,15), 10)"#, false);
+}
+
+#[test]
+fn _0020() {
   te_null(
     false,
     &scope!(),
-    r#"is(date(2012,11,15), 10)"#,
-    "[core::is] invalid argument type, expected date, actual type is number",
+    r#"is(value1:time(12,13,14), value2:time("12:13:15"), value3:time("12:13:16"))"#,
+    "expected 2 parameters, actual number of parameters is 3",
   );
 }

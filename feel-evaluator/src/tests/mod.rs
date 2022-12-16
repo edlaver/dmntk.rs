@@ -31,7 +31,8 @@
  */
 
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelYearsAndMonthsDuration, Month, Scope, Year};
+use dmntk_feel::{AstNode, FeelNumber, Scope};
+use dmntk_feel_temporal::{Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, Month, Year};
 
 use crate::builders::build_evaluator;
 
@@ -158,12 +159,12 @@ fn te_string(trace: bool, scope: &Scope, s: &str, expected: &str) {
 
 /// Utility function that tests evaluation of year and months duration.
 pub fn te_years_and_months_duration(trace: bool, scope: &Scope, s: &str, years: i64, months: i64) {
-  textual_expression(
-    trace,
-    scope,
-    s,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(years, months)),
-  );
+  textual_expression(trace, scope, s, Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(years, months)));
+}
+
+/// Utility function that tests evaluation of year and months duration.
+pub fn te_years_and_months_duration_x(trace: bool, scope: &Scope, s: &str, expected: &str) {
+  textual_expression(trace, scope, s, Value::YearsAndMonthsDuration(expected.try_into().unwrap()));
 }
 
 /// Utility function that tests evaluation of days and time duration.
@@ -178,6 +179,11 @@ pub fn te_days_and_time_duration(trace: bool, scope: &Scope, s: &str, neg: bool,
       FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
     }),
   );
+}
+
+/// Utility function that tests evaluation of days and time duration.
+pub fn te_days_and_time_duration_x(trace: bool, scope: &Scope, s: &str, expected: &str) {
+  textual_expression(trace, scope, s, Value::DaysAndTimeDuration(expected.try_into().unwrap()));
 }
 
 /// Utility function that tests evaluation of time.
@@ -261,7 +267,10 @@ pub fn boxed_expression(trace: bool, scope: &Scope, text: &str, expected: Value)
 fn textual_expression(trace: bool, scope: &Scope, text: &str, expected: Value) {
   match dmntk_feel_parser::parse_textual_expression(scope, text, trace) {
     Ok(node) => match build_evaluator(&node) {
-      Ok(evaluator) => assert_eq!(evaluator(scope), expected),
+      Ok(evaluator) => {
+        let actual = evaluator(scope) as Value;
+        assert_eq!(actual, expected, "ERROR\nexpected: {expected}\n  actual: {actual}\n");
+      }
       Err(reason) => {
         panic!("building evaluator for textual expression failed with reason: {reason}");
       }

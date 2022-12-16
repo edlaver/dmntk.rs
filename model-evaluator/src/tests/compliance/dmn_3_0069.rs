@@ -53,23 +53,13 @@ fn _0002() {
 #[test]
 fn _0003() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision002",
-    &ctx,
-    r#"null(index in filter is out of range [1..3], actual index is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision002", &ctx, r#"null(index in filter is out of range [1..3], actual index is 0)"#);
 }
 
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision003",
-    &ctx,
-    r#"null(index in filter is out of range [1..3], actual index is 4)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision003", &ctx, r#"null(index in filter is out of range [1..3], actual index is 4)"#);
 }
 
 #[test]

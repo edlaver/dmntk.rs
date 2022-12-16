@@ -63,10 +63,7 @@ impl InputDataEvaluator {
   }
   /// Evaluates input data with specified identifier.
   pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
-    self
-      .evaluators
-      .get(input_data_id)
-      .map(|evaluator| evaluator.1(value, item_definition_evaluator))
+    self.evaluators.get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
   /// Returns the name and type of the input variable of input data definition with specified identifier.
   pub fn get_input_variable(&self, input_data_id: &str) -> Option<&Variable> {

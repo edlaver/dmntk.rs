@@ -42,10 +42,5 @@ fn _0001() {
   te_value(false, scope, r#"EmployeeTable[name=LastName].deptNum[1]"#, r#"10"#);
   te_be_value(false, scope, r#"DeptTable[number=10]"#, r#"{manager:"Smith",name:"Sales",number:10}"#);
   te_value(false, scope, r#"DeptTable[number=10].manager[1]"#, r#""Smith""#);
-  te_value(
-    false,
-    scope,
-    r#"DeptTable[number=EmployeeTable[name=LastName].deptNum[1]].manager[1]"#,
-    r#""Smith""#,
-  );
+  te_value(false, scope, r#"DeptTable[number=EmployeeTable[name=LastName].deptNum[1]].manager[1]"#, r#""Smith""#);
 }

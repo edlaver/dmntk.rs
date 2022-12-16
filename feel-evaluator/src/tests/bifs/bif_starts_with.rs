@@ -85,20 +85,10 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts with()"#,
-    r#"expected 2 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"starts with()"#, r#"expected 2 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
 fn _0010() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts with("foo")"#,
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"starts with("foo")"#, r#"expected 2 parameters, actual number of parameters is 1"#);
 }

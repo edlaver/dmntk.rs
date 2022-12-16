@@ -88,12 +88,7 @@ fn _0010() {
 
 #[test]
 fn _0011() {
-  te_null(
-    false,
-    &scope!(),
-    r#"matches("abc")"#,
-    r#"expected 2,3 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"matches("abc")"#, r#"expected 2,3 parameters, actual number of parameters is 1"#);
 }
 
 #[test]

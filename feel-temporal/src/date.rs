@@ -34,11 +34,12 @@
 
 use super::errors::{err_invalid_date, err_invalid_date_literal};
 use super::ym_duration::FeelYearsAndMonthsDuration;
-use super::{Day, FeelDateTime, FeelTime, Month, Year, RE_DATE};
-use crate::temporal::{DayOfWeek, MonthOfYear};
-use crate::{DayOfYear, FeelNumber, WeekOfYear};
+use crate::date_time::FeelDateTime;
+use crate::defs::*;
+use crate::time::FeelTime;
 use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveDate, Weekday};
 use dmntk_common::DmntkError;
+use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
 use std::str::FromStr;
@@ -165,7 +166,7 @@ impl FeelDate {
         months -= 1;
       }
     }
-    FeelYearsAndMonthsDuration::new_m(months)
+    FeelYearsAndMonthsDuration::from_m(months)
   }
   ///
   pub fn year(&self) -> Year {

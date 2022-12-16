@@ -40,28 +40,26 @@ fn _0001() {
 }
 
 #[test]
+#[ignore]
 fn _0002() {
   te_null(false, &scope!(), r#"overlaps before([1..5],[3..8])"#, "unimplemented");
 }
 
 #[test]
+#[ignore]
 fn _0003() {
   te_null(false, &scope!(), r#"overlaps before(range1: [1..5], range2: [3..8])"#, "unimplemented");
 }
 
 #[test]
+#[ignore]
 fn _0004() {
   te_null(false, &scope!(), r#"overlaps before(range2: [3..8], range1: [1..5])"#, "unimplemented");
 }
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"overlaps before()"#,
-    "expected 2 parameters, actual number of parameters is 0",
-  );
+  te_null(false, &scope!(), r#"overlaps before()"#, "expected 2 parameters, actual number of parameters is 0");
 }
 
 #[test]
@@ -76,22 +74,12 @@ fn _0006() {
 
 #[test]
 fn _0007() {
-  te_null(
-    false,
-    &scope!(),
-    r#"overlaps before(range1: [1..5],r2: [3..8])"#,
-    "parameter 'range2' not found",
-  );
+  te_null(false, &scope!(), r#"overlaps before(range1: [1..5],r2: [3..8])"#, "parameter 'range2' not found");
 }
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    r#"overlaps before(r1: [1..5],range2: [3..8])"#,
-    "parameter 'range1' not found",
-  );
+  te_null(false, &scope!(), r#"overlaps before(r1: [1..5],range2: [3..8])"#, "parameter 'range1' not found");
 }
 
 #[test]

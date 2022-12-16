@@ -145,12 +145,7 @@ fn _0021() {
 
 #[test]
 fn _0022() {
-  te_null(
-    false,
-    &scope!(),
-    r#"day of week()"#,
-    r#"expected 1 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"day of week()"#, r#"expected 1 parameters, actual number of parameters is 0"#);
 }
 
 #[test]

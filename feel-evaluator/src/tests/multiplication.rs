@@ -103,3 +103,15 @@ fn test_0012() {
   let scope = &te_scope("{Monthly Salary:10000}");
   te_number(false, scope, "12 * Monthly Salary", 120000, 0);
 }
+
+#[test]
+fn test_0013() {
+  let scope = &te_scope(r#"{}"#);
+  te_days_and_time_duration_x(false, scope, r#" 1.5 * @"P4DT1H" "#, "P6DT1H30M");
+}
+
+#[test]
+fn test_0014() {
+  let scope = &te_scope(r#"{}"#);
+  te_years_and_months_duration_x(false, scope, r#" 10 * @"P1Y" "#, "P10Y");
+}

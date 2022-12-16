@@ -80,22 +80,12 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  te_null(
-    false,
-    &scope!(),
-    r#"decimal(1/3, "scale")"#,
-    r#"[core::decimal] scale value is not a number: "scale""#,
-  );
+  te_null(false, &scope!(), r#"decimal(1/3, "scale")"#, r#"[core::decimal] scale value is not a number: "scale""#);
 }
 
 #[test]
 fn _0011() {
-  te_null(
-    false,
-    &scope!(),
-    r#"decimal("number", 6)"#,
-    r#"[core::decimal] number value is not a number: "number""#,
-  );
+  te_null(false, &scope!(), r#"decimal("number", 6)"#, r#"[core::decimal] number value is not a number: "number""#);
 }
 
 #[test]
@@ -105,22 +95,12 @@ fn _0012() {
 
 #[test]
 fn _0013() {
-  te_null(
-    false,
-    &scope!(),
-    r#"decimal("1234")"#,
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"decimal("1234")"#, r#"expected 2 parameters, actual number of parameters is 1"#);
 }
 
 #[test]
 fn _0014() {
-  te_null(
-    false,
-    &scope!(),
-    r#"decimal("1234",1,2)"#,
-    r#"expected 2 parameters, actual number of parameters is 3"#,
-  );
+  te_null(false, &scope!(), r#"decimal("1234",1,2)"#, r#"expected 2 parameters, actual number of parameters is 3"#);
 }
 
 #[test]

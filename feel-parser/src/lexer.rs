@@ -1081,10 +1081,7 @@ mod tests {
 
   #[test]
   fn test_flatten_name_parts() {
-    assert_eq!(
-      "left middle right",
-      flatten_name_parts(&["left".to_string(), "middle".to_string(), "right".to_string()])
-    );
+    assert_eq!("left middle right", flatten_name_parts(&["left".to_string(), "middle".to_string(), "right".to_string()]));
     assert_eq!("a.b", flatten_name_parts(&["   a  ".to_string(), " . ".to_string(), "  b ".to_string()]));
     assert_eq!("a/b", flatten_name_parts(&["   a  ".to_string(), " / ".to_string(), "  b ".to_string()]));
     assert_eq!("a-b", flatten_name_parts(&["   a  ".to_string(), " - ".to_string(), "  b ".to_string()]));

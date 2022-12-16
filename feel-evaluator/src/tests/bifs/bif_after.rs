@@ -130,12 +130,7 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point1:duration("P1DT11H38M23S"),point2:duration("P1DT11H38M22S"))"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(point1:duration("P1DT11H38M23S"),point2:duration("P1DT11H38M22S"))"#, true);
 }
 
 #[test]
@@ -205,12 +200,7 @@ fn _0028() {
 
 #[test]
 fn _0029() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point2:duration("P1DT11H38M22S"),point1:duration("P1DT11H38M23S"))"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(point2:duration("P1DT11H38M22S"),point1:duration("P1DT11H38M23S"))"#, true);
 }
 
 #[test]
@@ -245,12 +235,7 @@ fn _0034() {
 
 #[test]
 fn _0035() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point2:duration("P1DT11H38M23S"),point1:duration("P1DT11H38M22S"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"after(point2:duration("P1DT11H38M23S"),point1:duration("P1DT11H38M22S"))"#, false);
 }
 
 #[test]
@@ -285,12 +270,7 @@ fn _0040() {
 
 #[test]
 fn _0041() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(duration("P1DT10H11M12S"),[duration("P1DT")..duration("P1DT10H11M11S")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(duration("P1DT10H11M12S"),[duration("P1DT")..duration("P1DT10H11M11S")])"#, true);
 }
 
 #[test]
@@ -325,12 +305,7 @@ fn _0046() {
 
 #[test]
 fn _0047() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after([duration("P1DT")..duration("P1DT10H11M11S")],duration("P1DT10H11M12S"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"after([duration("P1DT")..duration("P1DT10H11M11S")],duration("P1DT10H11M12S"))"#, false);
 }
 
 #[test]
@@ -345,22 +320,12 @@ fn _0049() {
 
 #[test]
 fn _0050() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point:date("2021-06-01"),range:[date("2021-01-01")..date("2021-05-30")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(point:date("2021-06-01"),range:[date("2021-01-01")..date("2021-05-30")])"#, true);
 }
 
 #[test]
 fn _0051() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point:time("10:11:12"),range:[time("00:00:00")..time("10:11:11")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(point:time("10:11:12"),range:[time("00:00:00")..time("10:11:11")])"#, true);
 }
 
 #[test]
@@ -385,12 +350,7 @@ fn _0053() {
 
 #[test]
 fn _0054() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(point:duration("P2Y1M"),range:[duration("P1Y")..duration("P2Y")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"after(point:duration("P2Y1M"),range:[duration("P1Y")..duration("P2Y")])"#, true);
 }
 
 #[test]
@@ -400,22 +360,12 @@ fn _0055() {
 
 #[test]
 fn _0056() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(range:[date("2021-01-01")..date("2021-05-30")],point:date("2021-06-01"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"after(range:[date("2021-01-01")..date("2021-05-30")],point:date("2021-06-01"))"#, false);
 }
 
 #[test]
 fn _0057() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(range:[time("00:00:00")..time("10:11:11")],point:time("10:11:12"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"after(range:[time("00:00:00")..time("10:11:11")],point:time("10:11:12"))"#, false);
 }
 
 #[test]
@@ -440,12 +390,7 @@ fn _0059() {
 
 #[test]
 fn _0060() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"after(range:[duration("P1Y")..duration("P2Y")],point:duration("P1Y1M"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"after(range:[duration("P1Y")..duration("P2Y")],point:duration("P1Y1M"))"#, false);
 }
 
 #[test]
@@ -680,12 +625,7 @@ fn _0086() {
 
 #[test]
 fn _0087() {
-  te_null(
-    false,
-    &scope!(),
-    r#"after(1,2,3)"#,
-    r#"expected 2 parameters, actual number of parameters is 3"#,
-  );
+  te_null(false, &scope!(), r#"after(1,2,3)"#, r#"expected 2 parameters, actual number of parameters is 3"#);
 }
 
 #[test]

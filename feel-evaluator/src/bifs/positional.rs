@@ -353,6 +353,7 @@ fn bif_insert_before(parameters: &[Value]) -> Value {
 
 fn bif_is(parameters: &[Value]) -> Value {
   match parameters.len() {
+    1 => Value::Boolean(false),
     2 => core::is(&parameters[0], &parameters[1]),
     n => invalid_number_of_parameters!(2, n),
   }
@@ -592,10 +593,7 @@ fn bif_stddev(parameters: &[Value]) -> Value {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
       Value::List(values) => core::stddev(values.as_vec()),
-      _ => value_null!(
-        "[positional::stddev] invalid argument type, expected list, actual type is {}",
-        parameters[0].type_of()
-      ),
+      _ => value_null!("[positional::stddev] invalid argument type, expected list, actual type is {}", parameters[0].type_of()),
     },
     _ => core::stddev(parameters),
   }

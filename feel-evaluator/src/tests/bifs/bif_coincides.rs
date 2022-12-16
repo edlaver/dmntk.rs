@@ -305,32 +305,17 @@ fn _0042() {
 
 #[test]
 fn _0043() {
-  te_null(
-    false,
-    &scope!(),
-    r#"coincides(p1: 10, point2: 1)"#,
-    r#"[named::coincides] invalid named parameters"#,
-  );
+  te_null(false, &scope!(), r#"coincides(p1: 10, point2: 1)"#, r#"[named::coincides] invalid named parameters"#);
 }
 
 #[test]
 fn _0044() {
-  te_null(
-    false,
-    &scope!(),
-    r#"coincides(point1: 10, p2: 1)"#,
-    r#"[named::coincides] invalid named parameters"#,
-  );
+  te_null(false, &scope!(), r#"coincides(point1: 10, p2: 1)"#, r#"[named::coincides] invalid named parameters"#);
 }
 
 #[test]
 fn _0045() {
-  te_null(
-    false,
-    &scope!(),
-    r#"coincides(p1: 10, p2: 1)"#,
-    r#"[named::coincides] invalid named parameters"#,
-  );
+  te_null(false, &scope!(), r#"coincides(p1: 10, p2: 1)"#, r#"[named::coincides] invalid named parameters"#);
 }
 
 #[test]
@@ -355,12 +340,7 @@ fn _0047() {
 
 #[test]
 fn _0048() {
-  te_null(
-    false,
-    &scope!(),
-    r#"coincides(r1: [1..10], r2: [1..10])"#,
-    r#"[named::coincides] invalid named parameters"#,
-  );
+  te_null(false, &scope!(), r#"coincides(r1: [1..10], r2: [1..10])"#, r#"[named::coincides] invalid named parameters"#);
 }
 
 #[test]
@@ -370,12 +350,7 @@ fn _0049() {
 
 #[test]
 fn _0050() {
-  te_null(
-    false,
-    &scope!(),
-    r#"coincides(1,2,3)"#,
-    r#"expected 2 parameters, actual number of parameters is 3"#,
-  );
+  te_null(false, &scope!(), r#"coincides(1,2,3)"#, r#"expected 2 parameters, actual number of parameters is 3"#);
 }
 
 #[test]

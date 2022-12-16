@@ -9,8 +9,9 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+lazy_static = "1.4.0"
+regex = "1.5.4"
 dmntk-common.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-parser.workspace = true
-lazy_static = "1.4.0"
-regex = "1.5.4"
+dmntk-feel-temporal.workspace = true

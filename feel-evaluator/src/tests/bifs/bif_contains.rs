@@ -60,12 +60,7 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"contains("foo")"#,
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"contains("foo")"#, r#"expected 2 parameters, actual number of parameters is 1"#);
 }
 
 #[test]

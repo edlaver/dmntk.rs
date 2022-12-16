@@ -70,12 +70,7 @@ fn _0006() {
 
 #[test]
 fn _0007() {
-  te_null(
-    false,
-    &scope!(),
-    r#"append([1])"#,
-    r#"expected 2+ parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"append([1])"#, r#"expected 2+ parameters, actual number of parameters is 1"#);
 }
 
 #[test]

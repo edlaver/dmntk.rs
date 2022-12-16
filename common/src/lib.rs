@@ -33,7 +33,6 @@
 //! Common definitions for components of Decision Model and Notation Toolkit.
 
 extern crate serde;
-extern crate serde_yaml;
 extern crate uriparse;
 
 pub mod ascii_ctrl;

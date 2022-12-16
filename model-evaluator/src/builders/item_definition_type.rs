@@ -77,6 +77,7 @@ pub fn build_item_definition_type_evaluator(item_definition: &ItemDefinition) ->
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => collection_of_simple_type(feel_type),
     ItemDefinitionType::CollectionOfReferencedType(ref_type) => collection_of_referenced_type(ref_type),
     ItemDefinitionType::CollectionOfComponentType => collection_of_component_type(item_definition),
+    ItemDefinitionType::FunctionType => function_type(item_definition),
   }
 }
 
@@ -129,12 +130,8 @@ fn collection_of_simple_type(feel_type: FeelType) -> Result<ItemDefinitionTypeEv
     FeelType::Date => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| Some(FeelType::list(&FeelType::Date)))),
     FeelType::Time => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| Some(FeelType::list(&FeelType::Time)))),
     FeelType::DateTime => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| Some(FeelType::list(&FeelType::DateTime)))),
-    FeelType::DaysAndTimeDuration => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| {
-      Some(FeelType::list(&FeelType::DaysAndTimeDuration))
-    })),
-    FeelType::YearsAndMonthsDuration => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| {
-      Some(FeelType::list(&FeelType::YearsAndMonthsDuration))
-    })),
+    FeelType::DaysAndTimeDuration => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| Some(FeelType::list(&FeelType::DaysAndTimeDuration)))),
+    FeelType::YearsAndMonthsDuration => Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| Some(FeelType::list(&FeelType::YearsAndMonthsDuration)))),
     _ => Err(err_unsupported_feel_type(feel_type)),
   }
 }
@@ -163,6 +160,13 @@ fn collection_of_component_type(item_definition: &ItemDefinition) -> Result<Item
       }
     }
     Some(FeelType::List(Box::new(FeelType::Context(entries))))
+  }))
+}
+
+///
+fn function_type(_item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+  Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| {
+    Some(FeelType::Any) // TODO implement function type
   }))
 }
 

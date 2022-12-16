@@ -59,11 +59,7 @@ fn _0004() {
 #[test]
 fn _0005() {
   let mut iterator = FeelIterator::default();
-  let list = Values::new(vec![
-    Value::String("a".to_string()),
-    Value::String("b".to_string()),
-    Value::String("c".to_string()),
-  ]);
+  let list = Values::new(vec![Value::String("a".to_string()), Value::String("b".to_string()), Value::String("c".to_string())]);
   iterator.add_list("x".into(), list);
   let mut actual = vec![];
   iterator.run(|ctx| actual.push(Value::Context(ctx.clone())));
@@ -74,11 +70,7 @@ fn _0005() {
 #[test]
 fn _0006() {
   let mut iterator = FeelIterator::default();
-  let list1 = Values::new(vec![
-    Value::String("a".to_string()),
-    Value::String("b".to_string()),
-    Value::String("c".to_string()),
-  ]);
+  let list1 = Values::new(vec![Value::String("a".to_string()), Value::String("b".to_string()), Value::String("c".to_string())]);
   iterator.add_list("x".into(), list1);
   let list2 = Values::new(vec![value_number!(1, 0), value_number!(2, 0), value_number!(3, 0)]);
   iterator.add_list("y".into(), list2);
@@ -139,10 +131,7 @@ fn _0009() {
 fn _0010() {
   let mut iterator = ForExpressionEvaluator::new();
   iterator.add_range("x".into(), value_number!(1, 0), value_number!(2, 0));
-  iterator.add_single(
-    "y".into(),
-    Value::List(Values::new(vec![value_number!(5, 0), value_number!(6, 0), value_number!(7, 0)])),
-  );
+  iterator.add_single("y".into(), Value::List(Values::new(vec![value_number!(5, 0), value_number!(6, 0), value_number!(7, 0)])));
   let scope = &te_scope(r#"{x:null,y:null}"#);
   let node = dmntk_feel_parser::parse_expression(scope, "x+y", false).unwrap();
   let evaluator = crate::builders::build_evaluator(&node).unwrap();

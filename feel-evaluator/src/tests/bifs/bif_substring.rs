@@ -70,12 +70,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    r#"substring()"#,
-    r#"expected 2,3 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"substring()"#, r#"expected 2,3 parameters, actual number of parameters is 0"#);
 }
 
 #[test]

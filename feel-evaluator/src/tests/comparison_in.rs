@@ -109,12 +109,7 @@ fn test_comparison_in() {
   te_bool(false, scope, r#""a" in <= "b""#, true);
   te_bool(false, scope, r#"true in [false, 2, 3]"#, false);
   te_bool(false, scope, r#"true in true"#, true);
-  te_bool(
-    false,
-    scope,
-    r#"date("2018-12-08") in [date("2018-12-08"),date("2018-12-09"),date("2018-12-10")]"#,
-    true,
-  );
+  te_bool(false, scope, r#"date("2018-12-08") in [date("2018-12-08"),date("2018-12-09"),date("2018-12-10")]"#, true);
   te_bool(false, scope, r#"date("2018-12-04") in <= date("2018-12-05")"#, true);
   te_bool(false, scope, r#"[1,2,3] in [[1,2,3,4], [1,2,3]]"#, true);
   te_bool(false, scope, r#"[1,2,2] in [[1,2,3,4], [1,2,3]]"#, false);

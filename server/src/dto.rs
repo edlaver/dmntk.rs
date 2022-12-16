@@ -35,7 +35,6 @@ use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
 use dmntk_feel::values::{Value, Values};
-use serde::{Deserialize, Serialize};
 use std::convert::{TryFrom, TryInto};
 
 pub struct WrappedValue(pub Value);
@@ -85,11 +84,7 @@ impl SimpleDto {
   }
   /// Creates [SimpleDto] with `nil` value.
   pub fn nil() -> Option<Self> {
-    Some(Self {
-      typ: None,
-      text: None,
-      nil: true,
-    })
+    Some(Self { typ: None, text: None, nil: true })
   }
 }
 

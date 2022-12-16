@@ -111,11 +111,7 @@ impl std::fmt::Display for FeelType {
       FeelType::DateTime => write!(f, "{FEEL_TYPE_NAME_DATE_AND_TIME}"),
       FeelType::DaysAndTimeDuration => write!(f, "{FEEL_TYPE_NAME_DAYS_AND_TIME_DURATION}"),
       FeelType::Function(parameter_types, result_type) => {
-        let parameter_types_str = parameter_types
-          .iter()
-          .map(|parameter_type| format!("{parameter_type}"))
-          .collect::<Vec<String>>()
-          .join(", ");
+        let parameter_types_str = parameter_types.iter().map(|parameter_type| format!("{parameter_type}")).collect::<Vec<String>>().join(", ");
         let result_type_str = result_type.to_string();
         write!(f, "function<{parameter_types_str}>->{result_type_str}")
       }
@@ -335,16 +331,7 @@ impl FeelType {
   pub fn is_simple_built_in_type(&self) -> bool {
     matches!(
       self,
-      Self::Any
-        | Self::Boolean
-        | Self::Date
-        | Self::DateTime
-        | Self::DaysAndTimeDuration
-        | Self::Null
-        | Self::Number
-        | Self::String
-        | Self::Time
-        | Self::YearsAndMonthsDuration
+      Self::Any | Self::Boolean | Self::Date | Self::DateTime | Self::DaysAndTimeDuration | Self::Null | Self::Number | Self::String | Self::Time | Self::YearsAndMonthsDuration
     )
   }
   /// Creates a `list` type with specified items' type.

@@ -150,22 +150,12 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_null(
-    false,
-    &scope!(),
-    r#"number(1000)"#,
-    r#"expected 3 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"number(1000)"#, r#"expected 3 parameters, actual number of parameters is 1"#);
 }
 
 #[test]
 fn _0018() {
-  te_null(
-    false,
-    &scope!(),
-    r#"number(1000,",")"#,
-    r#"expected 3 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"number(1000,",")"#, r#"expected 3 parameters, actual number of parameters is 2"#);
 }
 
 #[test]

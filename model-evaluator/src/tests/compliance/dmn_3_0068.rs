@@ -341,131 +341,333 @@ fn _0050() {
 #[test]
 fn _0051() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_001", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "time_001", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0052() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "time_002", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0053() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_003", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "time_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0054() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_004", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "time_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0055() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_005", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "time_005", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0056() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_006", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "time_006", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0057() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_007", &ctx, r#"null(equal err 'PT0S' =?= '0')"#);
+  assert_decision(&MODEL_EVALUATOR, "time_009", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0058() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_001", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "time_010", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0059() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_001", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0060() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0061() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0062() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_003_a", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0063() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_006", &ctx, r#"null(equal err 'P1Y' =?= 'P365D')"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_004", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0064() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_007", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_005", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0065() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_008", &ctx, r#"null(equal err 'P0M' =?= '0')"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_006", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0066() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_001", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_007", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0067() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_008", &ctx, r#"true"#);
 }
 
 #[test]
+#[ignore]
 fn _0068() {
+  // ignored in winter time
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_003", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_008_a", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0069() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_004", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_008_b", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0070() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_005", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_009", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0071() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "deep_006", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_010", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0072() {
   let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_011", &ctx, r#"null(equal err '2018-12-08T00:00:00' =?= '100')"#);
+}
+
+#[test]
+#[ignore]
+fn _0073() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_012", &ctx, r#"true"#);
+}
+
+#[test]
+#[ignore]
+fn _0074() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_013", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0075() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_001", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0076() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_002", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0077() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_003", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0078() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_004", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0079() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_005", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0080() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_006", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0081() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_007", &ctx, r#"null(equal err 'P0D' =?= '0')"#);
+}
+
+#[test]
+fn _0082() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_001", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0083() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_002", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0084() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0085() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0086() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0087() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_006", &ctx, r#"null(equal err 'P1Y' =?= 'P365D')"#);
+}
+
+#[test]
+fn _0088() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_007", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0089() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_008", &ctx, r#"null(equal err 'P0Y' =?= '0')"#);
+}
+
+#[test]
+fn _0090() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_001", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0091() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_002", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0092() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_003", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0093() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_004", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0094() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_005", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0095() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "deep_006", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0096() {
+  let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "deep_007", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0097() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_001", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0098() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_002", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0099() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_003", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0100() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_004", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0101() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_005", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0102() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_006", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0103() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_007", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0104() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_008", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0105() {
+  let ctx = context(r#"{null_input: null}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_009", &ctx, r#"true"#);
 }

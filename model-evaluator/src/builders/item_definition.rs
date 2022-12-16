@@ -81,6 +81,7 @@ pub fn build_item_definition_evaluator(item_definition: &ItemDefinition) -> Resu
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => build_collection_of_simple_type_evaluator(feel_type, av_evaluator),
     ItemDefinitionType::CollectionOfReferencedType(ref_type) => build_collection_of_referenced_type_evaluator(ref_type, av_evaluator),
     ItemDefinitionType::CollectionOfComponentType => build_collection_of_component_type_evaluator(item_definition),
+    ItemDefinitionType::FunctionType => build_function_type_evaluator(),
   }
 }
 
@@ -181,11 +182,7 @@ fn build_simple_type_evaluator(feel_type: FeelType, av_evaluator: Option<Evaluat
       if let Value::DaysAndTimeDuration(_) = value {
         check_allowed_values(value.to_owned(), av_evaluator.as_ref())
       } else {
-        value_null!(
-          "expected type 'days and time duration', actual type is '{}' in value '{}'",
-          value.type_of(),
-          value
-        )
+        value_null!("expected type 'days and time duration', actual type is '{}' in value '{}'", value.type_of(), value)
       }
     })
   }
@@ -195,11 +192,7 @@ fn build_simple_type_evaluator(feel_type: FeelType, av_evaluator: Option<Evaluat
       if let Value::YearsAndMonthsDuration(_) = value {
         check_allowed_values(value.to_owned(), av_evaluator.as_ref())
       } else {
-        value_null!(
-          "expected type 'years and months duration', actual type is '{}' in value '{}'",
-          value.type_of(),
-          value
-        )
+        value_null!("expected type 'years and months duration', actual type is '{}' in value '{}'", value.type_of(), value)
       }
     })
   }
@@ -464,13 +457,21 @@ fn build_collection_of_component_type_evaluator(item_definition: &ItemDefinition
   }))
 }
 
+///
+fn build_function_type_evaluator() -> Result<ItemDefinitionEvaluatorFn> {
+  Ok(Box::new(move |_: &Value, _: &ItemDefinitionEvaluator| {
+    value_null!("function type evaluator not implemented yet")
+  }))
+}
+
 #[cfg(test)]
 mod tests {
   use crate::builders::ItemDefinitionEvaluator;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::{Value, Values};
-  use dmntk_feel::{value_null, value_number, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, Name};
+  use dmntk_feel::{value_null, value_number, Name};
+  use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
@@ -561,10 +562,7 @@ mod tests {
     let context_str = r#"{ Delivery Time : time("18:35:23") }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Delivery", "Time"])).unwrap();
-    assert_eq!(
-      Value::Time(FeelTime::new_hms_opt(18, 35, 23, 0).unwrap()),
-      evaluator.eval("tDeliveryTime", value).unwrap()
-    );
+    assert_eq!(Value::Time(FeelTime::new_hms_opt(18, 35, 23, 0).unwrap()), evaluator.eval("tDeliveryTime", value).unwrap());
   }
 
   #[test]
@@ -598,7 +596,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Growth", "Duration"])).unwrap();
     assert_eq!(
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 5)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 5)),
       evaluator.eval("tGrowthDuration", value).unwrap()
     );
   }
@@ -729,9 +727,7 @@ mod tests {
     let context_str = r#"{ Items : [duration("P2DT3H")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(
-      FeelDaysAndTimeDuration::default().second(183600).build(),
-    )]));
+    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(183600).build())]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -742,8 +738,8 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
     let expected = Value::List(Values::new(vec![
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 3)),
-      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(2, 4)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3)),
+      Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 4)),
     ]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }

@@ -2,10 +2,9 @@ use crate::bif::Bif;
 use crate::context::FeelContext;
 use crate::function::FunctionBody;
 use crate::values::{Value, Values};
-use crate::{
-  value_number, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelNumber, FeelTime, FeelType, FeelYearsAndMonthsDuration, Name, Scope, ToFeelString,
-};
+use crate::{value_number, FeelNumber, FeelType, Name, Scope, ToFeelString};
 use dmntk_common::Jsonify;
+use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
@@ -38,7 +37,7 @@ fn test_debug() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_dbg!(r#"Boolean(false)"#, Value::Boolean(false));
   eq_dbg!(r#"BuiltInFunction(Time)"#, Value::BuiltInFunction(Bif::Time));
   eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
@@ -46,10 +45,7 @@ fn test_debug() {
   eq_dbg!(r#"ContextEntry(Name("a"), Number(+1E+0))"#, Value::ContextEntry(name.clone(), b_number.clone()));
   eq_dbg!(r#"ContextEntryKey(Name("a"))"#, Value::ContextEntryKey(name.clone()));
   eq_dbg!(r#"ContextType(Number)"#, Value::ContextType(t_number.clone()));
-  eq_dbg!(
-    r#"ContextTypeEntry(Name("a"), Number)"#,
-    Value::ContextTypeEntry(name.clone(), t_number.clone())
-  );
+  eq_dbg!(r#"ContextTypeEntry(Name("a"), Number)"#, Value::ContextTypeEntry(name.clone(), t_number.clone()));
   eq_dbg!(r#"ContextTypeEntryKey(Name("a"))"#, Value::ContextTypeEntryKey(name.clone()));
   eq_dbg!(r#"Date(FeelDate(2022, 9, 27))"#, Value::Date(v_date));
   eq_dbg!(
@@ -111,7 +107,7 @@ fn test_display() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_dsp!(r#"false"#, Value::Boolean(false));
   eq_dsp!(r#"BuiltInFunction"#, Value::BuiltInFunction(Bif::Time));
   eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
@@ -136,10 +132,7 @@ fn test_display() {
   eq_dsp!(r#"IntervalStart"#, Value::IntervalStart(b_number.clone(), false));
   eq_dsp!(r#"Irrelevant"#, Value::Irrelevant);
   eq_dsp!(r#"[]"#, Value::List(Values::default()));
-  eq_dsp!(
-    r#"NamedParameter"#,
-    Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone())
-  );
+  eq_dsp!(r#"NamedParameter"#, Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone()));
   eq_dsp!(r#"NamedParameters"#, Value::NamedParameters(BTreeMap::new()));
   eq_dsp!(r#"NegatedCommaList"#, Value::NegatedCommaList(Values::default()));
   eq_dsp!(r#"1"#, Value::Number(FeelNumber::new(1, 0)));
@@ -171,7 +164,7 @@ fn test_type_of() {
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
-  let v_years_and_months_duration = FeelYearsAndMonthsDuration::new_ym(3, 2);
+  let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
   eq_typ!(FeelType::Boolean, Value::Boolean(false));
   eq_typ!(FeelType::Any, Value::BuiltInFunction(Bif::Time));
   eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
@@ -198,10 +191,7 @@ fn test_type_of() {
   eq_typ!(FeelType::List(Box::new(FeelType::Null)), Value::List(Values::default()));
   eq_typ!(FeelType::List(Box::new(t_number)), Value::List(Values::new(vec![v_number.clone()])));
   eq_typ!(FeelType::List(Box::new(FeelType::Any)), Value::List(Values::new(vec![v_number, v_boolean])));
-  eq_typ!(
-    FeelType::Any,
-    Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone())
-  );
+  eq_typ!(FeelType::Any, Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone()));
   eq_typ!(FeelType::Any, Value::NamedParameters(BTreeMap::new()));
   eq_typ!(FeelType::Any, Value::NegatedCommaList(Values::default()));
   eq_typ!(FeelType::Number, Value::Number(FeelNumber::new(1, 0)));
@@ -210,10 +200,7 @@ fn test_type_of() {
   eq_typ!(FeelType::Any, Value::ParameterTypes(vec![]));
   eq_typ!(FeelType::Any, Value::PositionalParameters(Values::default()));
   eq_typ!(FeelType::Any, Value::QualifiedNameSegment(name));
-  eq_typ!(
-    FeelType::Range(Box::new(FeelType::Number)),
-    Value::Range(b_number.clone(), false, b_number.clone(), true)
-  );
+  eq_typ!(FeelType::Range(Box::new(FeelType::Number)), Value::Range(b_number.clone(), false, b_number.clone(), true));
   eq_typ!(FeelType::Range(Box::new(FeelType::Any)), Value::Range(b_number.clone(), false, b_boolean, true));
   eq_typ!(FeelType::String, Value::String("beta".to_string()));
   eq_typ!(FeelType::Time, Value::Time(v_time));
@@ -306,7 +293,7 @@ fn test_jsonify() {
   assert_eq!(r#""beta""#, Value::String("beta".to_string()).jsonify());
   assert_eq!(
     r#"jsonify not implemented for: P3Y2M"#,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::new_ym(3, 2)).jsonify()
+    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(3, 2)).jsonify()
   );
 }
 

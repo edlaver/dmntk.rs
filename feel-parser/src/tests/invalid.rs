@@ -41,10 +41,7 @@ use std::str::from_utf8;
 
 /// Utility function to shorten repeatable code in tests.
 fn te(input: &str, source: &str, message: &str) {
-  assert_eq!(
-    Err(DmntkError::new(source, message)),
-    Parser::new(&scope!(), StartTextualExpression, input, false).parse()
-  )
+  assert_eq!(Err(DmntkError::new(source, message)), Parser::new(&scope!(), StartTextualExpression, input, false).parse())
 }
 
 #[test]
@@ -109,11 +106,7 @@ fn _0008() {
 #[test]
 fn _0009() {
   // Invalid UTF-16 surrogate.
-  te(
-    r#""\uD800\uE000""#,
-    "LexerError",
-    "surrogate value is out of allowed range 0xD800..0xDFFF : E000",
-  );
+  te(r#""\uD800\uE000""#, "LexerError", "surrogate value is out of allowed range 0xD800..0xDFFF : E000");
 }
 
 #[test]
@@ -127,11 +120,6 @@ fn _0011() {
   let scope = scope!();
   assert_eq!(
     "ParserError: syntax error: 1 += 2",
-    Parser::new(&scope, StartExpression, "1 += 2", false)
-      .parse()
-      .err()
-      .unwrap()
-      .to_string()
-      .as_str()
+    Parser::new(&scope, StartExpression, "1 += 2", false).parse().err().unwrap().to_string().as_str()
   );
 }

@@ -33,13 +33,14 @@
 //! FEEL days and time duration.
 
 use self::errors::*;
+use crate::defs::*;
 use dmntk_common::DmntkError;
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::convert::TryFrom;
 
 /// Regular expression pattern for parsing days and time duration.
-const REGEX_DAYS_AND_TIME: &str =
-  r#"^(?P<sign>-)?P((?P<days>[0-9]+)D)?(T((?P<hours>[0-9]+)H)?((?P<minutes>[0-9]+)M)?((?P<seconds>[0-9]+)(?P<fractional>\.[0-9]*)?S)?)?$"#;
+const REGEX_DAYS_AND_TIME: &str = r#"^(?P<sign>-)?P((?P<days>[0-9]+)D)?(T((?P<hours>[0-9]+)H)?((?P<minutes>[0-9]+)M)?((?P<seconds>[0-9]+)(?P<fractional>\.[0-9]*)?S)?)?$"#;
 
 /// Number of nanoseconds in a day.
 const NANOSECONDS_IN_DAY: i64 = 24 * NANOSECONDS_IN_HOUR;
@@ -55,7 +56,6 @@ lazy_static! {
 }
 
 /// FEEL days and time duration.
-#[must_use]
 #[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
 pub struct FeelDaysAndTimeDuration(i64);
 
@@ -102,6 +102,10 @@ impl FeelDaysAndTimeDuration {
   pub fn as_seconds(&self) -> isize {
     (self.0 / NANOSECONDS_IN_SECOND) as isize
   }
+  /// Returns the this duration as nanoseconds.
+  pub fn as_nanos(&self) -> i64 {
+    self.0
+  }
   /// Returns absolute value of the duration.
   pub fn abs(&self) -> Self {
     Self(self.0.abs())
@@ -145,9 +149,9 @@ impl std::fmt::Display for FeelDaysAndTimeDuration {
     nanoseconds -= minute * NANOSECONDS_IN_MINUTE;
     let seconds = nanoseconds / NANOSECONDS_IN_SECOND;
     nanoseconds -= seconds * NANOSECONDS_IN_SECOND;
-    let nanoseconds_str = super::nanos_to_string(nanoseconds as u64);
+    let nanoseconds_str = nanos_to_string(nanoseconds as u64);
     match (day > 0, hour > 0, minute > 0, seconds > 0, nanoseconds > 0) {
-      (false, false, false, false, false) => write!(f, "PT0S"),
+      (false, false, false, false, false) => write!(f, "P0D"),
       (false, false, false, true, false) => write!(f, "{sign}PT{seconds}S"),
       (false, false, true, false, false) => write!(f, "{sign}PT{minute}M"),
       (false, false, true, true, false) => write!(f, "{sign}PT{minute}M{seconds}S"),
@@ -350,7 +354,7 @@ mod tests {
   #[test]
   fn converting_to_string_should_pass() {
     equals_str("PT0.999S", false, 0, 999_000_000);
-    equals_str("PT0S", false, 0, 0);
+    equals_str("P0D", false, 0, 0);
     equals_str("PT1S", false, 1, 0);
     equals_str("-PT1S", true, 1, 0);
     equals_str("PT1.123S", false, 1, 123_000_000);
@@ -465,18 +469,9 @@ mod tests {
         .nano(999_999_999)
         .partial_cmp(&FeelDaysAndTimeDuration::default().second(86_400).nano(999_999_999))
     );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().nano(0).build(),
-      FeelDaysAndTimeDuration::default().nano(0).build()
-    );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().nano(0).build(),
-      FeelDaysAndTimeDuration::default().nano(-0).build()
-    );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().second(0).nano(10),
-      FeelDaysAndTimeDuration::default().second(0).nano(10)
-    );
+    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(0).build());
+    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(-0).build());
+    assert_eq!(FeelDaysAndTimeDuration::default().second(0).nano(10), FeelDaysAndTimeDuration::default().second(0).nano(10));
     assert_eq!(
       FeelDaysAndTimeDuration::default().second(0).nano(999_999_999),
       FeelDaysAndTimeDuration::default().second(0).nano(999_999_999)
@@ -491,9 +486,7 @@ mod tests {
   fn lt_should_pass() {
     assert_eq!(
       Some(Ordering::Less),
-      FeelDaysAndTimeDuration::default()
-        .second(10)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(11))
+      FeelDaysAndTimeDuration::default().second(10).partial_cmp(&FeelDaysAndTimeDuration::default().second(11))
     );
     assert_eq!(
       Some(Ordering::Less),
@@ -522,9 +515,7 @@ mod tests {
   fn gt_should_pass() {
     assert_eq!(
       Some(Ordering::Greater),
-      FeelDaysAndTimeDuration::default()
-        .second(11)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
+      FeelDaysAndTimeDuration::default().second(11).partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
     );
     assert_eq!(
       Some(Ordering::Greater),

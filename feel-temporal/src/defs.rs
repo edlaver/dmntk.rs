@@ -32,20 +32,12 @@
 
 //! Implementation of FEEL temporal artifacts.
 
-use crate::temporal::date_time::FeelDateTime;
-use crate::temporal::time::FeelTime;
-use crate::temporal::zone::FeelZone;
+use crate::date_time::FeelDateTime;
+use crate::zone::FeelZone;
 use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
+use lazy_static::lazy_static;
 use regex::Regex;
 use std::ops::Sub;
-
-pub(crate) mod date;
-pub(crate) mod date_time;
-pub(crate) mod dt_duration;
-mod errors;
-pub(crate) mod time;
-pub(crate) mod ym_duration;
-pub(crate) mod zone;
 
 /// Regular expression pattern for parsing dates.
 const DATE_PATTERN: &str = r#"(?P<sign>-)?(?P<year>[1-9][0-9]{3,8})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})"#;
@@ -75,13 +67,13 @@ pub type MonthOfYear = (String, u8);
 
 lazy_static! {
   /// Regular expression pattern for parsing time zone.
-  static ref TIME_ZONE_PATTERN: String = format!("{ZULU_PATTERN}|{ZONE_PATTERN}|{OFFSET_PATTERN}");
+  pub static ref TIME_ZONE_PATTERN: String = format!("{ZULU_PATTERN}|{ZONE_PATTERN}|{OFFSET_PATTERN}");
   /// Regular expression for parsing date.
-  static ref RE_DATE: Regex = Regex::new(&format!("^{DATE_PATTERN}$")).unwrap();
+  pub static ref RE_DATE: Regex = Regex::new(&format!("^{DATE_PATTERN}$")).unwrap();
   /// Regular expression for parsing time.
-  static ref RE_TIME: Regex = Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str()) ).unwrap();
+  pub static ref RE_TIME: Regex = Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str()) ).unwrap();
   /// Regular expression for parsing date and time.
-  static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
+  pub static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
 }
 
 pub fn subtract(me: &FeelDateTime, other: &FeelDateTime) -> Option<i64> {
@@ -111,7 +103,7 @@ pub fn subtract(me: &FeelDateTime, other: &FeelDateTime) -> Option<i64> {
   None
 }
 
-fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
+pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
   let me_date_tuple = me.0.as_tuple();
   let me_time_tuple = ((me.1).0 as u32, (me.1).1 as u32, (me.1).2 as u32, (me.1).3 as u32);
   let me_offset_opt = match &(me.1).4 {
@@ -126,7 +118,7 @@ fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
   None
 }
 
-fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
+pub fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
   if let FeelZone::Zone(zone_name) = &(me.1).4 {
     return Some(zone_name.clone());
   }
@@ -134,7 +126,7 @@ fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
 }
 
 ///
-fn date_time_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32), offset: i32) -> Option<DateTime<FixedOffset>> {
+pub fn date_time_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32), offset: i32) -> Option<DateTime<FixedOffset>> {
   if let Some(fixed_offset) = FixedOffset::east_opt(offset) {
     if let LocalResult::Single(offset_date_time) = fixed_offset.with_ymd_and_hms(date.0, date.1, date.2, time.0, time.1, time.2) {
       if let Some(date_time) = offset_date_time.with_nanosecond(time.3) {
@@ -146,14 +138,14 @@ fn date_time_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32), offset
 }
 
 ///
-fn date_time_offset_t(time: (u32, u32, u32, u32), offset: i32) -> Option<DateTime<FixedOffset>> {
+pub fn date_time_offset_t(time: (u32, u32, u32, u32), offset: i32) -> Option<DateTime<FixedOffset>> {
   let today = Local::now();
   date_time_offset_dt((today.year(), today.month(), today.day()), time, offset)
 }
 
 /// Returns the time offset (in seconds) between local time zone
 /// and UTC time zone at specified **date and time**.
-fn get_local_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option<i32> {
+pub fn get_local_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option<i32> {
   if let Some(naive_date) = NaiveDate::from_ymd_opt(date.0, date.1, date.2) {
     if let Some(naive_time) = NaiveTime::from_hms_nano_opt(time.0, time.1, time.2, time.3) {
       let naive_date_time = NaiveDateTime::new(naive_date, naive_time);
@@ -165,14 +157,14 @@ fn get_local_offset_dt(date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Opt
 
 /// Returns the time offset (in seconds) between local time zone
 /// and UTC time zone at specified **time** today.
-fn get_local_offset_t(time: (u32, u32, u32, u32)) -> Option<i32> {
+pub fn get_local_offset_t(time: (u32, u32, u32, u32)) -> Option<i32> {
   let today = Local::now();
   get_local_offset_dt((today.year(), today.month(), today.day()), time)
 }
 
 /// Returns time offset (in seconds) between named time zone
 /// and UTC time zone at specified **date and time**.
-fn get_zone_offset_dt(zone_name: &str, date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option<i32> {
+pub fn get_zone_offset_dt(zone_name: &str, date: (i32, u32, u32), time: (u32, u32, u32, u32)) -> Option<i32> {
   // try to build UTC date and time from specified values
   if let LocalResult::Single(utc_date_time) = Utc.with_ymd_and_hms(date.0, date.1, date.2, time.0, time.1, time.2) {
     if let Some(utc) = utc_date_time.with_nanosecond(time.3) {
@@ -195,9 +187,18 @@ fn get_zone_offset_dt(zone_name: &str, date: (i32, u32, u32), time: (u32, u32, u
 
 /// Returns time offset (in seconds) between named time zone
 /// and UTC time zone at specified **time** today.
-fn get_zone_offset_t(zone_name: &str, time: (u32, u32, u32, u32)) -> Option<i32> {
+pub fn get_zone_offset_t(zone_name: &str, time: (u32, u32, u32, u32)) -> Option<i32> {
   let today = Local::now();
   get_zone_offset_dt(zone_name, (today.year(), today.month(), today.day()), time)
+}
+
+/// Returns time offset (in seconds) of the named time zone and UTC time zone.
+pub fn get_zone_offset(zone_name: &str) -> Option<i32> {
+  let now = Utc::now();
+  let time = now.time();
+  let t = (time.hour(), time.minute(), time.second(), time.nanosecond());
+  let d = (now.year(), now.month(), now.day());
+  get_zone_offset_dt(zone_name, d, t)
 }
 
 /// Converts nanoseconds into string.
@@ -214,7 +215,7 @@ fn get_zone_offset_t(zone_name: &str, time: (u32, u32, u32, u32)) -> Option<i32>
 /// assert_eq!("00012", nanos_to_string(120_000));
 /// assert_eq!("1", nanos_to_string(100_000_000));
 /// ```
-fn nanos_to_string(nano: u64) -> String {
+pub fn nanos_to_string(nano: u64) -> String {
   let chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   let mut buffer = ['0', '0', '0', '0', '0', '0', '0', '0', '0'];
   let mut index = 9_usize;
@@ -239,15 +240,14 @@ fn nanos_to_string(nano: u64) -> String {
   buffer.iter().take(count).collect()
 }
 
-fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
-  hour < 24 && minute < 60 && second < 60
+pub fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
+  (hour < 24 && minute < 60 && second < 60) || (hour == 24 && minute == 0 && second == 0)
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::temporal::nanos_to_string;
-  use crate::FeelDate;
+  use crate::date::FeelDate;
   use std::str::FromStr;
 
   const SECONDS_IN_HOUR: i32 = 3_600;
@@ -292,15 +292,9 @@ mod tests {
     // time in Moscow, offset = +03:00
     assert_eq!(Some(3 * SECONDS_IN_HOUR), get_zone_offset_dt("Europe/Moscow", (2020, 10, 29), (9, 12, 3, 0)));
     // summer time in New York, offset = -04:00
-    assert_eq!(
-      Some(-4 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("America/New_York", (2020, 6, 28), (12, 12, 3, 0))
-    );
+    assert_eq!(Some(-4 * SECONDS_IN_HOUR), get_zone_offset_dt("America/New_York", (2020, 6, 28), (12, 12, 3, 0)));
     // winter time in New York, offset = -05:00
-    assert_eq!(
-      Some(-5 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("America/New_York", (2020, 11, 12), (18, 4, 33, 0))
-    );
+    assert_eq!(Some(-5 * SECONDS_IN_HOUR), get_zone_offset_dt("America/New_York", (2020, 11, 12), (18, 4, 33, 0)));
     // time in Kolkata, offset = +05:30
     assert_eq!(
       Some(5 * SECONDS_IN_HOUR + 30 * SECONDS_IN_MIN),
@@ -312,10 +306,7 @@ mod tests {
       get_zone_offset_dt("Asia/Kolkata", (2020, 6, 8), (8, 0, 0, 0))
     );
     // time in Honolulu, offset = -10:00
-    assert_eq!(
-      Some(-10 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("Pacific/Honolulu", (2020, 11, 12), (18, 4, 33, 0))
-    );
+    assert_eq!(Some(-10 * SECONDS_IN_HOUR), get_zone_offset_dt("Pacific/Honolulu", (2020, 11, 12), (18, 4, 33, 0)));
     // no time change in Honolulu in summer, offset = -10:00
     assert_eq!(Some(-10 * SECONDS_IN_HOUR), get_zone_offset_dt("Pacific/Honolulu", (2020, 6, 8), (8, 0, 0, 0)));
   }

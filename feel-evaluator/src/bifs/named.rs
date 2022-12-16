@@ -82,6 +82,13 @@ lazy_static! {
 
 type NamedParameters = Value;
 
+macro_rules! invalid_number_of_parameters {
+  ($expected:expr, $actual:expr) => {{
+    use dmntk_feel::value_null;
+    value_null!("expected {} parameters, actual number of parameters is {}", $expected, $actual)
+  }};
+}
+
 macro_rules! parameter_not_found {
   ($l:expr) => {{
     use dmntk_feel::value_null;
@@ -383,9 +390,9 @@ fn bif_exp(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_finished_by(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::finished_by(value1, value2)
-  } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
+  } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE).zip(get_param(parameters, &NAME_POINT)) {
     core::finished_by(value1, value2)
   } else {
     value_null!("[named::finished by] invalid named parameters")
@@ -439,7 +446,7 @@ fn bif_get_value(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_includes(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE).zip(get_param(parameters, &NAME_POINT)) {
     core::includes(value1, value2)
   } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::includes(value1, value2)
@@ -477,14 +484,20 @@ fn bif_insert_before(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_is(parameters: &NamedParameters) -> Value {
-  if let Some((value1, _)) = get_param(parameters, &NAME_VALUE1) {
-    if let Some((value2, _)) = get_param(parameters, &NAME_VALUE2) {
-      core::is(value1, value2)
-    } else {
-      parameter_not_found!(NAME_VALUE2)
+  match get_param_count(parameters) {
+    1 => Value::Boolean(false),
+    2 => {
+      if let Some((value1, _)) = get_param(parameters, &NAME_VALUE1) {
+        if let Some((value2, _)) = get_param(parameters, &NAME_VALUE2) {
+          core::is(value1, value2)
+        } else {
+          parameter_not_found!(NAME_VALUE2)
+        }
+      } else {
+        parameter_not_found!(NAME_VALUE1)
+      }
     }
-  } else {
-    parameter_not_found!(NAME_VALUE1)
+    n => invalid_number_of_parameters!(2, n),
   }
 }
 
@@ -768,7 +781,7 @@ fn bif_sqrt(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_started_by(parameters: &NamedParameters) -> Value {
-  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_POINT).zip(get_param(parameters, &NAME_RANGE)) {
+  if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE).zip(get_param(parameters, &NAME_POINT)) {
     core::started_by(value1, value2)
   } else if let Some(((value1, _), (value2, _))) = get_param(parameters, &NAME_RANGE_1).zip(get_param(parameters, &NAME_RANGE_2)) {
     core::started_by(value1, value2)
@@ -937,8 +950,9 @@ fn bif_years_and_months_duration(parameters: &NamedParameters) -> Value {
   }
 }
 
-/// Returns reference to the value of the named parameter with specified name.
-/// Checks all names given in parameter `names`. The value of the first name found is returned.
+/// Returns reference to the value and position of the parameter with specified name.
+/// The position of the named parameter is counted from 1.
+/// Additionally the total number of parameters is returned.
 fn get_param<'a>(parameters: &'a NamedParameters, name: &'a Name) -> Option<(&'a Value, &'a usize)> {
   if let Value::NamedParameters(map) = parameters {
     if let Some((value, position)) = map.get(name) {
@@ -946,4 +960,13 @@ fn get_param<'a>(parameters: &'a NamedParameters, name: &'a Name) -> Option<(&'a
     }
   }
   None
+}
+
+/// Returns the number of named parameters.
+fn get_param_count(parameters: &NamedParameters) -> usize {
+  if let Value::NamedParameters(map) = parameters {
+    map.len()
+  } else {
+    0
+  }
 }

@@ -53,22 +53,12 @@ fn _0002_a() {
 
 #[test]
 fn _0002_b() {
-  assert_decision_service(
-    &MODEL_EVALUATOR,
-    "decisionService_002",
-    r#"{decision_002_input: null}"#,
-    r#"null(addition err 2)"#,
-  );
+  assert_decision_service(&MODEL_EVALUATOR, "decisionService_002", r#"{decision_002_input: null}"#, r#"null(addition err 2)"#);
 }
 
 #[test]
 fn _0002_c() {
-  assert_decision_service(
-    &MODEL_EVALUATOR,
-    "decisionService_002",
-    r#"{decision_002_input: 1234}"#,
-    r#"null(addition err 2)"#,
-  );
+  assert_decision_service(&MODEL_EVALUATOR, "decisionService_002", r#"{decision_002_input: 1234}"#, r#"null(addition err 2)"#);
 }
 
 #[test]
