@@ -7,6 +7,7 @@
 ![build Windows][build-badge-windows]
 ![build MacOs][build-badge-macos]
 ![Code coverage][coverage-badge]
+
 ![Release][release-badge]
 
 [crates-badge]: https://img.shields.io/crates/v/dmntk.svg
