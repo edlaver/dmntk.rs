@@ -536,7 +536,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "actix-web",
  "base64",
@@ -557,7 +557,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-common"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "serde",
  "uriparse",
@@ -565,7 +565,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-evaluator"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-feel",
@@ -576,11 +576,11 @@ dependencies = [
 
 [[package]]
 name = "dmntk-examples"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 
 [[package]]
 name = "dmntk-feel"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "ascii_tree",
  "chrono",
@@ -593,7 +593,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-evaluator"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-feel",
@@ -605,7 +605,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-grammar"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "convert_case 0.6.0",
  "regex",
@@ -613,7 +613,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-number"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dfp-number-sys",
  "dmntk-common",
@@ -621,7 +621,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-parser"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "difference",
  "dmntk-common",
@@ -631,7 +631,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-feel-temporal"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -643,7 +643,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-gendoc"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-examples",
  "dmntk-model",
@@ -652,7 +652,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-model"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-examples",
@@ -663,7 +663,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-model-evaluator"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-examples",
@@ -678,7 +678,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-recognizer"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-examples",
@@ -687,7 +687,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-server"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "actix-web",
  "base64",
@@ -704,7 +704,7 @@ dependencies = [
 
 [[package]]
 name = "dmntk-workspace"
-version = "0.0.48-dev"
+version = "0.0.49-dev"
 dependencies = [
  "dmntk-common",
  "dmntk-examples",
@@ -1362,15 +1362,15 @@ checksum = "e25dfac463d778e353db5be2449d1cce89bd6fd23c9f1ea21310ce6e5a1b29c4"
 
 [[package]]
 name = "serde"
-version = "1.0.149"
+version = "1.0.150"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "256b9932320c590e707b94576e3cc1f7c9024d0ee6612dfbcf1cb106cbe8e055"
+checksum = "e326c9ec8042f1b5da33252c8a37e9ffbd2c9bef0155215b6e6c80c790e05f91"
 
 [[package]]
 name = "serde_derive"
-version = "1.0.149"
+version = "1.0.150"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4eae9b04cbffdfd550eb462ed33bc6a1b68c935127d008b27444d08380f94e4"
+checksum = "42a3df25b0713732468deadad63ab9da1f1fd75a48a15024b50363f128db627e"
 dependencies = [
  "proc-macro2",
  "quote",
