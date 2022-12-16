@@ -20,27 +20,27 @@ members = [
 ]
 
 [workspace.package]
-version = "0.0.48"
+version = "0.0.49"
 authors = ["Dariusz Depta <dariusz.depta@dmntk.io>"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [workspace.dependencies]
-dmntk-common = "=0.0.48"
-dmntk-evaluator = "=0.0.48"
-dmntk-examples = "=0.0.48"
-dmntk-feel = "=0.0.48"
-dmntk-feel-evaluator = "=0.0.48"
-dmntk-feel-grammar = "=0.0.48"
-dmntk-feel-number = "=0.0.48"
-dmntk-feel-parser = "=0.0.48"
-dmntk-feel-temporal = "=0.0.48"
-dmntk-gendoc = "=0.0.48"
-dmntk-model = "=0.0.48"
-dmntk-model-evaluator = "=0.0.48"
-dmntk-recognizer = "=0.0.48"
-dmntk-server = "=0.0.48"
-dmntk-workspace = "=0.0.48"
+dmntk-common = { path = "common" }
+dmntk-evaluator = { path = "evaluator" }
+dmntk-examples = { path = "examples" }
+dmntk-feel = { path = "feel" }
+dmntk-feel-evaluator = { path = "feel-evaluator" }
+dmntk-feel-grammar = { path = "feel-grammar" }
+dmntk-feel-number = { path = "feel-number" }
+dmntk-feel-parser = { path = "feel-parser" }
+dmntk-feel-temporal = { path = "feel-temporal" }
+dmntk-gendoc = { path = "gendoc" }
+dmntk-model = { path = "model" }
+dmntk-model-evaluator = { path = "model-evaluator" }
+dmntk-recognizer = { path = "recognizer" }
+dmntk-server = { path = "server" }
+dmntk-workspace = { path = "workspace" }
 serde = { version = "=1.0.150" }
 serde_derive = "=1.0.150"
-serde_json = "=1.0.89"
+serde_json = "1.0.89"

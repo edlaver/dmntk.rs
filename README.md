@@ -6,7 +6,10 @@
 ![build Windows][build-badge-windows]
 ![build MacOs][build-badge-macos]
 ![Code coverage][coverage-badge]
-[![Contributor Covenant][coc-badge]](CODE_OF_CONDUCT.md)
+
+[![Contributor Covenant][coc-badge]](https://github.com/dmntk/dmntk.rs/blob/main/CODE_OF_CONDUCT.md)
+
+![Release][release-badge]
 
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg
 [mit-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-MIT
@@ -17,16 +20,19 @@
 [build-badge-macos]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-macos.yml/badge.svg
 [coverage-badge]: https://img.shields.io/badge/Coverage-89%25-green.svg
 [coc-badge]: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg
+[release-badge]: https://img.shields.io/badge/ALPHA-c48793.svg
 
 ## Project status
 
-Released pre-alpha version, check this [README](dmntk/README.md) for details.
+Released **ALPHA** version, check this [README](dmntk/README.md) for details.
 
 ## License
 
 Licensed under either of
+
 - [MIT license](https://opensource.org/licenses/MIT) ([LICENSE-MIT](https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-MIT)), or
 - [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0) ([LICENSE-APACHE](https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-APACHE))
+
 at your option.
 
 ## Contribution
