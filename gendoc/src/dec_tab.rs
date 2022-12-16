@@ -148,12 +148,7 @@ struct Row {
 impl Row {
   /// Adds a cell to the row.
   fn add(&mut self, class: String, colspan: usize, rowspan: usize, content: String) {
-    self.cells.push(Cell {
-      class,
-      colspan,
-      rowspan,
-      content,
-    })
+    self.cells.push(Cell { class, colspan, rowspan, content })
   }
   /// Writes a row to HTML output when contains any cells
   fn write(&self, html: &mut String, indent: usize) {
@@ -187,16 +182,8 @@ impl Cell {
       } else {
         "".to_string()
       },
-      if self.colspan > 0 {
-        format!(r#" colspan="{}""#, self.colspan)
-      } else {
-        "".to_string()
-      },
-      if self.rowspan > 0 {
-        format!(r#" rowspan="{}""#, self.rowspan)
-      } else {
-        "".to_string()
-      },
+      if self.colspan > 0 { format!(r#" colspan="{}""#, self.colspan) } else { "".to_string() },
+      if self.rowspan > 0 { format!(r#" rowspan="{}""#, self.rowspan) } else { "".to_string() },
       self.content,
       NL,
       i = indent
@@ -217,10 +204,7 @@ pub fn decision_table_to_html(decision_table: &DecisionTable) -> String {
   let decision_table_attributes = get_decision_table_attr(decision_table);
   DECISION_TABLE_HTML_TEMPLATE
     .replace(DECISION_TABLE_STYLES_PLACEHOLDER, &indent_content(DECISION_TABLE_CSS_TEMPLATE))
-    .replace(
-      DECISION_TABLE_HTML_PLACEHOLDER,
-      &get_decision_table_html(decision_table, &decision_table_attributes),
-    )
+    .replace(DECISION_TABLE_HTML_PLACEHOLDER, &get_decision_table_html(decision_table, &decision_table_attributes))
 }
 
 /// Returns HTML code containing the definition of decision table.
@@ -359,12 +343,7 @@ fn write_horizontal_decision_table(indent: usize, html: &mut String, decision_ta
   // write annotation names
   for (index, annotation) in decision_table.annotations.iter().enumerate() {
     let annotation_attr = get_annotation_attr(index, decision_table_attr);
-    row1.add(
-      annotation_attr.class.to_string(),
-      0,
-      annotation_attr.rowspan,
-      annotation.name.trim().to_string(),
-    );
+    row1.add(annotation_attr.class.to_string(), 0, annotation_attr.rowspan, annotation.name.trim().to_string());
   }
   // write three starting rows (empty row is simple omitted)
   row1.write(html, indent);
@@ -395,23 +374,9 @@ fn write_horizontal_decision_table(indent: usize, html: &mut String, decision_ta
 fn get_information_item_name_html(indent: usize, content: &str, colspan: usize) -> String {
   let mut html = String::new();
   let _ = write!(html, r#"{WS:indent$}<tr>{NL}"#);
-  let _ = write!(
-    html,
-    r#"{:i$}<td colspan="{}" class="information-item">{}"#,
-    WS,
-    colspan,
-    NL,
-    i = indent + INDENT
-  );
+  let _ = write!(html, r#"{:i$}<td colspan="{}" class="information-item">{}"#, WS, colspan, NL, i = indent + INDENT);
   let _ = write!(html, r#"{WS:i$}<div class="information-item-name-container">{NL}"#, i = indent + INDENT_2);
-  let _ = write!(
-    html,
-    r#"{:i$}<div class="information-item-name">{}</div>{}"#,
-    WS,
-    content.trim(),
-    NL,
-    i = indent + INDENT_3
-  );
+  let _ = write!(html, r#"{:i$}<div class="information-item-name">{}</div>{}"#, WS, content.trim(), NL, i = indent + INDENT_3);
   let _ = write!(html, r#"{WS:i$}</div>{NL}"#, i = indent + INDENT_2);
   let _ = write!(html, r#"{WS:i$}</td>{NL}"#, i = indent + INDENT);
   let _ = write!(html, r#"{WS:indent$}</tr>{NL}"#);
@@ -563,10 +528,7 @@ fn get_rule_number_attr(rule_index: usize, decision_table_attr: &DecisionTableAt
 }
 
 fn get_input_entry_attr(index: usize, rule_index: usize, decision_table_attr: &DecisionTableAttr) -> InputEntryAttr {
-  let class = match (
-    index == decision_table_attr.input_clause_count - 1,
-    rule_index == decision_table_attr.rule_count - 1,
-  ) {
+  let class = match (index == decision_table_attr.input_clause_count - 1, rule_index == decision_table_attr.rule_count - 1) {
     (false, false) => "input-entry-a",
     (false, true) => "input-entry-a",
     (true, false) => "input-entry-b",

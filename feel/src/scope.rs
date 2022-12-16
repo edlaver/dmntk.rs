@@ -75,30 +75,21 @@ impl From<FeelContext> for Scope {
 impl std::fmt::Display for Scope {
   /// Converts this [Scope] to its textual representation.
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(
-      f,
-      "[{}]",
-      self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", ")
-    )
+    write!(f, "[{}]", self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
   }
 }
 
 impl Jsonify for Scope {
   /// Converts this [Scope] to its `JSON` representation.
   fn jsonify(&self) -> String {
-    format!(
-      "[{}]",
-      self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", ")
-    )
+    format!("[{}]", self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
   }
 }
 
 impl Scope {
   /// Creates a new and empty [Scope].
   pub fn new() -> Self {
-    Self {
-      contexts: RefCell::new(vec![]),
-    }
+    Self { contexts: RefCell::new(vec![]) }
   }
   /// Pushes a context on the top of the scope stack.
   pub fn push(&self, ctx: FeelContext) {
@@ -116,12 +107,7 @@ impl Scope {
   }
   /// Returns a vector of flattened keys in all contexts in scope.
   pub fn flatten_keys(&self) -> HashSet<String> {
-    self
-      .contexts
-      .borrow_mut()
-      .iter()
-      .flat_map(|ctx| ctx.flatten_keys())
-      .collect::<HashSet<String>>()
+    self.contexts.borrow_mut().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
   }
   /// Returns a value for an entry specified by name.
   /// Entries are searched from the last to the first context

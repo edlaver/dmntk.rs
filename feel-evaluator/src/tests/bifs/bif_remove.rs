@@ -50,12 +50,7 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  te_null(
-    false,
-    &scope!(),
-    "remove([1,2,3,4,5])",
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), "remove([1,2,3,4,5])", r#"expected 2 parameters, actual number of parameters is 1"#);
 }
 
 #[test]

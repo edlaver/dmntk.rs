@@ -165,11 +165,7 @@ fn svg_edge_dashed_with_end_point(way_points: &[DcPoint]) -> String {
   let points = way_points.iter().map(|w| format!("{},{} ", w.x, w.y)).collect::<String>();
   let _ = write!(svg_content, r#"<polyline points="{points}" stroke="black" stroke-dasharray="5 3"/>"#);
   let end_point = &way_points[way_points.len() - 1];
-  let _ = write!(
-    svg_content,
-    r#"<circle cx="{}" cy="{}" r="4" fill="black" stroke="none"/>"#,
-    end_point.x, end_point.y
-  );
+  let _ = write!(svg_content, r#"<circle cx="{}" cy="{}" r="4" fill="black" stroke="none"/>"#, end_point.x, end_point.y);
   svg_content
 }
 

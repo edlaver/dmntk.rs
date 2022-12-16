@@ -90,22 +90,12 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#,
-    "parameter 'value1' not found",
-  );
+  te_null(false, &scope!(), r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#, "parameter 'value1' not found");
 }
 
 #[test]
 fn _0013() {
-  te_null(
-    false,
-    &scope!(),
-    r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#,
-    "parameter 'value2' not found",
-  );
+  te_null(false, &scope!(), r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#, "parameter 'value2' not found");
 }
 
 #[test]

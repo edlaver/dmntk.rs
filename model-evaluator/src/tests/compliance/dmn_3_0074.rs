@@ -215,45 +215,25 @@ fn _0029() {
 #[test]
 fn _0030() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ym_duration_003",
-    &ctx,
-    r#"null(no such property in years and months duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"null(no such property in years and months duration)"#);
 }
 
 #[test]
 fn _0031() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ym_duration_004",
-    &ctx,
-    r#"null(no such property in years and months duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"null(no such property in years and months duration)"#);
 }
 
 #[test]
 fn _0032() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ym_duration_005",
-    &ctx,
-    r#"null(no such property in years and months duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"null(no such property in years and months duration)"#);
 }
 
 #[test]
 fn _0033() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ym_duration_006",
-    &ctx,
-    r#"null(no such property in years and months duration)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_006", &ctx, r#"null(no such property in years and months duration)"#);
 }
 
 #[test]

@@ -148,10 +148,7 @@ fn node_and_leaf(name: &str, leaf: &str) -> Tree {
 }
 
 fn node_and_label(name: &str, lhs: &AstNode, label_true: &str, label_false: &str, label_flag: bool) -> Tree {
-  Tree::Node(
-    format!("{}{}", name, if label_flag { label_true } else { label_false }),
-    vec![ast_node_to_tree(lhs)],
-  )
+  Tree::Node(format!("{}{}", name, if label_flag { label_true } else { label_false }), vec![ast_node_to_tree(lhs)])
 }
 
 fn leaf(leaf: &str) -> Tree {

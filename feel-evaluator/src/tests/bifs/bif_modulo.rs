@@ -45,12 +45,7 @@ fn _0002() {
 
 #[test]
 fn _0003() {
-  te_null(
-    false,
-    &scope!(),
-    r#"modulo(1,2,3)"#,
-    r#"expected 2 parameters, actual number of parameters is 3"#,
-  );
+  te_null(false, &scope!(), r#"modulo(1,2,3)"#, r#"expected 2 parameters, actual number of parameters is 3"#);
 }
 
 #[test]

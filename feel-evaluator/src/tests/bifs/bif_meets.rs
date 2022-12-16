@@ -135,12 +135,7 @@ fn _0014() {
 
 #[test]
 fn _0015() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"meets([duration("P1D")..duration("P10D")],[duration("P10D")..duration("P12D")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"meets([duration("P1D")..duration("P10D")],[duration("P10D")..duration("P12D")])"#, true);
 }
 
 #[test]
@@ -155,12 +150,7 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"meets([duration("P1Y")..duration("P10Y")],[duration("P10Y")..duration("P12Y")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"meets([duration("P1Y")..duration("P10Y")],[duration("P10Y")..duration("P12Y")])"#, true);
 }
 
 #[test]
@@ -180,12 +170,7 @@ fn _0019() {
 
 #[test]
 fn _0020() {
-  te_null(
-    false,
-    &scope!(),
-    r#"meets(20,[1..20],10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"meets(20,[1..20],10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]

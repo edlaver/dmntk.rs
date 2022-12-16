@@ -41,12 +41,7 @@ lazy_static! {
 #[test]
 fn _0001() {
   let ctx = context(r#"{Age: 17,RiskCategory: "High",isAffordable: true}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "Approval Status",
-    &ctx,
-    r#"{Approved/Declined: "Approved", Rate: "Standard"}"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#"{Approved/Declined: "Approved", Rate: "Standard"}"#);
 }
 
 #[test]
@@ -58,10 +53,5 @@ fn _0002() {
 #[test]
 fn _0003() {
   let ctx = context(r#"{Age: 10,RiskCategory: "Low",isAffordable: true}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "Approval Status",
-    &ctx,
-    r#"{Approved/Declined: "Declined", Rate: "Standard"}"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#"{Approved/Declined: "Declined", Rate: "Standard"}"#);
 }

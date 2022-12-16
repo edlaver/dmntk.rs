@@ -78,6 +78,7 @@ fn item_definition_context_evaluator(item_definition: &ItemDefinition) -> Result
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => collection_of_simple_type_context_evaluator(feel_type),
     ItemDefinitionType::CollectionOfReferencedType(ref_type) => collection_of_referenced_type_context_evaluator(ref_type),
     ItemDefinitionType::CollectionOfComponentType => collection_of_component_type_context_evaluator(item_definition),
+    ItemDefinitionType::FunctionType => function_type_context_evaluator(item_definition),
   }
 }
 
@@ -105,9 +106,9 @@ fn simple_type_context_evaluator(feel_type: FeelType) -> Result<ItemDefinitionCo
 
 ///
 fn referenced_type_context_evaluator(ref_type: String) -> Result<ItemDefinitionContextEvaluatorFn> {
-  Ok(Box::new(
-    move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| evaluator.eval(&ref_type, name, ctx),
-  ))
+  Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
+    evaluator.eval(&ref_type, name, ctx)
+  }))
 }
 
 ///
@@ -119,18 +120,16 @@ fn component_type_context_evaluator(item_definition: &ItemDefinition) -> Result<
       item_definition_context_evaluator(component_item_definition)?,
     ));
   }
-  Ok(Box::new(
-    move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-      let mut entries = BTreeMap::new();
-      let mut evaluated_ctx = FeelContext::default();
-      for (component_name, component_evaluator) in &context_evaluators {
-        let feel_type = component_evaluator(component_name, &mut evaluated_ctx, evaluator);
-        entries.insert(component_name.clone(), feel_type);
-      }
-      ctx.set_entry(name, Value::Context(evaluated_ctx));
-      FeelType::Context(entries)
-    },
-  ))
+  Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
+    let mut entries = BTreeMap::new();
+    let mut evaluated_ctx = FeelContext::default();
+    for (component_name, component_evaluator) in &context_evaluators {
+      let feel_type = component_evaluator(component_name, &mut evaluated_ctx, evaluator);
+      entries.insert(component_name.clone(), feel_type);
+    }
+    ctx.set_entry(name, Value::Context(evaluated_ctx));
+    FeelType::Context(entries)
+  }))
 }
 
 ///
@@ -159,16 +158,14 @@ fn collection_of_simple_type_context_evaluator(feel_type: FeelType) -> Result<It
 
 ///
 fn collection_of_referenced_type_context_evaluator(type_ref: String) -> Result<ItemDefinitionContextEvaluatorFn> {
-  Ok(Box::new(
-    move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-      let mut evaluated_ctx = FeelContext::default();
-      let feel_type = evaluator.eval(&type_ref, name, &mut evaluated_ctx);
-      let list_type = FeelType::List(Box::new(feel_type.clone()));
-      let list = Value::List(Values::new(vec![Value::FeelType(feel_type)]));
-      ctx.set_entry(name, list);
-      list_type
-    },
-  ))
+  Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
+    let mut evaluated_ctx = FeelContext::default();
+    let feel_type = evaluator.eval(&type_ref, name, &mut evaluated_ctx);
+    let list_type = FeelType::List(Box::new(feel_type.clone()));
+    let list = Value::List(Values::new(vec![Value::FeelType(feel_type)]));
+    ctx.set_entry(name, list);
+    list_type
+  }))
 }
 
 ///
@@ -180,20 +177,24 @@ fn collection_of_component_type_context_evaluator(item_definition: &ItemDefiniti
       item_definition_context_evaluator(component_item_definition)?,
     ));
   }
-  Ok(Box::new(
-    move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-      let mut entries = BTreeMap::new();
-      let mut evaluated_ctx = FeelContext::default();
-      for (component_name, component_evaluator) in &context_evaluators {
-        let feel_type = component_evaluator(component_name, &mut evaluated_ctx, evaluator);
-        entries.insert(component_name.clone(), feel_type);
-      }
-      let list_type = FeelType::List(Box::new(FeelType::Context(entries)));
-      let list = Value::List(Values::new(vec![Value::Context(evaluated_ctx)]));
-      ctx.set_entry(name, list);
-      list_type
-    },
-  ))
+  Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
+    let mut entries = BTreeMap::new();
+    let mut evaluated_ctx = FeelContext::default();
+    for (component_name, component_evaluator) in &context_evaluators {
+      let feel_type = component_evaluator(component_name, &mut evaluated_ctx, evaluator);
+      entries.insert(component_name.clone(), feel_type);
+    }
+    let list_type = FeelType::List(Box::new(FeelType::Context(entries)));
+    let list = Value::List(Values::new(vec![Value::Context(evaluated_ctx)]));
+    ctx.set_entry(name, list);
+    list_type
+  }))
+}
+
+///
+fn function_type_context_evaluator(_item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
+  Ok(Box::new(move |_name: &Name, _ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| FeelType::Any))
+  //TODO implement function type
 }
 
 #[cfg(test)]
@@ -320,10 +321,7 @@ mod tests {
     let actual_type = evaluator.eval("tLoan", &"Loan".into(), &mut ctx);
     assert_eq!(expected_type, actual_type);
     assert_eq!(expected_context, ctx);
-    assert_eq!(
-      "{Loan: {principal: type(number), rate: type(number), termMonths: type(number)}}",
-      ctx.to_string()
-    );
+    assert_eq!("{Loan: {principal: type(number), rate: type(number), termMonths: type(number)}}", ctx.to_string());
   }
 
   #[test]

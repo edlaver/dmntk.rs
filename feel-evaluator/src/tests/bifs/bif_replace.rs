@@ -115,12 +115,7 @@ fn _0016() {
 
 #[test]
 fn _0017() {
-  te_string(
-    false,
-    &scope!(),
-    r##"replace("0123456789","(\d{3})(\d{3})(\d{4})","($1) $2-$3")"##,
-    r##"(012) 345-6789"##,
-  );
+  te_string(false, &scope!(), r##"replace("0123456789","(\d{3})(\d{3})(\d{4})","($1) $2-$3")"##, r##"(012) 345-6789"##);
 }
 
 #[test]
@@ -165,32 +160,17 @@ fn _0025() {
 
 #[test]
 fn _0026() {
-  te_string(
-    false,
-    &scope!(),
-    r##"replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")"##,
-    r##"abc"##,
-  );
+  te_string(false, &scope!(), r##"replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")"##, r##"abc"##);
 }
 
 #[test]
 fn _0027() {
-  te_string(
-    false,
-    &scope!(),
-    r##"replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")"##,
-    r##"###"##,
-  );
+  te_string(false, &scope!(), r##"replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")"##, r##"###"##);
 }
 
 #[test]
 fn _0028() {
-  te_string(
-    false,
-    &scope!(),
-    r##"replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")"##,
-    r##"abc"##,
-  );
+  te_string(false, &scope!(), r##"replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")"##, r##"abc"##);
 }
 
 #[test]
@@ -225,22 +205,12 @@ fn _0034() {
 
 #[test]
 fn _0035() {
-  te_null(
-    false,
-    &scope!(),
-    r#"replace("abc")"#,
-    r#"expected 3,4 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"replace("abc")"#, r#"expected 3,4 parameters, actual number of parameters is 1"#);
 }
 
 #[test]
 fn _0036() {
-  te_null(
-    false,
-    &scope!(),
-    r#"replace("abc","b")"#,
-    r#"expected 3,4 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"replace("abc","b")"#, r#"expected 3,4 parameters, actual number of parameters is 2"#);
 }
 
 #[test]

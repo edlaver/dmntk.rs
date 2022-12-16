@@ -131,14 +131,7 @@ fn test_example_01() {
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
   eq_input_expressions(rec, &["  Customer  ", " Order "]);
   eq_input_values(rec, EMPTY_VECTOR);
-  eq_input_entries(
-    rec,
-    &[
-      &[r#" "Business" "#, "  <10  "],
-      &[r#" "Business" "#, " >=10  "],
-      &[r#" "Private"  "#, "   -   "],
-    ],
-  );
+  eq_input_entries(rec, &[&[r#" "Business" "#, "  <10  "], &[r#" "Business" "#, " >=10  "], &[r#" "Private"  "#, "   -   "]]);
   eq_output_label(rec, "      ");
   eq_output_components(rec, EMPTY_VECTOR);
   eq_output_values(rec, EMPTY_VECTOR);
@@ -265,10 +258,7 @@ fn general_horizontal() {
   eq_hit_policy(rec, HitPolicy::Collect(BuiltinAggregator::List));
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
   eq_input_expressions(rec, &[" input expression 1 ", " input expression 2 "]);
-  eq_input_values(
-    rec,
-    &[" input value 1a,    \n   input value 1b   ", " input value 2a,    \n   input value 2b   "],
-  );
+  eq_input_values(rec, &[" input value 1a,    \n   input value 1b   ", " input value 2a,    \n   input value 2b   "]);
   eq_input_entries(
     rec,
     &[
@@ -283,12 +273,7 @@ fn general_horizontal() {
   eq_output_values(rec, &[" output value 1a,   \n   output value 1b  "]);
   eq_output_entries(
     rec,
-    &[
-      &["  output entry 1.1  "],
-      &["  output entry 1.2  "],
-      &["  output entry 1.3  "],
-      &["  output entry 1.4  "],
-    ],
+    &[&["  output entry 1.1  "], &["  output entry 1.2  "], &["  output entry 1.3  "], &["  output entry 1.4  "]],
   );
   eq_annotations(rec, EMPTY_VECTOR);
   eq_annotation_entries(rec, EMPTY_MATRIX);

@@ -292,15 +292,9 @@ mod tests {
     // time in Moscow, offset = +03:00
     assert_eq!(Some(3 * SECONDS_IN_HOUR), get_zone_offset_dt("Europe/Moscow", (2020, 10, 29), (9, 12, 3, 0)));
     // summer time in New York, offset = -04:00
-    assert_eq!(
-      Some(-4 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("America/New_York", (2020, 6, 28), (12, 12, 3, 0))
-    );
+    assert_eq!(Some(-4 * SECONDS_IN_HOUR), get_zone_offset_dt("America/New_York", (2020, 6, 28), (12, 12, 3, 0)));
     // winter time in New York, offset = -05:00
-    assert_eq!(
-      Some(-5 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("America/New_York", (2020, 11, 12), (18, 4, 33, 0))
-    );
+    assert_eq!(Some(-5 * SECONDS_IN_HOUR), get_zone_offset_dt("America/New_York", (2020, 11, 12), (18, 4, 33, 0)));
     // time in Kolkata, offset = +05:30
     assert_eq!(
       Some(5 * SECONDS_IN_HOUR + 30 * SECONDS_IN_MIN),
@@ -312,10 +306,7 @@ mod tests {
       get_zone_offset_dt("Asia/Kolkata", (2020, 6, 8), (8, 0, 0, 0))
     );
     // time in Honolulu, offset = -10:00
-    assert_eq!(
-      Some(-10 * SECONDS_IN_HOUR),
-      get_zone_offset_dt("Pacific/Honolulu", (2020, 11, 12), (18, 4, 33, 0))
-    );
+    assert_eq!(Some(-10 * SECONDS_IN_HOUR), get_zone_offset_dt("Pacific/Honolulu", (2020, 11, 12), (18, 4, 33, 0)));
     // no time change in Honolulu in summer, offset = -10:00
     assert_eq!(Some(-10 * SECONDS_IN_HOUR), get_zone_offset_dt("Pacific/Honolulu", (2020, 6, 8), (8, 0, 0, 0)));
   }

@@ -93,10 +93,5 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"ceiling(1,2)"#,
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"ceiling(1,2)"#, r#"expected 1 parameters, actual number of parameters is 2"#);
 }

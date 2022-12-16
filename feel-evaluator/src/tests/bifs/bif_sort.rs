@@ -120,32 +120,17 @@ fn _0010() {
 #[test]
 fn _0011() {
   let scope = &te_scope("{}");
-  te_be_value(
-    false,
-    scope,
-    r#"sort(["a","9","A","10","Aa","8"], function(x,y) x < y)"#,
-    r#"["10","8","9","A","Aa","a"]"#,
-  );
+  te_be_value(false, scope, r#"sort(["a","9","A","10","Aa","8"], function(x,y) x < y)"#, r#"["10","8","9","A","Aa","a"]"#);
 }
 
 #[test]
 fn _0012() {
   let scope = &te_scope("{}");
-  te_null(
-    false,
-    scope,
-    "sort(l: [3,1,4,5,2], precedes: function(x,y) x < y)",
-    r#"parameter 'list' not found"#,
-  );
+  te_null(false, scope, "sort(l: [3,1,4,5,2], precedes: function(x,y) x < y)", r#"parameter 'list' not found"#);
 }
 
 #[test]
 fn _0013() {
   let scope = &te_scope("{}");
-  te_null(
-    false,
-    scope,
-    "sort(list: [3,1,4,5,2], p: function(x,y) x < y)",
-    r#"parameter 'precedes' not found"#,
-  );
+  te_null(false, scope, "sort(list: [3,1,4,5,2], p: function(x,y) x < y)", r#"parameter 'precedes' not found"#);
 }

@@ -45,10 +45,7 @@ fn test_debug() {
   eq_dbg!(r#"ContextEntry(Name("a"), Number(+1E+0))"#, Value::ContextEntry(name.clone(), b_number.clone()));
   eq_dbg!(r#"ContextEntryKey(Name("a"))"#, Value::ContextEntryKey(name.clone()));
   eq_dbg!(r#"ContextType(Number)"#, Value::ContextType(t_number.clone()));
-  eq_dbg!(
-    r#"ContextTypeEntry(Name("a"), Number)"#,
-    Value::ContextTypeEntry(name.clone(), t_number.clone())
-  );
+  eq_dbg!(r#"ContextTypeEntry(Name("a"), Number)"#, Value::ContextTypeEntry(name.clone(), t_number.clone()));
   eq_dbg!(r#"ContextTypeEntryKey(Name("a"))"#, Value::ContextTypeEntryKey(name.clone()));
   eq_dbg!(r#"Date(FeelDate(2022, 9, 27))"#, Value::Date(v_date));
   eq_dbg!(
@@ -135,10 +132,7 @@ fn test_display() {
   eq_dsp!(r#"IntervalStart"#, Value::IntervalStart(b_number.clone(), false));
   eq_dsp!(r#"Irrelevant"#, Value::Irrelevant);
   eq_dsp!(r#"[]"#, Value::List(Values::default()));
-  eq_dsp!(
-    r#"NamedParameter"#,
-    Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone())
-  );
+  eq_dsp!(r#"NamedParameter"#, Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone()));
   eq_dsp!(r#"NamedParameters"#, Value::NamedParameters(BTreeMap::new()));
   eq_dsp!(r#"NegatedCommaList"#, Value::NegatedCommaList(Values::default()));
   eq_dsp!(r#"1"#, Value::Number(FeelNumber::new(1, 0)));
@@ -197,10 +191,7 @@ fn test_type_of() {
   eq_typ!(FeelType::List(Box::new(FeelType::Null)), Value::List(Values::default()));
   eq_typ!(FeelType::List(Box::new(t_number)), Value::List(Values::new(vec![v_number.clone()])));
   eq_typ!(FeelType::List(Box::new(FeelType::Any)), Value::List(Values::new(vec![v_number, v_boolean])));
-  eq_typ!(
-    FeelType::Any,
-    Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone())
-  );
+  eq_typ!(FeelType::Any, Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone()));
   eq_typ!(FeelType::Any, Value::NamedParameters(BTreeMap::new()));
   eq_typ!(FeelType::Any, Value::NegatedCommaList(Values::default()));
   eq_typ!(FeelType::Number, Value::Number(FeelNumber::new(1, 0)));
@@ -209,10 +200,7 @@ fn test_type_of() {
   eq_typ!(FeelType::Any, Value::ParameterTypes(vec![]));
   eq_typ!(FeelType::Any, Value::PositionalParameters(Values::default()));
   eq_typ!(FeelType::Any, Value::QualifiedNameSegment(name));
-  eq_typ!(
-    FeelType::Range(Box::new(FeelType::Number)),
-    Value::Range(b_number.clone(), false, b_number.clone(), true)
-  );
+  eq_typ!(FeelType::Range(Box::new(FeelType::Number)), Value::Range(b_number.clone(), false, b_number.clone(), true));
   eq_typ!(FeelType::Range(Box::new(FeelType::Any)), Value::Range(b_number.clone(), false, b_boolean, true));
   eq_typ!(FeelType::String, Value::String("beta".to_string()));
   eq_typ!(FeelType::Time, Value::Time(v_time));

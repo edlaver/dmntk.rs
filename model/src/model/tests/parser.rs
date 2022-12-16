@@ -122,10 +122,7 @@ fn _2_0003() {
   assert!(!item_definition.is_collection());
   // <definitions>.<itemDefinition>.<allowedValues>
   let allowed_values = item_definition.allowed_values().as_ref().unwrap();
-  assert_eq!(
-    r#""UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT""#,
-    allowed_values.text().as_ref().unwrap().as_str()
-  );
+  assert_eq!(r#""UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT""#, allowed_values.text().as_ref().unwrap().as_str());
   assert!(allowed_values.expression_language().is_none());
   // <definitions>.<decision>
   let decision = definitions.decision_by_id("d_EmploymentStatusStatement").unwrap();

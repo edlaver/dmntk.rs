@@ -70,12 +70,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts(20,[1..20],10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"starts(20,[1..20],10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
@@ -95,30 +90,15 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts(range1: [1..20], r2: [1..20])"#,
-    "[named::starts] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"starts(range1: [1..20], r2: [1..20])"#, "[named::starts] invalid named parameters");
 }
 
 #[test]
 fn _0013() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts(r1: [1..20], range2: [1..20])"#,
-    "[named::starts] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"starts(r1: [1..20], range2: [1..20])"#, "[named::starts] invalid named parameters");
 }
 
 #[test]
 fn _0014() {
-  te_null(
-    false,
-    &scope!(),
-    r#"starts(r1: [1..20], r2: [1..20])"#,
-    "[named::starts] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"starts(r1: [1..20], r2: [1..20])"#, "[named::starts] invalid named parameters");
 }

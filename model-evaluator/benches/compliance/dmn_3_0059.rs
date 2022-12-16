@@ -148,12 +148,7 @@ fn _0013(b: &mut Bencher) {
 fn _0014(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision014";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 1+ parameters, actual number of parameters is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 1+ parameters, actual number of parameters is 0)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

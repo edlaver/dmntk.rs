@@ -1102,9 +1102,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
   fn action_qualified_name(&mut self) -> Result<()> {
     trace_action!(self, "action_qualified_name");
     if let Some(TokenValue::Name(name)) = &self.yy_value_stack.last() {
-      self
-        .yy_node_stack
-        .push(AstNode::QualifiedName(vec![AstNode::QualifiedNameSegment(name.clone())]));
+      self.yy_node_stack.push(AstNode::QualifiedName(vec![AstNode::QualifiedNameSegment(name.clone())]));
     }
     Ok(())
   }

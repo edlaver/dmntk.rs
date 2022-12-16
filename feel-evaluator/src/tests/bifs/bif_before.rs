@@ -140,12 +140,7 @@ fn _0018() {
 
 #[test]
 fn _0019() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(date("1960-11-15"),[date("1960-11-15")..date("1960-12-31")])"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"before(date("1960-11-15"),[date("1960-11-15")..date("1960-12-31")])"#, false);
 }
 
 #[test]
@@ -195,12 +190,7 @@ fn _0026() {
 
 #[test]
 fn _0027() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(duration("P1DT2H3M2S"),(duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"before(duration("P1DT2H3M2S"),(duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#, true);
 }
 
 #[test]
@@ -235,12 +225,7 @@ fn _0032() {
 
 #[test]
 fn _0033() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(duration("P1DT2H3M1S"),[duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"before(duration("P1DT2H3M1S"),[duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#, true);
 }
 
 #[test]
@@ -255,12 +240,7 @@ fn _0035() {
 
 #[test]
 fn _0036() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before([date("1960-11-17")..date("1960-12-31")],date("1960-12-31"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"before([date("1960-11-17")..date("1960-12-31")],date("1960-12-31"))"#, false);
 }
 
 #[test]
@@ -580,12 +560,7 @@ fn _0078() {
 
 #[test]
 fn _0079() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(point1:duration("P1DT10H3M2S"),point2:duration("P1DT10H3M3S"))"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"before(point1:duration("P1DT10H3M2S"),point2:duration("P1DT10H3M3S"))"#, true);
 }
 
 #[test]
@@ -705,12 +680,7 @@ fn _0096() {
 
 #[test]
 fn _0097() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(duration("P1DT2H3M2S"),(duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"before(duration("P1DT2H3M2S"),(duration("P1DT2H3M2S")..duration("P2DT2H3M2S")])"#, true);
 }
 
 #[test]
@@ -735,12 +705,7 @@ fn _0100() {
 
 #[test]
 fn _0101() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(range:[time("13:18:56")..time("14:00:00")],point:time("13:59:59"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"before(range:[time("13:18:56")..time("14:00:00")],point:time("13:59:59"))"#, false);
 }
 
 #[test]
@@ -755,22 +720,12 @@ fn _0102() {
 
 #[test]
 fn _0103() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(range:[duration("P1D")..duration("P3D")],point:duration("P2D"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"before(range:[duration("P1D")..duration("P3D")],point:duration("P2D"))"#, false);
 }
 
 #[test]
 fn _0104() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"before(range:[duration("P1Y")..duration("P3Y")],point:duration("P2Y"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"before(range:[duration("P1Y")..duration("P3Y")],point:duration("P2Y"))"#, false);
 }
 
 #[test]
@@ -790,12 +745,7 @@ fn _0107() {
 
 #[test]
 fn _0108() {
-  te_null(
-    false,
-    &scope!(),
-    r#"before(1,2,3)"#,
-    r#"expected 2 parameters, actual number of parameters is 3"#,
-  );
+  te_null(false, &scope!(), r#"before(1,2,3)"#, r#"expected 2 parameters, actual number of parameters is 3"#);
 }
 
 #[test]

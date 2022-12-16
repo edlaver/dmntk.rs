@@ -52,13 +52,8 @@ mod tests {
     let inputs = ["absent", "single", "double", "multiple"];
     let outputs = ["single", "double", "multiple"];
     let annotations = ["absent", "single", "double", "multiple"];
-    let total_variants = decision_table_orientation.len()
-      * information_item_name.len()
-      * output_label.len()
-      * allowed_values.len()
-      * inputs.len()
-      * outputs.len()
-      * annotations.len();
+    let total_variants =
+      decision_table_orientation.len() * information_item_name.len() * output_label.len() * allowed_values.len() * inputs.len() * outputs.len() * annotations.len();
     assert_eq!(1152, total_variants);
     println!("┌─────────────┬─────────────┬─────────┬─────────┬──────────┬──────────┬─────────────┬─────────┬────────┐",);
     println!("│  Preferred  │ Information │ Output  │ Allowed │  Inputs  │ Outputs  │ Annotations │ Example │ Status │",);

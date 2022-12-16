@@ -88,16 +88,16 @@ fn item_definition_type(item_definition: &ItemDefinition) -> Result<ItemDefiniti
     feel_type.is_some(),
     !item_definition.item_components().is_empty(),
     item_definition.is_collection(),
+    item_definition.function_item().is_some(),
   );
   match condition {
-    (_, true, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
-    (true, false, false, false) => Ok(ItemDefinitionType::ReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
-    (false, false, true, false) => Ok(ItemDefinitionType::ComponentType),
-    (_, true, false, true) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
-    (false, false, true, true) => Ok(ItemDefinitionType::CollectionOfComponentType),
-    (true, false, false, true) => Ok(ItemDefinitionType::CollectionOfReferencedType(
-      item_definition.type_ref().as_ref().unwrap().clone(),
-    )),
+    (_, true, false, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
+    (true, false, false, false, false) => Ok(ItemDefinitionType::ReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
+    (false, false, true, false, false) => Ok(ItemDefinitionType::ComponentType),
+    (_, true, false, true, false) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
+    (false, false, true, true, false) => Ok(ItemDefinitionType::CollectionOfComponentType),
+    (true, false, false, true, false) => Ok(ItemDefinitionType::CollectionOfReferencedType(item_definition.type_ref().as_ref().unwrap().clone())),
+    (false, false, false, false, true) => Ok(ItemDefinitionType::FunctionType),
     _ => Err(err_invalid_item_definition_type(item_definition.name())),
   }
 }

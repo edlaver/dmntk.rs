@@ -40,8 +40,7 @@ use regex::Regex;
 use std::convert::TryFrom;
 
 /// Regular expression pattern for parsing days and time duration.
-const REGEX_DAYS_AND_TIME: &str =
-  r#"^(?P<sign>-)?P((?P<days>[0-9]+)D)?(T((?P<hours>[0-9]+)H)?((?P<minutes>[0-9]+)M)?((?P<seconds>[0-9]+)(?P<fractional>\.[0-9]*)?S)?)?$"#;
+const REGEX_DAYS_AND_TIME: &str = r#"^(?P<sign>-)?P((?P<days>[0-9]+)D)?(T((?P<hours>[0-9]+)H)?((?P<minutes>[0-9]+)M)?((?P<seconds>[0-9]+)(?P<fractional>\.[0-9]*)?S)?)?$"#;
 
 /// Number of nanoseconds in a day.
 const NANOSECONDS_IN_DAY: i64 = 24 * NANOSECONDS_IN_HOUR;
@@ -470,18 +469,9 @@ mod tests {
         .nano(999_999_999)
         .partial_cmp(&FeelDaysAndTimeDuration::default().second(86_400).nano(999_999_999))
     );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().nano(0).build(),
-      FeelDaysAndTimeDuration::default().nano(0).build()
-    );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().nano(0).build(),
-      FeelDaysAndTimeDuration::default().nano(-0).build()
-    );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().second(0).nano(10),
-      FeelDaysAndTimeDuration::default().second(0).nano(10)
-    );
+    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(0).build());
+    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(-0).build());
+    assert_eq!(FeelDaysAndTimeDuration::default().second(0).nano(10), FeelDaysAndTimeDuration::default().second(0).nano(10));
     assert_eq!(
       FeelDaysAndTimeDuration::default().second(0).nano(999_999_999),
       FeelDaysAndTimeDuration::default().second(0).nano(999_999_999)
@@ -496,9 +486,7 @@ mod tests {
   fn lt_should_pass() {
     assert_eq!(
       Some(Ordering::Less),
-      FeelDaysAndTimeDuration::default()
-        .second(10)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(11))
+      FeelDaysAndTimeDuration::default().second(10).partial_cmp(&FeelDaysAndTimeDuration::default().second(11))
     );
     assert_eq!(
       Some(Ordering::Less),
@@ -527,9 +515,7 @@ mod tests {
   fn gt_should_pass() {
     assert_eq!(
       Some(Ordering::Greater),
-      FeelDaysAndTimeDuration::default()
-        .second(11)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
+      FeelDaysAndTimeDuration::default().second(11).partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
     );
     assert_eq!(
       Some(Ordering::Greater),

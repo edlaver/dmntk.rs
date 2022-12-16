@@ -225,10 +225,7 @@ mod tests {
 
     // try to add the same model once again, STAGING
     let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0001).unwrap();
-    assert_eq!(
-      Err(err_definitions_with_namespace_already_exists("https://dmntk.io/2_0001")),
-      workspace.add(definitions)
-    );
+    assert_eq!(Err(err_definitions_with_namespace_already_exists("https://dmntk.io/2_0001")), workspace.add(definitions));
     assert_state(&workspace, (1, 1, 1, 0));
 
     // add another model to workspace, STAGING
@@ -276,9 +273,7 @@ mod tests {
 
     // evaluate existing model and invocable
     let input_data = dmntk_feel_evaluator::evaluate_context(&Scope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
-    let value = workspace
-      .evaluate_invocable("compliance-level-2-test-0001", "Greeting Message", &input_data)
-      .unwrap();
+    let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Greeting Message", &input_data).unwrap();
     assert_eq!(r#""Hello John Doe""#, value.to_string());
 
     // evaluate non existing model
@@ -286,9 +281,7 @@ mod tests {
     assert_eq!(Err(err_model_evaluator_is_not_deployed("compliance-level-2-test-0002")), result);
 
     // evaluate non existing invocable
-    let value = workspace
-      .evaluate_invocable("compliance-level-2-test-0001", "Good bye message", &input_data)
-      .unwrap();
+    let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Good bye message", &input_data).unwrap();
     assert_eq!(r#"null(invocable with name 'Good bye message' not found)"#, value.to_string());
   }
 }

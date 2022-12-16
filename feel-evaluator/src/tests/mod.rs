@@ -159,12 +159,7 @@ fn te_string(trace: bool, scope: &Scope, s: &str, expected: &str) {
 
 /// Utility function that tests evaluation of year and months duration.
 pub fn te_years_and_months_duration(trace: bool, scope: &Scope, s: &str, years: i64, months: i64) {
-  textual_expression(
-    trace,
-    scope,
-    s,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(years, months)),
-  );
+  textual_expression(trace, scope, s, Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(years, months)));
 }
 
 /// Utility function that tests evaluation of year and months duration.

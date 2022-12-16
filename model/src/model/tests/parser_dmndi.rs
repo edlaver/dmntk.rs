@@ -200,10 +200,7 @@ fn _3_0086() {
   // there is a first shape's bound - y
   assert!(331.0_f64.eq(&shape_0.bounds.y));
   // there is a sharedStyle of label
-  assert_eq!(
-    "LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0",
-    shape_0.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0", shape_0.label.as_ref().unwrap().shared_style.as_ref().unwrap());
 
   // there is a second shape's id
   let shape_1 = get_shape(&dmndi.diagrams.get(0).unwrap().diagram_elements, 1).unwrap();
@@ -219,10 +216,7 @@ fn _3_0086() {
   // there is a second shape's bound - y
   assert!(150.0_f64.eq(&shape_1.bounds.y));
   // there is a sharedStyle of label
-  assert_eq!(
-    "LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0",
-    shape_1.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0", shape_1.label.as_ref().unwrap().shared_style.as_ref().unwrap());
 
   // there is a third shape's id
   let shape_2 = get_shape(&dmndi.diagrams.get(0).unwrap().diagram_elements, 2).unwrap();
@@ -238,10 +232,7 @@ fn _3_0086() {
   // there is a third shape's bound - y
   assert!(151.0_f64.eq(&shape_2.bounds.y));
   // there is a sharedStyle of label
-  assert_eq!(
-    "LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0",
-    shape_2.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0", shape_2.label.as_ref().unwrap().shared_style.as_ref().unwrap());
   // there is a label's bound - height
   let shape_2_label_bounds = shape_2.label.as_ref().unwrap().bounds.as_ref().unwrap();
   assert!(12.0_f64.eq(&shape_2_label_bounds.height));
@@ -266,10 +257,7 @@ fn _3_0086() {
   // there is a second waypoint's y
   assert!(211.0_f64.eq(&edge_0.way_points.get(1).unwrap().y));
   // there is a first edge label id
-  assert_eq!(
-    "LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0",
-    edge_0.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0", edge_0.label.as_ref().unwrap().shared_style.as_ref().unwrap());
 
   // there is a second edge's id
   let edge_1 = get_edge(&dmndi.diagrams.get(0).unwrap().diagram_elements, 4).unwrap();
@@ -285,10 +273,7 @@ fn _3_0086() {
   // there is a second waypoint's y
   assert!(180.5_f64.eq(&edge_1.way_points.get(1).unwrap().y));
   // there is a second edge label id
-  assert_eq!(
-    "LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0",
-    edge_1.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0", edge_1.label.as_ref().unwrap().shared_style.as_ref().unwrap());
 
   // there is a style id
   let style = dmndi.styles.get(0).unwrap();
@@ -392,10 +377,7 @@ fn _3_0087() {
   // there is a third shape's bound - y
   assert!(50.0_f64.eq(&shape_2.bounds.y));
   // there is a sharedStyle of label
-  assert_eq!(
-    "LS_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4_0",
-    shape_2.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4_0", shape_2.label.as_ref().unwrap().shared_style.as_ref().unwrap());
   // there is a DecisionServiceDividerLine
   let shape_2_divider_line = shape_2.decision_service_divider_line.as_ref().unwrap();
   // there is a first waypoint's x
@@ -434,10 +416,7 @@ fn _3_0087() {
   // there is a third shape's bound - y
   assert!(50.0_f64.eq(&shape_3.bounds.y));
   // there is a sharedStyle of label
-  assert_eq!(
-    "LS_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4_0",
-    shape_3.label.as_ref().unwrap().shared_style.as_ref().unwrap()
-  );
+  assert_eq!("LS_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4_0", shape_3.label.as_ref().unwrap().shared_style.as_ref().unwrap());
   // there is a DecisionServiceDividerLine
   let shape_2_divider_line = shape_3.decision_service_divider_line.as_ref().unwrap();
   // there is a first waypoint's x

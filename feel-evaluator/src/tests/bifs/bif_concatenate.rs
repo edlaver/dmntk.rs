@@ -60,12 +60,7 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"concatenate()"#,
-    r#"expected 1+ parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"concatenate()"#, r#"expected 1+ parameters, actual number of parameters is 0"#);
 }
 
 #[test]

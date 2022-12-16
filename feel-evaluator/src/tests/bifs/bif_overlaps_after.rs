@@ -59,12 +59,7 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"overlaps after()"#,
-    "expected 2 parameters, actual number of parameters is 0",
-  );
+  te_null(false, &scope!(), r#"overlaps after()"#, "expected 2 parameters, actual number of parameters is 0");
 }
 
 #[test]

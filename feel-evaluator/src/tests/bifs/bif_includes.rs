@@ -122,22 +122,12 @@ fn _0017() {
 
 #[test]
 fn _0018() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"includes([date("2022-12-11")..date("2022-12-31")],date("2022-12-11"))"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"includes([date("2022-12-11")..date("2022-12-31")],date("2022-12-11"))"#, true);
 }
 
 #[test]
 fn _0019() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"includes([date("2022-12-11")..date("2022-12-30")],date("2022-12-31"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"includes([date("2022-12-11")..date("2022-12-30")],date("2022-12-31"))"#, false);
 }
 
 #[test]
@@ -248,12 +238,7 @@ fn _0031() {
 
 #[test]
 fn _0032() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"includes([duration("P1D")..duration("P3D")],[duration("P1D")..duration("P3D")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"includes([duration("P1D")..duration("P3D")],[duration("P1D")..duration("P3D")])"#, true);
 }
 
 #[test]
@@ -278,12 +263,7 @@ fn _0035() {
 
 #[test]
 fn _0036() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"includes([duration("P1Y")..duration("P3Y")],[duration("P1Y")..duration("P3Y")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"includes([duration("P1Y")..duration("P3Y")],[duration("P1Y")..duration("P3Y")])"#, true);
 }
 
 #[test]
@@ -303,32 +283,17 @@ fn _0038() {
 
 #[test]
 fn _0039() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes([1..20],20,10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"includes([1..20],20,10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
 fn _0040() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes(range: [1..20],p: 20)"#,
-    "[named::includes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"includes(range: [1..20],p: 20)"#, "[named::includes] invalid named parameters");
 }
 
 #[test]
 fn _0041() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes(r: [1..20],point: 20)"#,
-    "[named::includes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"includes(r: [1..20],point: 20)"#, "[named::includes] invalid named parameters");
 }
 
 #[test]
@@ -338,32 +303,17 @@ fn _0042() {
 
 #[test]
 fn _0043() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes(range1: [1..20],r2: [1..20])"#,
-    "[named::includes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"includes(range1: [1..20],r2: [1..20])"#, "[named::includes] invalid named parameters");
 }
 
 #[test]
 fn _0044() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes(r1: [1..20],range2: [1..20])"#,
-    "[named::includes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"includes(r1: [1..20],range2: [1..20])"#, "[named::includes] invalid named parameters");
 }
 
 #[test]
 fn _0045() {
-  te_null(
-    false,
-    &scope!(),
-    r#"includes(r1: [1..20],r2: [1..20])"#,
-    "[named::includes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"includes(r1: [1..20],r2: [1..20])"#, "[named::includes] invalid named parameters");
 }
 
 #[test]

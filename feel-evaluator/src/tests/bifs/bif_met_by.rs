@@ -180,12 +180,7 @@ fn _0019() {
 
 #[test]
 fn _0020() {
-  te_null(
-    false,
-    &scope!(),
-    r#"met by([1..20],20,10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"met by([1..20],20,10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]

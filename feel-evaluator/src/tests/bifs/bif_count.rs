@@ -75,12 +75,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    r#"count([1,2,3],4)"#,
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"count([1,2,3],4)"#, r#"expected 1 parameters, actual number of parameters is 2"#);
 }
 
 #[test]

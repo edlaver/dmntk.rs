@@ -157,12 +157,7 @@ fn test_filter() {
   te_number(false, scope, "[1,2,3,4,5,6][-6]", 1, 0);
   te_null(false, scope, "[1,2,3,4,5,6][0]", "index in filter is out of range [1..6], actual index is 0");
   te_null(false, scope, "[1,2,3,4,5,6][7]", "index in filter is out of range [1..6], actual index is 7");
-  te_null(
-    false,
-    scope,
-    "[1,2,3,4,5,6][-7]",
-    "index in filter is out of range [-6..-1], actual index is -7",
-  );
+  te_null(false, scope, "[1,2,3,4,5,6][-7]", "index in filter is out of range [-6..-1], actual index is -7");
   te_be_value(false, scope, r#"true[true]"#, r#"[true]"#);
   be_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}]"#, r#"[{a:1},{a:2},{a:3}]"#);
   te_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}][1]"#, r#"{a:1}"#);

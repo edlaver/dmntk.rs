@@ -109,12 +109,7 @@ fn _0005(b: &mut Bencher) {
 fn _0006(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_ErrorCase_006_8c794da0bb";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 1,2 parameters, actual number of parameters is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 1,2 parameters, actual number of parameters is 0)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -532,12 +527,7 @@ fn _0056(b: &mut Bencher) {
 fn _0057(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_ErrorCase_057_0452ca8719";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null([core::date and time] invalid date or date and time '')"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date and time] invalid date or date and time '')"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

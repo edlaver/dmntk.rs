@@ -250,10 +250,7 @@ fn test_node_comma_list() {
 fn test_node_context() {
   let node = &AstNode::Context(vec![
     AstNode::ContextEntry(Box::new(AstNode::ContextEntryKey(s!("count").into())), Box::new(AstNode::Numeric(s!(1), s!()))),
-    AstNode::ContextEntry(
-      Box::new(AstNode::ContextEntryKey(s!("amount").into())),
-      Box::new(AstNode::Numeric(s!(99), s!(99))),
-    ),
+    AstNode::ContextEntry(Box::new(AstNode::ContextEntryKey(s!("amount").into())), Box::new(AstNode::Numeric(s!(99), s!(99)))),
   ]);
   eqd(
     r#"Context([ContextEntry(ContextEntryKey(Name("count")), Numeric("1", "")), ContextEntry(ContextEntryKey(Name("amount")), Numeric("99", "99"))])"#,
@@ -322,10 +319,7 @@ fn test_node_context_type() {
     node,
   );
   let node = &AstNode::ContextType(vec![
-    AstNode::ContextTypeEntry(
-      Box::new(AstNode::ContextTypeEntryKey(__name!(count))),
-      Box::new(AstNode::FeelType(FeelType::Number)),
-    ),
+    AstNode::ContextTypeEntry(Box::new(AstNode::ContextTypeEntryKey(__name!(count))), Box::new(AstNode::FeelType(FeelType::Number))),
     AstNode::ContextTypeEntry(b_name!(amount), Box::new(AstNode::FeelType(FeelType::Number))),
   ]);
   eqd(
@@ -356,10 +350,7 @@ fn test_node_context_type() {
 
 #[test]
 fn test_node_context_type_entry() {
-  let node = &AstNode::ContextTypeEntry(
-    Box::new(AstNode::ContextTypeEntryKey(s!("count").into())),
-    Box::new(AstNode::FeelType(FeelType::Number)),
-  );
+  let node = &AstNode::ContextTypeEntry(Box::new(AstNode::ContextTypeEntryKey(s!("count").into())), Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"ContextTypeEntry(ContextTypeEntryKey(Name("count")), FeelType(Number))"#, node);
   eqt!(FeelType::Number, node);
   eqs(
@@ -439,10 +430,7 @@ fn test_node_evaluated_expression() {
 
 #[test]
 fn test_node_every() {
-  let node = &AstNode::Every(
-    Box::new(AstNode::Numeric(s!(1), s!())),
-    Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])),
-  );
+  let node = &AstNode::Every(Box::new(AstNode::Numeric(s!(1), s!())), Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])));
   eqd(r#"Every(Numeric("1", ""), List([Numeric("1", "")]))"#, node);
   eqt!(FeelType::Any, node);
   eqs(
@@ -504,15 +492,9 @@ fn test_node_expression_list() {
 fn test_node_filter() {
   let node = &AstNode::Filter(
     Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!()), AstNode::Numeric(s!(2), s!())])),
-    Box::new(AstNode::Gt(
-      Box::new(AstNode::Name(s!("count").into())),
-      Box::new(AstNode::Numeric(s!(1), s!())),
-    )),
+    Box::new(AstNode::Gt(Box::new(AstNode::Name(s!("count").into())), Box::new(AstNode::Numeric(s!(1), s!())))),
   );
-  eqd(
-    r#"Filter(List([Numeric("1", ""), Numeric("2", "")]), Gt(Name(Name("count")), Numeric("1", "")))"#,
-    node,
-  );
+  eqd(r#"Filter(List([Numeric("1", ""), Numeric("2", "")]), Gt(Name(Name("count")), Numeric("1", "")))"#, node);
   eqt!(FeelType::Any, node);
   eqs(
     r#"
@@ -1321,10 +1303,7 @@ fn test_node_quantified_context() {
 
 #[test]
 fn test_node_quantified_contexts() {
-  let node = &AstNode::QuantifiedContexts(vec![
-    AstNode::QuantifiedContext(b_name!(a), b_num!(10)),
-    AstNode::QuantifiedContext(b_name!(b), b_num!(20)),
-  ]);
+  let node = &AstNode::QuantifiedContexts(vec![AstNode::QuantifiedContext(b_name!(a), b_num!(10)), AstNode::QuantifiedContext(b_name!(b), b_num!(20))]);
   eqd(
     r#"QuantifiedContexts([QuantifiedContext(Name(Name("a")), Numeric("10", "")), QuantifiedContext(Name(Name("b")), Numeric("20", ""))])"#,
     node,
@@ -1397,10 +1376,7 @@ fn test_node_satisfies() {
 
 #[test]
 fn test_node_some() {
-  let node = &AstNode::Some(
-    Box::new(AstNode::Numeric(s!(1), s!())),
-    Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])),
-  );
+  let node = &AstNode::Some(Box::new(AstNode::Numeric(s!(1), s!())), Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])));
   eqd(r#"Some(Numeric("1", ""), List([Numeric("1", "")]))"#, node);
   eqt!(FeelType::Any, node);
   eqs(

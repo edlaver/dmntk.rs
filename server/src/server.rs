@@ -303,12 +303,8 @@ async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, 
   if let Ok(workspace) = data.workspace.read() {
     let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
     match result {
-      Ok(value) => HttpResponse::Ok()
-        .content_type("application/json")
-        .body(format!("{{\"data\":{}}}", value.jsonify())),
-      Err(reason) => HttpResponse::Ok()
-        .content_type("application/json")
-        .body(ResultDto::<String>::error(reason).to_string()),
+      Ok(value) => HttpResponse::Ok().content_type("application/json").body(format!("{{\"data\":{}}}", value.jsonify())),
+      Err(reason) => HttpResponse::Ok().content_type("application/json").body(ResultDto::<String>::error(reason).to_string()),
     }
   } else {
     HttpResponse::Ok()

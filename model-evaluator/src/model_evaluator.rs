@@ -79,11 +79,7 @@ impl ModelEvaluator {
     model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;
     model_evaluator.item_definition_context_evaluator.write().unwrap().build(definitions)?;
     model_evaluator.item_definition_type_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator
-      .business_knowledge_model_evaluator
-      .write()
-      .unwrap()
-      .build(definitions, &model_evaluator)?;
+    model_evaluator.business_knowledge_model_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
     model_evaluator.decision_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
     model_evaluator
       .decision_service_evaluator

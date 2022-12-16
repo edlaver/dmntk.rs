@@ -84,11 +84,7 @@ impl SimpleDto {
   }
   /// Creates [SimpleDto] with `nil` value.
   pub fn nil() -> Option<Self> {
-    Some(Self {
-      typ: None,
-      text: None,
-      nil: true,
-    })
+    Some(Self { typ: None, text: None, nil: true })
   }
 }
 

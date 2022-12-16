@@ -77,12 +77,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  te_null(
-    false,
-    &scope!(),
-    "not(true,false)",
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), "not(true,false)", r#"expected 1 parameters, actual number of parameters is 2"#);
 }
 
 #[test]
@@ -92,10 +87,5 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  te_null(
-    false,
-    &scope!(),
-    "not(12)",
-    r#"[core::not] invalid argument type, expected boolean, actual type is number"#,
-  );
+  te_null(false, &scope!(), "not(12)", r#"[core::not] invalid argument type, expected boolean, actual type is number"#);
 }

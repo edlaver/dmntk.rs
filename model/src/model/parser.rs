@@ -93,6 +93,7 @@ const NODE_OUTPUT_DECISION: &str = "outputDecision";
 const NODE_OUTPUT_ENTRY: &str = "outputEntry";
 const NODE_OUTPUT_VALUES: &str = "outputValues";
 const NODE_PARAMETER: &str = "parameter";
+const NODE_PARAMETERS: &str = "parameters";
 const NODE_QUESTION: &str = "question";
 const NODE_RELATION: &str = "relation";
 const NODE_REQUIRED_AUTHORITY: &str = "requiredAuthority";
@@ -203,6 +204,7 @@ impl ModelParser {
     self.parse_dmndi(node, &mut definitions)?;
     Ok(definitions)
   }
+
   /// Parser a collection of [ItemDefinition].
   fn parse_item_definitions(&mut self, node: &Node, child_name: &str) -> Result<Vec<ItemDefinition>> {
     let mut items = vec![];
@@ -225,7 +227,7 @@ impl ModelParser {
         allowed_values,
         item_components: item_components_definitions,
         is_collection: self.parse_boolean_attribute(child_node, ATTR_IS_COLLECTION, false),
-        function_item: self.parse_function_item(child_node),
+        function_item: self.parse_function_item(child_node)?,
         item_definition_type: None,
       };
       items.push(item_definition);
@@ -233,16 +235,16 @@ impl ModelParser {
     Ok(items)
   }
 
-  ///
-  fn parse_function_item(&self, node: &Node) -> Option<FunctionItem> {
-    node
-      .children()
-      .find(|n| n.tag_name().name() == NODE_FUNCTION_ITEM)
-      .as_ref()
-      .map(|n| FunctionItem {
+  /// Parses optional function item.
+  fn parse_function_item(&self, node: &Node) -> Result<Option<FunctionItem>> {
+    if let Some(ref n) = node.children().find(|n| n.tag_name().name() == NODE_FUNCTION_ITEM) {
+      Ok(Some(FunctionItem {
         output_type_ref: optional_attribute(n, ATTR_OUTPUT_TYPE_REF),
-        parameters: vec![],
-      })
+        parameters: self.parse_information_items_from_child(n, NODE_PARAMETERS)?,
+      }))
+    } else {
+      Ok(None)
+    }
   }
 
   fn parse_unary_tests(&self, node: &Node, child_name: &str) -> Result<Option<UnaryTests>> {
@@ -403,7 +405,7 @@ impl ModelParser {
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
       type_ref: optional_attribute(node, ATTR_TYPE_REF),
-      formal_parameters: self.parse_information_items_child(node, NODE_FORMAL_PARAMETER)?,
+      formal_parameters: self.parse_information_items_from_child(node, NODE_FORMAL_PARAMETER)?,
       body: self.parse_optional_expression_instance(node)?,
       kind: self.parse_function_kind(node)?,
     })
@@ -446,7 +448,8 @@ impl ModelParser {
     }
     Ok(imports)
   }
-  ///
+
+  /// Parses a mandatory [InformationItem] contained in a child node having specified name.
   fn parse_information_item_child(&self, node: &Node, child_name: &str) -> Result<InformationItem> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       self.parse_information_item(&child_node)
@@ -455,6 +458,7 @@ impl ModelParser {
     }
   }
 
+  /// Parses an optional [InformationItem] contained in a child node having specified name.
   fn parse_optional_information_item_child(&self, node: &Node, child_name: &str) -> Result<Option<InformationItem>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       return Ok(Some(self.parse_information_item(&child_node)?));
@@ -462,7 +466,8 @@ impl ModelParser {
     Ok(None)
   }
 
-  fn parse_information_items_child(&self, node: &Node, child_name: &str) -> Result<Vec<InformationItem>> {
+  /// Parses a collection of [InformationItem] contained in multiple child nodes having specified name.
+  fn parse_information_items_from_child(&self, node: &Node, child_name: &str) -> Result<Vec<InformationItem>> {
     let mut information_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       information_items.push(self.parse_information_item(&child_node)?);
@@ -470,6 +475,7 @@ impl ModelParser {
     Ok(information_items)
   }
 
+  /// Parses the attributes of [InformationItem].
   fn parse_information_item(&self, node: &Node) -> Result<InformationItem> {
     Ok(InformationItem {
       id: optional_attribute(node, ATTR_ID),
@@ -558,9 +564,7 @@ impl ModelParser {
   }
 
   fn parse_required_expression_instance(&self, node: &Node) -> Result<ExpressionInstance> {
-    self
-      .parse_optional_expression_instance(node)?
-      .ok_or_else(required_expression_instance_is_missing)
+    self.parse_optional_expression_instance(node)?.ok_or_else(required_expression_instance_is_missing)
   }
 
   fn parse_optional_expression_instance(&self, node: &Node) -> Result<Option<ExpressionInstance>> {
@@ -621,10 +625,7 @@ impl ModelParser {
     } else {
       None
     };
-    Ok(InputClause {
-      input_expression,
-      input_values,
-    })
+    Ok(InputClause { input_expression, input_values })
   }
 
   fn parse_decision_table_outputs(&self, node: &Node) -> Result<Vec<OutputClause>> {

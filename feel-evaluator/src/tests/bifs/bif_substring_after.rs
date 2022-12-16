@@ -50,12 +50,7 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  te_null(
-    false,
-    &scope!(),
-    r#"substring after()"#,
-    r#"expected 2 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"substring after()"#, r#"expected 2 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
@@ -70,20 +65,10 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"substring after(s: "foobar", match: "ob")"#,
-    r#"parameter 'string' not found"#,
-  );
+  te_null(false, &scope!(), r#"substring after(s: "foobar", match: "ob")"#, r#"parameter 'string' not found"#);
 }
 
 #[test]
 fn _0007() {
-  te_null(
-    false,
-    &scope!(),
-    r#"substring after(string: "foobar", m: "ob")"#,
-    r#"parameter 'match' not found"#,
-  );
+  te_null(false, &scope!(), r#"substring after(string: "foobar", m: "ob")"#, r#"parameter 'match' not found"#);
 }

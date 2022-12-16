@@ -44,12 +44,7 @@ lazy_static! {
 fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_ErrorCase_001_b24a0c91f2";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 2 parameters, actual number of parameters is 1)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 2 parameters, actual number of parameters is 1)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -122,12 +117,7 @@ fn _0006(b: &mut Bencher) {
 fn _0007(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_ErrorCase_007_0921c3d61a";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 2 parameters, actual number of parameters is 0)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 2 parameters, actual number of parameters is 0)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -301,12 +291,7 @@ fn _0027(b: &mut Bencher) {
 fn _0028(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_ErrorCase_028_77600e7b35";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 2 parameters, actual number of parameters is 1)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 2 parameters, actual number of parameters is 1)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -314,12 +299,7 @@ fn _0028(b: &mut Bencher) {
 fn _0029(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_ErrorCase_029_15a0d0d9c1";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(expected 2 parameters, actual number of parameters is 1)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 2 parameters, actual number of parameters is 1)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

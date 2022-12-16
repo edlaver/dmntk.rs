@@ -36,9 +36,7 @@ use crate::evaluate_equals;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
-use dmntk_feel_temporal::{
-  DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear,
-};
+use dmntk_feel_temporal::{DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear};
 use regex::Regex;
 use std::borrow::Borrow;
 use std::cmp::Ordering;
@@ -1460,10 +1458,7 @@ pub fn mode(values: &[Value]) -> Value {
   let max = mode.get(0).unwrap().0;
   // return items with maximum frequency
   Value::List(Values::new(
-    mode
-      .iter()
-      .filter_map(|(c, v)| if *c == max { Some(Value::Number(*v)) } else { None })
-      .collect(),
+    mode.iter().filter_map(|(c, v)| if *c == max { Some(Value::Number(*v)) } else { None }).collect(),
   ))
 }
 
@@ -1641,9 +1636,7 @@ pub fn overlaps(value1: &Value, value2: &Value) -> Value {
 /// Evaluates the value of the `overlaps_after` function for two ranges.
 macro_rules! overlaps_after_rr {
   ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
-    ($r2s < $r1s || ($r2s == $r1s && *$c2s && !*$c1s))
-      && ($r2e > $r1s || ($r2e == $r1s && *$c2e && *$c1s))
-      && ($r2e < $r1e || ($r2e == $r1e && (!*$c2e || *$c1e)))
+    ($r2s < $r1s || ($r2s == $r1s && *$c2s && !*$c1s)) && ($r2e > $r1s || ($r2e == $r1s && *$c2e && *$c1s)) && ($r2e < $r1e || ($r2e == $r1e && (!*$c2e || *$c1e)))
   };
 }
 
@@ -1704,9 +1697,7 @@ pub fn overlaps_after(value1: &Value, value2: &Value) -> Value {
 /// Evaluates the value of the `overlaps_before` function for two ranges.
 macro_rules! overlaps_before_rr {
   ($r1s:expr, $c1s:expr, $r1e:expr, $c1e:expr, $r2s:expr, $c2s:expr, $r2e:expr, $c2e:expr) => {
-    ($r1s < $r2s || ($r1s == $r2s && *$c1s && !*$c2s))
-      && ($r1e > $r2s || ($r1e == $r2s && *$c1e && *$c2s))
-      && ($r1e < $r2e || ($r1e == $r2e && (!*$c1e || *$c2e)))
+    ($r1s < $r2s || ($r1s == $r2s && *$c1s && !*$c2s)) && ($r1e > $r2s || ($r1e == $r2s && *$c1e && *$c2s)) && ($r1e < $r2e || ($r1e == $r2e && (!*$c1e || *$c2e)))
   };
 }
 

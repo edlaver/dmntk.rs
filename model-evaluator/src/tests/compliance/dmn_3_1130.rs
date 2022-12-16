@@ -85,12 +85,7 @@ fn _0004() {
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "met by",
-    &ctx,
-    r#"{metbyRRF: false, metbyRRF2: false, metbyRRF3: false, metbyRRT: true}"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "met by", &ctx, r#"{metbyRRF: false, metbyRRF2: false, metbyRRF3: false, metbyRRT: true}"#);
 }
 
 #[test]

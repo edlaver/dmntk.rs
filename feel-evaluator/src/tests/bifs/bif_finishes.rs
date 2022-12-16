@@ -110,22 +110,12 @@ fn _0015() {
 
 #[test]
 fn _0016() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"finishes(date("2022-12-10"),[date("2022-12-01")..date("2022-12-10")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"finishes(date("2022-12-10"),[date("2022-12-01")..date("2022-12-10")])"#, true);
 }
 
 #[test]
 fn _0017() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"finishes(date("2022-12-10"),[date("2022-12-01")..date("2022-12-10")))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"finishes(date("2022-12-10"),[date("2022-12-01")..date("2022-12-10")))"#, false);
 }
 
 #[test]
@@ -270,12 +260,7 @@ fn _0033() {
 
 #[test]
 fn _0034() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"finishes([duration("P3Y")..duration("P5Y")],[duration("P1Y")..duration("P5Y")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"finishes([duration("P3Y")..duration("P5Y")],[duration("P1Y")..duration("P5Y")])"#, true);
 }
 
 #[test]
@@ -315,32 +300,17 @@ fn _0039() {
 
 #[test]
 fn _0040() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(20,[1..20],10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"finishes(20,[1..20],10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
 fn _0041() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(p: 20, range: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finishes(p: 20, range: [1..20])"#, "[named::finishes] invalid named parameters");
 }
 
 #[test]
 fn _0042() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(point: 20, r: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finishes(point: 20, r: [1..20])"#, "[named::finishes] invalid named parameters");
 }
 
 #[test]
@@ -350,12 +320,7 @@ fn _0043() {
 
 #[test]
 fn _0044() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(range1: [1..20], r2: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finishes(range1: [1..20], r2: [1..20])"#, "[named::finishes] invalid named parameters");
 }
 
 #[test]
@@ -365,22 +330,12 @@ fn _0045() {
 
 #[test]
 fn _0046() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(r1: [1..20], range2: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finishes(r1: [1..20], range2: [1..20])"#, "[named::finishes] invalid named parameters");
 }
 
 #[test]
 fn _0047() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finishes(r1: [1..20], r2: [1..20])"#,
-    "[named::finishes] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finishes(r1: [1..20], r2: [1..20])"#, "[named::finishes] invalid named parameters");
 }
 
 #[test]

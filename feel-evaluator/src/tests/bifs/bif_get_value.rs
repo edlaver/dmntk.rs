@@ -70,12 +70,7 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"get value({a: "foo"})"#,
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"get value({a: "foo"})"#, r#"expected 2 parameters, actual number of parameters is 1"#);
 }
 
 #[test]

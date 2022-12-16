@@ -205,21 +205,11 @@ fn _0019() {
 #[test]
 fn _0020() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision016",
-    &ctx,
-    r#"null(expected 3 parameters, actual number of parameters is 2)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision016", &ctx, r#"null(expected 3 parameters, actual number of parameters is 2)"#);
 }
 
 #[test]
 fn _0021() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "decision017",
-    &ctx,
-    r#"null(expected 3 parameters, actual number of parameters is 4)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "decision017", &ctx, r#"null(expected 3 parameters, actual number of parameters is 4)"#);
 }

@@ -50,22 +50,12 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  te_null(
-    false,
-    &scope!(),
-    r#"upper case()"#,
-    r#"expected 1 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"upper case()"#, r#"expected 1 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"upper case("ABC",4)"#,
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"upper case("ABC",4)"#, r#"expected 1 parameters, actual number of parameters is 2"#);
 }
 
 #[test]

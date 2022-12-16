@@ -181,11 +181,7 @@ pub fn build(text: &str) -> Result<DecisionTable> {
   for i in 0..size.input_clauses_count {
     inputs.push(InputClause {
       input_expression: recognizer.input_expressions[i].clone(),
-      input_values: if size.input_values_count > 0 {
-        Some(recognizer.input_values[i].clone())
-      } else {
-        None
-      },
+      input_values: if size.input_values_count > 0 { Some(recognizer.input_values[i].clone()) } else { None },
     });
   }
 

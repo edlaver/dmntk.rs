@@ -85,22 +85,12 @@ fn _0010() {
 
 #[test]
 fn _0011() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"finished by([date("2022-12-11")..date("2022-12-31")],date("2022-12-31"))"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"finished by([date("2022-12-11")..date("2022-12-31")],date("2022-12-31"))"#, true);
 }
 
 #[test]
 fn _0012() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"finished by([date("2022-12-11")..date("2022-12-31")],date("2022-12-30"))"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"finished by([date("2022-12-11")..date("2022-12-31")],date("2022-12-30"))"#, false);
 }
 
 #[test]
@@ -215,42 +205,22 @@ fn _0027() {
 
 #[test]
 fn _0028() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by([1..20],20,10)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"finished by([1..20],20,10)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
 fn _0029() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by(range: [1..20],p: 20)"#,
-    "[named::finished by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finished by(range: [1..20],p: 20)"#, "[named::finished by] invalid named parameters");
 }
 
 #[test]
 fn _0030() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by(r: [1..20],point: 20)"#,
-    "[named::finished by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finished by(r: [1..20],point: 20)"#, "[named::finished by] invalid named parameters");
 }
 
 #[test]
 fn _0031() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by(r: [1..20],p: 20)"#,
-    "[named::finished by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finished by(r: [1..20],p: 20)"#, "[named::finished by] invalid named parameters");
 }
 
 #[test]
@@ -275,12 +245,7 @@ fn _0033() {
 
 #[test]
 fn _0034() {
-  te_null(
-    false,
-    &scope!(),
-    r#"finished by(r1: [1..20],r2: [1..20])"#,
-    "[named::finished by] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"finished by(r1: [1..20],r2: [1..20])"#, "[named::finished by] invalid named parameters");
 }
 
 #[test]

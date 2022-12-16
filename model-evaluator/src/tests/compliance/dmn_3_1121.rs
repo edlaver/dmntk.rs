@@ -184,12 +184,7 @@ fn _0018() {
 #[test]
 fn _0019() {
   let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "feel-years-and-months-duration-function_019_90c2084588",
-    &ctx,
-    r#"-P4035Y11M"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "feel-years-and-months-duration-function_019_90c2084588", &ctx, r#"-P4035Y11M"#);
 }
 
 #[test]

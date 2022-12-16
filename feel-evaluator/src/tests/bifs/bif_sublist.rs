@@ -55,32 +55,17 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_be_value(
-    false,
-    &scope!(),
-    r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: -6, length: 4)"#,
-    r#"[5,6,7,8]"#,
-  );
+  te_be_value(false, &scope!(), r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: -6, length: 4)"#, r#"[5,6,7,8]"#);
 }
 
 #[test]
 fn _0006() {
-  te_be_value(
-    false,
-    &scope!(),
-    r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: -6)"#,
-    r#"[5,6,7,8,9,10]"#,
-  );
+  te_be_value(false, &scope!(), r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: -6)"#, r#"[5,6,7,8,9,10]"#);
 }
 
 #[test]
 fn _0007() {
-  te_be_value(
-    false,
-    &scope!(),
-    r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: 3)"#,
-    r#"[3,4,5,6,7,8,9,10]"#,
-  );
+  te_be_value(false, &scope!(), r#"sublist(list: [1,2,3,4,5,6,7,8,9,10], start position: 3)"#, r#"[3,4,5,6,7,8,9,10]"#);
 }
 
 #[test]
@@ -90,52 +75,27 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  te_null(
-    false,
-    &scope!(),
-    r#"sublist([])"#,
-    r#"expected 2,3 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"sublist([])"#, r#"expected 2,3 parameters, actual number of parameters is 1"#);
 }
 
 #[test]
 fn _0010() {
-  te_null(
-    false,
-    &scope!(),
-    r#"sublist([],1,1,1)"#,
-    r#"expected 2,3 parameters, actual number of parameters is 4"#,
-  );
+  te_null(false, &scope!(), r#"sublist([],1,1,1)"#, r#"expected 2,3 parameters, actual number of parameters is 4"#);
 }
 
 #[test]
 fn _0011() {
-  te_null(
-    false,
-    &scope!(),
-    r#"sublist(l:[1,2,3], start position: 1, length: 1)"#,
-    r#"parameter 'list' not found"#,
-  );
+  te_null(false, &scope!(), r#"sublist(l:[1,2,3], start position: 1, length: 1)"#, r#"parameter 'list' not found"#);
 }
 
 #[test]
 fn _0012() {
-  te_null(
-    false,
-    &scope!(),
-    r#"sublist(list:[1,2,3], sp: 1, length: 1)"#,
-    r#"parameter 'start position' not found"#,
-  );
+  te_null(false, &scope!(), r#"sublist(list:[1,2,3], sp: 1, length: 1)"#, r#"parameter 'start position' not found"#);
 }
 
 #[test]
 #[ignore]
 fn _0013() {
   // TODO add checking if there are any other named parameters than allowed and report it as an error
-  te_null(
-    false,
-    &scope!(),
-    r#"sublist(list:[1,2,3], start position: 1, l: 1)"#,
-    r#"parameter 'length' not found"#,
-  );
+  te_null(false, &scope!(), r#"sublist(list:[1,2,3], start position: 1, l: 1)"#, r#"parameter 'length' not found"#);
 }

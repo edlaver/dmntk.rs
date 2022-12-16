@@ -40,12 +40,7 @@ fn _0001() {
 
 #[test]
 fn _0002() {
-  te_time(
-    false,
-    &scope!(),
-    r#"time(hour: 11, minute: 59, second: 45, offset: null)"#,
-    FeelTime::local(11, 59, 45, 0),
-  );
+  te_time(false, &scope!(), r#"time(hour: 11, minute: 59, second: 45, offset: null)"#, FeelTime::local(11, 59, 45, 0));
 }
 
 #[test]
@@ -143,12 +138,7 @@ fn _0017() {
 
 #[test]
 fn _0018() {
-  te_time(
-    false,
-    &scope!(),
-    r#"time(date and time("2019-12-06T18:34:12"))"#,
-    FeelTime::local(18, 34, 12, 0),
-  );
+  te_time(false, &scope!(), r#"time(date and time("2019-12-06T18:34:12"))"#, FeelTime::local(18, 34, 12, 0));
 }
 
 #[test]
@@ -158,12 +148,7 @@ fn _0019() {
 
 #[test]
 fn _0020() {
-  te_time(
-    false,
-    &scope!(),
-    r#"time(from: date and time("2019-12-06T11:00:00Z"))"#,
-    FeelTime::utc(11, 0, 0, 0),
-  );
+  te_time(false, &scope!(), r#"time(from: date and time("2019-12-06T11:00:00Z"))"#, FeelTime::utc(11, 0, 0, 0));
 }
 
 #[test]
@@ -213,82 +198,42 @@ fn _0029() {
 
 #[test]
 fn _0030() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(24,59,45,null)"#,
-    "[core::time_4] hour must be 0..23, current value is: 24",
-  );
+  te_null(false, &scope!(), r#"time(24,59,45,null)"#, "[core::time_4] hour must be 0..23, current value is: 24");
 }
 
 #[test]
 fn _0031() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(23,60,45,null)"#,
-    "[core::time_4] minute must be 0..59, current value is: 60",
-  );
+  te_null(false, &scope!(), r#"time(23,60,45,null)"#, "[core::time_4] minute must be 0..59, current value is: 60");
 }
 
 #[test]
 fn _0032() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(24,59,45,null)"#,
-    "[core::time_4] hour must be 0..23, current value is: 24",
-  );
+  te_null(false, &scope!(), r#"time(24,59,45,null)"#, "[core::time_4] hour must be 0..23, current value is: 24");
 }
 
 #[test]
 fn _0033() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(23,60,45,null)"#,
-    "[core::time_4] minute must be 0..59, current value is: 60",
-  );
+  te_null(false, &scope!(), r#"time(23,60,45,null)"#, "[core::time_4] minute must be 0..59, current value is: 60");
 }
 
 #[test]
 fn _0034() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(23,59,60,null)"#,
-    "[core::time_4] second must be 0..59, current value is: 60",
-  );
+  te_null(false, &scope!(), r#"time(23,59,60,null)"#, "[core::time_4] second must be 0..59, current value is: 60");
 }
 
 #[test]
 fn _0035() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(-12,12,12,null)"#,
-    "[core::time_4] hour must be 0..23, current value is: -12",
-  );
+  te_null(false, &scope!(), r#"time(-12,12,12,null)"#, "[core::time_4] hour must be 0..23, current value is: -12");
 }
 
 #[test]
 fn _0036() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(12,-12,12,null)"#,
-    "[core::time_4] minute must be 0..59, current value is: -12",
-  );
+  te_null(false, &scope!(), r#"time(12,-12,12,null)"#, "[core::time_4] minute must be 0..59, current value is: -12");
 }
 
 #[test]
 fn _0037() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(12,12,-12,null)"#,
-    "[core::time_4] second must be 0..59, current value is: -12",
-  );
+  te_null(false, &scope!(), r#"time(12,12,-12,null)"#, "[core::time_4] second must be 0..59, current value is: -12");
 }
 
 #[test]
@@ -303,12 +248,7 @@ fn _0039() {
 
 #[test]
 fn _0040() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(12,12)"#,
-    r#"expected 1,3,4 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"time(12,12)"#, r#"expected 1,3,4 parameters, actual number of parameters is 2"#);
 }
 
 #[test]
@@ -338,22 +278,12 @@ fn _0043() {
 
 #[test]
 fn _0044() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(hour: 11, m: 59, second: 45, offset: null)"#,
-    r#"invalid parameters in bif time"#,
-  );
+  te_null(false, &scope!(), r#"time(hour: 11, m: 59, second: 45, offset: null)"#, r#"invalid parameters in bif time"#);
 }
 
 #[test]
 fn _0045() {
-  te_null(
-    false,
-    &scope!(),
-    r#"time(hour: 11, minute: 59, s: 45, offset: null)"#,
-    r#"invalid parameters in bif time"#,
-  );
+  te_null(false, &scope!(), r#"time(hour: 11, minute: 59, s: 45, offset: null)"#, r#"invalid parameters in bif time"#);
 }
 
 #[test]

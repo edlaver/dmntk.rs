@@ -80,10 +80,5 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  te_null(
-    false,
-    &scope!(),
-    r#"floor(-2.45,2)"#,
-    r#"expected 1 parameters, actual number of parameters is 2"#,
-  );
+  te_null(false, &scope!(), r#"floor(-2.45,2)"#, r#"expected 1 parameters, actual number of parameters is 2"#);
 }

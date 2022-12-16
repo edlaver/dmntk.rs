@@ -240,22 +240,12 @@ fn _0032() {
 
 #[test]
 fn _0033() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"during([duration("P2Y")..duration("P3Y")],[duration("P1Y")..duration("P4Y")])"#,
-    true,
-  );
+  te_bool(false, &scope!(), r#"during([duration("P2Y")..duration("P3Y")],[duration("P1Y")..duration("P4Y")])"#, true);
 }
 
 #[test]
 fn _0034() {
-  te_bool(
-    false,
-    &scope!(),
-    r#"during([duration("P2Y")..duration("P4Y")],[duration("P1Y")..duration("P2Y")])"#,
-    false,
-  );
+  te_bool(false, &scope!(), r#"during([duration("P2Y")..duration("P4Y")],[duration("P1Y")..duration("P2Y")])"#, false);
 }
 
 #[test]
@@ -275,32 +265,17 @@ fn _0036() {
 
 #[test]
 fn _0037() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(10,11,12)"#,
-    "expected 2 parameters, actual number of parameters is 3",
-  );
+  te_null(false, &scope!(), r#"during(10,11,12)"#, "expected 2 parameters, actual number of parameters is 3");
 }
 
 #[test]
 fn _0038() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(p: 150, range: (100..200))"#,
-    "[named::during] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"during(p: 150, range: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]
 fn _0039() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(point: 150, r: (100..200))"#,
-    "[named::during] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"during(point: 150, r: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]
@@ -310,32 +285,17 @@ fn _0040() {
 
 #[test]
 fn _0041() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(r1: [80..102], range2: (100..200))"#,
-    "[named::during] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"during(r1: [80..102], range2: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]
 fn _0042() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(range1: [80..102], r2: (100..200))"#,
-    "[named::during] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"during(range1: [80..102], r2: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]
 fn _0043() {
-  te_null(
-    false,
-    &scope!(),
-    r#"during(r1: [80..102], r2: (100..200))"#,
-    "[named::during] invalid named parameters",
-  );
+  te_null(false, &scope!(), r#"during(r1: [80..102], r2: (100..200))"#, "[named::during] invalid named parameters");
 }
 
 #[test]

@@ -11,9 +11,12 @@
         <typeRef>string</typeRef>
     </itemDefinition>
     <itemDefinition name="tDS_001">
-        <itemComponent name="decision_ds_001">
-            <typeRef>string</typeRef>
-        </itemComponent>
+        <functionItem outputTypeRef="string">
+            <parameters name="a" typeRef="string"/>
+            <parameters name="b" typeRef="string"/>
+            <parameters name="c" typeRef="string"/>
+            <parameters name="d" typeRef="string"/>
+        </functionItem>
     </itemDefinition>
     <itemDefinition name="tNameAndAge">
         <itemComponent name="name">
@@ -29,14 +32,14 @@
             <text>1+1</text>
         </literalExpression>
     </decision>
-    <!--
-        <decision name="decision_002" id="_decision_002">
-            <variable typeRef="list" name="decision_002"/>
-            <literalExpression>
-                <text>[1,2,"foo"]</text>
-            </literalExpression>
-        </decision>
-    -->
+<!--
+    <decision name="decision_002" id="_decision_002">
+        <variable typeRef="list" name="decision_002"/>
+        <literalExpression>
+            <text>[1,2,"foo"]</text>
+        </literalExpression>
+    </decision>
+-->
     <decision name="decision_003" id="_decision_003">
         <variable typeRef="tNumberList" name="decision_003"/>
         <literalExpression>
@@ -117,7 +120,7 @@
         <variable typeRef="tNameAndAge" name="bkm_002"/>
         <encapsulatedLogic>
             <formalParameter name="nameAndAge" typeRef="tNameAndAge"/>
-            <literalExpression>
+            <literalExpression typeRef="tNameAndAge">
                 <text>nameAndAge != null</text>
             </literalExpression>
         </encapsulatedLogic>

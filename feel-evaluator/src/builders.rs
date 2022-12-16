@@ -870,13 +870,7 @@ fn build_function_type(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       if let Value::FeelType(result_type) = rhv {
         let parameter_types = types
           .iter()
-          .filter_map(|value| {
-            if let Value::FeelType(feel_type) = value {
-              Some(feel_type.clone())
-            } else {
-              None
-            }
-          })
+          .filter_map(|value| if let Value::FeelType(feel_type) = value { Some(feel_type.clone()) } else { None })
           .collect();
         Value::FeelType(FeelType::Function(parameter_types, Box::new(result_type)))
       } else {

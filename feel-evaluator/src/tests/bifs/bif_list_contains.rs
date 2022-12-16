@@ -55,22 +55,12 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"list contains()"#,
-    r#"expected 2 parameters, actual number of parameters is 0"#,
-  );
+  te_null(false, &scope!(), r#"list contains()"#, r#"expected 2 parameters, actual number of parameters is 0"#);
 }
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"list contains([1,2,3])"#,
-    r#"expected 2 parameters, actual number of parameters is 1"#,
-  );
+  te_null(false, &scope!(), r#"list contains([1,2,3])"#, r#"expected 2 parameters, actual number of parameters is 1"#);
 }
 
 #[test]

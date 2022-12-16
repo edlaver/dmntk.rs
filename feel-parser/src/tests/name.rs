@@ -37,13 +37,7 @@ use dmntk_feel::{scope, value_null, Scope};
 
 /// Compares the given `name` with `expected` name after parsing.
 fn accept_name(scope: &Scope, name: &str, expected: &str) {
-  accept(
-    scope,
-    StartTextualExpression,
-    name,
-    &format!("\n       Name\n       └─ `{expected}`\n    "),
-    false,
-  );
+  accept(scope, StartTextualExpression, name, &format!("\n       Name\n       └─ `{expected}`\n    "), false);
 }
 
 #[test]

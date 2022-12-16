@@ -55,12 +55,7 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  te_null(
-    false,
-    &scope!(),
-    r#"week of year(date: date(999999999,9,17))"#,
-    "[week of year] no week of year",
-  );
+  te_null(false, &scope!(), r#"week of year(date: date(999999999,9,17))"#, "[week of year] no week of year");
 }
 
 #[test]
