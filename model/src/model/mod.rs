@@ -905,12 +905,12 @@ impl Import {
 /// - [Relation].
 #[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionInstance {
-  Context(Context),
-  DecisionTable(DecisionTable),
+  Context(Box<Context>),
+  DecisionTable(Box<DecisionTable>),
   FunctionDefinition(Box<FunctionDefinition>),
   Invocation(Box<Invocation>),
   LiteralExpression(Box<LiteralExpression>),
-  Relation(Relation),
+  Relation(Box<Relation>),
 }
 
 /// A [Context] is composed of any number of model context entries, which are instances of [ContextEntry].

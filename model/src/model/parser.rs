@@ -569,10 +569,10 @@ impl ModelParser {
 
   fn parse_optional_expression_instance(&self, node: &Node) -> Result<Option<ExpressionInstance>> {
     if let Some(context) = self.parse_optional_context(node)? {
-      return Ok(Some(ExpressionInstance::Context(context)));
+      return Ok(Some(ExpressionInstance::Context(Box::new(context))));
     }
     if let Some(decision_table) = self.parse_decision_table(node)? {
-      return Ok(Some(ExpressionInstance::DecisionTable(decision_table)));
+      return Ok(Some(ExpressionInstance::DecisionTable(Box::new(decision_table))));
     }
     if let Some(function_definition) = self.parse_optional_function_definition(node)? {
       return Ok(Some(ExpressionInstance::FunctionDefinition(Box::new(function_definition))));
@@ -584,7 +584,7 @@ impl ModelParser {
       return Ok(Some(ExpressionInstance::LiteralExpression(Box::new(literal_expression))));
     }
     if let Some(relation) = self.parse_optional_relation(node)? {
-      return Ok(Some(ExpressionInstance::Relation(relation)));
+      return Ok(Some(ExpressionInstance::Relation(Box::new(relation))));
     }
     Ok(None)
   }
@@ -595,7 +595,7 @@ impl ModelParser {
         information_item_name: None,
         input_clauses: self.parse_decision_table_inputs(child_node)?,
         output_clauses: self.parse_decision_table_outputs(child_node)?,
-        annotations: vec![],
+        annotations: vec![], // TODO implement parsing annotations
         rules: self.parse_decision_table_rules(child_node)?,
         hit_policy: self.parse_hit_policy_attribute(child_node)?,
         aggregation: None,
