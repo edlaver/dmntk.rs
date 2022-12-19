@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+###############################################################################
+# Dependencies:
+#
+# $ sudo dnf install lcov
+# $ rustup component add llvm-tools-preview
+# $ cargo install grcov
+#
+###############################################################################
+
 WORKING_DIRECTORY=$(pwd)
 DMNTK_BINARY_PATH="$WORKING_DIRECTORY"/target/debug
 MANUAL_TESTS_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.manual.tests
