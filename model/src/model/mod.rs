@@ -44,7 +44,7 @@ use dmntk_feel::{FeelType, Name};
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::convert::TryFrom;
-use std::fmt::Display;
+use std::fmt;
 use std::sync::Arc;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
@@ -1982,8 +1982,8 @@ pub struct DecisionTable {
 }
 
 /// Implementation of [Display] for [DecisionTable].
-impl std::fmt::Display for DecisionTable {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for DecisionTable {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
     buffer.push_str("Decision table:\n");
     buffer.push_str(format!(">> preferred orientation: {}\n", self.preferred_orientation).as_str());
@@ -2022,8 +2022,8 @@ pub enum DecisionTableOrientation {
 }
 
 /// Implementation of [Display] for [DecisionTableOrientation].
-impl Display for DecisionTableOrientation {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for DecisionTableOrientation {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       DecisionTableOrientation::RuleAsRow => write!(f, "Rule-as-Row"),
       DecisionTableOrientation::RuleAsColumn => write!(f, "Rule-as-Column"),
@@ -2072,8 +2072,8 @@ pub enum HitPolicy {
 }
 
 /// Implementation of [Display] for HitPolicy.
-impl std::fmt::Display for HitPolicy {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for HitPolicy {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       HitPolicy::Unique => write!(f, "U"),
       HitPolicy::Any => write!(f, "A"),
@@ -2123,8 +2123,8 @@ pub enum BuiltinAggregator {
 }
 
 /// Implementation of [Display] for [BuiltinAggregator].
-impl std::fmt::Display for BuiltinAggregator {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for BuiltinAggregator {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(
       f,
       "{}",
