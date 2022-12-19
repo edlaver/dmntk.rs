@@ -43,7 +43,7 @@ use dmntk_model::model::{Decision, Definitions, DmnElement, KnowledgeRequirement
 use std::collections::HashMap;
 use std::sync::Arc;
 
-/// Type of closure that evaluates a decision.
+/// Type alias for closures that evaluate decisions.
 ///
 /// `Fn(input data, model evaluator, output data)`
 ///
