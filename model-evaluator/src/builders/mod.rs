@@ -163,7 +163,7 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     }));
   }
   // here the `variable.type_ref` must have some value, so unwrapping is safe
-  // type_ref is either a simple type name of a name of item definition,
+  // type_ref is either a simple type name or a name of an item definition,
   // both cases are handled below
   let type_ref = variable.type_ref.as_ref().unwrap().clone();
   Ok(match type_ref.as_str() {
@@ -289,7 +289,7 @@ fn build_expression_instance_evaluator(scope: &Scope, expression_instance: Optio
     Some(ExpressionInstance::DecisionTable(decision_table)) => build_decision_table_evaluator(scope, decision_table),
     Some(ExpressionInstance::FunctionDefinition(function_definition)) => build_function_definition_evaluator(scope, function_definition),
     Some(ExpressionInstance::Invocation(invocation)) => build_invocation_evaluator(scope, invocation),
-    Some(ExpressionInstance::LiteralExpression(literal_expression)) => crate::builders::build_literal_expression_evaluator(scope, literal_expression),
+    Some(ExpressionInstance::LiteralExpression(literal_expression)) => build_literal_expression_evaluator(scope, literal_expression),
     Some(ExpressionInstance::Relation(relation)) => build_relation_evaluator(scope, relation),
     None => Ok(Box::new(move |_: &Scope| value_null!("no expression instance defined"))),
   }
@@ -316,7 +316,7 @@ fn build_context_evaluator(scope: &Scope, context: &Context) -> Result<Evaluator
     for (opt_name, evaluator) in &entry_evaluators {
       match opt_name {
         Some(name) => {
-          let value = evaluator(scope);
+          let value = evaluator(scope) as Value;
           scope.set_entry(name, value.clone());
           evaluated_context.set_entry(name, value);
         }
@@ -421,7 +421,7 @@ fn build_relation_evaluator(scope: &Scope, relation: &Relation) -> Result<Evalua
 
 #[cfg(test)]
 mod tests {
-  use crate::builders::type_ref_to_feel_type;
+  use super::*;
   use dmntk_feel::FeelType;
 
   #[test]
