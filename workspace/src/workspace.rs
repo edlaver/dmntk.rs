@@ -59,11 +59,11 @@ use walkdir::WalkDir;
 pub struct Workspace {
   /// Collection of [Definitions] stashed in [Workspace].
   definitions: Vec<Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].**namespace** attribute.
+  /// Map of [Definitions] indexed by [Definitions].`namespace` attribute.
   definitions_by_namespace: HashMap<String, Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].**name** attribute.
+  /// Map of [Definitions] indexed by [Definitions].`name` attribute.
   definitions_by_name: HashMap<String, Arc<Definitions>>,
-  /// Map of [ModelEvaluator] indexed by [Definitions].**name** attribute.
+  /// Map of [ModelEvaluator] indexed by [Definitions].`name` attribute.
   model_evaluators_by_name: HashMap<String, Arc<ModelEvaluator>>,
 }
 

@@ -423,9 +423,9 @@ fn _3_0085() {
 }
 
 #[test]
-fn _3_0086() {
-  let definitions = crate::parse(dmntk_examples::DMN_3_0086).unwrap();
-  assert_eq!("_8bb2d2bb-b981-415c-a5c3-cdb255f2d967", definitions.id().as_ref().unwrap().as_str());
+fn _3_0086_import() {
+  let definitions = crate::parse(dmntk_examples::DMN_3_0086_IMPORT).unwrap();
+  assert_eq!("_25a9c1b8-ee39-4c1e-906f-56c11677925a", definitions.id().as_ref().unwrap().as_str());
   let imports = definitions.imports();
   assert_eq!(1, imports.len());
   let import = &imports[0];
@@ -438,7 +438,7 @@ fn _3_0086() {
   assert_eq!("myimport", import.feel_name().as_ref().unwrap().to_string());
   assert_eq!(URI_MODEL, import.import_type());
   assert_eq!(None, import.location_uri().as_ref());
-  assert_eq!("http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36", import.namespace());
+  assert_eq!("https://dmntk.io/3_0086/imported", import.namespace());
 }
 
 #[test]

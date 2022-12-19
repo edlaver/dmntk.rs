@@ -167,9 +167,9 @@ fn _2_0002() {
 }
 
 #[test]
-fn _3_0086() {
-  let definitions = crate::parse(dmntk_examples::DMN_3_0086).unwrap();
-  assert_eq!("_8bb2d2bb-b981-415c-a5c3-cdb255f2d967", definitions.id().as_ref().unwrap().as_str());
+fn _3_0086_import() {
+  let definitions = crate::parse(dmntk_examples::DMN_3_0086_IMPORT).unwrap();
+  assert_eq!("_25a9c1b8-ee39-4c1e-906f-56c11677925a", definitions.id().as_ref().unwrap().as_str());
   let dmndi = definitions.dmndi.unwrap();
   // there are no shared styles defined
   assert_eq!(1, dmndi.styles.len());
