@@ -101,7 +101,7 @@ fn build_business_knowledge_model_evaluator(
     formal_parameters.push((feel_name.clone(), feel_type.clone()));
     local_context.set_entry(feel_name, Value::FeelType(feel_type));
   }
-  //TODO replace this long evaluation with single function that return Result!!! feel_name() -> Result<Name>
+  // TODO replace this long evaluation with single function that return Result!!! feel_name() -> Result<Name>
   let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
   // output variable type
   let output_variable_type = if let Some(output_variable_type_ref) = business_knowledge_model.variable().type_ref().as_ref() {
@@ -139,30 +139,72 @@ fn build_expression_instance_evaluator(
   knowledge_requirements: &[String],
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   match expression_instance {
-    ExpressionInstance::Context(context) => build_context_evaluator(scope, formal_parameters, context, output_variable_name, output_variable_type, knowledge_requirements),
+    ExpressionInstance::Context(context) => {
+      //
+      build_context_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        context,                //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
+    }
     ExpressionInstance::DecisionTable(decision_table) => {
-      build_decision_table_evaluator(scope, formal_parameters, decision_table, output_variable_name, output_variable_type, knowledge_requirements)
+      //
+      build_decision_table_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        decision_table,         //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
     }
-    ExpressionInstance::FunctionDefinition(function_definition) => build_function_definition_evaluator(
-      scope,
-      formal_parameters,
-      function_definition,
-      output_variable_name,
-      output_variable_type,
-      knowledge_requirements,
-    ),
+    ExpressionInstance::FunctionDefinition(function_definition) => {
+      //
+      build_function_definition_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        function_definition,    //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
+    }
     ExpressionInstance::Invocation(invocation) => {
-      build_invocation_evaluator(scope, formal_parameters, invocation, output_variable_name, output_variable_type, knowledge_requirements)
+      //
+      build_invocation_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        invocation,             //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
     }
-    ExpressionInstance::LiteralExpression(literal_expression) => build_literal_expression_evaluator(
-      scope,
-      formal_parameters,
-      literal_expression,
-      output_variable_name,
-      output_variable_type,
-      knowledge_requirements,
-    ),
-    ExpressionInstance::Relation(relation) => build_relation_evaluator(scope, formal_parameters, relation, output_variable_name, output_variable_type, knowledge_requirements),
+    ExpressionInstance::LiteralExpression(literal_expression) => {
+      //
+      build_literal_expression_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        literal_expression,     //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
+    }
+    ExpressionInstance::Relation(relation) => {
+      //
+      build_relation_evaluator(
+        scope,                  //
+        formal_parameters,      //
+        relation,               //
+        output_variable_name,   //
+        output_variable_type,   //
+        knowledge_requirements, //
+      )
+    }
   }
 }
 
@@ -259,7 +301,7 @@ fn build_evaluator(name: Name, function: Value, knowledge_requirements: &[String
       if let Ok(business_knowledge_model_evaluator) = model_evaluator.business_knowledge_model_evaluator() {
         if let Ok(decision_service_evaluator) = model_evaluator.decision_service_evaluator() {
           requirements.iter().for_each(|id| {
-            //TODO refactor: call either business knowledge model or decision service, not both!
+            // TODO refactor: call either business knowledge model or decision service, but not both!
             business_knowledge_model_evaluator.evaluate(id, input_data, model_evaluator, output_data);
             decision_service_evaluator.evaluate(id, input_data, model_evaluator, output_data);
           });

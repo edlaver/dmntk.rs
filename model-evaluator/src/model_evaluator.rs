@@ -88,38 +88,47 @@ impl ModelEvaluator {
       .build(definitions, Arc::clone(&model_evaluator))?;
     Ok(model_evaluator)
   }
+
   ///
   pub fn input_data_evaluator(&self) -> Result<RwLockReadGuard<InputDataEvaluator>> {
     self.input_data_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn input_data_context_evaluator(&self) -> Result<RwLockReadGuard<InputDataContextEvaluator>> {
     self.input_data_context_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn item_definition_context_evaluator(&self) -> Result<RwLockReadGuard<ItemDefinitionContextEvaluator>> {
     self.item_definition_context_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn item_definition_evaluator(&self) -> Result<RwLockReadGuard<ItemDefinitionEvaluator>> {
     self.item_definition_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn item_definition_type_evaluator(&self) -> Result<RwLockReadGuard<ItemDefinitionTypeEvaluator>> {
     self.item_definition_type_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn business_knowledge_model_evaluator(&self) -> Result<RwLockReadGuard<BusinessKnowledgeModelEvaluator>> {
     self.business_knowledge_model_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn decision_service_evaluator(&self) -> Result<RwLockReadGuard<DecisionServiceEvaluator>> {
     self.decision_service_evaluator.read().map_err(err_read_lock_failed)
   }
+
   ///
   pub fn decision_evaluator(&self) -> Result<RwLockReadGuard<DecisionEvaluator>> {
     self.decision_evaluator.read().map_err(err_read_lock_failed)
   }
+
   /// Evaluates an invocable with specified name.
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     if let Ok(invocable_by_name) = self.invocable_by_name.read() {
@@ -143,24 +152,28 @@ impl ModelEvaluator {
       value_null!("write lock failed when acquiring invocable_by_name map")
     }
   }
+
   ///
   pub fn add_invocable_decision(&self, name: &str, id: &str) {
     if let Ok(mut invocable_by_name) = self.invocable_by_name.write() {
       invocable_by_name.insert(name.to_string(), InvocableType::Decision(id.to_string()));
     }
   }
+
   ///
   pub fn add_invocable_business_knowledge_model(&self, name: &str, id: &str, output_variable_name: Name) {
     if let Ok(mut invocable_by_name) = self.invocable_by_name.write() {
       invocable_by_name.insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
     }
   }
+
   ///
   pub fn add_invocable_decision_service(&self, name: &str, id: &str) {
     if let Ok(mut invocable_by_name) = self.invocable_by_name.write() {
       invocable_by_name.insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
     }
   }
+
   /// Evaluates a business knowledge model.
   pub fn evaluate_business_knowledge_model(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     if let Ok(business_knowledge_model_evaluator) = self.business_knowledge_model_evaluator() {
@@ -183,6 +196,7 @@ impl ModelEvaluator {
       value_null!()
     }
   }
+
   /// Evaluates a decision.
   pub fn evaluate_decision(&self, id: &str, input_data: &FeelContext) -> Value {
     if let Ok(decision_evaluator) = self.decision_evaluator() {
@@ -200,6 +214,7 @@ impl ModelEvaluator {
       value_null!()
     }
   }
+
   /// Evaluates a decision service.
   pub fn evaluate_decision_service(&self, id: &str, input_data: &FeelContext) -> Value {
     if let Ok(decision_service_evaluator) = self.decision_service_evaluator() {
