@@ -33,55 +33,295 @@
 use super::*;
 
 #[test]
-fn test_properties() {
+fn _0001() {
   let scope = &te_scope("{}");
   te_value(false, scope, r#"@"P1Y0M""#, r#"duration("P1Y")"#);
+}
+
+#[test]
+fn _0002() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date("2021-02-10").year"#, 2021, 0);
+}
+
+#[test]
+fn _0003() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date("2021-02-10").month"#, 2, 0);
+}
+
+#[test]
+fn _0004() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date("2021-02-10").day"#, 10, 0);
+}
+
+#[test]
+fn _0005() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date("2021-02-10").weekday"#, 3, 0);
+}
+
+#[test]
+fn _0006() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T10:30:01").year"#, 2018, 0);
+}
+
+#[test]
+fn _0007() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T10:30:01").month"#, 12, 0);
+}
+
+#[test]
+fn _0008() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T10:30:01").day"#, 10, 0);
+}
+
+#[test]
+fn _0009() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T11:30:01").hour"#, 11, 0);
+}
+
+#[test]
+fn _0010() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T11:30:01").hour"#, 11, 0);
+}
+
+#[test]
+fn _0011() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T11:30:01").minute"#, 30, 0);
+}
+
+#[test]
+fn _0012() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2018-12-10T11:30:01").second"#, 1, 0);
+}
+
+#[test]
+fn _0013() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2021-02-10").hour"#, 0, 0);
+}
+
+#[test]
+fn _0014() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2021-02-10").minute"#, 0, 0);
+}
+
+#[test]
+fn _0015() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"date and time("2021-02-10").second"#, 0, 0);
+}
+
+#[test]
+fn _0016() {
+  let scope = &te_scope("{}");
   te_value(false, scope, r#"date and time("2018-12-10T10:30:00+05:00").time offset"#, r#"@"PT5H""#);
+}
+
+#[test]
+fn _0017() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"date and time("2018-12-10T10:30:00").time offset"#, "aaaa");
+}
+
+#[test]
+fn _0018() {
+  let scope = &te_scope("{}");
   te_string(false, scope, r#"date and time("2018-12-10T10:30:00@Etc/UTC").timezone"#, r#"Etc/UTC"#);
+}
+
+#[test]
+fn _0019() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"date and time("2018-12-10T10:30:00").timezone"#, "bbb");
+}
+
+#[test]
+fn _0020() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"time("08:45:27").hour"#, 8, 0);
+}
+
+#[test]
+fn _0021() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"time("08:45:27").minute"#, 45, 0);
+}
+
+#[test]
+fn _0022() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"time("08:45:27").second"#, 27, 0);
+}
+
+#[test]
+fn _0023() {
+  let scope = &te_scope("{}");
   te_value(false, scope, r#"time("08:45:27-05:00").time offset"#, r#"@"-PT5H""#);
+}
+
+#[test]
+fn _0024() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"time("08:45:27").time offset"#, "ccc");
+}
+
+#[test]
+fn _0025() {
+  let scope = &te_scope("{}");
   te_string(false, scope, r#"time("08:45:27@Etc/UTC").timezone"#, r#"Etc/UTC"#);
+}
+
+#[test]
+fn _0026() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"time("08:45:27").timezone"#, "ddd");
+}
+
+#[test]
+fn _0027() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1Y2M").years"#, 1, 0);
+}
+
+#[test]
+fn _0028() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P2M").years"#, 0, 0);
+}
+
+#[test]
+fn _0029() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P2M").months"#, 2, 0);
+}
+
+#[test]
+fn _0030() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1Y").months"#, 0, 0);
+}
+
+#[test]
+fn _0031() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1Y").days"#, "no such property in years and months duration");
+}
+
+#[test]
+fn _0032() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1Y").hours"#, "no such property in years and months duration");
+}
+
+#[test]
+fn _0033() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1Y").minutes"#, "no such property in years and months duration");
+}
+
+#[test]
+fn _0034() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1Y").seconds"#, "no such property in years and months duration");
+}
+
+#[test]
+fn _0035() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1D").years"#, "no such property in days and time duration");
+}
+
+#[test]
+fn _0036() {
+  let scope = &te_scope("{}");
   te_null(false, scope, r#"duration("P1D").months"#, "no such property in days and time duration");
+}
+
+#[test]
+fn _0037() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1D").days"#, 1, 0);
+}
+
+#[test]
+fn _0038() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("PT2H").days"#, 0, 0);
+}
+
+#[test]
+fn _0039() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("PT2H").hours"#, 2, 0);
+}
+
+#[test]
+fn _0040() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1D").hours"#, 0, 0);
+}
+
+#[test]
+fn _0041() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1DT3H").hours"#, 3, 0);
+}
+
+#[test]
+fn _0042() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("PT2M").minutes"#, 2, 0);
+}
+
+#[test]
+fn _0043() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1D").minutes"#, 0, 0);
+}
+
+#[test]
+fn _0044() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("PT5S").seconds"#, 5, 0);
+}
+
+#[test]
+fn _0045() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P1D").seconds"#, 0, 0);
+}
+
+#[test]
+fn _0046() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P3DT15H47M13S").days"#, 3, 0);
+}
+
+#[test]
+fn _0047() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P3DT15H47M13S").hours"#, 15, 0);
+}
+
+#[test]
+fn _0048() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P3DT15H47M13S").minutes"#, 47, 0);
+}
+
+#[test]
+fn _0049() {
+  let scope = &te_scope("{}");
   te_number(false, scope, r#"duration("P3DT15H47M13S").seconds"#, 13, 0);
 }
