@@ -106,7 +106,6 @@ fn _0010() {
 }
 
 #[test]
-#[ignore]
 fn _0011() {
   let ctx = context(INPUT_DATA);
   assert_decision(&MODEL_EVALUATOR, "cDay", &ctx, r#"24"#);

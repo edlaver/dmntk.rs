@@ -209,3 +209,27 @@ fn _0008() {
     false,
   );
 }
+
+#[test]
+fn _0009() {
+  let scope = scope!();
+  let mut ctx_1 = FeelContext::default();
+  ctx_1.set_entry(&"fromString".into(), value_null!());
+  scope.set_entry(&"Date".into(), Value::Context(ctx_1));
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"Date.fromString.day"#,
+    r#"
+       Path
+       ├─ Path
+       │  ├─ Name
+       │  │  └─ `Date`
+       │  └─ Name
+       │     └─ `fromString`
+       └─ Name
+          └─ `day`
+    "#,
+    false,
+  );
+}
