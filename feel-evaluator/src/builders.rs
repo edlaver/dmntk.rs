@@ -1447,7 +1447,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(value) = context.get_entry(&name) {
             value.clone()
           } else {
-            value_null!("eval_path_expression: no entry {} in context: {}", name, context)
+            value_null!("build_path: no entry {} in context: {}", name, context)
           }
         }
         Value::List(items) => {
@@ -1458,7 +1458,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                 result.push(value.clone());
               }
             } else {
-              return value_null!("eval_path_expression: no context in list");
+              return value_null!("build_path: no context in list");
             }
           }
           Value::List(Values::new(result))
@@ -1475,7 +1475,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                 value_null!("could not retrieve weekday for date")
               }
             }
-            _ => value_null!("no such property in date"),
+            other => value_null!("no such property in date: {}", other),
           }
         }
         Value::DateTime(date_time) => {
@@ -1548,7 +1548,48 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             _ => value_null!("no such property in years and months duration"),
           }
         }
-        _ => value_null!("zzz lhv={}", lhv),
+        Value::Range(rs, cs, re, ce) => {
+          return match name.to_string().as_str() {
+            "start" => *rs,
+            "start included" => Value::Boolean(cs),
+            "end" => *re,
+            "end included" => Value::Boolean(ce),
+            other => value_null!("no such property in range: {}", other),
+          }
+        }
+        Value::UnaryGreater(value) => {
+          return match name.to_string().as_str() {
+            "start" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary greater: {}", other),
+          }
+        }
+        Value::UnaryGreaterOrEqual(value) => {
+          return match name.to_string().as_str() {
+            "start" => *value,
+            "start included" => Value::Boolean(true),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary greater or equal: {}", other),
+          }
+        }
+        Value::UnaryLess(value) => {
+          return match name.to_string().as_str() {
+            "end" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary less: {}", other),
+          }
+        }
+        Value::UnaryLessOrEqual(value) => {
+          return match name.to_string().as_str() {
+            "end" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(true),
+            other => value_null!("no such property in unary less or equal: {}", other),
+          }
+        }
+        other => value_null!("build_path: unexpected type :{}, for property: {}", other, name),
       }
     }))
   } else {

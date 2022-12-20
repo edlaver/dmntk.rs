@@ -295,3 +295,147 @@ fn _0043() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "dt_duration_006_a", &ctx, r#"0"#);
 }
+
+#[test]
+fn _0044() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_001", &ctx, r#"1"#);
+}
+
+#[test]
+fn _0045() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_002", &ctx, r#"10"#);
+}
+
+#[test]
+fn _0046() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_003", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0047() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_004", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0048() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_005", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0049() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_006", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0050() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_007", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0051() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_008", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0052() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_009", &ctx, r#"null(no such property in unary less: start)"#);
+}
+
+#[test]
+fn _0053() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_010", &ctx, r#"null(no such property in unary less or equal: start)"#);
+}
+
+#[test]
+fn _0054() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_011", &ctx, r#"10"#);
+}
+
+#[test]
+fn _0055() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_012", &ctx, r#"10"#);
+}
+
+#[test]
+fn _0056() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_013", &ctx, r#"10"#);
+}
+
+#[test]
+fn _0057() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_014", &ctx, r#"10"#);
+}
+
+#[test]
+fn _0058() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_015", &ctx, r#"null(no such property in unary greater: end)"#);
+}
+
+#[test]
+fn _0059() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_016", &ctx, r#"null(no such property in unary greater or equal: end)"#);
+}
+
+#[test]
+fn _0060() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_017", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0061() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_018", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0062() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_019", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0063() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_020", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0064() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_021", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0065() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_022", &ctx, r#"true"#);
+}
+
+#[test]
+fn _0066() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_023", &ctx, r#"false"#);
+}
+
+#[test]
+fn _0067() {
+  let ctx = context(r#"{}"#);
+  assert_decision(&MODEL_EVALUATOR, "range_024", &ctx, r#"false"#);
+}
