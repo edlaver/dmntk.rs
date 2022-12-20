@@ -18,7 +18,7 @@
  * Copyright (c) 2018-2022 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this file except in compatibility with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -36,4 +36,4 @@
 extern crate lazy_static;
 extern crate test;
 
-mod compliance;
+mod compatibility;
