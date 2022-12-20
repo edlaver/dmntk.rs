@@ -106,8 +106,15 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
     if let Some(href) = information_requirement.required_decision() {
       // bring into context the variable from required decision
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
-        let output_variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        ctx.set_null(output_variable_name);
+        let variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+        //FIXME below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
+        let variable_type_ref = if required_decision.variable().type_ref().is_some() {
+          required_decision.variable().type_ref().as_ref().unwrap().clone()
+        } else {
+          "Any".to_string()
+        };
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, &variable_name, &mut ctx);
+        ctx.set_entry(&variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut ctx)?;
       }

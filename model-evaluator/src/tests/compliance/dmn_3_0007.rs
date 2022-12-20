@@ -112,14 +112,12 @@ fn _0011() {
 }
 
 #[test]
-#[ignore]
 fn _0012() {
   let ctx = context(INPUT_DATA);
   assert_decision(&MODEL_EVALUATOR, "cYear", &ctx, r#"2015"#);
 }
 
 #[test]
-#[ignore]
 fn _0013() {
   let ctx = context(INPUT_DATA);
   assert_decision(&MODEL_EVALUATOR, "cMonth", &ctx, r#"12"#);

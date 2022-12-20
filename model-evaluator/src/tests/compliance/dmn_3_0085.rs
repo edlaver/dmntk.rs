@@ -78,7 +78,17 @@ fn _0004() {
 }
 
 #[test]
-#[ignore]
 fn _0005() {
-  assert_decision_service(&MODEL_EVALUATOR, "decisionService_005", r#"{}"#, r#"null"#);
+  assert_decision_service(&MODEL_EVALUATOR, "decisionService_005", r#"{}"#, r#""foo""#);
+}
+
+#[test]
+#[ignore]
+fn _0006() {
+  assert_decision_service(&MODEL_EVALUATOR, "decision_005_1", r#"{}"#, r#"null"#);
+}
+
+#[test]
+fn _0007() {
+  assert_decision_service(&MODEL_EVALUATOR, "decision_005_2", r#"{}"#, r#""foo""#);
 }
