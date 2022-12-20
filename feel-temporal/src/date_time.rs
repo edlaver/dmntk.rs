@@ -147,14 +147,14 @@ impl ops::Add<FeelYearsAndMonthsDuration> for FeelDateTime {
     if m > 0 {
       if let Ok(months) = m.try_into() {
         if let Some(date) = self.0.add_months(months) {
-          return Some(FeelDateTime(date, self.1.clone()));
+          return Some(FeelDateTime(date, self.1));
         }
       }
     } else {
       m = -m;
       if let Ok(months) = m.try_into() {
         if let Some(date) = self.0.sub_months(months) {
-          return Some(FeelDateTime(date, self.1.clone()));
+          return Some(FeelDateTime(date, self.1));
         }
       }
     }
