@@ -38,17 +38,19 @@ use super::time::FeelTime;
 use super::zone::FeelZone;
 use crate::defs::*;
 use crate::ym_duration::FeelYearsAndMonthsDuration;
-use chrono::{DateTime, FixedOffset};
+use crate::FeelDaysAndTimeDuration;
+use chrono::{DateTime, Datelike, Duration, FixedOffset, Timelike};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
+use std::{fmt, ops};
 
 /// FEEL date and time.
 #[derive(Debug, Clone)]
 pub struct FeelDateTime(pub FeelDate, pub FeelTime); //TODO make these fields private
 
 /// Implements `Display` trait for date and time.
-impl std::fmt::Display for FeelDateTime {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for FeelDateTime {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}T{}", self.0, self.1)
   }
 }
@@ -137,7 +139,52 @@ impl PartialOrd for FeelDateTime {
   }
 }
 
-impl std::ops::Sub<&FeelDateTime> for &FeelDateTime {
+impl ops::Add<FeelYearsAndMonthsDuration> for FeelDateTime {
+  type Output = Option<Self>;
+  ///
+  fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
+    let mut m = rhs.as_months();
+    if m > 0 {
+      if let Ok(months) = m.try_into() {
+        if let Some(date) = self.0.add_months(months) {
+          return Some(FeelDateTime(date, self.1.clone()));
+        }
+      }
+    } else {
+      m = -m;
+      if let Ok(months) = m.try_into() {
+        if let Some(date) = self.0.sub_months(months) {
+          return Some(FeelDateTime(date, self.1.clone()));
+        }
+      }
+    }
+    None
+  }
+}
+
+impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
+  type Output = Option<Self>;
+  ///
+  fn add(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    let zone = self.1 .4.clone();
+    if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
+      date_time += Duration::nanoseconds(rhs.as_nanos());
+      return Some(FeelDateTime(
+        FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
+        FeelTime(
+          date_time.hour() as u8,
+          date_time.minute() as u8,
+          date_time.second() as u8,
+          date_time.nanosecond() as u64,
+          zone,
+        ),
+      ));
+    }
+    None
+  }
+}
+
+impl ops::Sub<&FeelDateTime> for &FeelDateTime {
   type Output = Option<i64>;
   ///
   fn sub(self, rhs: &FeelDateTime) -> Option<i64> {

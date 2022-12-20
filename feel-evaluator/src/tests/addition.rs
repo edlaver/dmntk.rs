@@ -114,3 +114,9 @@ fn test_0014() {
   let scope = &te_scope(r#"{}"#);
   te_null(false, scope, r#"1.25 + "alfa""#, r#"incompatible types in addition: 1.25(number) + "alfa"(string)"#);
 }
+
+#[test]
+fn test_0015() {
+  let scope = &te_scope(r#"{}"#);
+  te_date_time_local(false, scope, r#"@"2021-01-12T10:10:10" + @"P1DT1H""#, (2021, 1, 13), (11, 10, 10, 0));
+}

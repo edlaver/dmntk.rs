@@ -37,20 +37,21 @@ use super::ym_duration::FeelYearsAndMonthsDuration;
 use crate::date_time::FeelDateTime;
 use crate::defs::*;
 use crate::time::FeelTime;
-use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveDate, Weekday};
+use chrono::{DateTime, Datelike, FixedOffset, Local, Months, NaiveDate, Weekday};
 use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
+use std::fmt;
 use std::str::FromStr;
 
 /// FEEL date.
 #[derive(Debug, Clone)]
 pub struct FeelDate(Year, Month, Day);
 
-impl std::fmt::Display for FeelDate {
+impl fmt::Display for FeelDate {
   /// Converts [FeelDate] into [String].
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{:04}-{:02}-{:02}", self.0, self.1, self.2)
   }
 }
@@ -225,6 +226,26 @@ impl FeelDate {
   ///
   pub fn as_tuple(&self) -> (Year, Month, Day) {
     (self.0, self.1, self.2)
+  }
+
+  ///
+  pub fn add_months(&self, months: u32) -> Option<Self> {
+    if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      if let Some(updated_date) = naive_date.checked_add_months(Months::new(months)) {
+        return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
+      }
+    }
+    None
+  }
+
+  ///
+  pub fn sub_months(&self, months: u32) -> Option<Self> {
+    if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      if let Some(updated_date) = naive_date.checked_sub_months(Months::new(months)) {
+        return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
+      }
+    }
+    None
   }
 }
 

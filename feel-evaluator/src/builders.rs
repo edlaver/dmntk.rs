@@ -144,22 +144,47 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           value_null!("addition err 2")
         }
       }
-      Value::DaysAndTimeDuration(lh) => {
-        if let Value::DaysAndTimeDuration(rh) = rhv {
-          Value::DaysAndTimeDuration(lh + rh)
-        } else {
-          value_null!("addition err 3")
+      Value::DateTime(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(a) = lh + rh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 3a")
+          }
         }
-      }
-      Value::YearsAndMonthsDuration(lh) => {
-        if let Value::YearsAndMonthsDuration(rh) = rhv {
-          Value::YearsAndMonthsDuration(lh + rh)
-        } else {
-          value_null!("addition err 4")
+        Value::YearsAndMonthsDuration(rh) => {
+          if let Some(a) = lh + rh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 3b")
+          }
         }
-      }
+        _ => value_null!("addition err 3c"),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::DaysAndTimeDuration(lh + rh),
+        Value::DateTime(rh) => {
+          if let Some(a) = rh + lh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 4a")
+          }
+        }
+        _ => value_null!("addition err 4b"),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::DateTime(rh) => {
+          if let Some(a) = rh + lh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 5a")
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => Value::YearsAndMonthsDuration(lh + rh),
+        _ => value_null!("addition err 5b"),
+      },
       value @ Value::Null(_) => value,
-      _ => value_null!("addition err"),
+      _ => value_null!("addition err 6"),
     }
   }))
 }
