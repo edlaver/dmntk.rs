@@ -89,5 +89,5 @@ fn _0008() {
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"{foo: "baz"}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"null(duplicated context entry key: foo)"#);
 }

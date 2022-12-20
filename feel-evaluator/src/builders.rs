@@ -339,10 +339,16 @@ fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
     // evaluate context entries
     for evaluator in &evaluators {
       if let Value::ContextEntry(name, value) = evaluator(scope) {
-        // add newly evaluated entry to evaluated context
-        evaluated_ctx.set_entry(&name, (*value).clone());
-        // add newly evaluated entry to special context
-        scope.set_entry(&name, *value);
+        if evaluated_ctx.contains_entry(&name) {
+          // duplicated context entry keys are not allowed
+          scope.pop();
+          return value_null!("duplicated context entry key: {}", name);
+        } else {
+          // add newly evaluated entry to evaluated context
+          evaluated_ctx.set_entry(&name, (*value).clone());
+          // add newly evaluated entry to special context
+          scope.set_entry(&name, *value);
+        }
       }
     }
     // remove special context from scope
