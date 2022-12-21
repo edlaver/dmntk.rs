@@ -327,6 +327,7 @@ impl TryFrom<&ValueDto> for WrappedValue {
 
 impl TryFrom<&SimpleDto> for WrappedValue {
   type Error = DmntkError;
+  /// Converts [SimpleDto] into [WrappedValue].
   fn try_from(value: &SimpleDto) -> Result<Self, Self::Error> {
     if value.nil {
       return Ok(WrappedValue(Value::Null(None)));
@@ -347,7 +348,7 @@ impl TryFrom<&SimpleDto> for WrappedValue {
         };
       }
     }
-    Err(invalid_parameter("ValueDto"))
+    Err(invalid_parameter(&format!("ValueDto: {value:?}")))
   }
 }
 
@@ -402,7 +403,7 @@ mod errors {
 
   impl From<DtoError> for DmntkError {
     fn from(e: DtoError) -> Self {
-      DmntkError::new("DTOError", &format!("{e}"))
+      DmntkError::new("DtoError", &format!("{e}"))
     }
   }
 
