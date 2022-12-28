@@ -1487,7 +1487,7 @@ pub fn month_of_year(value: &Value) -> Value {
     if let Some(month_of_year) = opt_month_of_year {
       value_string!(month_of_year.0)
     } else {
-      value_null!("[month of year] no month")
+      value_null!("[month of year] no month") // this case is uncovered and must be eliminated after refactoring date and time crate
     }
   }
   match value {
