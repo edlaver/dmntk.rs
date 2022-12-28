@@ -10,9 +10,9 @@ tasks:
       - cmd: cargo +nightly bench -q | grep 'bench'
 
   benchmarks:
-    desc: Runs all compatibility benchmarks
+    desc: Runs all compliance benchmarks
     cmds:
-      - cmd: cargo +nightly bench -q compatibility | grep 'bench' > benchmarks.txt
+      - cmd: cargo +nightly bench -q compliance | grep 'bench' > benchmarks.txt
 
   build:
     desc: Builds in debug mode
@@ -128,9 +128,9 @@ tasks:
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo test --workspace
+      - cmd: cargo +nightly test --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode
     cmds:
-      - cmd: cargo test --workspace -q
+      - cmd: cargo +nightly test --workspace -q

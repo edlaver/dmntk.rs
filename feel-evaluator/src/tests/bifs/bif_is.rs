@@ -134,6 +134,16 @@ fn _0019() {
 }
 
 #[test]
+fn _0019_a() {
+  te_bool(false, &scope!(), r#"is(date(2012,11,15))"#, false);
+}
+
+#[test]
+fn _0019_b() {
+  te_bool(false, &scope!(), r#"is(value1: date(2012,11,15))"#, false);
+}
+
+#[test]
 fn _0020() {
   te_null(
     false,
