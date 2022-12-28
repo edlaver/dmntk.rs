@@ -970,3 +970,13 @@ fn get_param_count(parameters: &NamedParameters) -> usize {
     0
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_get_param_count() {
+    assert_eq!(0, get_param_count(&Value::Boolean(false)))
+  }
+}

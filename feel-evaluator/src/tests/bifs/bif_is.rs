@@ -134,21 +134,26 @@ fn _0019() {
 }
 
 #[test]
-fn _0019_a() {
+fn _0020() {
   te_bool(false, &scope!(), r#"is(date(2012,11,15))"#, false);
 }
 
 #[test]
-fn _0019_b() {
+fn _0021() {
   te_bool(false, &scope!(), r#"is(value1: date(2012,11,15))"#, false);
 }
 
 #[test]
-fn _0020() {
+fn _0022() {
   te_null(
     false,
     &scope!(),
     r#"is(value1:time(12,13,14), value2:time("12:13:15"), value3:time("12:13:16"))"#,
     "expected 2 parameters, actual number of parameters is 3",
   );
+}
+
+#[test]
+fn _0023() {
+  te_null(false, &scope!(), r#"is()"#, "expected 2 parameters, actual number of parameters is 0");
 }
