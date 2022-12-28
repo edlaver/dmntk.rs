@@ -34,27 +34,23 @@ use super::super::*;
 use dmntk_feel::scope;
 
 #[test]
-#[ignore]
 fn _0001() {
-  te_bool(false, &scope!(), r#"overlaps after([1..5],[3..8])"#, true);
+  te_bool(false, &scope!(), r#"overlaps after([1..5],[3..8])"#, false);
 }
 
 #[test]
-#[ignore]
 fn _0002() {
-  te_null(false, &scope!(), r#"overlaps after([1..5],[3..8])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps after([6..12],[3..8])"#, true);
 }
 
 #[test]
-#[ignore]
 fn _0003() {
-  te_null(false, &scope!(), r#"overlaps after(range1: [1..5], range2: [3..8])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps after(range1: [6..12], range2: [3..8])"#, true);
 }
 
 #[test]
-#[ignore]
 fn _0004() {
-  te_null(false, &scope!(), r#"overlaps after(range2: [3..8], range1: [1..5])"#, "unimplemented");
+  te_bool(false, &scope!(), r#"overlaps after(range2: [3..8], range1: [6..12])"#, true);
 }
 
 #[test]
