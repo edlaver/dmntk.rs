@@ -1149,7 +1149,7 @@ pub fn is(value1: &Value, value2: &Value) -> Value {
       Value::YearsAndMonthsDuration(v2) => Value::Boolean(v1 == v2),
       _ => Value::Boolean(false),
     },
-    _ => invalid_argument_type!("is", "", value1.type_of()),
+    _ => invalid_argument_type!("is", "scalar", value1.type_of()),
   }
 }
 

@@ -35,81 +35,146 @@ use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
-  te_bool(false, &scope!(), r#"is(date(2019,7,12),date("2019-07-12"))"#, true);
+  te_bool(false, &scope!(), r#"is(100,100)"#, true);
 }
 
 #[test]
 fn _0002() {
-  te_bool(false, &scope!(), r#"is(value1:date(2019,7,12),value2:date("2019-07-12"))"#, true);
+  te_bool(false, &scope!(), r#"is(100,"abc")"#, false);
 }
 
 #[test]
 fn _0003() {
-  te_bool(false, &scope!(), r#"is(date(2019,7,11),date("2019-07-12"))"#, false);
+  te_bool(false, &scope!(), r#"is(100,101)"#, false);
 }
 
 #[test]
 fn _0004() {
-  te_bool(false, &scope!(), r#"is(value1:date(2019,7,11),value2:date("2019-07-12"))"#, false);
+  te_bool(false, &scope!(), r#"is("abc","abc")"#, true);
 }
 
 #[test]
 fn _0005() {
-  te_bool(false, &scope!(), r#"is(time(12,13,14),time("12:13:14"))"#, true);
+  te_bool(false, &scope!(), r#"is("abc",false)"#, false);
 }
 
 #[test]
 fn _0006() {
-  te_bool(false, &scope!(), r#"is(value1:time(12,13,14),value2:time("12:13:14"))"#, true);
+  te_bool(false, &scope!(), r#"is("abc","abcd")"#, false);
 }
 
 #[test]
 fn _0007() {
-  te_bool(false, &scope!(), r#"is(time(12,13,15),time("12:13:14"))"#, false);
+  te_bool(false, &scope!(), r#"is(true,true)"#, true);
 }
 
 #[test]
 fn _0008() {
-  te_bool(false, &scope!(), r#"is(value1:time(12,13,15),value2:time("12:13:14"))"#, false);
+  te_bool(false, &scope!(), r#"is(false,false)"#, true);
 }
 
 #[test]
 fn _0009() {
-  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50"))"#, false);
+  te_bool(false, &scope!(), r#"is(true,false)"#, false);
 }
 
 #[test]
 fn _0010() {
-  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50Z"))"#, true);
+  te_bool(false, &scope!(), r#"is(true,1)"#, false);
 }
 
 #[test]
 fn _0011() {
-  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50@Etc/UTC"))"#, true);
+  te_bool(false, &scope!(), r#"is(date(2019,7,12),date("2019-07-12"))"#, true);
 }
 
 #[test]
 fn _0012() {
-  te_null(false, &scope!(), r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#, "parameter 'value1' not found");
+  te_bool(false, &scope!(), r#"is(value1:date(2019,7,12),value2:date("2019-07-12"))"#, true);
 }
 
 #[test]
 fn _0013() {
-  te_null(false, &scope!(), r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#, "parameter 'value2' not found");
+  te_bool(false, &scope!(), r#"is(date(2019,7,11),date("2019-07-12"))"#, false);
 }
 
 #[test]
 fn _0014() {
-  te_null(false, &scope!(), r#"is()"#, "expected 2 parameters, actual number of parameters is 0");
+  te_bool(false, &scope!(), r#"is(value1:date(2019,7,11),value2:date("2019-07-12"))"#, false);
 }
 
 #[test]
 fn _0015() {
-  te_bool(false, &scope!(), r#"is(time(12,13,15))"#, false);
+  te_bool(false, &scope!(), r#"is(date and time("2019-07-12T10:12:13"),date and time("2019-07-12T10:12:13"))"#, true);
 }
 
 #[test]
 fn _0016() {
+  te_bool(false, &scope!(), r#"is(date and time("2019-07-12T10:12:13"),date and time("2019-07-12T10:12:14"))"#, false);
+}
+
+#[test]
+fn _0017() {
+  te_bool(false, &scope!(), r#"is(date and time("2019-07-12T10:12:13"),10)"#, false);
+}
+
+#[test]
+fn _0018() {
+  te_bool(false, &scope!(), r#"is(time(12,13,14),time("12:13:14"))"#, true);
+}
+
+#[test]
+fn _0019() {
+  te_bool(false, &scope!(), r#"is(value1:time(12,13,14),value2:time("12:13:14"))"#, true);
+}
+
+#[test]
+fn _0020() {
+  te_bool(false, &scope!(), r#"is(time(12,13,15),time("12:13:14"))"#, false);
+}
+
+#[test]
+fn _0021() {
+  te_bool(false, &scope!(), r#"is(value1:time(12,13,15),value2:time("12:13:14"))"#, false);
+}
+
+#[test]
+fn _0022() {
+  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50"))"#, false);
+}
+
+#[test]
+fn _0023() {
+  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50Z"))"#, true);
+}
+
+#[test]
+fn _0024() {
+  te_bool(false, &scope!(), r#"is(time("23:00:50z"),time("23:00:50@Etc/UTC"))"#, true);
+}
+
+#[test]
+fn _0025() {
+  te_null(false, &scope!(), r#"is(v1:time(12,13,15),value2:time("12:13:14"))"#, "parameter 'value1' not found");
+}
+
+#[test]
+fn _0026() {
+  te_null(false, &scope!(), r#"is(value1:time(12,13,15),v2:time("12:13:14"))"#, "parameter 'value2' not found");
+}
+
+#[test]
+fn _0027() {
+  te_null(false, &scope!(), r#"is()"#, "expected 2 parameters, actual number of parameters is 0");
+}
+
+#[test]
+fn _0028() {
+  te_bool(false, &scope!(), r#"is(time(12,13,15))"#, false);
+}
+
+#[test]
+fn _0029() {
   te_null(
     false,
     &scope!(),
@@ -119,32 +184,32 @@ fn _0016() {
 }
 
 #[test]
-fn _0017() {
+fn _0030() {
   te_bool(false, &scope!(), r#"is(10,time(12,13,15))"#, false);
 }
 
 #[test]
-fn _0018() {
+fn _0031() {
   te_bool(false, &scope!(), r#"is(time(12,13,15), 10)"#, false);
 }
 
 #[test]
-fn _0019() {
+fn _0032() {
   te_bool(false, &scope!(), r#"is(date(2012,11,15), 10)"#, false);
 }
 
 #[test]
-fn _0020() {
+fn _0033() {
   te_bool(false, &scope!(), r#"is(date(2012,11,15))"#, false);
 }
 
 #[test]
-fn _0021() {
+fn _0034() {
   te_bool(false, &scope!(), r#"is(value1: date(2012,11,15))"#, false);
 }
 
 #[test]
-fn _0022() {
+fn _0035() {
   te_null(
     false,
     &scope!(),
@@ -154,6 +219,46 @@ fn _0022() {
 }
 
 #[test]
-fn _0023() {
+fn _0036() {
   te_null(false, &scope!(), r#"is()"#, "expected 2 parameters, actual number of parameters is 0");
+}
+
+#[test]
+fn _0037() {
+  te_bool(false, &scope!(), r#"is(duration("P1D"),duration("P1D"))"#, true);
+}
+
+#[test]
+fn _0038() {
+  te_bool(false, &scope!(), r#"is(duration("P1D"),duration("P1DT1S"))"#, false);
+}
+
+#[test]
+fn _0039() {
+  te_bool(false, &scope!(), r#"is(duration("P1D"),10)"#, false);
+}
+
+#[test]
+fn _0040() {
+  te_bool(false, &scope!(), r#"is(duration("P1Y"),duration("P1Y"))"#, true);
+}
+
+#[test]
+fn _0041() {
+  te_bool(false, &scope!(), r#"is(duration("P1Y"),duration("P1Y1M"))"#, false);
+}
+
+#[test]
+fn _0042() {
+  te_bool(false, &scope!(), r#"is(duration("P1Y"),duration("P1D"))"#, false);
+}
+
+#[test]
+fn _0043() {
+  te_null(
+    false,
+    &scope!(),
+    r#"is(Null,duration("P1D"))"#,
+    "[core::is] invalid argument type, expected scalar, actual type is Null",
+  );
 }
