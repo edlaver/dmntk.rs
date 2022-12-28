@@ -59,14 +59,6 @@ pub fn err_invalid_utf8_content() -> DmntkError {
   ServerError("invalid UTF-8 content".to_string()).into()
 }
 
-pub fn err_workspace_read_lock_failed() -> DmntkError {
-  ServerError("workspace read lock failed".to_string()).into()
-}
-
-pub fn err_workspace_write_lock_failed() -> DmntkError {
-  ServerError("workspace write lock failed".to_string()).into()
-}
-
 pub fn err_internal_error(message: &str) -> DmntkError {
   ServerError(message.to_string()).into()
 }

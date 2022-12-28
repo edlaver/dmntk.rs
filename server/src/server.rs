@@ -213,70 +213,55 @@ async fn get_system_info() -> std::io::Result<Json<ResultDto<SystemInfoDto>>> {
 /// Handler for deleting all model definitions from workspace.
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
-  if let Ok(mut workspace) = data.workspace.write() {
-    let result = do_clear_definitions(&mut workspace);
-    match result {
-      Ok(result) => Ok(Json(ResultDto::data(result))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_write_lock_failed())))
+  let mut workspace = data.workspace.write().unwrap();
+  let result = do_clear_definitions(&mut workspace);
+  match result {
+    Ok(result) => Ok(Json(ResultDto::data(result))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
 /// Handler for adding model definitions to workspace.
 #[post("/definitions/add")]
 async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<AddDefinitionsResult>>> {
-  if let Ok(mut workspace) = data.workspace.write() {
-    let result = do_add_definitions(&mut workspace, &params.into_inner());
-    match result {
-      Ok(result) => Ok(Json(ResultDto::data(result))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_write_lock_failed())))
+  let mut workspace = data.workspace.write().unwrap();
+  let result = do_add_definitions(&mut workspace, &params.into_inner());
+  match result {
+    Ok(result) => Ok(Json(ResultDto::data(result))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
 /// Handler for replacing model definitions in workspace.
 #[post("/definitions/replace")]
 async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
-  if let Ok(mut workspace) = data.workspace.write() {
-    let result = do_replace_definitions(&mut workspace, &params.into_inner());
-    match result {
-      Ok(result) => Ok(Json(ResultDto::data(result))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_write_lock_failed())))
+  let mut workspace = data.workspace.write().unwrap();
+  let result = do_replace_definitions(&mut workspace, &params.into_inner());
+  match result {
+    Ok(result) => Ok(Json(ResultDto::data(result))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
 /// Handler for removing model definitions from workspace.
 #[post("/definitions/remove")]
 async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
-  if let Ok(mut workspace) = data.workspace.write() {
-    let result = do_remove_definitions(&mut workspace, &params.into_inner());
-    match result {
-      Ok(result) => Ok(Json(ResultDto::data(result))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_write_lock_failed())))
+  let mut workspace = data.workspace.write().unwrap();
+  let result = do_remove_definitions(&mut workspace, &params.into_inner());
+  match result {
+    Ok(result) => Ok(Json(ResultDto::data(result))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
 /// Handler for deploying model definitions stashed in workspace.
 #[post("/definitions/deploy")]
 async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
-  if let Ok(mut workspace) = data.workspace.write() {
-    let result = do_deploy_definitions(&mut workspace);
-    match result {
-      Ok(result) => Ok(Json(ResultDto::data(result))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_write_lock_failed())))
+  let mut workspace = data.workspace.write().unwrap();
+  let result = do_deploy_definitions(&mut workspace);
+  match result {
+    Ok(result) => Ok(Json(ResultDto::data(result))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
@@ -284,13 +269,10 @@ async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::R
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[post("/tck/evaluate")]
 async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<OutputNodeDto>>> {
-  if let Ok(workspace) = data.workspace.read() {
-    match do_evaluate_tck(&workspace, &params.into_inner()) {
-      Ok(response) => Ok(Json(ResultDto::data(response))),
-      Err(reason) => Ok(Json(ResultDto::error(reason))),
-    }
-  } else {
-    Ok(Json(ResultDto::error(err_workspace_read_lock_failed())))
+  let workspace = data.workspace.read().unwrap();
+  match do_evaluate_tck(&workspace, &params.into_inner()) {
+    Ok(response) => Ok(Json(ResultDto::data(response))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
   }
 }
 
@@ -300,16 +282,11 @@ async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<Appl
 /// Result is always in JSON format.
 #[post("/evaluate/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
-  if let Ok(workspace) = data.workspace.read() {
-    let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
-    match result {
-      Ok(value) => HttpResponse::Ok().content_type("application/json").body(format!("{{\"data\":{}}}", value.jsonify())),
-      Err(reason) => HttpResponse::Ok().content_type("application/json").body(ResultDto::<String>::error(reason).to_string()),
-    }
-  } else {
-    HttpResponse::Ok()
-      .content_type("application/json")
-      .body(ResultDto::<String>::error(err_workspace_read_lock_failed()).to_string())
+  let workspace = data.workspace.read().unwrap();
+  let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
+  match result {
+    Ok(value) => HttpResponse::Ok().content_type("application/json").body(format!("{{\"data\":{}}}", value.jsonify())),
+    Err(reason) => HttpResponse::Ok().content_type("application/json").body(ResultDto::<String>::error(reason).to_string()),
   }
 }
 
