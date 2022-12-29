@@ -12,6 +12,7 @@
 WORKING_DIRECTORY=$(pwd)
 DMNTK_BINARY_PATH="$WORKING_DIRECTORY"/target/debug
 MANUAL_TESTS_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.manual.tests
+TEST_RUNNER_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.test.runner
 
 # clean before proceeding
 cargo clean
@@ -39,6 +40,20 @@ else
     cd "$MANUAL_TESTS_DIRECTORY" || exit 1
     ./run.sh
     cd "$WORKING_DIRECTORY" || exit 1
+  fi
+  # collect the coverage from TCK tests
+  echo "$TEST_RUNNER_DIRECTORY"
+  if [[ -d "$TEST_RUNNER_DIRECTORY" ]]
+  then
+    export PATH=$DMNTK_BINARY_PATH:$PATH
+    dmntk srv > /dev/null 2>&1 &
+    _pid=$!
+    sleep 0.1
+    cd "$TEST_RUNNER_DIRECTORY" || exit 1
+    dmntk-test-runner config-all.yml
+    cd "$WORKING_DIRECTORY" || exit 1
+    kill -s SIGINT "$_pid"
+    sleep 0.1
   fi
 fi
 
