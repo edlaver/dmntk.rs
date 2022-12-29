@@ -144,22 +144,11 @@ impl ops::Add<FeelYearsAndMonthsDuration> for FeelDateTime {
   type Output = Option<Self>;
   ///
   fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
-    let mut m = rhs.as_months();
-    if m > 0 {
-      if let Ok(months) = m.try_into() {
-        if let Some(date) = self.0.add_months(months) {
-          return Some(FeelDateTime(date, self.1));
-        }
-      }
+    if let Some(date) = self.0 + rhs {
+      Some(FeelDateTime(date, self.1))
     } else {
-      m = -m;
-      if let Ok(months) = m.try_into() {
-        if let Some(date) = self.0.sub_months(months) {
-          return Some(FeelDateTime(date, self.1));
-        }
-      }
+      None
     }
-    None
   }
 }
 

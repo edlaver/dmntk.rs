@@ -639,7 +639,6 @@ dependencies = [
  "dmntk-feel-number",
  "lazy_static",
  "regex",
- "time 0.3.17",
 ]
 
 [[package]]

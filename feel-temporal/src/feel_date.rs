@@ -60,19 +60,18 @@ impl FromStr for FeelDate {
   type Err = DmntkError;
   /// Converts [String] into [FeelDate].
   fn from_str(date: &str) -> Result<Self, Self::Err> {
-    if let Some(captures) = RE_DATE.captures(date) {
-      if let Some(year_match) = captures.name("year") {
-        if let Ok(mut year) = year_match.as_str().parse::<Year>() {
-          if captures.name("sign").is_some() {
-            year = -year;
-          }
-          if let Some(month_match) = captures.name("month") {
-            if let Ok(month) = month_match.as_str().parse::<Month>() {
-              if let Some(day_match) = captures.name("day") {
-                if let Ok(day) = day_match.as_str().parse::<Day>() {
-                  if is_valid_date(year, month, day) {
-                    return Ok(FeelDate(year, month, day));
-                  }
+    let captures = RE_DATE.captures(date).ok_or(err_invalid_date_literal(date))?;
+    if let Some(year_match) = captures.name("year") {
+      if let Ok(mut year) = year_match.as_str().parse::<Year>() {
+        if captures.name("sign").is_some() {
+          year = -year;
+        }
+        if let Some(month_match) = captures.name("month") {
+          if let Ok(month) = month_match.as_str().parse::<Month>() {
+            if let Some(day_match) = captures.name("day") {
+              if let Ok(day) = day_match.as_str().parse::<Day>() {
+                if is_valid_date(year, month, day) {
+                  return Ok(FeelDate(year, month, day));
                 }
               }
             }
@@ -128,17 +127,14 @@ impl PartialOrd for FeelDate {
 impl ops::Add<FeelYearsAndMonthsDuration> for FeelDate {
   type Output = Option<Self>;
   /// Adds years and month duration to this date.
-  fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
-    let mut m = rhs.as_months();
+  fn add(self, other: FeelYearsAndMonthsDuration) -> Self::Output {
+    let m = other.as_months();
     if m > 0 {
       if let Ok(months) = m.try_into() {
         return self.add_months(months);
       }
-    } else {
-      m = -m;
-      if let Ok(months) = m.try_into() {
-        return self.sub_months(months);
-      }
+    } else if let Ok(months) = (-m).try_into() {
+      return self.sub_months(months);
     }
     None
   }
@@ -169,7 +165,7 @@ impl FeelDate {
   ///
   pub fn today_local() -> Self {
     let today = Local::now();
-    Self(today.year() as Year, today.month() as Month, today.day() as Day)
+    Self(today.year(), today.month(), today.day())
   }
   ///
   pub fn ym_duration(&self, other: &FeelDate) -> FeelYearsAndMonthsDuration {
@@ -248,7 +244,7 @@ impl FeelDate {
   }
 
   ///
-  pub fn add_months(&self, months: u32) -> Option<Self> {
+  fn add_months(&self, months: u32) -> Option<Self> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
       if let Some(updated_date) = naive_date.checked_add_months(Months::new(months)) {
         return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
@@ -258,7 +254,7 @@ impl FeelDate {
   }
 
   ///
-  pub fn sub_months(&self, months: u32) -> Option<Self> {
+  fn sub_months(&self, months: u32) -> Option<Self> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
       if let Some(updated_date) = naive_date.checked_sub_months(Months::new(months)) {
         return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
@@ -268,22 +264,22 @@ impl FeelDate {
   }
 }
 
-///
+/// Returns `true` when specified year, month and day form a valid [FeelDate].
 pub fn is_valid_date(year: Year, month: Month, day: Day) -> bool {
   if (-999_999_999..=999_999_999).contains(&year) {
     if let Some(last_day_of_month) = last_day_of_month(year, month) {
-      return day <= last_day_of_month;
+      return (1..=last_day_of_month).contains(&day);
     }
   }
   false
 }
 
-///
+/// Returns `true` when the specified year is a leap year.
 pub fn is_leap_year(year: Year) -> bool {
   year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
 
-///
+/// Returns the last dau of month in specified (leap) year.
 pub fn last_day_of_month(year: Year, month: Month) -> Option<Day> {
   match month {
     1 | 3 | 5 | 7 | 8 | 10 | 12 => Some(31),
@@ -296,6 +292,36 @@ pub fn last_day_of_month(year: Year, month: Month) -> Option<Day> {
 #[cfg(test)]
 mod tests {
   use super::*;
+
+  #[test]
+  fn test_display() {
+    assert_eq!("9999-01-01", format!("{}", FeelDate(9999, 1, 1)));
+    assert_eq!("-9999-01-01", format!("{}", FeelDate(-9999, 1, 1)));
+    assert_eq!("999999999-01-01", format!("{}", FeelDate(999_999_999, 1, 1)));
+    assert_eq!("-999999999-01-01", format!("{}", FeelDate(-999_999_999, 1, 1)));
+  }
+
+  #[test]
+  fn test_add_months() {
+    assert_eq!("9999-02-01", format!("{}", FeelDate(9999, 1, 1).add_months(1).unwrap()));
+    assert_eq!("99999-02-01", format!("{}", FeelDate(99999, 1, 1).add_months(1).unwrap()));
+    assert_eq!("99999-12-01", format!("{}", FeelDate(99999, 1, 1).add_months(11).unwrap()));
+    assert_eq!("100000-01-01", format!("{}", FeelDate(99999, 1, 1).add_months(12).unwrap()));
+    assert_eq!("199999-02-01", format!("{}", FeelDate(199999, 1, 1).add_months(1).unwrap()));
+    assert_eq!("262143-02-01", format!("{}", FeelDate(262143, 1, 1).add_months(1).unwrap()));
+    assert_eq!("+262143-12-31", NaiveDate::MAX.to_string())
+  }
+
+  #[test]
+  fn test_sub_months() {
+    assert_eq!("-9999-11-01", format!("{}", FeelDate(-9999, 12, 1).sub_months(1).unwrap()));
+    assert_eq!("-99999-02-01", format!("{}", FeelDate(-99999, 3, 1).sub_months(1).unwrap()));
+    assert_eq!("-99999-12-01", format!("{}", FeelDate(-99998, 1, 1).sub_months(1).unwrap()));
+    assert_eq!("-100000-01-01", format!("{}", FeelDate(-100000, 12, 1).sub_months(11).unwrap()));
+    assert_eq!("-199999-11-01", format!("{}", FeelDate(-199999, 12, 1).sub_months(1).unwrap()));
+    assert_eq!("-262144-01-01", format!("{}", FeelDate(-262144, 2, 1).sub_months(1).unwrap()));
+    assert_eq!("-262144-01-01", NaiveDate::MIN.to_string())
+  }
 
   #[test]
   fn test_is_valid_date() {

@@ -2,7 +2,6 @@ extern crate chrono;
 extern crate chrono_tz;
 extern crate lazy_static;
 extern crate regex;
-extern crate time;
 
 mod defs;
 mod errors;
