@@ -13,5 +13,6 @@ chrono = "0.4.23"
 chrono-tz = "0.8.0"
 lazy_static = "1.4.0"
 regex = "1.7.0"
+time = "0.3.17"
 dmntk-common.workspace = true
 dmntk-feel-number.workspace = true

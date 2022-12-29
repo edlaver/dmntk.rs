@@ -32,12 +32,12 @@
 
 //! Implementation of FEEL time.
 
-use super::date::FeelDate;
-use super::zone::FeelZone;
-use crate::date_time::FeelDateTime;
+use super::feel_date::FeelDate;
+use super::feel_zone::FeelZone;
 use crate::defs::*;
-use crate::dt_duration::FeelDaysAndTimeDuration;
 use crate::errors::*;
+use crate::feel_date_time::FeelDateTime;
+use crate::feel_dt_duration::FeelDaysAndTimeDuration;
 use chrono::{DateTime, FixedOffset};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
@@ -245,8 +245,8 @@ impl FeelTime {
 
 #[cfg(test)]
 mod tests {
-  use super::super::dt_duration::FeelDaysAndTimeDuration;
-  use super::super::zone::FeelZone;
+  use super::super::feel_dt_duration::FeelDaysAndTimeDuration;
+  use super::super::feel_zone::FeelZone;
   use super::*;
 
   fn eq_time(h: u8, m: u8, s: u8, n: u64, z: FeelZone, time: &str) {

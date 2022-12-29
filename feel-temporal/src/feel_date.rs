@@ -33,10 +33,10 @@
 //! Implementation of FEEL date.
 
 use super::errors::{err_invalid_date, err_invalid_date_literal};
-use super::ym_duration::FeelYearsAndMonthsDuration;
-use crate::date_time::FeelDateTime;
+use super::feel_ym_duration::FeelYearsAndMonthsDuration;
 use crate::defs::*;
-use crate::time::FeelTime;
+use crate::feel_date_time::FeelDateTime;
+use crate::feel_time::FeelTime;
 use chrono::{DateTime, Datelike, FixedOffset, Local, Months, NaiveDate, Weekday};
 use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;

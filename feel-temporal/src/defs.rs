@@ -32,8 +32,8 @@
 
 //! Implementation of FEEL temporal artifacts.
 
-use crate::date_time::FeelDateTime;
-use crate::zone::FeelZone;
+use crate::feel_date_time::FeelDateTime;
+use crate::feel_zone::FeelZone;
 use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -224,7 +224,7 @@ pub fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::date::FeelDate;
+  use crate::feel_date::FeelDate;
   use std::str::FromStr;
 
   const SECONDS_IN_HOUR: i32 = 3_600;

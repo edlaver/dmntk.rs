@@ -166,7 +166,7 @@ impl FeelZone {
 #[cfg(test)]
 mod tests {
   use crate::defs::*;
-  use crate::zone::FeelZone;
+  use crate::feel_zone::FeelZone;
 
   macro_rules! assert_zone {
     ($zone:expr, $time:expr) => {
