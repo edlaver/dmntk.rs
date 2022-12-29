@@ -170,7 +170,7 @@ pub fn after(value1: &Value, value2: &Value) -> Value {
     },
     _ => {}
   }
-  invalid_argument_type!("before", "scalar or range of scalars", value1.type_of())
+  invalid_argument_type!("after", "scalar or range of scalars", value1.type_of())
 }
 
 /// Returns `false` if any item is `false`, `true` if empty or all items are true, else `null`.

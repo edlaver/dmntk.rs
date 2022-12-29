@@ -634,18 +634,17 @@ fn _0088() {
     false,
     &scope!(),
     r#"after(null,null)"#,
-    r#"[core::before] invalid argument type, expected scalar or range of scalars, actual type is Null"#,
+    r#"[core::after] invalid argument type, expected scalar or range of scalars, actual type is Null"#,
   );
 }
 
 #[test]
-#[ignore]
 fn _0089() {
   te_null(
     false,
     &scope!(),
     r#"after(1,null)"#,
-    r#"[core::before] invalid argument type, expected scalar or range of scalars, actual type is Null"#,
+    r#"[core::after] invalid argument type, expected scalar or range of scalars, actual type is number"#,
   );
 }
 
@@ -655,6 +654,6 @@ fn _0090() {
     false,
     &scope!(),
     r#"after(null,1)"#,
-    r#"[core::before] invalid argument type, expected scalar or range of scalars, actual type is Null"#,
+    r#"[core::after] invalid argument type, expected scalar or range of scalars, actual type is Null"#,
   );
 }

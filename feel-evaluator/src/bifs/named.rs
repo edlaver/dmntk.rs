@@ -837,18 +837,34 @@ fn bif_string_length(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_sublist(parameters: &NamedParameters) -> Value {
-  if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
-    if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
-      if let Some((length_value, _)) = get_param(parameters, &NAME_LENGTH) {
-        core::sublist3(list_value, start_position_value, length_value)
+  match get_param_count(parameters) {
+    2 => {
+      if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
+        if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
+          core::sublist2(list_value, start_position_value)
+        } else {
+          parameter_not_found!(NAME_START_POSITION)
+        }
       } else {
-        core::sublist2(list_value, start_position_value)
+        parameter_not_found!(NAME_LIST)
       }
-    } else {
-      parameter_not_found!(NAME_START_POSITION)
     }
-  } else {
-    parameter_not_found!(NAME_LIST)
+    3 => {
+      if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
+        if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
+          if let Some((length_value, _)) = get_param(parameters, &NAME_LENGTH) {
+            core::sublist3(list_value, start_position_value, length_value)
+          } else {
+            parameter_not_found!(NAME_LENGTH)
+          }
+        } else {
+          parameter_not_found!(NAME_START_POSITION)
+        }
+      } else {
+        parameter_not_found!(NAME_LIST)
+      }
+    }
+    n => invalid_number_of_parameters!("2,3", n),
   }
 }
 

@@ -94,8 +94,6 @@ fn _0012() {
 }
 
 #[test]
-#[ignore]
 fn _0013() {
-  // TODO add checking if there are any other named parameters than allowed and report it as an error
   te_null(false, &scope!(), r#"sublist(list:[1,2,3], start position: 1, l: 1)"#, r#"parameter 'length' not found"#);
 }

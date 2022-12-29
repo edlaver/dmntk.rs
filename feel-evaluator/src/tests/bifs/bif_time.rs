@@ -327,7 +327,7 @@ fn _0049() {
 }
 
 #[test]
-#[ignore]
+#[should_panic]
 fn _0050() {
-  te_null(false, &scope!(), r#"time(23,59,45,@"P3000000000000000000D")"#, "aaa");
+  te_null(false, &scope!(), r#"time(23,59,45,@"P3000000000000000000D")"#, "");
 }

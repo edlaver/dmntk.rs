@@ -31,16 +31,10 @@
  */
 
 use crate::bifs::core;
+use crate::macros::invalid_number_of_parameters;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::value_null;
 use dmntk_feel::values::Value;
-
-macro_rules! invalid_number_of_parameters {
-  ($expected:expr, $actual:expr) => {{
-    use dmntk_feel::value_null;
-    value_null!("expected {} parameters, actual number of parameters is {}", $expected, $actual)
-  }};
-}
 
 ///
 pub fn evaluate_bif(bif: Bif, parameters: &[Value]) -> Value {

@@ -611,4 +611,11 @@ mod tests {
     let duration = FeelDaysAndTimeDuration::try_from("-P3DT5H18M36S").unwrap();
     assert_eq!("P3DT5H18M36S", duration.abs().to_string());
   }
+
+  #[test]
+  #[should_panic]
+  fn test_large_days() {
+    //TODO Maybe it is possible NOT TO convert the number of days into nanoseconds?
+    FeelDaysAndTimeDuration::try_from("P3000000000000000000D").unwrap();
+  }
 }
