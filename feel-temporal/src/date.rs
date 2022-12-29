@@ -42,8 +42,8 @@ use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
-use std::fmt;
 use std::str::FromStr;
+use std::{fmt, ops};
 
 /// FEEL date.
 #[derive(Debug, Clone)]
@@ -122,6 +122,25 @@ impl PartialOrd for FeelDate {
       (Ordering::Less, _, _) => Some(Ordering::Less),
       (Ordering::Greater, _, _) => Some(Ordering::Greater),
     }
+  }
+}
+
+impl ops::Add<FeelYearsAndMonthsDuration> for FeelDate {
+  type Output = Option<Self>;
+  /// Adds years and month duration to this date.
+  fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
+    let mut m = rhs.as_months();
+    if m > 0 {
+      if let Ok(months) = m.try_into() {
+        return self.add_months(months);
+      }
+    } else {
+      m = -m;
+      if let Ok(months) = m.try_into() {
+        return self.sub_months(months);
+      }
+    }
+    None
   }
 }
 

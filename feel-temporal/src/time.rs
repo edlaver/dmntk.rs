@@ -41,6 +41,7 @@ use crate::errors::*;
 use chrono::{DateTime, FixedOffset};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
+use std::ops;
 use std::str::FromStr;
 
 /// FEEL time.
@@ -132,7 +133,7 @@ impl PartialOrd for FeelTime {
   }
 }
 
-impl std::ops::Sub<FeelTime> for FeelTime {
+impl ops::Sub<FeelTime> for FeelTime {
   type Output = Option<FeelDaysAndTimeDuration>;
   /// Subtracts the argument from this [FeelTime] value.
   fn sub(self, other: Self) -> Self::Output {
