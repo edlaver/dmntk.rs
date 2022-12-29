@@ -148,7 +148,7 @@ impl TryFrom<FeelDate> for DateTime<FixedOffset> {
   type Error = DmntkError;
   /// Converts the `FEEL` date into chrono::DateTime<FixedOffset>.
   fn try_from(me: FeelDate) -> Result<Self, Self::Error> {
-    let result: DateTime<FixedOffset> = FeelDateTime(me, FeelTime::utc(0, 0, 0, 0)).try_into()?;
+    let result: DateTime<FixedOffset> = FeelDateTime::new(me, FeelTime::utc(0, 0, 0, 0)).try_into()?;
     Ok(result)
   }
 }

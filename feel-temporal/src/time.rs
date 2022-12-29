@@ -168,7 +168,7 @@ impl TryFrom<FeelTime> for DateTime<FixedOffset> {
   type Error = DmntkError;
   /// Converts [FeelTime] into [DateTime] with [FixedOffset].
   fn try_from(me: FeelTime) -> Result<Self, Self::Error> {
-    let result: DateTime<FixedOffset> = FeelDateTime(FeelDate::today_local(), me).try_into()?;
+    let result: DateTime<FixedOffset> = FeelDateTime::new(FeelDate::today_local(), me).try_into()?;
     Ok(result)
   }
 }
@@ -235,11 +235,11 @@ impl FeelTime {
   }
 
   pub fn feel_time_offset(&self) -> Option<i32> {
-    feel_time_offset(&FeelDateTime(FeelDate::today_local(), self.clone()))
+    feel_time_offset(&FeelDateTime::new(FeelDate::today_local(), self.clone()))
   }
 
   pub fn feel_time_zone(&self) -> Option<String> {
-    feel_time_zone(&FeelDateTime(FeelDate::today_local(), self.clone()))
+    feel_time_zone(&FeelDateTime::new(FeelDate::today_local(), self.clone()))
   }
 }
 

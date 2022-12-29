@@ -76,9 +76,14 @@ lazy_static! {
 }
 
 pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
-  let me_date_tuple = me.0.as_tuple();
-  let me_time_tuple = ((me.1).hour() as u32, (me.1).minute() as u32, (me.1).second() as u32, (me.1).nanos() as u32);
-  let me_offset_opt = match &(me.1).zone() {
+  let me_date_tuple = me.date().as_tuple();
+  let me_time_tuple = (
+    (me.time()).hour() as u32,
+    (me.time()).minute() as u32,
+    (me.time()).second() as u32,
+    (me.time()).nanos() as u32,
+  );
+  let me_offset_opt = match me.time().zone() {
     FeelZone::Utc => Some(0),
     FeelZone::Local => None, // in FEEL semantic domain the local offset is treated as none
     FeelZone::Offset(offset) => Some(*offset),
@@ -91,7 +96,7 @@ pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
 }
 
 pub fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
-  if let FeelZone::Zone(zone_name) = &(me.1).zone() {
+  if let FeelZone::Zone(zone_name) = me.time().zone() {
     return Some(zone_name.clone());
   }
   None

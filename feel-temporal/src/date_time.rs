@@ -46,7 +46,7 @@ use std::{fmt, ops};
 
 /// FEEL date and time.
 #[derive(Debug, Clone)]
-pub struct FeelDateTime(pub FeelDate, pub FeelTime); //TODO make these fields private
+pub struct FeelDateTime(FeelDate, FeelTime);
 
 /// Implements `Display` trait for date and time.
 impl fmt::Display for FeelDateTime {
