@@ -198,7 +198,7 @@ fn _0019(b: &mut Bencher) {
 fn _0020(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "dt_duration_003";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""PT0S""#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""P0D""#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -238,7 +238,7 @@ fn _0024(b: &mut Bencher) {
 fn _0025(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "ym_duration_003";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""P0M""#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""P0Y""#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

@@ -44,7 +44,7 @@ lazy_static! {
 fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{Principal: 600000,Term: 360}"#);
   let invocable_name = "Boxed Context";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2878.693549432766768088520383236299"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2878.693549432766768088520383236288"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -52,7 +52,7 @@ fn _0001(b: &mut Bencher) {
 fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{Principal: 30000,Term: 60}"#);
   let invocable_name = "Boxed Context";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"649.117549836400293492700014885945"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"649.1175498364002934927000148859422"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -60,6 +60,6 @@ fn _0002(b: &mut Bencher) {
 fn _0003(b: &mut Bencher) {
   let ctx = context(r#"{Principal: 600000,Term: 365}"#);
   let invocable_name = "Boxed Context";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2858.116099896591400871418893289041"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2858.11609989659140087141889328903"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

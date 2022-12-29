@@ -100,7 +100,7 @@ fn _0007(b: &mut Bencher) {
 fn _0008(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-lower-case-function_008_9913ad454f";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""xyz""#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""xyz ""#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

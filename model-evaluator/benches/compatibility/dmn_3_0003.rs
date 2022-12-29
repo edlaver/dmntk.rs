@@ -48,7 +48,7 @@ fn _0001(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &ctx,
-    r#"[966.3967422049753602329651244861514, 376.5090706325024247283858289020703]"#,
+    r#"[966.3967422049753602329651244861695, 376.5090706325024247283858289020851]"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

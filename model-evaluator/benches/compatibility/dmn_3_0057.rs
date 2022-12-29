@@ -108,6 +108,6 @@ fn _0008(b: &mut Bencher) {
 fn _0009(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision008";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"{foo: "baz"}"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(duplicated context entry key: foo)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

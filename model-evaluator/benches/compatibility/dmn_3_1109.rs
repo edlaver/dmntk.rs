@@ -220,7 +220,7 @@ fn _0022(b: &mut Bencher) {
 fn _0023(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-replace-function_023_5c337d3725";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r##""# # # #""##);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r##""# # # # ""##);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

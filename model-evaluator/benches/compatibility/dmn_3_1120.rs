@@ -108,7 +108,7 @@ fn _0008(b: &mut Bencher) {
 fn _0009(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_009_cef3c1ed26";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -116,7 +116,7 @@ fn _0009(b: &mut Bencher) {
 fn _0010(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_010_5b452a4975";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -124,7 +124,7 @@ fn _0010(b: &mut Bencher) {
 fn _0011(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_011_2169615b94";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -132,7 +132,7 @@ fn _0011(b: &mut Bencher) {
 fn _0012(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_012_2affe6d169";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -140,7 +140,7 @@ fn _0012(b: &mut Bencher) {
 fn _0013(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_013_0e8e26513c";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -148,7 +148,7 @@ fn _0013(b: &mut Bencher) {
 fn _0014(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_014_598ba6fabd";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"PT0S"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0D"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -252,7 +252,7 @@ fn _0026(b: &mut Bencher) {
 fn _0027(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_027_33b7fb8704";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0Y"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -260,7 +260,7 @@ fn _0027(b: &mut Bencher) {
 fn _0028(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-duration-function_028_971b94f16d";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0Y"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

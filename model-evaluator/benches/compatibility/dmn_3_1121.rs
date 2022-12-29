@@ -158,7 +158,7 @@ fn _0011(b: &mut Bencher) {
 fn _0012(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_012_331ef38ce0";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0Y"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -166,7 +166,7 @@ fn _0012(b: &mut Bencher) {
 fn _0013(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-years-and-months-duration-function_013_2f3cc46d9d";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0M"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"P0Y"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
