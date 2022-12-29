@@ -45,14 +45,12 @@ fn _0001() {
 }
 
 #[test]
-#[ignore]
 fn _0002() {
   let ctx = context(r#"{Employees: ["Jack","John","Bob","Zack"]}"#);
   assert_decision(&MODEL_EVALUATOR, "decision2", &ctx, r#""John""#);
 }
 
 #[test]
-#[ignore]
 fn _0003() {
   let ctx = context(r#"{Employees: ["Jack","John","Bob","Zack"]}"#);
   assert_decision(&MODEL_EVALUATOR, "decision3", &ctx, r#"["Bob"]"#);

@@ -37,12 +37,11 @@ lazy_static! {
 }
 
 #[test]
-#[ignore]
 fn _0001() {
   assert_decision_service(
     &MODEL_EVALUATOR,
     "Evaluation DS",
     r#"{Grade: "A",Student's name: "John Doe",Teacher's Evaluation: "A very motivated, hard-working student!"}"#,
-    r#"null"#,
+    r#""John Doe is Graduated with merit with grade: A and evaluation: A very motivated, hard-working student!""#,
   );
 }
