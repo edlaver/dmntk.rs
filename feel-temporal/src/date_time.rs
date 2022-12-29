@@ -184,11 +184,34 @@ impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
   }
 }
 
-impl ops::Sub<&FeelDateTime> for &FeelDateTime {
+impl ops::Sub<FeelDateTime> for FeelDateTime {
   type Output = Option<i64>;
   ///
-  fn sub(self, rhs: &FeelDateTime) -> Option<i64> {
-    subtract(self, rhs)
+  fn sub(self, other: FeelDateTime) -> Self::Output {
+    let me_date_tuple = self.0.as_tuple();
+    let me_time_tuple = ((self.1).0 as u32, (self.1).1 as u32, (self.1).2 as u32, (self.1).3 as u32);
+    let me_offset_opt = match &(self.1).4 {
+      FeelZone::Utc => Some(0),
+      FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
+      FeelZone::Offset(offset) => Some(*offset),
+      FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, me_date_tuple, me_time_tuple),
+    };
+    let other_date_tuple = other.0.as_tuple();
+    let other_time_tuple = ((other.1).0 as u32, (other.1).1 as u32, (other.1).2 as u32, (other.1).3 as u32);
+    let other_offset_opt = match &(other.1).4 {
+      FeelZone::Utc => Some(0),
+      FeelZone::Local => get_local_offset_dt(other_date_tuple, other_time_tuple),
+      FeelZone::Offset(offset) => Some(*offset),
+      FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, other_date_tuple, other_time_tuple),
+    };
+    if let Some((me_offset, other_offset)) = me_offset_opt.zip(other_offset_opt) {
+      let me_date_opt = date_time_offset_dt(me_date_tuple, me_time_tuple, me_offset);
+      let other_date_opt = date_time_offset_dt(other_date_tuple, other_time_tuple, other_offset);
+      if let Some((me_date, other_date)) = me_date_opt.zip(other_date_opt) {
+        return me_date.sub(other_date).num_nanoseconds();
+      }
+    }
+    None
   }
 }
 

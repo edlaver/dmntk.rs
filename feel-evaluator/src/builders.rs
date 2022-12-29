@@ -39,7 +39,7 @@ use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, Scope};
-use dmntk_feel_temporal::{subtract, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
+use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
@@ -1736,7 +1736,7 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
       Value::DateTime(lh) => {
         if let Value::DateTime(rh) = rhv {
-          if let Some(a) = subtract(&lh, &rh) {
+          if let Some(a) = lh - rh {
             return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().nano(a).build());
           }
         }

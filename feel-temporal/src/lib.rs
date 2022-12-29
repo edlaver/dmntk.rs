@@ -14,7 +14,7 @@ mod zone;
 
 pub use date::FeelDate;
 pub use date_time::FeelDateTime;
-pub use defs::{subtract, Day, DayOfWeek, DayOfYear, Month, MonthOfYear, WeekOfYear, Year};
+pub use defs::{Day, DayOfWeek, DayOfYear, Month, MonthOfYear, WeekOfYear, Year};
 pub use dt_duration::FeelDaysAndTimeDuration;
 pub use time::FeelTime;
 pub use ym_duration::FeelYearsAndMonthsDuration;

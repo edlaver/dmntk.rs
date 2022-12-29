@@ -37,7 +37,6 @@ use crate::zone::FeelZone;
 use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::ops::Sub;
 
 /// Regular expression pattern for parsing dates.
 const DATE_PATTERN: &str = r#"(?P<sign>-)?(?P<year>[1-9][0-9]{3,8})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})"#;
@@ -74,33 +73,6 @@ lazy_static! {
   pub static ref RE_TIME: Regex = Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str()) ).unwrap();
   /// Regular expression for parsing date and time.
   pub static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
-}
-
-pub fn subtract(me: &FeelDateTime, other: &FeelDateTime) -> Option<i64> {
-  let me_date_tuple = me.0.as_tuple();
-  let me_time_tuple = ((me.1).0 as u32, (me.1).1 as u32, (me.1).2 as u32, (me.1).3 as u32);
-  let me_offset_opt = match &(me.1).4 {
-    FeelZone::Utc => Some(0),
-    FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
-    FeelZone::Offset(offset) => Some(*offset),
-    FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, me_date_tuple, me_time_tuple),
-  };
-  let other_date_tuple = other.0.as_tuple();
-  let other_time_tuple = ((other.1).0 as u32, (other.1).1 as u32, (other.1).2 as u32, (other.1).3 as u32);
-  let other_offset_opt = match &(other.1).4 {
-    FeelZone::Utc => Some(0),
-    FeelZone::Local => get_local_offset_dt(other_date_tuple, other_time_tuple),
-    FeelZone::Offset(offset) => Some(*offset),
-    FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, other_date_tuple, other_time_tuple),
-  };
-  if let Some((me_offset, other_offset)) = me_offset_opt.zip(other_offset_opt) {
-    let me_date_opt = date_time_offset_dt(me_date_tuple, me_time_tuple, me_offset);
-    let other_date_opt = date_time_offset_dt(other_date_tuple, other_time_tuple, other_offset);
-    if let Some((me_date, other_date)) = me_date_opt.zip(other_date_opt) {
-      return me_date.sub(other_date).num_nanoseconds();
-    }
-  }
-  None
 }
 
 pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
