@@ -45,6 +45,8 @@ mod builders;
 mod errors;
 mod evaluators;
 mod iterations;
+mod macros;
+
 #[cfg(test)]
 mod tests;
 

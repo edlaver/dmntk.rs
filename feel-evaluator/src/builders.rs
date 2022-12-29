@@ -33,6 +33,7 @@
 use crate::bifs;
 use crate::errors::*;
 use crate::iterations::{EveryExpressionEvaluator, ForExpressionEvaluator, SomeExpressionEvaluator};
+use crate::macros::invalid_argument_type;
 use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
@@ -42,6 +43,7 @@ use dmntk_feel_temporal::{subtract, FeelDate, FeelDateTime, FeelDaysAndTimeDurat
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
+use std::file;
 use std::ops::Deref;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -159,7 +161,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             value_null!("addition err 3b")
           }
         }
-        _ => value_null!("addition err 3c"),
+        other => invalid_argument_type!("add", "days and time duration, years and months duration", other.type_of()),
       },
       Value::DaysAndTimeDuration(lh) => match rhv {
         Value::DaysAndTimeDuration(rh) => Value::DaysAndTimeDuration(lh + rh),
@@ -170,7 +172,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             value_null!("addition err 4a")
           }
         }
-        _ => value_null!("addition err 4b"),
+        other => invalid_argument_type!("add", "days and time duration, date and time", other.type_of()),
       },
       Value::YearsAndMonthsDuration(lh) => match rhv {
         Value::DateTime(rh) => {
@@ -181,10 +183,14 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::YearsAndMonthsDuration(rh) => Value::YearsAndMonthsDuration(lh + rh),
-        _ => value_null!("addition err 5b"),
+        other => invalid_argument_type!("add", "years and months duration, date and time", other.type_of()),
       },
       value @ Value::Null(_) => value,
-      _ => value_null!("addition err 6"),
+      other => invalid_argument_type!(
+        "add",
+        "number, string, date and time, days and time duration, years and months duration, null",
+        other.type_of()
+      ),
     }
   }))
 }

@@ -33,6 +33,7 @@
 //! Core implementation of build-in functions.
 
 use crate::evaluate_equals;
+use crate::macros::invalid_argument_type;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
@@ -42,18 +43,6 @@ use std::borrow::Borrow;
 use std::cmp::Ordering;
 use std::convert::TryFrom;
 use std::str::FromStr;
-
-/// Builds null value with invalid argument type message.
-macro_rules! invalid_argument_type {
-  ($function:literal, $expected:expr, $actual:expr) => {
-    value_null!(
-      "core",
-      $function,
-      "{}",
-      format!("invalid argument type, expected {}, actual type is {}", $expected, $actual)
-    )
-  };
-}
 
 /// Returns the absolute value of the argument.
 pub fn abs(value: &Value) -> Value {

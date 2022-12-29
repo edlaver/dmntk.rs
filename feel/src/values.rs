@@ -65,7 +65,7 @@ use std::str::FromStr;
 /// ```
 #[macro_export]
 macro_rules! value_null {
-  ($module:literal, $function:literal, $format:literal, $($arguments:tt)*) => {
+  ($module:expr, $function:literal, $format:literal, $($arguments:tt)*) => {
     Value::Null(Some(format!("[{}::{}] {}", $module, $function, format!($format, $($arguments)*))))
   };
   ($format:literal, $($arguments:tt)*) => {
