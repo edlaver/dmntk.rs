@@ -452,7 +452,7 @@ fn _0046(b: &mut Bencher) {
 fn _0047(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-function_ErrorCase_047_ba717eb672";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date y=1000999999 m=12 d=32')"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date] invalid date y=1000999999 m=12 d=32)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
