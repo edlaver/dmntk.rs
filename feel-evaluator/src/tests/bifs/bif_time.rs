@@ -55,7 +55,7 @@ fn _0004() {
     false,
     scope,
     r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmso_opt(12, 59, 1, 300_000_000, -3600).unwrap(),
+    FeelTime::new_hmsno_opt(12, 59, 1, 300_000_000, -3600).unwrap(),
   );
 }
 
@@ -66,7 +66,7 @@ fn _0005() {
     false,
     scope,
     r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmso_opt(12, 59, 2, 0, -3600).unwrap(),
+    FeelTime::new_hmsno_opt(12, 59, 2, 0, -3600).unwrap(),
   );
 }
 
@@ -77,7 +77,7 @@ fn _0006() {
     false,
     scope,
     r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmso_opt(12, 59, 1, 300_000, -3603).unwrap(),
+    FeelTime::new_hmsno_opt(12, 59, 1, 300_000, -3603).unwrap(),
   );
 }
 

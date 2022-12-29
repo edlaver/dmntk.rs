@@ -46,7 +46,7 @@ use std::str::FromStr;
 
 /// FEEL time.
 #[derive(Debug, Clone)]
-pub struct FeelTime(pub u8, pub u8, pub u8, pub u64, pub FeelZone); //TODO make these fields private
+pub struct FeelTime(u8, u8, u8, u64, FeelZone);
 
 impl std::fmt::Display for FeelTime {
   /// Converts [FeelTime] into [String].
@@ -174,7 +174,15 @@ impl TryFrom<FeelTime> for DateTime<FixedOffset> {
 }
 
 impl FeelTime {
-  pub fn new_hmso_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
+  ///
+  pub fn new_hmsnz_opt(hour: u8, minute: u8, second: u8, nano: u64, zone: FeelZone) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
+    }
+    None
+  }
+  ///
+  pub fn new_hmsno_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
     if is_valid_time(hour, minute, second) {
       if let Ok(zone) = FeelZone::try_from(offset) {
         return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
@@ -216,6 +224,14 @@ impl FeelTime {
 
   pub fn second(&self) -> u8 {
     self.2
+  }
+
+  pub fn nanos(&self) -> u64 {
+    self.3
+  }
+
+  pub fn zone(&self) -> &FeelZone {
+    &self.4
   }
 
   pub fn feel_time_offset(&self) -> Option<i32> {

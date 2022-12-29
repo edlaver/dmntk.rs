@@ -2401,7 +2401,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
                 Value::DaysAndTimeDuration(offset) => {
-                  if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, offset.as_seconds() as i32) {
+                  if let Some(feel_time) = FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32) {
                     Value::Time(feel_time)
                   } else {
                     value_null!("time_4 1")

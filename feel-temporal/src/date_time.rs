@@ -93,8 +93,9 @@ impl TryFrom<&str> for FeelDateTime {
                                       }
                                       hour = 0;
                                     }
-                                    let time = FeelTime(hour, min, sec, nanos, zone);
-                                    return Ok(FeelDateTime(date, time));
+                                    if let Some(time) = FeelTime::new_hmsnz_opt(hour, min, sec, nanos, zone) {
+                                      return Ok(FeelDateTime(date, time));
+                                    }
                                   }
                                 }
                               }
@@ -166,18 +167,19 @@ impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
   type Output = Option<Self>;
   ///
   fn add(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
-    let zone = self.1 .4.clone();
+    let zone = self.1.zone().clone();
     if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
       date_time += Duration::nanoseconds(rhs.as_nanos());
       return Some(FeelDateTime(
         FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-        FeelTime(
+        FeelTime::new_hmsnz_opt(
           date_time.hour() as u8,
           date_time.minute() as u8,
           date_time.second() as u8,
           date_time.nanosecond() as u64,
           zone,
-        ),
+        )
+        .unwrap(),
       ));
     }
     None
@@ -189,16 +191,16 @@ impl ops::Sub<FeelDateTime> for FeelDateTime {
   ///
   fn sub(self, other: FeelDateTime) -> Self::Output {
     let me_date_tuple = self.0.as_tuple();
-    let me_time_tuple = ((self.1).0 as u32, (self.1).1 as u32, (self.1).2 as u32, (self.1).3 as u32);
-    let me_offset_opt = match &(self.1).4 {
+    let me_time_tuple = ((self.1).hour() as u32, (self.1).minute() as u32, (self.1).second() as u32, (self.1).nanos() as u32);
+    let me_offset_opt = match self.1.zone() {
       FeelZone::Utc => Some(0),
       FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
       FeelZone::Offset(offset) => Some(*offset),
       FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, me_date_tuple, me_time_tuple),
     };
     let other_date_tuple = other.0.as_tuple();
-    let other_time_tuple = ((other.1).0 as u32, (other.1).1 as u32, (other.1).2 as u32, (other.1).3 as u32);
-    let other_offset_opt = match &(other.1).4 {
+    let other_time_tuple = ((other.1).hour() as u32, (other.1).minute() as u32, (other.1).second() as u32, (other.1).nanos() as u32);
+    let other_offset_opt = match other.1.zone() {
       FeelZone::Utc => Some(0),
       FeelZone::Local => get_local_offset_dt(other_date_tuple, other_time_tuple),
       FeelZone::Offset(offset) => Some(*offset),
@@ -220,8 +222,8 @@ impl TryFrom<FeelDateTime> for DateTime<FixedOffset> {
   ///
   fn try_from(value: FeelDateTime) -> Result<Self, Self::Error> {
     let me_date_tuple = value.0.as_tuple();
-    let me_time_tuple = ((value.1).0 as u32, (value.1).1 as u32, (value.1).2 as u32, (value.1).3 as u32);
-    let me_offset_opt = match &(value.1).4 {
+    let me_time_tuple = ((value.1).hour() as u32, (value.1).minute() as u32, (value.1).second() as u32, (value.1).nanos() as u32);
+    let me_offset_opt = match (value.1).zone() {
       FeelZone::Utc => Some(0),
       FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
       FeelZone::Offset(offset) => Some(*offset),
@@ -304,15 +306,15 @@ impl FeelDateTime {
   }
   ///
   pub fn hour(&self) -> u8 {
-    self.1 .0
+    self.1.hour()
   }
 
   pub fn minute(&self) -> u8 {
-    self.1 .1
+    self.1.minute()
   }
 
   pub fn second(&self) -> u8 {
-    self.1 .2
+    self.1.second()
   }
 
   pub fn feel_time_offset(&self) -> Option<i32> {
