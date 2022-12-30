@@ -126,7 +126,7 @@ impl PartialOrd for FeelDate {
 
 impl ops::Add<FeelYearsAndMonthsDuration> for FeelDate {
   type Output = Option<Self>;
-  /// Adds years and month duration to this date.
+  /// Adds [FeelYearsAndMonthsDuration] to [FeelDate].
   fn add(self, other: FeelYearsAndMonthsDuration) -> Self::Output {
     let m = other.as_months();
     if m > 0 {
@@ -137,6 +137,27 @@ impl ops::Add<FeelYearsAndMonthsDuration> for FeelDate {
       return self.sub_months(months);
     }
     None
+  }
+}
+
+impl ops::Sub<&FeelDate> for &FeelDate {
+  type Output = FeelYearsAndMonthsDuration;
+  /// Subtracts two [FeelDates], the result is [FeelYearsAndMonthsDuration].
+  fn sub(self, other: &FeelDate) -> Self::Output {
+    let mut months;
+    if self.0 < other.0 {
+      months = 12 * (other.0 as i64 - self.0 as i64) + (other.1 as i64 - self.1 as i64);
+      if self.2 > other.2 {
+        months -= 1;
+      }
+      months *= -1;
+    } else {
+      months = 12 * (self.0 as i64 - other.0 as i64) + (self.1 as i64 - other.1 as i64);
+      if other.2 > self.2 {
+        months -= 1;
+      }
+    }
+    FeelYearsAndMonthsDuration::from_m(months)
   }
 }
 
@@ -154,6 +175,7 @@ impl FeelDate {
   pub fn new(year: Year, month: Month, day: Day) -> Self {
     Self(year, month, day)
   }
+
   ///
   pub fn new_opt(year: Year, month: Month, day: Day) -> Option<Self> {
     if is_valid_date(year, month, day) {
@@ -162,40 +184,28 @@ impl FeelDate {
       None
     }
   }
+
   ///
   pub fn today_local() -> Self {
     let today = Local::now();
     Self(today.year(), today.month(), today.day())
   }
-  ///
-  pub fn ym_duration(&self, other: &FeelDate) -> FeelYearsAndMonthsDuration {
-    let mut months;
-    if self.0 < other.0 {
-      months = 12 * (other.0 as i64 - self.0 as i64) + (other.1 as i64 - self.1 as i64);
-      if self.2 > other.2 {
-        months -= 1;
-      }
-      months *= -1;
-    } else {
-      months = 12 * (self.0 as i64 - other.0 as i64) + (self.1 as i64 - other.1 as i64);
-      if other.2 > self.2 {
-        months -= 1;
-      }
-    }
-    FeelYearsAndMonthsDuration::from_m(months)
-  }
+
   ///
   pub fn year(&self) -> Year {
     self.0
   }
+
   ///
   pub fn month(&self) -> Month {
     self.1
   }
+
   ///
   pub fn day(&self) -> Day {
     self.2
   }
+
   ///
   pub fn day_of_week(&self) -> Option<DayOfWeek> {
     NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| match naive_date.weekday() {
@@ -208,14 +218,17 @@ impl FeelDate {
       Weekday::Sun => ("Sunday".to_string(), 7_u8),
     })
   }
+
   ///
   pub fn day_of_year(&self) -> Option<DayOfYear> {
     NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| naive_date.ordinal() as u16)
   }
+
   ///
   pub fn week_of_year(&self) -> Option<WeekOfYear> {
     NaiveDate::from_ymd_opt(self.0, self.1, self.2).map(|naive_date| naive_date.iso_week().week() as u8)
   }
+
   ///
   pub fn month_of_year(&self) -> Option<MonthOfYear> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
@@ -238,6 +251,7 @@ impl FeelDate {
       None
     }
   }
+
   ///
   pub fn as_tuple(&self) -> (Year, Month, Day) {
     (self.0, self.1, self.2)

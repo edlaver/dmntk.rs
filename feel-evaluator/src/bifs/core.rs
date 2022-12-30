@@ -2489,19 +2489,19 @@ pub fn week_of_year(value: &Value) -> Value {
 pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value {
   if let Value::Date(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration_1(from));
+      return Value::YearsAndMonthsDuration(&to.date() - from);
     }
     if let Value::Date(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(to - from);
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }
   if let Value::DateTime(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(&to.date() - &from.date());
     }
     if let Value::Date(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(&from.date()));
+      return Value::YearsAndMonthsDuration(to - &from.date());
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }

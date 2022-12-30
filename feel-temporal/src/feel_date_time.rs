@@ -258,58 +258,62 @@ impl FeelDateTime {
     self.1.clone()
   }
 
-  pub fn ym_duration(&self, other: &FeelDateTime) -> FeelYearsAndMonthsDuration {
-    self.0.ym_duration(&other.0)
-  }
-
-  pub fn ym_duration_1(&self, other: &FeelDate) -> FeelYearsAndMonthsDuration {
-    self.0.ym_duration(other)
-  }
-
+  ///
   pub fn year(&self) -> Year {
     self.0.year()
   }
 
+  ///
   pub fn month(&self) -> Month {
     self.0.month()
   }
 
+  ///
   pub fn day(&self) -> Day {
     self.0.day()
   }
+
   ///
   pub fn day_of_week(&self) -> Option<DayOfWeek> {
     self.0.day_of_week()
   }
+
   ///
   pub fn day_of_year(&self) -> Option<DayOfYear> {
     self.0.day_of_year()
   }
+
   ///
   pub fn week_of_year(&self) -> Option<WeekOfYear> {
     self.0.week_of_year()
   }
+
   ///
   pub fn month_of_year(&self) -> Option<MonthOfYear> {
     self.0.month_of_year()
   }
+
   ///
   pub fn hour(&self) -> u8 {
     self.1.hour()
   }
 
+  ///
   pub fn minute(&self) -> u8 {
     self.1.minute()
   }
 
+  ///
   pub fn second(&self) -> u8 {
     self.1.second()
   }
 
+  ///
   pub fn feel_time_offset(&self) -> Option<i32> {
     feel_time_offset(self)
   }
 
+  ///
   pub fn feel_time_zone(&self) -> Option<String> {
     feel_time_zone(self)
   }
