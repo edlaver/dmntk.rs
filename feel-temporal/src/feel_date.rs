@@ -32,12 +32,10 @@
 
 //! Implementation of FEEL date.
 
-use super::errors::{err_invalid_date, err_invalid_date_literal};
-use super::feel_ym_duration::FeelYearsAndMonthsDuration;
 use crate::defs::*;
-use crate::feel_date_time::FeelDateTime;
-use crate::feel_time::FeelTime;
-use chrono::{DateTime, Datelike, FixedOffset, Local, Months, NaiveDate, Weekday};
+use crate::errors::*;
+use crate::feel_ym_duration::FeelYearsAndMonthsDuration;
+use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, Months, NaiveDate, TimeZone, Weekday};
 use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
@@ -163,10 +161,14 @@ impl ops::Sub<&FeelDate> for &FeelDate {
 
 impl TryFrom<FeelDate> for DateTime<FixedOffset> {
   type Error = DmntkError;
-  /// Converts the `FEEL` date into chrono::DateTime<FixedOffset>.
-  fn try_from(me: FeelDate) -> Result<Self, Self::Error> {
-    let result: DateTime<FixedOffset> = FeelDateTime::new(me, FeelTime::utc(0, 0, 0, 0)).try_into()?;
-    Ok(result)
+  /// Converts [FeelDate] date into [DateTime] in UTC zone.
+  fn try_from(date: FeelDate) -> Result<Self, Self::Error> {
+    if let Some(fixed_offset) = FixedOffset::east_opt(0) {
+      if let LocalResult::Single(date_time) = fixed_offset.with_ymd_and_hms(date.0, date.1, date.2, 0, 0, 0) {
+        return Ok(date_time);
+      }
+    }
+    Err(err_invalid_feel_date(date))
   }
 }
 
