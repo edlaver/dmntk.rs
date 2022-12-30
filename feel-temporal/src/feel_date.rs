@@ -174,6 +174,7 @@ impl TryFrom<FeelDate> for DateTime<FixedOffset> {
 
 impl FeelDate {
   ///
+  //TODO this constructor may create invalid date - remove and use new_opt instead.
   pub fn new(year: Year, month: Month, day: Day) -> Self {
     Self(year, month, day)
   }
@@ -187,8 +188,8 @@ impl FeelDate {
     }
   }
 
-  ///
-  pub fn today_local() -> Self {
+  /// Returns [FeelDate] set to today's date in local time.
+  pub fn today() -> Self {
     let today = Local::now();
     Self(today.year(), today.month(), today.day())
   }
