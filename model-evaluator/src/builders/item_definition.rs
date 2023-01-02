@@ -584,7 +584,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Course", "Duration"])).unwrap();
     assert_eq!(
-      Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(183600).build()),
+      Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600)),
       evaluator.eval("tCourseDuration", value).unwrap()
     );
   }
@@ -727,7 +727,7 @@ mod tests {
     let context_str = r#"{ Items : [duration("P2DT3H")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(183600).build())]));
+    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600))]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 

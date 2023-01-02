@@ -174,9 +174,9 @@ pub fn te_days_and_time_duration(trace: bool, scope: &Scope, s: &str, neg: bool,
     scope,
     s,
     Value::DaysAndTimeDuration(if neg {
-      -FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
+      -FeelDaysAndTimeDuration::from_sn(sec, nano)
     } else {
-      FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
+      FeelDaysAndTimeDuration::from_sn(sec, nano)
     }),
   );
 }

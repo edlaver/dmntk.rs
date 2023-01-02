@@ -1543,7 +1543,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             "second" => Value::Number(date_time.second().into()),
             "time offset" => {
               if let Some(offset) = date_time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(offset as i64).build());
+                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
               } else {
                 value_null!("aaaa")
               }
@@ -1565,7 +1565,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             "second" => Value::Number(time.second().into()),
             "time offset" => {
               if let Some(offset) = time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(offset as i64).build());
+                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
               } else {
                 value_null!("ccc")
               }
@@ -1752,7 +1752,7 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::DateTime(lh) => {
         if let Value::DateTime(rh) = rhv {
           if let Some(a) = lh - rh {
-            return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().nano(a).build());
+            return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(a));
           }
         }
       }

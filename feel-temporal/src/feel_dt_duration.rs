@@ -56,7 +56,7 @@ lazy_static! {
 }
 
 /// FEEL days and time duration.
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd)]
 pub struct FeelDaysAndTimeDuration(i64);
 
 impl FeelDaysAndTimeDuration {
@@ -70,21 +70,9 @@ impl FeelDaysAndTimeDuration {
     Self(seconds * NANOSECONDS_IN_SECOND)
   }
 
-  /// Adds nanoseconds to current duration.
-  pub fn nano(&mut self, nano: i64) -> &mut Self {
-    self.0 += nano;
-    self
-  }
-
-  /// Adds seconds to current duration.
-  pub fn second(&mut self, sec: i64) -> &mut Self {
-    self.0 += sec * NANOSECONDS_IN_SECOND;
-    self
-  }
-
-  ///
-  pub fn build(&mut self) -> Self {
-    Self(self.0)
+  /// Creates [FeelDaysAndTimeDuration] from seconds and nanoseconds.
+  pub fn from_sn(seconds: i64, nanos: i64) -> Self {
+    Self(seconds * NANOSECONDS_IN_SECOND + nanos)
   }
 
   /// Returns the number of days in this duration.
@@ -295,9 +283,9 @@ mod tests {
   /// Utility function for testing days and time durations equality.
   fn equals(neg: bool, sec: i64, nano: i64, text: &str) {
     let expected = if neg {
-      -FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
+      -FeelDaysAndTimeDuration::from_sn(sec, nano)
     } else {
-      FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()
+      FeelDaysAndTimeDuration::from_sn(sec, nano)
     };
     let actual = FeelDaysAndTimeDuration::try_from(text).unwrap();
     assert_eq!(expected, actual);
@@ -312,9 +300,9 @@ mod tests {
   /// Utility function for testing equality of textual forms of days and time durations.
   fn equals_str(expected: &str, neg: bool, sec: i64, nano: i64) {
     let actual: String = if neg {
-      (-FeelDaysAndTimeDuration::default().second(sec).nano(nano).build()).to_string()
+      (-FeelDaysAndTimeDuration::from_sn(sec, nano)).to_string()
     } else {
-      FeelDaysAndTimeDuration::default().second(sec).nano(nano).build().to_string()
+      FeelDaysAndTimeDuration::from_sn(sec, nano).to_string()
     };
     assert_eq!(expected, actual);
   }
@@ -459,132 +447,105 @@ mod tests {
   fn eq_should_pass() {
     assert_eq!(
       Some(Ordering::Equal),
-      FeelDaysAndTimeDuration::default()
-        .second(0)
-        .nano(0)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(0).nano(0))
+      FeelDaysAndTimeDuration::from_sn(0, 0).partial_cmp(&FeelDaysAndTimeDuration::from_sn(0, 0))
     );
     assert_eq!(
       Some(Ordering::Equal),
-      FeelDaysAndTimeDuration::default()
-        .second(0)
-        .nano(10)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(0).nano(10))
+      FeelDaysAndTimeDuration::from_sn(0, 10).partial_cmp(&FeelDaysAndTimeDuration::from_sn(0, 10))
     );
     assert_eq!(
       Some(Ordering::Equal),
-      FeelDaysAndTimeDuration::default()
-        .second(0)
-        .nano(999_999_999)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(0).nano(999_999_999))
+      FeelDaysAndTimeDuration::from_sn(0, 999_999_999).partial_cmp(&FeelDaysAndTimeDuration::from_sn(0, 999_999_999))
     );
     assert_eq!(
       Some(Ordering::Equal),
-      FeelDaysAndTimeDuration::default()
-        .second(86_400)
-        .nano(999_999_999)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(86_400).nano(999_999_999))
+      FeelDaysAndTimeDuration::from_sn(86_400, 999_999_999).partial_cmp(&FeelDaysAndTimeDuration::from_sn(86_400, 999_999_999))
     );
-    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(0).build());
-    assert_eq!(FeelDaysAndTimeDuration::default().nano(0).build(), FeelDaysAndTimeDuration::default().nano(-0).build());
-    assert_eq!(FeelDaysAndTimeDuration::default().second(0).nano(10), FeelDaysAndTimeDuration::default().second(0).nano(10));
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().second(0).nano(999_999_999),
-      FeelDaysAndTimeDuration::default().second(0).nano(999_999_999)
-    );
-    assert_eq!(
-      FeelDaysAndTimeDuration::default().second(86_400).nano(999_999_999),
-      FeelDaysAndTimeDuration::default().second(86_400).nano(999_999_999)
-    );
+    assert_eq!(FeelDaysAndTimeDuration::from_n(0), FeelDaysAndTimeDuration::from_n(0));
+    assert_eq!(FeelDaysAndTimeDuration::from_n(0), FeelDaysAndTimeDuration::from_n(-0));
+    assert_eq!(FeelDaysAndTimeDuration::from_sn(0, 10), FeelDaysAndTimeDuration::from_sn(0, 10));
+    assert_eq!(FeelDaysAndTimeDuration::from_sn(0, 999_999_999), FeelDaysAndTimeDuration::from_sn(0, 999_999_999));
+    assert_eq!(FeelDaysAndTimeDuration::from_sn(86_400, 999_999_999), FeelDaysAndTimeDuration::from_sn(86_400, 999_999_999));
   }
 
   #[test]
   fn lt_should_pass() {
+    assert_eq!(Some(Ordering::Less), FeelDaysAndTimeDuration::from_s(10).partial_cmp(&FeelDaysAndTimeDuration::from_s(11)));
     assert_eq!(
       Some(Ordering::Less),
-      FeelDaysAndTimeDuration::default().second(10).partial_cmp(&FeelDaysAndTimeDuration::default().second(11))
+      FeelDaysAndTimeDuration::from_sn(10, 1).partial_cmp(&FeelDaysAndTimeDuration::from_sn(10, 2))
     );
-    assert_eq!(
-      Some(Ordering::Less),
-      FeelDaysAndTimeDuration::default()
-        .second(10)
-        .nano(1)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(10).nano(2))
-    );
-    assert!(FeelDaysAndTimeDuration::default().second(10) < FeelDaysAndTimeDuration::default().second(11));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) < FeelDaysAndTimeDuration::default().second(10).nano(2));
-    assert!(FeelDaysAndTimeDuration::default().second(11) >= FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(2) >= FeelDaysAndTimeDuration::default().second(10).nano(1));
+    assert!(FeelDaysAndTimeDuration::from_s(10) < FeelDaysAndTimeDuration::from_s(11));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) < FeelDaysAndTimeDuration::from_sn(10, 2));
+    assert!(FeelDaysAndTimeDuration::from_s(11) >= FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 2) >= FeelDaysAndTimeDuration::from_sn(10, 1));
   }
 
   #[test]
   fn le_should_pass() {
-    assert!(FeelDaysAndTimeDuration::default().second(10) <= FeelDaysAndTimeDuration::default().second(11));
-    assert!(FeelDaysAndTimeDuration::default().second(10) <= FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10) <= FeelDaysAndTimeDuration::default().second(10).nano(1));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) <= FeelDaysAndTimeDuration::default().second(10).nano(1));
-    assert!(FeelDaysAndTimeDuration::default().second(11) > FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(2) > FeelDaysAndTimeDuration::default().second(10).nano(1));
+    assert!(FeelDaysAndTimeDuration::from_s(10) <= FeelDaysAndTimeDuration::from_s(11));
+    assert!(FeelDaysAndTimeDuration::from_s(10) <= FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_s(10) <= FeelDaysAndTimeDuration::from_sn(10, 1));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) <= FeelDaysAndTimeDuration::from_sn(10, 1));
+    assert!(FeelDaysAndTimeDuration::from_s(11) > FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 2) > FeelDaysAndTimeDuration::from_sn(10, 1));
   }
 
   #[test]
   fn gt_should_pass() {
     assert_eq!(
       Some(Ordering::Greater),
-      FeelDaysAndTimeDuration::default().second(11).partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
+      FeelDaysAndTimeDuration::from_s(11).partial_cmp(&FeelDaysAndTimeDuration::from_s(10))
     );
     assert_eq!(
       Some(Ordering::Greater),
-      FeelDaysAndTimeDuration::default()
-        .second(10)
-        .nano(1)
-        .partial_cmp(&FeelDaysAndTimeDuration::default().second(10))
+      FeelDaysAndTimeDuration::from_sn(10, 1).partial_cmp(&FeelDaysAndTimeDuration::from_s(10))
     );
-    assert!(FeelDaysAndTimeDuration::default().second(11) > FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) > FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10) <= FeelDaysAndTimeDuration::default().second(11));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) <= FeelDaysAndTimeDuration::default().second(10).nano(2));
+    assert!(FeelDaysAndTimeDuration::from_s(11) > FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) > FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_s(10) <= FeelDaysAndTimeDuration::from_s(11));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) <= FeelDaysAndTimeDuration::from_sn(10, 2));
   }
 
   #[test]
   fn ge_should_pass() {
-    assert!(FeelDaysAndTimeDuration::default().second(11) >= FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10) >= FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) >= FeelDaysAndTimeDuration::default().second(10));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) >= FeelDaysAndTimeDuration::default().second(10).nano(1));
-    assert!(FeelDaysAndTimeDuration::default().second(10) < FeelDaysAndTimeDuration::default().second(11));
-    assert!(FeelDaysAndTimeDuration::default().second(10).nano(1) < FeelDaysAndTimeDuration::default().second(10).nano(2));
+    assert!(FeelDaysAndTimeDuration::from_s(11) >= FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_s(10) >= FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) >= FeelDaysAndTimeDuration::from_s(10));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) >= FeelDaysAndTimeDuration::from_sn(10, 1));
+    assert!(FeelDaysAndTimeDuration::from_s(10) < FeelDaysAndTimeDuration::from_s(11));
+    assert!(FeelDaysAndTimeDuration::from_sn(10, 1) < FeelDaysAndTimeDuration::from_sn(10, 2));
   }
 
   #[test]
   fn add_should_pass() {
-    let a = FeelDaysAndTimeDuration::default().second(11).build();
-    let b = FeelDaysAndTimeDuration::default().second(83).build();
-    let c = FeelDaysAndTimeDuration::default().second(94).build();
+    let a = FeelDaysAndTimeDuration::from_s(11);
+    let b = FeelDaysAndTimeDuration::from_s(83);
+    let c = FeelDaysAndTimeDuration::from_s(94);
     assert_eq!(c, a + b);
-    let a = FeelDaysAndTimeDuration::default().second(11).nano(2_837).build();
-    let b = FeelDaysAndTimeDuration::default().second(83).nano(23).build();
-    let c = FeelDaysAndTimeDuration::default().second(94).nano(2_860).build();
+    let a = FeelDaysAndTimeDuration::from_sn(11, 2_837);
+    let b = FeelDaysAndTimeDuration::from_sn(83, 23);
+    let c = FeelDaysAndTimeDuration::from_sn(94, 2_860);
     assert_eq!(c, a + b);
-    let a = FeelDaysAndTimeDuration::default().second(1).nano(999_999_999).build();
-    let b = FeelDaysAndTimeDuration::default().second(1).nano(2).build();
-    let c = FeelDaysAndTimeDuration::default().second(3).nano(1).build();
+    let a = FeelDaysAndTimeDuration::from_sn(1, 999_999_999);
+    let b = FeelDaysAndTimeDuration::from_sn(1, 2);
+    let c = FeelDaysAndTimeDuration::from_sn(3, 1);
     assert_eq!(c, a + b);
   }
 
   #[test]
   fn sub_should_pass() {
-    let a = FeelDaysAndTimeDuration::default().second(12).build();
-    let b = FeelDaysAndTimeDuration::default().second(2).build();
-    let c = FeelDaysAndTimeDuration::default().second(10).build();
+    let a = FeelDaysAndTimeDuration::from_s(12);
+    let b = FeelDaysAndTimeDuration::from_s(2);
+    let c = FeelDaysAndTimeDuration::from_s(10);
     assert_eq!(c, a - b);
-    let a = FeelDaysAndTimeDuration::default().second(99).nano(999_999_999).build();
-    let b = FeelDaysAndTimeDuration::default().second(77).nano(888_888_888).build();
-    let c = FeelDaysAndTimeDuration::default().second(22).nano(111_111_111).build();
+    let a = FeelDaysAndTimeDuration::from_sn(99, 999_999_999);
+    let b = FeelDaysAndTimeDuration::from_sn(77, 888_888_888);
+    let c = FeelDaysAndTimeDuration::from_sn(22, 111_111_111);
     assert_eq!(c, a - b);
-    let a = FeelDaysAndTimeDuration::default().second(1).nano(1).build();
-    let b = FeelDaysAndTimeDuration::default().nano(2).build();
-    let c = FeelDaysAndTimeDuration::default().nano(999_999_999).build();
+    let a = FeelDaysAndTimeDuration::from_sn(1, 1);
+    let b = FeelDaysAndTimeDuration::from_n(2);
+    let c = FeelDaysAndTimeDuration::from_n(999_999_999);
     assert_eq!(c, a - b);
   }
 
