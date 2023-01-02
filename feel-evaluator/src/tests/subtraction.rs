@@ -31,57 +31,88 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
-fn test_0001() {
+fn _0001() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, "1-1", 0, 0);
 }
 
 #[test]
-fn test_0002() {
+fn _0002() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, " 1 - 2 ", -1, 0);
 }
 
 #[test]
-fn test_0003() {
+fn _0003() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, " 5 -2 -1 ", 2, 0);
 }
 
 #[test]
-fn test_0004() {
+fn _0004() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, "1000-200-2", 798, 0);
 }
 
 #[test]
-fn test_0005() {
+fn _0005() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, "( 1 - 2 ) - ( 3 - 4 )", 0, 0);
 }
 
 #[test]
-fn test_0006() {
+fn _0006() {
   let scope = &te_scope(r#"{}"#);
   te_number(false, scope, "( ( ( 4 - 3 ) ) )", 1, 0);
 }
 
 #[test]
-fn test_0007() {
+fn _0007() {
   let scope = &te_scope("{ a: 11.2, b: 0.2}");
   te_number(false, scope, "a-b", 11, 0);
 }
 
 #[test]
-fn test_0008() {
+fn _0008() {
   let scope = &te_scope("{ a: 11.2, b: 0.2, c: 5.351 }");
   te_number(false, scope, "a-b-c", 5649, 3);
 }
 
 #[test]
-fn test_0009() {
+fn _0009() {
   let scope = &te_scope("{ a: 11.2, b: 0.2, c: 5.351 }");
   te_number(false, scope, " a  \n -  b \n  -  c", 5649, 3);
+}
+
+#[test]
+fn _0010() {
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P0D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+}
+
+#[test]
+fn _0011() {
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P1D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+}
+
+#[test]
+fn _0012() {
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P11D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+}
+
+#[test]
+fn _0013() {
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("PT10S")"#, FeelTime::new_hms_opt(12, 34, 46, 0).unwrap());
+}
+
+#[test]
+fn _0014() {
+  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT25S")"#, FeelTime::new_hms_opt(12, 33, 58, 0).unwrap());
+}
+
+#[test]
+fn _0015() {
+  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT40M")"#, FeelTime::new_hms_opt(11, 54, 23, 0).unwrap());
 }

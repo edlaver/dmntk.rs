@@ -1727,13 +1727,17 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           return Value::Number(lh - rh);
         }
       }
-      Value::Time(lh) => {
-        if let Value::Time(rh) = rhv {
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => {
           if let Some(duration) = lh - rh {
             return Value::DaysAndTimeDuration(duration);
           }
         }
-      }
+        Value::DaysAndTimeDuration(rh) => {
+          return Value::Time(lh - rh);
+        }
+        _ => {}
+      },
       Value::DateTime(lh) => {
         if let Value::DateTime(rh) = rhv {
           if let Some(a) = lh - rh {

@@ -135,7 +135,7 @@ impl PartialOrd for FeelTime {
 
 impl ops::Sub<FeelTime> for FeelTime {
   type Output = Option<FeelDaysAndTimeDuration>;
-  /// Subtracts the argument from this [FeelTime] value.
+  /// Subtracts [FeelTime] values, result is always [FeelDaysAndTimeDuration].
   fn sub(self, other: Self) -> Self::Output {
     let me_time_tuple = (self.0 as u32, self.1 as u32, self.2 as u32, self.3 as u32);
     let me_offset_opt = match &self.4 {
@@ -164,6 +164,39 @@ impl ops::Sub<FeelTime> for FeelTime {
   }
 }
 
+impl ops::Sub<FeelDaysAndTimeDuration> for FeelTime {
+  type Output = FeelTime;
+  /// Subtracts [FeelDaysAndTimeDuration]  from [FeelTime] value.
+  fn sub(self, other: FeelDaysAndTimeDuration) -> Self::Output {
+    let duration_seconds = other.get_seconds();
+    let mut carry_minutes = duration_seconds / 60;
+    let remainder_seconds = (duration_seconds % 60) as u8;
+    let time_seconds = if remainder_seconds <= self.2 {
+      self.2 - remainder_seconds
+    } else {
+      carry_minutes += 1;
+      60 - (remainder_seconds - self.2)
+    };
+    let duration_minutes = other.get_minutes() + carry_minutes;
+    let mut carry_hours = duration_minutes / 60;
+    let remainder_minutes = (duration_minutes % 60) as u8;
+    let time_minutes = if remainder_minutes <= self.1 {
+      self.1 - remainder_minutes
+    } else {
+      carry_hours += 1;
+      60 - (remainder_minutes - self.1)
+    };
+    let duration_hours = other.get_hours() + carry_hours;
+    let remainder_hours = (duration_hours % 60) as u8;
+    let time_hours = if remainder_hours <= self.0 {
+      self.0 - remainder_hours
+    } else {
+      24 - (remainder_hours - self.0)
+    };
+    FeelTime(time_hours, time_minutes, time_seconds, self.3, self.4)
+  }
+}
+
 impl TryFrom<FeelTime> for DateTime<FixedOffset> {
   type Error = DmntkError;
   /// Converts [FeelTime] into [DateTime] with [FixedOffset].
@@ -181,6 +214,7 @@ impl FeelTime {
     }
     None
   }
+
   ///
   pub fn new_hmsno_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
     if is_valid_time(hour, minute, second) {
@@ -191,6 +225,7 @@ impl FeelTime {
     None
   }
 
+  ///
   pub fn new_hms_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
     if is_valid_time(hour, minute, second) {
       Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
