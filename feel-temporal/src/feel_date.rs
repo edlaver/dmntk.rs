@@ -35,7 +35,8 @@
 use crate::defs::*;
 use crate::errors::*;
 use crate::feel_ym_duration::FeelYearsAndMonthsDuration;
-use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, Months, NaiveDate, TimeZone, Weekday};
+use crate::FeelDaysAndTimeDuration;
+use chrono::{DateTime, Datelike, Days, FixedOffset, Local, LocalResult, Months, NaiveDate, TimeZone, Weekday};
 use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
@@ -156,6 +157,38 @@ impl ops::Sub<&FeelDate> for &FeelDate {
       }
     }
     FeelYearsAndMonthsDuration::from_m(months)
+  }
+}
+
+impl ops::Sub<FeelDaysAndTimeDuration> for FeelDate {
+  type Output = Option<FeelDate>;
+  /// Subtracts [FeelDaysAndTimeDuration] from [FeelDate], the result is [FeelDate].
+  fn sub(self, other: FeelDaysAndTimeDuration) -> Self::Output {
+    let duration_seconds = other.get_seconds();
+    let carry_minutes = duration_seconds / 60;
+    let remainder_seconds = duration_seconds % 60;
+    let duration_minutes = other.get_minutes() + carry_minutes;
+    let carry_hours = duration_minutes / 60;
+    let remainder_minutes = duration_minutes % 60;
+    let duration_hours = other.get_hours() + carry_hours;
+    let carry_days = duration_hours / 60;
+    let remainder_hours = duration_hours % 60;
+    let mut days = other.get_days() + carry_days;
+    if let Some(date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      if other.is_negative() {
+        if let Some(new_date) = date.checked_add_days(Days::new(days as u64)) {
+          return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
+        }
+      } else {
+        if remainder_hours > 0 || remainder_minutes > 0 || remainder_seconds > 0 {
+          days += 1;
+        }
+        if let Some(new_date) = date.checked_sub_days(Days::new(days as u64)) {
+          return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
+        }
+      }
+    }
+    None
   }
 }
 

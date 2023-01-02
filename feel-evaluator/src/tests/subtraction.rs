@@ -116,3 +116,13 @@ fn _0014() {
 fn _0015() {
   te_time(false, &scope!(), r#"time("12:34:23") - duration("PT40M")"#, FeelTime::new_hms_opt(11, 54, 23, 0).unwrap());
 }
+
+#[test]
+fn _0016() {
+  te_date(false, &scope!(), r#" @"2020-03-01" - @"PT24H" "#, 2020, 2, 29);
+}
+
+#[test]
+fn _0017() {
+  te_date(false, &scope!(), r#" @"2021-01-02" - @"PT25H" "#, 2020, 12, 31);
+}

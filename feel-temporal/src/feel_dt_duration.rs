@@ -64,51 +64,67 @@ impl FeelDaysAndTimeDuration {
   pub fn from_n(nanos: i64) -> Self {
     Self(nanos)
   }
+
   /// Creates [FeelDaysAndTimeDuration] from seconds.
   pub fn from_s(seconds: i64) -> Self {
     Self(seconds * NANOSECONDS_IN_SECOND)
   }
+
   /// Adds nanoseconds to current duration.
   pub fn nano(&mut self, nano: i64) -> &mut Self {
     self.0 += nano;
     self
   }
+
   /// Adds seconds to current duration.
   pub fn second(&mut self, sec: i64) -> &mut Self {
     self.0 += sec * NANOSECONDS_IN_SECOND;
     self
   }
+
   ///
   pub fn build(&mut self) -> Self {
     Self(self.0)
   }
+
   /// Returns the number of days in this duration.
   pub fn get_days(&self) -> usize {
     (self.0.abs() / NANOSECONDS_IN_DAY) as usize
   }
+
   /// Returns the number of hours in this duration.
   pub fn get_hours(&self) -> usize {
     ((self.0.abs() % NANOSECONDS_IN_DAY) / NANOSECONDS_IN_HOUR) as usize
   }
+
   /// Returns the number of minutes in this duration.
   pub fn get_minutes(&self) -> usize {
     ((self.0.abs() % NANOSECONDS_IN_DAY % NANOSECONDS_IN_HOUR) / NANOSECONDS_IN_MINUTE) as usize
   }
+
   /// Returns the number of seconds in this duration.
   pub fn get_seconds(&self) -> usize {
     ((self.0.abs() % NANOSECONDS_IN_DAY % NANOSECONDS_IN_HOUR % NANOSECONDS_IN_MINUTE) / NANOSECONDS_IN_SECOND) as usize
   }
+
   /// Returns the seconds component of this duration with sign.
   pub fn as_seconds(&self) -> isize {
     (self.0 / NANOSECONDS_IN_SECOND) as isize
   }
+
   /// Returns the this duration as nanoseconds.
   pub fn as_nanos(&self) -> i64 {
     self.0
   }
+
   /// Returns absolute value of the duration.
   pub fn abs(&self) -> Self {
     Self(self.0.abs())
+  }
+
+  /// Returns `true` when the duration is negative.
+  pub fn is_negative(&self) -> bool {
+    self.0 < 0
   }
 }
 
