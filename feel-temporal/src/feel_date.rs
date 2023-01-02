@@ -41,6 +41,7 @@ use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
+use std::ops::{Add, Sub};
 use std::str::FromStr;
 use std::{fmt, ops};
 
@@ -123,22 +124,6 @@ impl PartialOrd for FeelDate {
   }
 }
 
-impl ops::Add<FeelYearsAndMonthsDuration> for FeelDate {
-  type Output = Option<Self>;
-  /// Adds [FeelYearsAndMonthsDuration] to [FeelDate].
-  fn add(self, other: FeelYearsAndMonthsDuration) -> Self::Output {
-    let m = other.as_months();
-    if m > 0 {
-      if let Ok(months) = m.try_into() {
-        return self.add_months(months);
-      }
-    } else if let Ok(months) = (-m).try_into() {
-      return self.sub_months(months);
-    }
-    None
-  }
-}
-
 impl ops::Sub<&FeelDate> for &FeelDate {
   type Output = FeelYearsAndMonthsDuration;
   /// Subtracts two [FeelDates], the result is [FeelYearsAndMonthsDuration].
@@ -157,6 +142,34 @@ impl ops::Sub<&FeelDate> for &FeelDate {
       }
     }
     FeelYearsAndMonthsDuration::from_m(months)
+  }
+}
+
+impl Add<FeelYearsAndMonthsDuration> for FeelDate {
+  type Output = Option<Self>;
+  /// Adds [FeelYearsAndMonthsDuration] to [FeelDate].
+  fn add(self, other: FeelYearsAndMonthsDuration) -> Self::Output {
+    if other.is_negative() {
+      return self.sub(other.abs());
+    }
+    if let Ok(months) = other.as_months().try_into() {
+      return self.add_months(months);
+    }
+    None
+  }
+}
+
+impl Sub<FeelYearsAndMonthsDuration> for FeelDate {
+  type Output = Option<Self>;
+  /// Subtracts [FeelYearsAndMonthsDuration] from [FeelDate].
+  fn sub(self, other: FeelYearsAndMonthsDuration) -> Self::Output {
+    if other.is_negative() {
+      return self.add(other.abs());
+    }
+    if let Ok(months) = other.as_months().try_into() {
+      return self.sub_months(months);
+    }
+    None
   }
 }
 

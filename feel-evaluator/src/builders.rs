@@ -1729,9 +1729,24 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
       Value::Date(lh) => match rhv {
         Value::Date(rh) => {
-          return Value::YearsAndMonthsDuration(&lh - &rh);
+          let l = FeelDateTime::new(lh, FeelTime::utc(0, 0, 0, 0));
+          let r = FeelDateTime::new(rh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(nanos) = l - r {
+            return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(nanos));
+          }
+        }
+        Value::DateTime(rh) => {
+          let l = FeelDateTime::new(lh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(nanos) = l - rh {
+            return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(nanos));
+          }
         }
         Value::DaysAndTimeDuration(rh) => {
+          if let Some(date) = lh - rh {
+            return Value::Date(date);
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
           if let Some(date) = lh - rh {
             return Value::Date(date);
           }

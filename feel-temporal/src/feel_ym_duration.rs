@@ -52,8 +52,7 @@ lazy_static! {
 /// Years and months duration in FEEL.
 ///
 /// Holds the number of months in the duration.
-#[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd)]
-#[must_use]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd)]
 pub struct FeelYearsAndMonthsDuration(i64);
 
 impl FeelYearsAndMonthsDuration {
@@ -61,25 +60,35 @@ impl FeelYearsAndMonthsDuration {
   pub fn from_ym(years: i64, months: i64) -> Self {
     Self(years * MONTHS_IN_YEAR + months)
   }
+
   /// Created a new years and months duration from given number of `months`.
   pub fn from_m(months: i64) -> Self {
     Self(months)
   }
+
   /// Returns the number of years in this duration.
   pub fn years(&self) -> i64 {
     self.0 / MONTHS_IN_YEAR
   }
+
   /// Returns the number of months in this duration.
   pub fn months(&self) -> i64 {
     self.0 % MONTHS_IN_YEAR
   }
+
   /// Returns the total number of months of this duration.
   pub fn as_months(&self) -> i64 {
     self.0
   }
+
   /// Returns absolute value of the duration.
   pub fn abs(&self) -> Self {
     FeelYearsAndMonthsDuration(self.0.abs())
+  }
+
+  /// Returns `true` when duration is negative.
+  pub fn is_negative(&self) -> bool {
+    self.0 < 0
   }
 }
 
