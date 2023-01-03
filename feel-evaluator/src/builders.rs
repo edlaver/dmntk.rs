@@ -1765,12 +1765,23 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         _ => {}
       },
       Value::DateTime(lh) => match rhv {
+        Value::Date(rh) => {
+          let r = FeelDateTime::new(rh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(result) = lh - r {
+            return Value::DaysAndTimeDuration(result);
+          }
+        }
         Value::DateTime(rh) => {
           if let Some(result) = lh - rh {
             return Value::DaysAndTimeDuration(result);
           }
         }
         Value::DaysAndTimeDuration(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DateTime(result);
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
           if let Some(result) = lh - rh {
             return Value::DateTime(result);
           }

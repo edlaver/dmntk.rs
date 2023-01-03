@@ -218,6 +218,14 @@ impl TryFrom<FeelDate> for DateTime<FixedOffset> {
   }
 }
 
+impl TryFrom<FeelDate> for NaiveDate {
+  type Error = DmntkError;
+  /// Converts [FeelDate] date into [NaiveDate].
+  fn try_from(date: FeelDate) -> Result<Self, Self::Error> {
+    NaiveDate::from_ymd_opt(date.0, date.1, date.2).ok_or_else(|| err_invalid_feel_date(date))
+  }
+}
+
 impl FeelDate {
   ///
   //TODO this constructor may create invalid date - remove and use new_opt instead.
@@ -307,7 +315,17 @@ impl FeelDate {
   }
 
   ///
-  fn add_months(&self, months: u32) -> Option<Self> {
+  pub fn add_days(&self, days: u64) -> Option<Self> {
+    if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      if let Some(updated_date) = naive_date.checked_add_days(Days::new(days)) {
+        return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
+      }
+    }
+    None
+  }
+
+  ///
+  pub fn add_months(&self, months: u32) -> Option<Self> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
       if let Some(updated_date) = naive_date.checked_add_months(Months::new(months)) {
         return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));
@@ -317,7 +335,7 @@ impl FeelDate {
   }
 
   ///
-  fn sub_months(&self, months: u32) -> Option<Self> {
+  pub fn sub_months(&self, months: u32) -> Option<Self> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
       if let Some(updated_date) = naive_date.checked_sub_months(Months::new(months)) {
         return Some(Self(updated_date.year(), updated_date.month(), updated_date.day()));

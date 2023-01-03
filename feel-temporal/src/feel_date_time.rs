@@ -33,7 +33,7 @@
 //! Implementation of FEEL date and time.
 
 use super::errors::err_invalid_date_time_literal;
-use super::feel_date::{is_valid_date, FeelDate};
+use super::feel_date::FeelDate;
 use super::feel_time::FeelTime;
 use super::feel_zone::FeelZone;
 use crate::defs::*;
@@ -83,8 +83,7 @@ impl TryFrom<&str> for FeelDateTime {
                                 }
                               }
                               let nanos = (fractional * 1e9).trunc() as u64;
-                              if is_valid_date(year, month, day) {
-                                let date = FeelDate::new(year, month, day);
+                              if let Some(mut date) = FeelDate::new_opt(year, month, day) {
                                 if let Some(zone) = FeelZone::from_captures(&captures) {
                                   if is_valid_time(hour, min, sec) {
                                     if hour == 24 {
@@ -93,6 +92,9 @@ impl TryFrom<&str> for FeelDateTime {
                                         return Err(err_invalid_date_time_literal(s));
                                       }
                                       hour = 0;
+                                      if let Some(updated_date) = date.add_days(1) {
+                                        date = updated_date;
+                                      }
                                     }
                                     if let Some(time) = FeelTime::new_hmsnz_opt(hour, min, sec, nanos, zone) {
                                       return Ok(FeelDateTime(date, time));
@@ -143,9 +145,27 @@ impl PartialOrd for FeelDateTime {
 
 impl Add<FeelYearsAndMonthsDuration> for FeelDateTime {
   type Output = Option<Self>;
-  ///
+  /// Adds [FeelYearsAndMonthsDuration] to [FeelDateTime].
   fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
-    if let Some(date) = self.0 + rhs {
+    if rhs.is_negative() {
+      return self.sub(rhs.abs());
+    }
+    if let Some(date) = self.0.add(rhs) {
+      Some(FeelDateTime(date, self.1))
+    } else {
+      None
+    }
+  }
+}
+
+impl Sub<FeelYearsAndMonthsDuration> for FeelDateTime {
+  type Output = Option<Self>;
+  /// Subtracts [FeelYearsAndMonthsDuration] from [FeelDateTime].
+  fn sub(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.add(rhs.abs());
+    }
+    if let Some(date) = self.0.sub(rhs) {
       Some(FeelDateTime(date, self.1))
     } else {
       None
