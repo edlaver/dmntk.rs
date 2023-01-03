@@ -41,9 +41,9 @@ use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 use std::cmp::Ordering;
 use std::convert::{TryFrom, TryInto};
+use std::fmt;
 use std::ops::{Add, Sub};
 use std::str::FromStr;
-use std::{fmt, ops};
 
 /// FEEL date.
 #[derive(Debug, Clone)]
@@ -124,7 +124,7 @@ impl PartialOrd for FeelDate {
   }
 }
 
-impl ops::Sub<&FeelDate> for &FeelDate {
+impl Sub<&FeelDate> for &FeelDate {
   type Output = FeelYearsAndMonthsDuration;
   /// Subtracts two [FeelDates], the result is [FeelYearsAndMonthsDuration].
   fn sub(self, other: &FeelDate) -> Self::Output {
@@ -173,7 +173,7 @@ impl Sub<FeelYearsAndMonthsDuration> for FeelDate {
   }
 }
 
-impl ops::Sub<FeelDaysAndTimeDuration> for FeelDate {
+impl Sub<FeelDaysAndTimeDuration> for FeelDate {
   type Output = Option<FeelDate>;
   /// Subtracts [FeelDaysAndTimeDuration] from [FeelDate], the result is [FeelDate].
   fn sub(self, other: FeelDaysAndTimeDuration) -> Self::Output {

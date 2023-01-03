@@ -126,3 +126,10 @@ fn _0016() {
 fn _0017() {
   te_date(false, &scope!(), r#" @"2021-01-02" - @"PT25H" "#, 2020, 12, 31);
 }
+
+#[test]
+/// Date converted to date and time has the timezone equal to UTC 00:00:00. Subtracted date and time has local timezone.
+/// Such subtraction is not allowed (both date and times should have offset defined), that's why null value should be returned.
+fn _0018() {
+  te_null(false, &scope!(), r#" @"2021-01-02" - @"2021-01-01T10:10:10" "#, "");
+}
