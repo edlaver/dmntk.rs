@@ -176,12 +176,18 @@ impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
 }
 
 impl ops::Sub<FeelDateTime> for FeelDateTime {
-  type Output = Option<i64>;
+  type Output = Option<FeelDaysAndTimeDuration>;
   ///
   fn sub(self, other: FeelDateTime) -> Self::Output {
+    let me_zone = self.1.zone();
+    let other_zone = other.1.zone();
+    if me_zone.has_offset() != other_zone.has_offset() {
+      // subtraction of local timezone with offset timezone is not allowed
+      return None;
+    }
     let me_date_tuple = self.0.as_tuple();
     let me_time_tuple = ((self.1).hour() as u32, (self.1).minute() as u32, (self.1).second() as u32, (self.1).nanos() as u32);
-    let me_offset_opt = match self.1.zone() {
+    let me_offset_opt = match me_zone {
       FeelZone::Utc => Some(0),
       FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
       FeelZone::Offset(offset) => Some(*offset),
@@ -189,7 +195,7 @@ impl ops::Sub<FeelDateTime> for FeelDateTime {
     };
     let other_date_tuple = other.0.as_tuple();
     let other_time_tuple = ((other.1).hour() as u32, (other.1).minute() as u32, (other.1).second() as u32, (other.1).nanos() as u32);
-    let other_offset_opt = match other.1.zone() {
+    let other_offset_opt = match other_zone {
       FeelZone::Utc => Some(0),
       FeelZone::Local => get_local_offset_dt(other_date_tuple, other_time_tuple),
       FeelZone::Offset(offset) => Some(*offset),
@@ -199,7 +205,9 @@ impl ops::Sub<FeelDateTime> for FeelDateTime {
       let me_date_opt = date_time_offset_dt(me_date_tuple, me_time_tuple, me_offset);
       let other_date_opt = date_time_offset_dt(other_date_tuple, other_time_tuple, other_offset);
       if let Some((me_date, other_date)) = me_date_opt.zip(other_date_opt) {
-        return me_date.sub(other_date).num_nanoseconds();
+        if let Some(nanos) = me_date.sub(other_date).num_nanoseconds() {
+          return Some(FeelDaysAndTimeDuration::from_n(nanos));
+        }
       }
     }
     None

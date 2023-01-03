@@ -131,5 +131,10 @@ fn _0017() {
 /// Date converted to date and time has the timezone equal to UTC 00:00:00. Subtracted date and time has local timezone.
 /// Such subtraction is not allowed (both date and times should have offset defined), that's why null value should be returned.
 fn _0018() {
-  te_null(false, &scope!(), r#" @"2021-01-02" - @"2021-01-01T10:10:10" "#, "");
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2021-01-02" - @"2021-01-01T10:10:10" "#,
+    "[subtraction] incompatible types: 2021-01-02 - 2021-01-01T10:10:10",
+  );
 }
