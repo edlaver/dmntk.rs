@@ -1755,8 +1755,8 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       },
       Value::Time(lh) => match rhv {
         Value::Time(rh) => {
-          if let Some(duration) = lh - rh {
-            return Value::DaysAndTimeDuration(duration);
+          if let Some(result) = lh - rh {
+            return Value::DaysAndTimeDuration(result);
           }
         }
         Value::DaysAndTimeDuration(rh) => {
@@ -1764,13 +1764,19 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
         _ => {}
       },
-      Value::DateTime(lh) => {
-        if let Value::DateTime(rh) = rhv {
+      Value::DateTime(lh) => match rhv {
+        Value::DateTime(rh) => {
           if let Some(result) = lh - rh {
             return Value::DaysAndTimeDuration(result);
           }
         }
-      }
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DateTime(result);
+          }
+        }
+        _ => {}
+      },
       Value::DaysAndTimeDuration(lh) => {
         if let Value::DaysAndTimeDuration(rh) = rhv {
           return Value::DaysAndTimeDuration(lh - rh);

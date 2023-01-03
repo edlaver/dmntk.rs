@@ -42,7 +42,8 @@ use crate::FeelDaysAndTimeDuration;
 use chrono::{DateTime, Datelike, Duration, FixedOffset, Timelike};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
-use std::{fmt, ops};
+use std::fmt;
+use std::ops::{Add, Sub};
 
 /// FEEL date and time.
 #[derive(Debug, Clone)]
@@ -140,7 +141,7 @@ impl PartialOrd for FeelDateTime {
   }
 }
 
-impl ops::Add<FeelYearsAndMonthsDuration> for FeelDateTime {
+impl Add<FeelYearsAndMonthsDuration> for FeelDateTime {
   type Output = Option<Self>;
   ///
   fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self::Output {
@@ -152,10 +153,13 @@ impl ops::Add<FeelYearsAndMonthsDuration> for FeelDateTime {
   }
 }
 
-impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
+impl Add<FeelDaysAndTimeDuration> for FeelDateTime {
   type Output = Option<Self>;
-  ///
+  /// Adds [FeelDaysAndTimeDuration] to [FeelDateTime].
   fn add(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.sub(rhs.abs());
+    }
     let zone = self.1.zone().clone();
     if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
       date_time += Duration::nanoseconds(rhs.as_nanos());
@@ -175,7 +179,33 @@ impl ops::Add<FeelDaysAndTimeDuration> for FeelDateTime {
   }
 }
 
-impl ops::Sub<FeelDateTime> for FeelDateTime {
+impl Sub<FeelDaysAndTimeDuration> for FeelDateTime {
+  type Output = Option<Self>;
+  /// Subtracts [FeelDaysAndTimeDuration] from [FeelDateTime].
+  fn sub(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.add(rhs.abs());
+    }
+    let zone = self.1.zone().clone();
+    if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
+      date_time -= Duration::nanoseconds(rhs.as_nanos());
+      return Some(FeelDateTime(
+        FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
+        FeelTime::new_hmsnz_opt(
+          date_time.hour() as u8,
+          date_time.minute() as u8,
+          date_time.second() as u8,
+          date_time.nanosecond() as u64,
+          zone,
+        )
+        .unwrap(),
+      ));
+    }
+    None
+  }
+}
+
+impl Sub<FeelDateTime> for FeelDateTime {
   type Output = Option<FeelDaysAndTimeDuration>;
   ///
   fn sub(self, other: FeelDateTime) -> Self::Output {
