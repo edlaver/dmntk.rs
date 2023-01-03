@@ -41,7 +41,7 @@ use crate::feel_dt_duration::FeelDaysAndTimeDuration;
 use chrono::{DateTime, FixedOffset};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
-use std::ops;
+use std::ops::{Add, Sub};
 use std::str::FromStr;
 
 /// FEEL time.
@@ -133,7 +133,7 @@ impl PartialOrd for FeelTime {
   }
 }
 
-impl ops::Sub<FeelTime> for FeelTime {
+impl Sub<FeelTime> for FeelTime {
   type Output = Option<FeelDaysAndTimeDuration>;
   /// Subtracts [FeelTime] values, result is always [FeelDaysAndTimeDuration].
   fn sub(self, other: Self) -> Self::Output {
@@ -164,11 +164,33 @@ impl ops::Sub<FeelTime> for FeelTime {
   }
 }
 
-impl ops::Sub<FeelDaysAndTimeDuration> for FeelTime {
+impl Add<FeelDaysAndTimeDuration> for FeelTime {
   type Output = FeelTime;
-  /// Subtracts [FeelDaysAndTimeDuration]  from [FeelTime] value.
-  fn sub(self, other: FeelDaysAndTimeDuration) -> Self::Output {
-    let duration_seconds = other.get_seconds();
+  /// Adds [FeelDaysAndTimeDuration] to [FeelTime].
+  fn add(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.sub(rhs.abs());
+    }
+    let duration_seconds = rhs.get_seconds() + self.2 as usize;
+    let carry_minutes = duration_seconds / 60;
+    let time_seconds = (duration_seconds % 60) as u8;
+    let duration_minutes = rhs.get_minutes() + carry_minutes + self.1 as usize;
+    let carry_hours = duration_minutes / 60;
+    let time_minutes = (duration_minutes % 60) as u8;
+    let duration_hours = rhs.get_hours() + carry_hours + self.0 as usize;
+    let time_hours = (duration_hours % 60) as u8;
+    FeelTime(time_hours, time_minutes, time_seconds, self.3, self.4)
+  }
+}
+
+impl Sub<FeelDaysAndTimeDuration> for FeelTime {
+  type Output = FeelTime;
+  /// Subtracts [FeelDaysAndTimeDuration] from [FeelTime].
+  fn sub(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.add(rhs.abs());
+    }
+    let duration_seconds = rhs.get_seconds();
     let mut carry_minutes = duration_seconds / 60;
     let remainder_seconds = (duration_seconds % 60) as u8;
     let time_seconds = if remainder_seconds <= self.2 {
@@ -177,7 +199,7 @@ impl ops::Sub<FeelDaysAndTimeDuration> for FeelTime {
       carry_minutes += 1;
       60 - (remainder_seconds - self.2)
     };
-    let duration_minutes = other.get_minutes() + carry_minutes;
+    let duration_minutes = rhs.get_minutes() + carry_minutes;
     let mut carry_hours = duration_minutes / 60;
     let remainder_minutes = (duration_minutes % 60) as u8;
     let time_minutes = if remainder_minutes <= self.1 {
@@ -186,7 +208,7 @@ impl ops::Sub<FeelDaysAndTimeDuration> for FeelTime {
       carry_hours += 1;
       60 - (remainder_minutes - self.1)
     };
-    let duration_hours = other.get_hours() + carry_hours;
+    let duration_hours = rhs.get_hours() + carry_hours;
     let remainder_hours = (duration_hours % 60) as u8;
     let time_hours = if remainder_hours <= self.0 {
       self.0 - remainder_hours

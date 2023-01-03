@@ -173,32 +173,52 @@ impl Sub<FeelYearsAndMonthsDuration> for FeelDate {
   }
 }
 
+impl Add<FeelDaysAndTimeDuration> for FeelDate {
+  type Output = Option<FeelDate>;
+  /// Adds [FeelDaysAndTimeDuration] to [FeelDate].
+  fn add(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.sub(rhs.abs());
+    }
+    let duration_seconds = rhs.get_seconds();
+    let carry_minutes = duration_seconds / 60;
+    let duration_minutes = rhs.get_minutes() + carry_minutes;
+    let carry_hours = duration_minutes / 60;
+    let duration_hours = rhs.get_hours() + carry_hours;
+    let carry_days = duration_hours / 60;
+    let days = rhs.get_days() + carry_days;
+    if let Some(date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
+      if let Some(new_date) = date.checked_add_days(Days::new(days as u64)) {
+        return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
+      }
+    }
+    None
+  }
+}
+
 impl Sub<FeelDaysAndTimeDuration> for FeelDate {
   type Output = Option<FeelDate>;
-  /// Subtracts [FeelDaysAndTimeDuration] from [FeelDate], the result is [FeelDate].
-  fn sub(self, other: FeelDaysAndTimeDuration) -> Self::Output {
-    let duration_seconds = other.get_seconds();
+  /// Subtracts [FeelDaysAndTimeDuration] from [FeelDate].
+  fn sub(self, rhs: FeelDaysAndTimeDuration) -> Self::Output {
+    if rhs.is_negative() {
+      return self.add(rhs.abs());
+    }
+    let duration_seconds = rhs.get_seconds();
     let carry_minutes = duration_seconds / 60;
     let remainder_seconds = duration_seconds % 60;
-    let duration_minutes = other.get_minutes() + carry_minutes;
+    let duration_minutes = rhs.get_minutes() + carry_minutes;
     let carry_hours = duration_minutes / 60;
     let remainder_minutes = duration_minutes % 60;
-    let duration_hours = other.get_hours() + carry_hours;
+    let duration_hours = rhs.get_hours() + carry_hours;
     let carry_days = duration_hours / 60;
     let remainder_hours = duration_hours % 60;
-    let mut days = other.get_days() + carry_days;
+    let mut days = rhs.get_days() + carry_days;
     if let Some(date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
-      if other.is_negative() {
-        if let Some(new_date) = date.checked_add_days(Days::new(days as u64)) {
-          return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
-        }
-      } else {
-        if remainder_hours > 0 || remainder_minutes > 0 || remainder_seconds > 0 {
-          days += 1;
-        }
-        if let Some(new_date) = date.checked_sub_days(Days::new(days as u64)) {
-          return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
-        }
+      if remainder_hours > 0 || remainder_minutes > 0 || remainder_seconds > 0 {
+        days += 1;
+      }
+      if let Some(new_date) = date.checked_sub_days(Days::new(days as u64)) {
+        return Some(FeelDate(new_date.year(), new_date.month(), new_date.day()));
       }
     }
     None

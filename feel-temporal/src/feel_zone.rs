@@ -164,7 +164,7 @@ impl FeelZone {
 
   /// Returns `true` when this [FeelZone] has defined offset (is not local).
   pub fn has_offset(&self) -> bool {
-    return *self != FeelZone::Local;
+    *self != FeelZone::Local
   }
 }
 

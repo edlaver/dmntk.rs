@@ -147,6 +147,13 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
       }
       Value::Date(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(result) = lh + rh {
+            Value::Date(result)
+          } else {
+            value_null!("addition err 7b")
+          }
+        }
         Value::YearsAndMonthsDuration(rh) => {
           if let Some(a) = lh + rh {
             Value::Date(a)
@@ -173,15 +180,27 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
         other => invalid_argument_type!("add", "days and time duration, years and months duration", other.type_of()),
       },
+      Value::Time(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Time(lh + rh),
+        other => invalid_argument_type!("add", "days and time duration", other.type_of()),
+      },
       Value::DaysAndTimeDuration(lh) => match rhv {
         Value::DaysAndTimeDuration(rh) => Value::DaysAndTimeDuration(lh + rh),
-        Value::DateTime(rh) => {
-          if let Some(a) = rh + lh {
-            Value::DateTime(a)
+        Value::Date(rh) => {
+          if let Some(result) = rh + lh {
+            Value::Date(result)
           } else {
             value_null!("addition err 4a")
           }
         }
+        Value::DateTime(rh) => {
+          if let Some(a) = rh + lh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 4b")
+          }
+        }
+        Value::Time(rh) => Value::Time(rh + lh),
         other => invalid_argument_type!("add", "days and time duration, date and time", other.type_of()),
       },
       Value::YearsAndMonthsDuration(lh) => match rhv {
