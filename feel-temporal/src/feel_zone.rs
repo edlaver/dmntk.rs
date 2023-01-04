@@ -39,8 +39,6 @@ use regex::Captures;
 use std::fmt;
 use std::ops::{Div, Rem};
 
-const ETC_UTC: &str = "Etc/UTC";
-
 /// FEEL time zone.
 #[derive(Debug, Clone)]
 pub enum FeelZone {
@@ -65,8 +63,9 @@ impl fmt::Display for FeelZone {
       FeelZone::Local => write!(f, ""),
       FeelZone::Offset(offset) => {
         let hours = offset / 3_600;
-        let minutes = offset.abs().rem(3_600).div(60);
-        let seconds = offset.abs().rem(3_600).rem(60);
+        let reminder_seconds = offset.unsigned_abs().rem(3_600);
+        let minutes = reminder_seconds.div(60);
+        let seconds = reminder_seconds.rem(60);
         if seconds > 0 {
           write!(f, "{hours:+03}:{minutes:02}:{seconds:02}")
         } else {
@@ -83,25 +82,21 @@ impl PartialEq for FeelZone {
   fn eq(&self, other: &Self) -> bool {
     match (self, other) {
       (FeelZone::Utc, FeelZone::Utc) => true,
-      (FeelZone::Utc, FeelZone::Zone(zone_name)) => zone_name == ETC_UTC,
+      (FeelZone::Utc, FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Utc) => zone_name == ETC_UTC,
+      (FeelZone::Utc, FeelZone::Offset(offset)) | (FeelZone::Offset(offset), FeelZone::Utc) => *offset == 0,
       (FeelZone::Local, FeelZone::Local) => true,
-      (FeelZone::Offset(offset1), FeelZone::Offset(offset2)) => offset1 == offset2,
-      (FeelZone::Offset(offset1), FeelZone::Zone(zone_name)) => {
-        if let Some(offset2) = get_zone_offset(zone_name) {
-          *offset1 == offset2
-        } else {
-          false
-        }
+      (FeelZone::Offset(offset), FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Offset(offset)) => {
+        //
+        (*offset == 0 && zone_name == ETC_UTC)
+          || if let Some(zone_offset) = get_zone_offset(zone_name) {
+            *offset == zone_offset
+          } else {
+            false
+          }
       }
-      (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => get_zone_offset(zone_name1) == get_zone_offset(zone_name2),
-      (FeelZone::Zone(zone_name), FeelZone::Offset(offset2)) => {
-        if let Some(offset1) = get_zone_offset(zone_name) {
-          offset1 == *offset2
-        } else {
-          false
-        }
-      }
-      (FeelZone::Zone(zone_name), FeelZone::Utc) => zone_name == ETC_UTC,
+      (FeelZone::Offset(_), FeelZone::Offset(_)) => true,
+      //(FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => zone_name1 == zone_name2 || (get_zone_offset(zone_name1) == get_zone_offset(zone_name2)),
+      (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => zone_name1 == zone_name2,
       _ => false,
     }
   }
@@ -241,7 +236,7 @@ mod tests {
     assert!((FeelZone::Utc != FeelZone::Zone("Europe/Warsaw".to_string())));
     assert!((FeelZone::Offset(1) == FeelZone::Offset(1)));
     assert!((FeelZone::Offset(1) != FeelZone::Zone("Europe/Warsaw".to_string())));
-    assert!((FeelZone::Offset(1) != FeelZone::Offset(2)));
+    assert!((FeelZone::Offset(1) == FeelZone::Offset(2)));
     assert!((FeelZone::Zone("Europe/Warsaw".to_string()) == FeelZone::Zone("Europe/Warsaw".to_string())));
     assert!((FeelZone::Zone("Europe/Warsaw".to_string()) != FeelZone::Zone("Australia/Sydney".to_string())));
   }

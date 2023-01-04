@@ -93,7 +93,7 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  te_date_time_local(false, &scope!(), r#"date and time("2016-01-30T24:00:00")"#, (2016, 1, 30), (0, 0, 0, 0));
+  te_date_time_local(false, &scope!(), r#"date and time("2016-01-30T24:00:00")"#, (2016, 1, 31), (0, 0, 0, 0));
 }
 
 #[test]

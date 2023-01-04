@@ -262,3 +262,8 @@ fn _0043() {
     "[core::is] invalid argument type, expected scalar, actual type is Null",
   );
 }
+
+#[test]
+fn _0044() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00@Australia/Melbourne", @"2021-04-02T23:00:00+11:00")"#, false);
+}

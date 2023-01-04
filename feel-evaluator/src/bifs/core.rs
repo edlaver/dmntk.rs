@@ -1127,7 +1127,7 @@ pub fn is(value1: &Value, value2: &Value) -> Value {
       _ => Value::Boolean(false),
     },
     Value::DateTime(v1) => match value2 {
-      Value::DateTime(v2) => Value::Boolean(v1 == v2),
+      Value::DateTime(v2) => Value::Boolean(v1.is(v2)),
       _ => Value::Boolean(false),
     },
     Value::DaysAndTimeDuration(v1) => match value2 {

@@ -49,6 +49,8 @@ const ZONE_PATTERN: &str = r#"@(?P<zone>[a-zA-Z_/]+)"#;
 /// Regular expression pattern for parsing time zones given as offset.
 const OFFSET_PATTERN: &str = r#"(?P<offSign>[+-])(?P<offHours>[0-9]{2}):(?P<offMinutes>[0-9]{2})(:(?P<offSeconds>[0-9]{2}))?"#;
 
+pub const ETC_UTC: &str = "Etc/UTC";
+
 /// Type alias for year.
 pub type Year = i32;
 /// Type alias for month.

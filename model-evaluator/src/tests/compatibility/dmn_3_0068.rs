@@ -437,15 +437,13 @@ fn _0066() {
 #[test]
 fn _0067() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_008", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_008", &ctx, r#"false"#);
 }
 
 #[test]
-#[ignore]
 fn _0068() {
-  // ignored in winter time
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_008_a", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "datetime_008_a", &ctx, r#"false"#);
 }
 
 #[test]

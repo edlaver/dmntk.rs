@@ -102,9 +102,26 @@ impl FromStr for FeelTime {
 }
 
 impl PartialEq for FeelTime {
-  fn eq(&self, other: &Self) -> bool {
-    /* nanoseconds are omitted during time comparison */
-    self.0 == other.0 && self.1 == other.1 && self.2 == other.2 && self.4 == other.4
+  /// nanoseconds are omitted during time comparison
+  fn eq(&self, rhs: &Self) -> bool {
+    let equal_zones = match (&self.4, &rhs.4) {
+      (FeelZone::Utc, FeelZone::Utc) => true,
+      (FeelZone::Utc, FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Utc) => zone_name == ETC_UTC,
+      (FeelZone::Utc, FeelZone::Offset(offset)) | (FeelZone::Offset(offset), FeelZone::Utc) => *offset == 0,
+      (FeelZone::Local, FeelZone::Local) => true,
+      (FeelZone::Offset(offset), FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Offset(offset)) => {
+        (*offset == 0 && zone_name == ETC_UTC)
+          || if let Some(zone_offset) = get_zone_offset(zone_name) {
+            *offset == zone_offset
+          } else {
+            false
+          }
+      }
+      (FeelZone::Offset(offset1), FeelZone::Offset(offset2)) => offset1 == offset2,
+      (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => zone_name1 == zone_name2,
+      _ => false,
+    };
+    self.0 == rhs.0 && self.1 == rhs.1 && self.2 == rhs.2 && equal_zones
   }
 }
 
