@@ -38,7 +38,7 @@ use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, Scope};
+use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, QualifiedName, Scope};
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
@@ -1506,22 +1506,23 @@ fn build_qualified_name_segment(name: &Name) -> Result<Evaluator> {
 ///
 fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::Name(name) = rhs.clone() {
+    let qualified_name: QualifiedName = name.into();
     let lhe = build_evaluator(lhs)?;
     Ok(Box::new(move |scope: &Scope| {
       let lhv = lhe(scope) as Value;
       match lhv {
         Value::Context(context) => {
-          if let Some(value) = context.get_entry(&name) {
+          if let Some(value) = context.search_entry(&qualified_name) {
             value.clone()
           } else {
-            value_null!("build_path: no entry {} in context: {}", name, context)
+            value_null!("build_path: no entry {} in context: {}", qualified_name, context)
           }
         }
         Value::List(items) => {
           let mut result = vec![];
           for item in items.as_vec() {
             if let Value::Context(context) = item {
-              if let Some(value) = context.get_entry(&name) {
+              if let Some(value) = context.search_entry(&qualified_name) {
                 result.push(value.clone());
               }
             } else {
@@ -1531,7 +1532,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           Value::List(Values::new(result))
         }
         Value::Date(date) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "year" => Value::Number(date.year().into()),
             "month" => Value::Number(date.month().into()),
             "day" => Value::Number(date.day().into()),
@@ -1546,7 +1547,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::DateTime(date_time) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "year" => Value::Number(date_time.year().into()),
             "month" => Value::Number(date_time.month().into()),
             "day" => Value::Number(date_time.day().into()),
@@ -1578,7 +1579,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::Time(time) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "hour" => Value::Number(time.hour().into()),
             "minute" => Value::Number(time.minute().into()),
             "second" => Value::Number(time.second().into()),
@@ -1600,7 +1601,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::DaysAndTimeDuration(dt_duration) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "days" => Value::Number(dt_duration.get_days().into()),
             "hours" => Value::Number(dt_duration.get_hours().into()),
             "minutes" => Value::Number(dt_duration.get_minutes().into()),
@@ -1609,14 +1610,14 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::YearsAndMonthsDuration(ym_duration) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "years" => Value::Number(ym_duration.years().into()),
             "months" => Value::Number(ym_duration.months().into()),
             _ => value_null!("no such property in years and months duration"),
           }
         }
         Value::Range(rs, cs, re, ce) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "start" => *rs,
             "start included" => Value::Boolean(cs),
             "end" => *re,
@@ -1625,7 +1626,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::UnaryGreater(value) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "start" => *value,
             "start included" => Value::Boolean(false),
             "end included" => Value::Boolean(false),
@@ -1633,7 +1634,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::UnaryGreaterOrEqual(value) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "start" => *value,
             "start included" => Value::Boolean(true),
             "end included" => Value::Boolean(false),
@@ -1641,7 +1642,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::UnaryLess(value) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "end" => *value,
             "start included" => Value::Boolean(false),
             "end included" => Value::Boolean(false),
@@ -1649,14 +1650,14 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::UnaryLessOrEqual(value) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "end" => *value,
             "start included" => Value::Boolean(false),
             "end included" => Value::Boolean(true),
             other => value_null!("no such property in unary less or equal: {}", other),
           }
         }
-        other => value_null!("build_path: unexpected type :{}, for property: {}", other, name),
+        other => value_null!("build_path: unexpected type :{}, for property: {}", other, qualified_name),
       }
     }))
   } else {

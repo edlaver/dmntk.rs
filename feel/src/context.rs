@@ -219,10 +219,12 @@ impl FeelContext {
     }
     keys.iter().cloned().collect()
   }
+
   /// Searches for a value of an entry pointed by specified qualified name.
-  pub fn search_entry<'search>(&'search self, qname: &'search QualifiedName) -> Option<&'search Value> {
+  pub fn search_entry<'a>(&'a self, qname: &'a QualifiedName) -> Option<&'a Value> {
     self.search_deep(qname.as_slice())
   }
+
   /// Deep check for a value pointed by slice of names.
   pub fn contains_deep(&self, names: &[Name]) -> bool {
     if names.is_empty() {
@@ -239,6 +241,7 @@ impl FeelContext {
     }
     false
   }
+
   /// Creates intermediary contexts when needed.
   pub fn create_deep(&mut self, names: &[Name], value: Value) {
     // if there are no names, then return

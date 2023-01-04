@@ -39,7 +39,6 @@ lazy_static! {
 }
 
 #[test]
-#[ignore]
 fn _0001() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "nested_list_001", &ctx, r#"true"#);
@@ -52,7 +51,6 @@ fn _0002() {
 }
 
 #[test]
-#[ignore]
 fn _0003() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "nested_list_003", &ctx, r#"true"#);
