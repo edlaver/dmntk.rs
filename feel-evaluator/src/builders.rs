@@ -366,8 +366,8 @@ fn build_and(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
       Value::Boolean(lh) => match rhv {
         Value::Boolean(rh) => Value::Boolean(lh && rh),
@@ -1022,8 +1022,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match rhv {
       inner @ Value::Number(_)
       | inner @ Value::String(_)
@@ -2009,7 +2009,8 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
 fn eval_in_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::String(_)
+      inner @ Value::Null(_)
+      | inner @ Value::String(_)
       | inner @ Value::Number(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)
@@ -2090,7 +2091,8 @@ fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
 fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::String(_)
+      inner @ Value::Null(_)
+      | inner @ Value::String(_)
       | inner @ Value::Number(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)

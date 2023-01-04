@@ -39,82 +39,119 @@ lazy_static! {
 }
 
 #[test]
-#[ignore]
 fn _0001() {
   let ctx = context(
-    r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate:  .08,Term: 36}}"#,
+    r#"
+    {
+      Applicant data: {
+        Age: 51,
+        EmploymentStatus: "EMPLOYED",
+        ExistingCustomer: false,
+        MartitalStatus: "M",
+        Monthly: {
+          Expenses: 10000,
+          Income: 100000,
+          Repayments: 2500
+        }
+      },
+      Bureau data: {
+        Bankrupt: false,
+        CreditScore: 600
+      },
+      Requested product: {
+        Amount: 100000,
+        ProductType: "STANDARD LOAN",
+        Rate: 0.08,
+        Term: 36
+      }
+    }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Strategy", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Strategy", &ctx, r#""THROUGH""#);
 }
 
 #[test]
-#[ignore]
 fn _0002() {
   let ctx = context(
-    r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
+    r#"
+    {
+      Applicant data: {
+        Age: 51,
+        MartitalStatus: "M",
+        EmploymentStatus: "EMPLOYED",
+        ExistingCustomer: false,
+        Monthly: {
+          Income: 100000,
+          Repayments: 2500,
+          Expenses: 10000
+        }
+      },
+      Bureau data: {
+        Bankrupt: false,
+        CreditScore: 600
+      },
+      Requested product: {
+        ProductType: "STANDARD LOAN",
+        Rate: 0.08,
+        Term: 36,
+        Amount: 100000
+      }
+    }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Routing", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Routing", &ctx, r#""ACCEPT""#);
 }
 
 #[test]
-#[ignore]
 fn _0003() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Application risk score", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Application risk score", &ctx, r#"138"#);
 }
 
 #[test]
-#[ignore]
 fn _0004() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Pre-bureau risk category", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Pre-bureau risk category", &ctx, r#""VERY LOW""#);
 }
 
 #[test]
-#[ignore]
 fn _0005() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Bureau call type", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Bureau call type", &ctx, r#""NONE""#);
 }
 
 #[test]
-#[ignore]
 fn _0006() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Eligibility", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Eligibility", &ctx, r#""ELIGIBLE""#);
 }
 
 #[test]
-#[ignore]
 fn _0007() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 10000,Income: 100000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Post-bureau affordability", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Post-bureau affordability", &ctx, r#"true"#);
 }
 
 #[test]
-#[ignore]
 fn _0008() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 3000,Income: 10000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Strategy", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Strategy", &ctx, r#""THROUGH""#);
 }
 
 #[test]
-#[ignore]
 fn _0009() {
   let ctx = context(
     r#"{Applicant data: {Age: 51,EmploymentStatus: "EMPLOYED",ExistingCustomer: false,MartitalStatus: "M",Monthly: {Expenses: 3000,Income: 10000,Repayments: 2500}},Bureau data: {Bankrupt: false,CreditScore: 600},Requested product: {Amount: 100000,ProductType: "STANDARD LOAN",Rate: 0.08,Term: 36}}"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Routing", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "Routing", &ctx, r#""ACCEPT""#);
 }
