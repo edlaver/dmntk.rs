@@ -130,7 +130,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   }
   // prepare a scope and build expression instance evaluator
   let scope: Scope = ctx.into();
-  let evaluator = crate::builders::build_expression_instance_evaluator(&scope, expression_instance)?;
+  let evaluator = crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?;
   // prepare references to required knowledge, decisions and input data
   let mut required_knowledge_references: Vec<String> = vec![];
   let mut required_decision_references: Vec<String> = vec![];

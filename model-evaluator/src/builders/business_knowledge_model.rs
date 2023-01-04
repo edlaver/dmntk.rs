@@ -123,6 +123,7 @@ fn build_business_knowledge_model_evaluator(
       output_variable_name,
       output_variable_type,
       knowledge_requirements,
+      model_evaluator,
     )
   } else {
     Ok(Box::new(move |_: &FeelContext, _: &ModelEvaluator, _: &mut FeelContext| ()))
@@ -137,6 +138,7 @@ fn build_expression_instance_evaluator(
   output_variable_name: Name,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
+  model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   match expression_instance {
     ExpressionInstance::Context(context) => {
@@ -148,6 +150,7 @@ fn build_expression_instance_evaluator(
         output_variable_name,   //
         output_variable_type,   //
         knowledge_requirements, //
+        model_evaluator,        //
       )
     }
     ExpressionInstance::DecisionTable(decision_table) => {
@@ -170,6 +173,7 @@ fn build_expression_instance_evaluator(
         output_variable_name,   //
         output_variable_type,   //
         knowledge_requirements, //
+        model_evaluator,        //
       )
     }
     ExpressionInstance::Invocation(invocation) => {
@@ -181,6 +185,7 @@ fn build_expression_instance_evaluator(
         output_variable_name,   //
         output_variable_type,   //
         knowledge_requirements, //
+        model_evaluator,        //
       )
     }
     ExpressionInstance::LiteralExpression(literal_expression) => {
@@ -203,6 +208,7 @@ fn build_expression_instance_evaluator(
         output_variable_name,   //
         output_variable_type,   //
         knowledge_requirements, //
+        model_evaluator,        //
       )
     }
   }
@@ -216,8 +222,9 @@ fn build_context_evaluator(
   output_variable_name: Name,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
+  model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_context_evaluator(scope, context)?;
+  let evaluator = crate::builders::build_context_evaluator(scope, context, model_evaluator)?;
   let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), output_variable_type);
   build_evaluator(output_variable_name, function, knowledge_requirements)
 }
@@ -244,8 +251,9 @@ fn build_function_definition_evaluator(
   output_variable_name: Name,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
+  model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_function_definition_evaluator(scope, function_definition)?;
+  let evaluator = crate::builders::build_function_definition_evaluator(scope, function_definition, model_evaluator)?;
   let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), output_variable_type);
   build_evaluator(output_variable_name, function, knowledge_requirements)
 }
@@ -258,8 +266,9 @@ fn build_invocation_evaluator(
   output_variable_name: Name,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
+  model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_invocation_evaluator(scope, invocation)?;
+  let evaluator = crate::builders::build_invocation_evaluator(scope, invocation, model_evaluator)?;
   let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), output_variable_type);
   build_evaluator(output_variable_name, function, knowledge_requirements)
 }
@@ -286,8 +295,9 @@ fn build_relation_evaluator(
   output_variable_name: Name,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
+  model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_relation_evaluator(scope, relation)?;
+  let evaluator = crate::builders::build_relation_evaluator(scope, relation, model_evaluator)?;
   let function = Value::FunctionDefinition(formal_parameters, FunctionBody::LiteralExpression(Arc::new(evaluator)), output_variable_type);
   build_evaluator(output_variable_name, function, knowledge_requirements)
 }

@@ -135,7 +135,6 @@ fn _0016() {
 }
 
 #[test]
-#[ignore]
 fn _0017() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "invoke_001", &ctx, r#"false"#);
