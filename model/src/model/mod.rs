@@ -1622,8 +1622,6 @@ pub struct ItemDefinition {
   is_collection: bool,
   /// Describes an optional [FunctionItem] that compose this [ItemDefinition].
   function_item: Option<FunctionItem>,
-  /// Optional item definition type.
-  item_definition_type: Option<ItemDefinitionType>,
 }
 
 impl ItemDefinition {
@@ -1659,14 +1657,6 @@ impl ItemDefinition {
   /// Returns a reference to an optional [FunctionItem] that compose this [ItemDefinition].
   pub fn function_item(&self) -> &Option<FunctionItem> {
     &self.function_item
-  }
-  /// Returns a reference to optional item definition type.
-  pub fn item_definition_type(&self) -> &Option<ItemDefinitionType> {
-    &self.item_definition_type
-  }
-  /// Sets the item definition type for this element.
-  pub fn set_item_definition_type(&mut self, item_definition_type: ItemDefinitionType) {
-    self.item_definition_type = Some(item_definition_type);
   }
 }
 

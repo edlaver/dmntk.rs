@@ -228,7 +228,6 @@ impl ModelParser {
         item_components: item_components_definitions,
         is_collection: self.parse_boolean_attribute(child_node, ATTR_IS_COLLECTION, false),
         function_item: self.parse_function_item(child_node)?,
-        item_definition_type: None,
       };
       items.push(item_definition);
     }

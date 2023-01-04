@@ -35,197 +35,162 @@ use crate::model_evaluator::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {
+  static ref CTX: FeelContext = context(r#"{}"#);
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0082);
 }
 
 #[test]
 fn _0001() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_001", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_001", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0002() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_003", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_003", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0003() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_004", &ctx, r#"{age: 10, name: "foo", surname: "bar"}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_004", &CTX, r#"{age: 10, name: "foo", surname: "bar"}"#);
 }
 
 #[test]
 fn _0004() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_005", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_005", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0005() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_006", &ctx, r#"["foo"]"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_006", &CTX, r#"["foo"]"#);
 }
 
 #[test]
 fn _0006() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_006_a", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_006_a", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0007() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_007", &ctx, r#""foo""#);
+  assert_decision(&MODEL_EVALUATOR, "decision_007", &CTX, r#""foo""#);
 }
 
 #[test]
 fn _0008() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_007_a", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_007_a", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0009() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_008", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_008", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0010() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_001", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_001", &CTX, r#"true"#);
 }
 
 #[test]
 fn _0011() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_002", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_002", &CTX, r#"false"#);
 }
 
 #[test]
 fn _0012() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_003", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_003", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0013() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_a", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_a", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0014() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_b", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_b", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0015() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005", &ctx, r#"10"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005", &CTX, r#"10"#);
 }
 
 #[test]
 fn _0016() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005_a", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005_a", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0017() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "invoke_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_001", &CTX, r#"false"#);
 }
 
 #[test]
 fn _0018() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "invoke_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_002", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0019() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "invoke_004", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_004", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0020() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "invoke_005", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_005", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0021() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "invoke_006", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_006", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0022() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "fd_001", &ctx, r#"10"#);
+  assert_decision(&MODEL_EVALUATOR, "fd_001", &CTX, r#"10"#);
 }
 
 #[test]
 fn _0023() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "fd_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "fd_002", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0024() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_001", &ctx, r#"10"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_001", &CTX, r#"10"#);
 }
 
 #[test]
 fn _0025() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_002", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0026() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_004", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_004", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0027() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_005", &ctx, r#"10"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_005", &CTX, r#"10"#);
 }
 
 #[test]
 fn _0028() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_006", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_006", &CTX, r#"null"#);
 }
 
 #[test]
-#[ignore]
 fn _0029() {
-  let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ds_invoke_002_with_number",
-    &ctx,
-    r#"null(feel-evaluator: expected built-in function name or function definition, actual value is null(context has no value for key '["decisionService_002"]'))"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, "ds_invoke_002_with_number", &CTX, r#"null"#);
+}
+
+#[test]
+fn _0030() {
+  assert_decision(&MODEL_EVALUATOR, "ds_invoke_002_with_singleton_list", &CTX, r#""foo""#);
 }
 
 #[test]
 #[ignore]
-fn _0030() {
-  let ctx = context(r#"{}"#);
-  assert_decision(
-    &MODEL_EVALUATOR,
-    "ds_invoke_002_with_singleton_list",
-    &ctx,
-    r#"null(feel-evaluator: expected built-in function name or function definition, actual value is null(context has no value for key '["decisionService_002"]'))"#,
-  );
+fn _0031() {
+  assert_decision(&MODEL_EVALUATOR, "decisionService_001", &CTX, r#"null"#);
 }
