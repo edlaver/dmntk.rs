@@ -32,8 +32,8 @@
 
 //! FEEL days and time duration.
 
-use self::errors::*;
 use crate::defs::*;
+use crate::errors::*;
 use dmntk_common::DmntkError;
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -235,38 +235,7 @@ impl TryFrom<&str> for FeelDaysAndTimeDuration {
         return Ok(FeelDaysAndTimeDuration(nanoseconds));
       }
     }
-    Err(invalid_date_and_time_duration_literal(value.to_string()))
-  }
-}
-
-/// Definitions of date and time duration errors.
-pub mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Date and time duration errors.
-  #[derive(Debug, PartialEq)]
-  enum DtDurationError {
-    InvalidDateAndTimeDurationLiteral(String),
-  }
-
-  impl From<DtDurationError> for DmntkError {
-    fn from(e: DtDurationError) -> Self {
-      DmntkError::new("DtDurationError", &format!("{e}"))
-    }
-  }
-
-  impl std::fmt::Display for DtDurationError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        DtDurationError::InvalidDateAndTimeDurationLiteral(literal) => {
-          write!(f, "invalid date and time duration literal: {literal}")
-        }
-      }
-    }
-  }
-
-  pub fn invalid_date_and_time_duration_literal(literal: String) -> DmntkError {
-    DtDurationError::InvalidDateAndTimeDurationLiteral(literal).into()
+    Err(err_invalid_date_and_time_duration_literal(value.to_string()))
   }
 }
 
