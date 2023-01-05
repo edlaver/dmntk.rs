@@ -18,7 +18,7 @@
  * Copyright (c) 2018-2022 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compatibility with the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use self::errors::*;
+use crate::errors::*;
 use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
@@ -293,7 +293,7 @@ impl TryFrom<&InputNodeDto> for WrappedValue {
     if let Some(value_dto) = &input_node_dto.value {
       WrappedValue::try_from(value_dto)
     } else {
-      Err(missing_parameter("InputNodeDto.value"))
+      Err(err_missing_parameter("InputNodeDto.value"))
     }
   }
 }
@@ -321,7 +321,7 @@ impl TryFrom<&ValueDto> for WrappedValue {
     if let Some(list) = &value.list {
       return WrappedValue::try_from(list);
     }
-    Err(missing_parameter("no `simple`, `components` or `list` attribute in ValueTypeDto"))
+    Err(err_missing_parameter("no `simple`, `components` or `list` attribute in ValueTypeDto"))
   }
 }
 
@@ -344,11 +344,11 @@ impl TryFrom<&SimpleDto> for WrappedValue {
           "xsd:time" => Ok(WrappedValue(Value::try_from_xsd_time(text)?)),
           "xsd:dateTime" => Ok(WrappedValue(Value::try_from_xsd_date_time(text)?)),
           "xsd:duration" => Ok(WrappedValue(Value::try_from_xsd_duration(text)?)),
-          _ => Err(invalid_parameter(&format!("unrecognized type: `{typ}` in value"))),
+          _ => Err(err_invalid_parameter(&format!("unrecognized type: `{typ}` in value"))),
         };
       }
     }
-    Err(invalid_parameter(&format!("ValueDto: {value:?}")))
+    Err(err_invalid_parameter("ValueDto"))
   }
 }
 
@@ -357,7 +357,7 @@ impl TryFrom<&Vec<ComponentDto>> for WrappedValue {
   fn try_from(items: &Vec<ComponentDto>) -> Result<Self, Self::Error> {
     let mut ctx: FeelContext = Default::default();
     for item in items {
-      let item_name = item.name.as_ref().ok_or_else(|| invalid_parameter("component should have a name"))?;
+      let item_name = item.name.as_ref().ok_or_else(|| err_invalid_parameter("component should have a name"))?;
       let value = WrappedValue::try_from(item)?;
       let key = dmntk_feel_parser::parse_longest_name(item_name)?;
       ctx.set_entry(&key, value.0);
@@ -375,7 +375,7 @@ impl TryFrom<&ComponentDto> for WrappedValue {
     if let Some(v) = &value.value {
       WrappedValue::try_from(v)
     } else {
-      Err(invalid_parameter("component should have a value"))
+      Err(err_invalid_parameter("component should have a value"))
     }
   }
 }
@@ -387,44 +387,5 @@ impl TryFrom<&ListDto> for WrappedValue {
       return Ok(WrappedValue(value_null!()));
     }
     WrappedValue::try_from(&value.items)
-  }
-}
-
-/// Definitions of errors reported by DTO conversions.
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// DTO conversion errors.
-  #[derive(Debug, PartialEq)]
-  enum DtoError {
-    MissingParameter(String),
-    InvalidParameter(String),
-  }
-
-  impl From<DtoError> for DmntkError {
-    fn from(e: DtoError) -> Self {
-      DmntkError::new("DtoError", &format!("{e}"))
-    }
-  }
-
-  impl std::fmt::Display for DtoError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        DtoError::MissingParameter(name) => {
-          write!(f, "missing parameter: {name}")
-        }
-        DtoError::InvalidParameter(name) => {
-          write!(f, "invalid parameter: {name}")
-        }
-      }
-    }
-  }
-
-  pub fn missing_parameter(name: &str) -> DmntkError {
-    DtoError::MissingParameter(name.to_string()).into()
-  }
-
-  pub fn invalid_parameter(description: &str) -> DmntkError {
-    DtoError::InvalidParameter(description.to_string()).into()
   }
 }

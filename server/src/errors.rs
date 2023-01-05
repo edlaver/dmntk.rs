@@ -62,3 +62,7 @@ pub fn err_invalid_utf8_content() -> DmntkError {
 pub fn err_internal_error(message: &str) -> DmntkError {
   ServerError(message.to_string()).into()
 }
+
+pub fn err_invalid_parameter(description: &str) -> DmntkError {
+  ServerError(format!("invalid parameter '{description}'")).into()
+}
