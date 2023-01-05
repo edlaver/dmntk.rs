@@ -201,5 +201,6 @@ fn _0032() {
 
 #[test]
 fn _0033() {
-  assert_decision(&MODEL_EVALUATOR, "decision_ds_002", &CTX, r#""foo""#);
+  let ctx = context(r#"{decisionService_002_input_1: ["foo"]}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_ds_002", &ctx, r#""foo""#);
 }

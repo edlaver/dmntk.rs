@@ -189,9 +189,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "string" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::String(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::String(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::String.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())

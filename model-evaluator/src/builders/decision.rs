@@ -183,7 +183,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
               required_input_ctx.zip(&required_knowledge_ctx);
               // place the result under the name of the output variable
               let scope: Scope = required_input_ctx.into();
-              let decision_result = evaluator(&scope);
+              let decision_result = evaluator(&scope) as Value;
               let coerced_decision_result = output_variable_type.coerced(&decision_result);
               output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
             }
