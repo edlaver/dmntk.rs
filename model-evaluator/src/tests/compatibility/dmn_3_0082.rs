@@ -190,7 +190,16 @@ fn _0030() {
 }
 
 #[test]
-#[ignore]
 fn _0031() {
   assert_decision(&MODEL_EVALUATOR, "decisionService_001", &CTX, r#"null"#);
+}
+
+#[test]
+fn _0032() {
+  assert_decision(&MODEL_EVALUATOR, "decisionService_002", &CTX, r#"null"#);
+}
+
+#[test]
+fn _0033() {
+  assert_decision(&MODEL_EVALUATOR, "decision_ds_002", &CTX, r#""foo""#);
 }
