@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,10 +219,12 @@ impl FeelContext {
     }
     keys.iter().cloned().collect()
   }
+
   /// Searches for a value of an entry pointed by specified qualified name.
-  pub fn search_entry<'search>(&'search self, qname: &'search QualifiedName) -> Option<&'search Value> {
+  pub fn search_entry<'a>(&'a self, qname: &'a QualifiedName) -> Option<&'a Value> {
     self.search_deep(qname.as_slice())
   }
+
   /// Deep check for a value pointed by slice of names.
   pub fn contains_deep(&self, names: &[Name]) -> bool {
     if names.is_empty() {
@@ -239,6 +241,7 @@ impl FeelContext {
     }
     false
   }
+
   /// Creates intermediary contexts when needed.
   pub fn create_deep(&mut self, names: &[Name], value: Value) {
     // if there are no names, then return

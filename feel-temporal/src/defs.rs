@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,12 +32,11 @@
 
 //! Implementation of FEEL temporal artifacts.
 
-use crate::date_time::FeelDateTime;
-use crate::zone::FeelZone;
+use crate::feel_date_time::FeelDateTime;
+use crate::feel_zone::FeelZone;
 use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::ops::Sub;
 
 /// Regular expression pattern for parsing dates.
 const DATE_PATTERN: &str = r#"(?P<sign>-)?(?P<year>[1-9][0-9]{3,8})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})"#;
@@ -49,6 +48,8 @@ const ZULU_PATTERN: &str = r#"(?P<zulu>[zZ])"#;
 const ZONE_PATTERN: &str = r#"@(?P<zone>[a-zA-Z_/]+)"#;
 /// Regular expression pattern for parsing time zones given as offset.
 const OFFSET_PATTERN: &str = r#"(?P<offSign>[+-])(?P<offHours>[0-9]{2}):(?P<offMinutes>[0-9]{2})(:(?P<offSeconds>[0-9]{2}))?"#;
+
+pub const ETC_UTC: &str = "Etc/UTC";
 
 /// Type alias for year.
 pub type Year = i32;
@@ -76,37 +77,15 @@ lazy_static! {
   pub static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
 }
 
-pub fn subtract(me: &FeelDateTime, other: &FeelDateTime) -> Option<i64> {
-  let me_date_tuple = me.0.as_tuple();
-  let me_time_tuple = ((me.1).0 as u32, (me.1).1 as u32, (me.1).2 as u32, (me.1).3 as u32);
-  let me_offset_opt = match &(me.1).4 {
-    FeelZone::Utc => Some(0),
-    FeelZone::Local => get_local_offset_dt(me_date_tuple, me_time_tuple),
-    FeelZone::Offset(offset) => Some(*offset),
-    FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, me_date_tuple, me_time_tuple),
-  };
-  let other_date_tuple = other.0.as_tuple();
-  let other_time_tuple = ((other.1).0 as u32, (other.1).1 as u32, (other.1).2 as u32, (other.1).3 as u32);
-  let other_offset_opt = match &(other.1).4 {
-    FeelZone::Utc => Some(0),
-    FeelZone::Local => get_local_offset_dt(other_date_tuple, other_time_tuple),
-    FeelZone::Offset(offset) => Some(*offset),
-    FeelZone::Zone(zone_name) => get_zone_offset_dt(zone_name, other_date_tuple, other_time_tuple),
-  };
-  if let Some((me_offset, other_offset)) = me_offset_opt.zip(other_offset_opt) {
-    let me_date_opt = date_time_offset_dt(me_date_tuple, me_time_tuple, me_offset);
-    let other_date_opt = date_time_offset_dt(other_date_tuple, other_time_tuple, other_offset);
-    if let Some((me_date, other_date)) = me_date_opt.zip(other_date_opt) {
-      return me_date.sub(other_date).num_nanoseconds();
-    }
-  }
-  None
-}
-
 pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
-  let me_date_tuple = me.0.as_tuple();
-  let me_time_tuple = ((me.1).0 as u32, (me.1).1 as u32, (me.1).2 as u32, (me.1).3 as u32);
-  let me_offset_opt = match &(me.1).4 {
+  let me_date_tuple = me.date().as_tuple();
+  let me_time_tuple = (
+    (me.time()).hour() as u32,
+    (me.time()).minute() as u32,
+    (me.time()).second() as u32,
+    (me.time()).nanos() as u32,
+  );
+  let me_offset_opt = match me.time().zone() {
     FeelZone::Utc => Some(0),
     FeelZone::Local => None, // in FEEL semantic domain the local offset is treated as none
     FeelZone::Offset(offset) => Some(*offset),
@@ -119,7 +98,7 @@ pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
 }
 
 pub fn feel_time_zone(me: &FeelDateTime) -> Option<String> {
-  if let FeelZone::Zone(zone_name) = &(me.1).4 {
+  if let FeelZone::Zone(zone_name) = me.time().zone() {
     return Some(zone_name.clone());
   }
   None
@@ -247,7 +226,7 @@ pub fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::date::FeelDate;
+  use crate::feel_date::FeelDate;
   use std::str::FromStr;
 
   const SECONDS_IN_HOUR: i32 = 3_600;

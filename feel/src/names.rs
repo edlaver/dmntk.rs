@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 //! `FEEL` name implementation.
 
 use dmntk_common::Jsonify;
+use std::fmt;
 
 /// `FEEL` name.
 #[derive(Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd, Clone)]
@@ -81,9 +82,9 @@ impl From<&Name> for String {
   }
 }
 
-impl std::fmt::Display for Name {
+impl fmt::Display for Name {
   /// Implements [Display](std::fmt::Display) trait for [Name].
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}", self.0)
   }
 }

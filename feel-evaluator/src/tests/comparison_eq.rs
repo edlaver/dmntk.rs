@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,115 +31,98 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn test_0001() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "1=1", true);
+  te_bool(false, &scope!(), "1=1", true);
 }
 
 #[test]
 fn test_0002() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "100 = null", false);
+  te_bool(false, &scope!(), "100 = null", false);
 }
 
 #[test]
 fn test_0003() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "1 = 1.000", true);
+  te_bool(false, &scope!(), "1 = 1.000", true);
 }
 
 #[test]
 fn test_0004() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "1.276=1.276", true);
+  te_bool(false, &scope!(), "1.276=1.276", true);
 }
 
 #[test]
 fn test_0005() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, ".54635=.54635", true);
+  te_bool(false, &scope!(), ".54635=.54635", true);
 }
 
 #[test]
 fn test_0006() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(1+1)=2", true);
+  te_bool(false, &scope!(), "(1+1)=2", true);
 }
 
 #[test]
 fn test_0007() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(1+2)=2", false);
+  te_bool(false, &scope!(), "(1+2)=2", false);
 }
 
 #[test]
 fn test_0008() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, " ( 1 + 1 ) = 2", true);
+  te_bool(false, &scope!(), " ( 1 + 1 ) = 2", true);
 }
 
 #[test]
 fn test_0009() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, " ( 1 + 3 ) = 2", false);
+  te_bool(false, &scope!(), " ( 1 + 3 ) = 2", false);
 }
 
 #[test]
 fn test_0010() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(1+1)=(5-3)", true);
+  te_bool(false, &scope!(), "(1+1)=(5-3)", true);
 }
 
 #[test]
 fn test_0011() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(1*2)=(10/5)", true);
+  te_bool(false, &scope!(), "(1*2)=(10/5)", true);
 }
 
 #[test]
 fn test_0012() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "true=true", true);
+  te_bool(false, &scope!(), "true=true", true);
 }
 
 #[test]
 fn test_0013() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "true=false", false);
+  te_bool(false, &scope!(), "true=false", false);
 }
 
 #[test]
 fn test_0014() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "false=true", false);
+  te_bool(false, &scope!(), "false=true", false);
 }
 
 #[test]
 fn test_0015() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "true=true", true);
+  te_bool(false, &scope!(), "true=true", true);
 }
 
 #[test]
 fn test_0016() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "true=null", false);
+  te_bool(false, &scope!(), "true=null", false);
 }
 
 #[test]
 fn test_0017() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, r#"(10 = 10)"#, true);
+  te_bool(false, &scope!(), r#"(10 = 10)"#, true);
 }
 
 #[test]
 fn test_0018() {
-  let scope = &te_scope("{}");
   te_null(
     false,
-    scope,
+    &scope!(),
     r#"10 = ({c1: {a: {c: "bar", b: "foo"}}})"#,
     r#"equal err '10' =?= '{c1: {a: {b: "foo", c: "bar"}}}'"#,
   );
@@ -147,24 +130,35 @@ fn test_0018() {
 
 #[test]
 fn test_0019() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bar"}}"#, true);
+  te_bool(false, &scope!(), r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bar"}}"#, true);
 }
 
 #[test]
 fn test_0020() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bars"}}"#, false);
+  te_bool(false, &scope!(), r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bars"}}"#, false);
 }
 
 #[test]
 fn test_0021() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, r#"[1,2,3] = [1,2,3]"#, true);
+  te_bool(false, &scope!(), r#"[1,2,3] = [1,2,3]"#, true);
 }
 
 #[test]
 fn test_0022() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, r#"@"P0D" = @"-P0D""#, true);
+  te_bool(false, &scope!(), r#" @"P0D" = @"-P0D" "#, true);
+}
+
+#[test]
+fn test_0023() {
+  te_bool(false, &scope!(), r#" @"2002-04-02T23:00:00-04:00" = @"2002-04-03T02:00:00-01:00" "#, true);
+}
+
+#[test]
+fn test_0024() {
+  te_bool(
+    false,
+    &scope!(),
+    r#" date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC") "#,
+    true,
+  );
 }

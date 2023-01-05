@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,15 +33,17 @@
 use crate::bifs;
 use crate::errors::*;
 use crate::iterations::{EveryExpressionEvaluator, ForExpressionEvaluator, SomeExpressionEvaluator};
+use crate::macros::invalid_argument_type;
 use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, Scope};
-use dmntk_feel_temporal::{subtract, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
+use dmntk_feel::{value_null, AstNode, Evaluator, FeelNumber, FeelType, FunctionBody, Name, QualifiedName, Scope};
+use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
+use std::file;
 use std::ops::Deref;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -144,22 +146,87 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           value_null!("addition err 2")
         }
       }
-      Value::DaysAndTimeDuration(lh) => {
-        if let Value::DaysAndTimeDuration(rh) = rhv {
-          Value::DaysAndTimeDuration(lh + rh)
-        } else {
-          value_null!("addition err 3")
+      Value::Date(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(result) = lh + rh {
+            Value::Date(result)
+          } else {
+            value_null!("addition err 7b")
+          }
         }
-      }
-      Value::YearsAndMonthsDuration(lh) => {
-        if let Value::YearsAndMonthsDuration(rh) = rhv {
-          Value::YearsAndMonthsDuration(lh + rh)
-        } else {
-          value_null!("addition err 4")
+        Value::YearsAndMonthsDuration(rh) => {
+          if let Some(a) = lh + rh {
+            Value::Date(a)
+          } else {
+            value_null!("addition err 7a")
+          }
         }
-      }
+        other => invalid_argument_type!("add", "years and months duration", other.type_of()),
+      },
+      Value::DateTime(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(a) = lh + rh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 3a")
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
+          if let Some(a) = lh + rh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 3b")
+          }
+        }
+        other => invalid_argument_type!("add", "days and time duration, years and months duration", other.type_of()),
+      },
+      Value::Time(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Time(lh + rh),
+        other => invalid_argument_type!("add", "days and time duration", other.type_of()),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::DaysAndTimeDuration(lh + rh),
+        Value::Date(rh) => {
+          if let Some(result) = rh + lh {
+            Value::Date(result)
+          } else {
+            value_null!("addition err 4a")
+          }
+        }
+        Value::DateTime(rh) => {
+          if let Some(a) = rh + lh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 4b")
+          }
+        }
+        Value::Time(rh) => Value::Time(rh + lh),
+        other => invalid_argument_type!("add", "days and time duration, date and time", other.type_of()),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::Date(rh) => {
+          if let Some(a) = rh + lh {
+            Value::Date(a)
+          } else {
+            value_null!("addition err 5a")
+          }
+        }
+        Value::DateTime(rh) => {
+          if let Some(a) = rh + lh {
+            Value::DateTime(a)
+          } else {
+            value_null!("addition err 5b")
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => Value::YearsAndMonthsDuration(lh + rh),
+        other => invalid_argument_type!("add", "years and months duration, date and time", other.type_of()),
+      },
       value @ Value::Null(_) => value,
-      _ => value_null!("addition err"),
+      other => invalid_argument_type!(
+        "add",
+        "number, string, date and time, days and time duration, years and months duration, null",
+        other.type_of()
+      ),
     }
   }))
 }
@@ -299,8 +366,8 @@ fn build_and(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
       Value::Boolean(lh) => match rhv {
         Value::Boolean(rh) => Value::Boolean(lh && rh),
@@ -339,10 +406,16 @@ fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
     // evaluate context entries
     for evaluator in &evaluators {
       if let Value::ContextEntry(name, value) = evaluator(scope) {
-        // add newly evaluated entry to evaluated context
-        evaluated_ctx.set_entry(&name, (*value).clone());
-        // add newly evaluated entry to special context
-        scope.set_entry(&name, *value);
+        if evaluated_ctx.contains_entry(&name) {
+          // duplicated context entry keys are not allowed
+          scope.pop();
+          return value_null!("duplicated context entry key: {}", name);
+        } else {
+          // add newly evaluated entry to evaluated context
+          evaluated_ctx.set_entry(&name, (*value).clone());
+          // add newly evaluated entry to special context
+          scope.set_entry(&name, *value);
+        }
       }
     }
     // remove special context from scope
@@ -814,14 +887,14 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 ///
 fn build_function_invocation(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   match rhs {
-    AstNode::PositionalParameters(parameters) => build_function_invocation_positional(lhs, parameters),
-    node @ AstNode::NamedParameters(_) => build_function_invocation_named(lhs, node),
+    AstNode::PositionalParameters(parameters) => build_function_invocation_with_positional_parameters(lhs, parameters),
+    node @ AstNode::NamedParameters(_) => build_function_invocation_with_named_parameters(lhs, node),
     _ => Err(err_expected_positional_or_named_parameter()),
   }
 }
 
 ///
-fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
+fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
   let mut argument_evaluators = vec![];
   for node in rhs {
     argument_evaluators.push(build_evaluator(node)?);
@@ -832,7 +905,7 @@ fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Resul
     let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
       Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_positional(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, result_type),
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -842,7 +915,7 @@ fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Resul
 }
 
 ///
-fn build_function_invocation_named(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let function_evaluator = build_evaluator(lhs)?;
   let arguments_evaluator = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
@@ -850,7 +923,7 @@ fn build_function_invocation_named(lhs: &AstNode, rhs: &AstNode) -> Result<Evalu
     let arguments = arguments_evaluator(scope);
     match function {
       Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_named(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_named_parameters(scope, &arguments, &parameters, &body, result_type),
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -949,8 +1022,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match rhv {
       inner @ Value::Number(_)
       | inner @ Value::String(_)
@@ -1433,32 +1506,33 @@ fn build_qualified_name_segment(name: &Name) -> Result<Evaluator> {
 ///
 fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::Name(name) = rhs.clone() {
+    let qualified_name: QualifiedName = name.into();
     let lhe = build_evaluator(lhs)?;
     Ok(Box::new(move |scope: &Scope| {
       let lhv = lhe(scope) as Value;
       match lhv {
         Value::Context(context) => {
-          if let Some(value) = context.get_entry(&name) {
+          if let Some(value) = context.search_entry(&qualified_name) {
             value.clone()
           } else {
-            value_null!("eval_path_expression: no entry {} in context: {}", name, context)
+            value_null!("build_path: no entry {} in context: {}", qualified_name, context)
           }
         }
         Value::List(items) => {
           let mut result = vec![];
           for item in items.as_vec() {
             if let Value::Context(context) = item {
-              if let Some(value) = context.get_entry(&name) {
+              if let Some(value) = context.search_entry(&qualified_name) {
                 result.push(value.clone());
               }
             } else {
-              return value_null!("eval_path_expression: no context in list");
+              return value_null!("build_path: no context in list");
             }
           }
           Value::List(Values::new(result))
         }
         Value::Date(date) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "year" => Value::Number(date.year().into()),
             "month" => Value::Number(date.month().into()),
             "day" => Value::Number(date.day().into()),
@@ -1469,11 +1543,11 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                 value_null!("could not retrieve weekday for date")
               }
             }
-            _ => value_null!("no such property in date"),
+            other => value_null!("no such property in date: {}", other),
           }
         }
         Value::DateTime(date_time) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "year" => Value::Number(date_time.year().into()),
             "month" => Value::Number(date_time.month().into()),
             "day" => Value::Number(date_time.day().into()),
@@ -1489,7 +1563,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             "second" => Value::Number(date_time.second().into()),
             "time offset" => {
               if let Some(offset) = date_time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(offset as i64).build());
+                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
               } else {
                 value_null!("aaaa")
               }
@@ -1505,13 +1579,13 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::Time(time) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "hour" => Value::Number(time.hour().into()),
             "minute" => Value::Number(time.minute().into()),
             "second" => Value::Number(time.second().into()),
             "time offset" => {
               if let Some(offset) = time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(offset as i64).build());
+                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
               } else {
                 value_null!("ccc")
               }
@@ -1527,7 +1601,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::DaysAndTimeDuration(dt_duration) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "days" => Value::Number(dt_duration.get_days().into()),
             "hours" => Value::Number(dt_duration.get_hours().into()),
             "minutes" => Value::Number(dt_duration.get_minutes().into()),
@@ -1536,13 +1610,54 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::YearsAndMonthsDuration(ym_duration) => {
-          return match name.to_string().as_str() {
+          return match qualified_name.to_string().as_str() {
             "years" => Value::Number(ym_duration.years().into()),
             "months" => Value::Number(ym_duration.months().into()),
             _ => value_null!("no such property in years and months duration"),
           }
         }
-        _ => value_null!("zzz lhv={}", lhv),
+        Value::Range(rs, cs, re, ce) => {
+          return match qualified_name.to_string().as_str() {
+            "start" => *rs,
+            "start included" => Value::Boolean(cs),
+            "end" => *re,
+            "end included" => Value::Boolean(ce),
+            other => value_null!("no such property in range: {}", other),
+          }
+        }
+        Value::UnaryGreater(value) => {
+          return match qualified_name.to_string().as_str() {
+            "start" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary greater: {}", other),
+          }
+        }
+        Value::UnaryGreaterOrEqual(value) => {
+          return match qualified_name.to_string().as_str() {
+            "start" => *value,
+            "start included" => Value::Boolean(true),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary greater or equal: {}", other),
+          }
+        }
+        Value::UnaryLess(value) => {
+          return match qualified_name.to_string().as_str() {
+            "end" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(false),
+            other => value_null!("no such property in unary less: {}", other),
+          }
+        }
+        Value::UnaryLessOrEqual(value) => {
+          return match qualified_name.to_string().as_str() {
+            "end" => *value,
+            "start included" => Value::Boolean(false),
+            "end included" => Value::Boolean(true),
+            other => value_null!("no such property in unary less or equal: {}", other),
+          }
+        }
+        other => value_null!("build_path: unexpected type :{}, for property: {}", other, qualified_name),
       }
     }))
   } else {
@@ -1632,20 +1747,67 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           return Value::Number(lh - rh);
         }
       }
-      Value::Time(lh) => {
-        if let Value::Time(rh) = rhv {
-          if let Some(duration) = lh - rh {
-            return Value::DaysAndTimeDuration(duration);
+      Value::Date(lh) => match rhv {
+        Value::Date(rh) => {
+          let l = FeelDateTime::new(lh, FeelTime::utc(0, 0, 0, 0));
+          let r = FeelDateTime::new(rh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(result) = l - r {
+            return Value::DaysAndTimeDuration(result);
           }
         }
-      }
-      Value::DateTime(lh) => {
-        if let Value::DateTime(rh) = rhv {
-          if let Some(a) = subtract(&lh, &rh) {
-            return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().nano(a).build());
+        Value::DateTime(rh) => {
+          let l = FeelDateTime::new(lh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(result) = l - rh {
+            return Value::DaysAndTimeDuration(result);
           }
         }
-      }
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(date) = lh - rh {
+            return Value::Date(date);
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
+          if let Some(date) = lh - rh {
+            return Value::Date(date);
+          }
+        }
+        _ => {}
+      },
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DaysAndTimeDuration(result);
+          }
+        }
+        Value::DaysAndTimeDuration(rh) => {
+          return Value::Time(lh - rh);
+        }
+        _ => {}
+      },
+      Value::DateTime(lh) => match rhv {
+        Value::Date(rh) => {
+          let r = FeelDateTime::new(rh, FeelTime::utc(0, 0, 0, 0));
+          if let Some(result) = lh - r {
+            return Value::DaysAndTimeDuration(result);
+          }
+        }
+        Value::DateTime(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DaysAndTimeDuration(result);
+          }
+        }
+        Value::DaysAndTimeDuration(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DateTime(result);
+          }
+        }
+        Value::YearsAndMonthsDuration(rh) => {
+          if let Some(result) = lh - rh {
+            return Value::DateTime(result);
+          }
+        }
+        _ => {}
+      },
       Value::DaysAndTimeDuration(lh) => {
         if let Value::DaysAndTimeDuration(rh) = rhv {
           return Value::DaysAndTimeDuration(lh - rh);
@@ -1848,7 +2010,8 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
 fn eval_in_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::String(_)
+      inner @ Value::Null(_)
+      | inner @ Value::String(_)
       | inner @ Value::Number(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)
@@ -1929,7 +2092,8 @@ fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
 fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
   for item in items {
     match item {
-      inner @ Value::String(_)
+      inner @ Value::Null(_)
+      | inner @ Value::String(_)
       | inner @ Value::Number(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)
@@ -2254,27 +2418,29 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
 }
 
 /// Evaluates function definition with positional parameters.
-fn eval_function_positional(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+fn eval_function_with_positional_parameters(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
   let mut ctx = FeelContext::default();
-  for (i, (parameter_name, parameter_type)) in parameters.iter().enumerate() {
-    if let Some(argument) = arguments.get(i) {
-      ctx.set_entry(parameter_name, parameter_type.coerced(argument))
-    } else {
-      return value_null!("invalid number of arguments");
-    }
+  if arguments.len() != parameters.len() {
+    return value_null!("invalid number of arguments");
+  }
+  for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
+    ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
   eval_function_definition(scope, &ctx, body, result_type)
 }
 
 /// Evaluates function definition with named parameters.
-fn eval_function_named(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
   let mut ctx = FeelContext::default();
-  if let Value::NamedParameters(map) = arguments {
+  if let Value::NamedParameters(argument_map) = arguments {
+    if argument_map.len() != parameters.len() {
+      return value_null!("invalid number of arguments");
+    }
     for (parameter_name, parameter_type) in parameters {
-      if let Some((argument, _)) = map.get(parameter_name) {
+      if let Some((argument, _)) = argument_map.get(parameter_name) {
         ctx.set_entry(parameter_name, parameter_type.coerced(argument))
       } else {
-        return value_null!("invalid number of arguments");
+        return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
     }
   }

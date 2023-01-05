@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@
  */
 
 //! Test files containing decision model definitions.
-//! File names begin with the compliance level, followed by the number of the test.
+//! File names begin with the compatibility level, followed by the number of the test.
 //! Test examples are based on examples contained in
 //! [DMN™ Technology Compatibility Kit](https://dmn-tck.github.io/tck/) project.
 //! The content of each test file is modified and differs from the original.
 
-// compliance level 2
+// compatibility level 2
 pub const DMN_2_0001: &str = include_str!("level_2/2_0001.dmn");
 pub const DMN_2_0002: &str = include_str!("level_2/2_0002.dmn");
 pub const DMN_2_0003: &str = include_str!("level_2/2_0003.dmn");
@@ -66,7 +66,7 @@ pub const DMN_2_0117: &str = include_str!("level_2/2_0117.dmn");
 pub const DMN_2_0118: &str = include_str!("level_2/2_0118.dmn");
 pub const DMN_2_0119: &str = include_str!("level_2/2_0119.dmn");
 
-// compliance level 3
+// compatibility level 3
 pub const DMN_3_0001: &str = include_str!("level_3/3_0001.dmn");
 pub const DMN_3_0002: &str = include_str!("level_3/3_0002.dmn");
 pub const DMN_3_0003: &str = include_str!("level_3/3_0003.dmn");
@@ -132,7 +132,8 @@ pub const DMN_3_0082: &str = include_str!("level_3/3_0082.dmn");
 pub const DMN_3_0083: &str = include_str!("level_3/3_0083.dmn");
 pub const DMN_3_0084: &str = include_str!("level_3/3_0084.dmn");
 pub const DMN_3_0085: &str = include_str!("level_3/3_0085.dmn");
-pub const DMN_3_0086: &str = include_str!("level_3/3_0086.dmn");
+pub const DMN_3_0086_IMPORT: &str = include_str!("level_3/3_0086_import.dmn");
+pub const DMN_3_0086_IMPORTED: &str = include_str!("level_3/3_0086_imported.dmn");
 pub const DMN_3_0087: &str = include_str!("level_3/3_0087.dmn");
 pub const DMN_3_0088: &str = include_str!("level_3/3_0088.dmn");
 pub const DMN_3_0089: &str = include_str!("level_3/3_0089.dmn");

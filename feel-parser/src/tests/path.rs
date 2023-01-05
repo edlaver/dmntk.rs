@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,6 +205,30 @@ fn _0008() {
           │  └─ `loan`
           └─ Name
              └─ `rate`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0009() {
+  let scope = scope!();
+  let mut ctx_1 = FeelContext::default();
+  ctx_1.set_entry(&"fromString".into(), value_null!());
+  scope.set_entry(&"Date".into(), Value::Context(ctx_1));
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"Date.fromString.day"#,
+    r#"
+       Path
+       ├─ Path
+       │  ├─ Name
+       │  │  └─ `Date`
+       │  └─ Name
+       │     └─ `fromString`
+       └─ Name
+          └─ `day`
     "#,
     false,
   );

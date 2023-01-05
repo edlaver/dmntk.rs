@@ -128,9 +128,9 @@ tasks:
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo test --workspace
+      - cmd: cargo +nightly test --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode
     cmds:
-      - cmd: cargo test --workspace -q
+      - cmd: cargo +nightly test --workspace -q

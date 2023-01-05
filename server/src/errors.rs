@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,14 +57,6 @@ pub fn err_invalid_base64_encoding() -> DmntkError {
 
 pub fn err_invalid_utf8_content() -> DmntkError {
   ServerError("invalid UTF-8 content".to_string()).into()
-}
-
-pub fn err_workspace_read_lock_failed() -> DmntkError {
-  ServerError("workspace read lock failed".to_string()).into()
-}
-
-pub fn err_workspace_write_lock_failed() -> DmntkError {
-  ServerError("workspace write lock failed".to_string()).into()
 }
 
 pub fn err_internal_error(message: &str) -> DmntkError {

@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ use dmntk_model::model::{Decision, Definitions, DmnElement, KnowledgeRequirement
 use std::collections::HashMap;
 use std::sync::Arc;
 
-/// Type of closure that evaluates a decision.
+/// Type alias for closures that evaluate decisions.
 ///
 /// `Fn(input data, model evaluator, output data)`
 ///
@@ -106,8 +106,15 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
     if let Some(href) = information_requirement.required_decision() {
       // bring into context the variable from required decision
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
-        let output_variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        ctx.set_null(output_variable_name);
+        let variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+        //FIXME below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
+        let variable_type_ref = if required_decision.variable().type_ref().is_some() {
+          required_decision.variable().type_ref().as_ref().unwrap().clone()
+        } else {
+          "Any".to_string()
+        };
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, &variable_name, &mut ctx);
+        ctx.set_entry(&variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut ctx)?;
       }
@@ -123,7 +130,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   }
   // prepare a scope and build expression instance evaluator
   let scope: Scope = ctx.into();
-  let evaluator = crate::builders::build_expression_instance_evaluator(&scope, expression_instance)?;
+  let evaluator = crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?;
   // prepare references to required knowledge, decisions and input data
   let mut required_knowledge_references: Vec<String> = vec![];
   let mut required_decision_references: Vec<String> = vec![];
@@ -176,7 +183,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
               required_input_ctx.zip(&required_knowledge_ctx);
               // place the result under the name of the output variable
               let scope: Scope = required_input_ctx.into();
-              let decision_result = evaluator(&scope);
+              let decision_result = evaluator(&scope) as Value;
               let coerced_decision_result = output_variable_type.coerced(&decision_result);
               output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
             }

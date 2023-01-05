@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -584,7 +584,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Course", "Duration"])).unwrap();
     assert_eq!(
-      Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(183600).build()),
+      Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600)),
       evaluator.eval("tCourseDuration", value).unwrap()
     );
   }
@@ -727,7 +727,7 @@ mod tests {
     let context_str = r#"{ Items : [duration("P2DT3H")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::default().second(183600).build())]));
+    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600))]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 

@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@
 
 //! Implementation of FEEL temporal errors.
 
+use crate::FeelDate;
 use dmntk_common::DmntkError;
 use dmntk_feel_number::FeelNumber;
 
@@ -47,6 +48,10 @@ impl From<TemporalError> for DmntkError {
 
 pub fn err_invalid_date(y: FeelNumber, m: FeelNumber, d: FeelNumber) -> DmntkError {
   TemporalError(format!("invalid date {y}-{m}-{d}")).into()
+}
+
+pub fn err_invalid_feel_date(date: FeelDate) -> DmntkError {
+  TemporalError(format!("invalid date {}-{}-{}", date.year(), date.month(), date.day())).into()
 }
 
 pub fn err_invalid_date_literal(s: &str) -> DmntkError {

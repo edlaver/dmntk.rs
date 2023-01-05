@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,14 +111,13 @@ fn build_decision_service_evaluator(
   // prepare references to output decisions
   let output_decisions: Vec<String> = decision_service.output_decisions().iter().map(|href| href.into()).collect();
 
-  // prepare a container for formal parameters
+  // prepare a container for formal parameters accepted by decision service
   let mut formal_parameters = vec![];
   // fills the list of formal parameters based on required input data
   // these parameters are placed before input parameters defined by input decisions
   for input_data_id in &input_data_references {
     if let Some(input_data_variable) = input_data_evaluator.get_input_variable(input_data_id) {
       let parameter_name = input_data_variable.name.clone();
-      //let a = model_evaluator.item_definition_type_evaluator()?;
       let parameter_type = input_data_variable.feel_type(&item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
     }

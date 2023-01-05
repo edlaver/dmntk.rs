@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,10 @@
 
 //! Builder for item definition type evaluators.
 
+use crate::builders::information_item_type;
 use crate::errors::*;
 use dmntk_common::Result;
-use dmntk_feel::{FeelType, Name};
+use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
 use dmntk_model::model::{Definitions, ItemDefinition, ItemDefinitionType, NamedElement};
 use std::collections::{BTreeMap, HashMap};
 
@@ -164,9 +165,24 @@ fn collection_of_component_type(item_definition: &ItemDefinition) -> Result<Item
 }
 
 ///
-fn function_type(_item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
-  Ok(Box::new(move |_: &ItemDefinitionTypeEvaluator| {
-    Some(FeelType::Any) // TODO implement function type
+fn function_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+  let mut output_type_ref = FEEL_TYPE_NAME_ANY.to_string();
+  let mut parameters_type_ref = vec![];
+  if let Some(function_item) = item_definition.function_item() {
+    if let Some(type_ref) = function_item.output_type_ref() {
+      output_type_ref = type_ref.to_owned();
+    }
+    for parameter_information_item in function_item.parameters() {
+      parameters_type_ref.push(parameter_information_item.type_ref().as_ref().unwrap_or(&FEEL_TYPE_NAME_ANY.to_string()).clone());
+    }
+  }
+  Ok(Box::new(move |evaluator: &ItemDefinitionTypeEvaluator| {
+    let output_type = information_item_type(&output_type_ref, evaluator).unwrap_or(FeelType::Any);
+    let parameter_types = parameters_type_ref
+      .iter()
+      .map(|parameter_type_ref| information_item_type(parameter_type_ref, evaluator).unwrap_or(FeelType::Any))
+      .collect::<Vec<FeelType>>();
+    Some(FeelType::function(&parameter_types, &output_type))
   }))
 }
 

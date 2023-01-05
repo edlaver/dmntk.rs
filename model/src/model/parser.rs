@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -228,7 +228,6 @@ impl ModelParser {
         item_components: item_components_definitions,
         is_collection: self.parse_boolean_attribute(child_node, ATTR_IS_COLLECTION, false),
         function_item: self.parse_function_item(child_node)?,
-        item_definition_type: None,
       };
       items.push(item_definition);
     }
@@ -569,10 +568,10 @@ impl ModelParser {
 
   fn parse_optional_expression_instance(&self, node: &Node) -> Result<Option<ExpressionInstance>> {
     if let Some(context) = self.parse_optional_context(node)? {
-      return Ok(Some(ExpressionInstance::Context(context)));
+      return Ok(Some(ExpressionInstance::Context(Box::new(context))));
     }
     if let Some(decision_table) = self.parse_decision_table(node)? {
-      return Ok(Some(ExpressionInstance::DecisionTable(decision_table)));
+      return Ok(Some(ExpressionInstance::DecisionTable(Box::new(decision_table))));
     }
     if let Some(function_definition) = self.parse_optional_function_definition(node)? {
       return Ok(Some(ExpressionInstance::FunctionDefinition(Box::new(function_definition))));
@@ -584,7 +583,7 @@ impl ModelParser {
       return Ok(Some(ExpressionInstance::LiteralExpression(Box::new(literal_expression))));
     }
     if let Some(relation) = self.parse_optional_relation(node)? {
-      return Ok(Some(ExpressionInstance::Relation(relation)));
+      return Ok(Some(ExpressionInstance::Relation(Box::new(relation))));
     }
     Ok(None)
   }
@@ -595,7 +594,7 @@ impl ModelParser {
         information_item_name: None,
         input_clauses: self.parse_decision_table_inputs(child_node)?,
         output_clauses: self.parse_decision_table_outputs(child_node)?,
-        annotations: vec![],
+        annotations: vec![], // TODO implement parsing annotations
         rules: self.parse_decision_table_rules(child_node)?,
         hit_policy: self.parse_hit_policy_attribute(child_node)?,
         aggregation: None,

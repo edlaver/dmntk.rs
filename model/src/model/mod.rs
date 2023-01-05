@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ use dmntk_feel::{FeelType, Name};
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::convert::TryFrom;
-use std::fmt::Display;
+use std::fmt;
 use std::sync::Arc;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
@@ -905,12 +905,12 @@ impl Import {
 /// - [Relation].
 #[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionInstance {
-  Context(Context),
-  DecisionTable(DecisionTable),
+  Context(Box<Context>),
+  DecisionTable(Box<DecisionTable>),
   FunctionDefinition(Box<FunctionDefinition>),
   Invocation(Box<Invocation>),
   LiteralExpression(Box<LiteralExpression>),
-  Relation(Relation),
+  Relation(Box<Relation>),
 }
 
 /// A [Context] is composed of any number of model context entries, which are instances of [ContextEntry].
@@ -1622,8 +1622,6 @@ pub struct ItemDefinition {
   is_collection: bool,
   /// Describes an optional [FunctionItem] that compose this [ItemDefinition].
   function_item: Option<FunctionItem>,
-  /// Optional item definition type.
-  item_definition_type: Option<ItemDefinitionType>,
 }
 
 impl ItemDefinition {
@@ -1659,14 +1657,6 @@ impl ItemDefinition {
   /// Returns a reference to an optional [FunctionItem] that compose this [ItemDefinition].
   pub fn function_item(&self) -> &Option<FunctionItem> {
     &self.function_item
-  }
-  /// Returns a reference to optional item definition type.
-  pub fn item_definition_type(&self) -> &Option<ItemDefinitionType> {
-    &self.item_definition_type
-  }
-  /// Sets the item definition type for this element.
-  pub fn set_item_definition_type(&mut self, item_definition_type: ItemDefinitionType) {
-    self.item_definition_type = Some(item_definition_type);
   }
 }
 
@@ -1982,8 +1972,8 @@ pub struct DecisionTable {
 }
 
 /// Implementation of [Display] for [DecisionTable].
-impl std::fmt::Display for DecisionTable {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for DecisionTable {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
     buffer.push_str("Decision table:\n");
     buffer.push_str(format!(">> preferred orientation: {}\n", self.preferred_orientation).as_str());
@@ -2022,8 +2012,8 @@ pub enum DecisionTableOrientation {
 }
 
 /// Implementation of [Display] for [DecisionTableOrientation].
-impl Display for DecisionTableOrientation {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for DecisionTableOrientation {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       DecisionTableOrientation::RuleAsRow => write!(f, "Rule-as-Row"),
       DecisionTableOrientation::RuleAsColumn => write!(f, "Rule-as-Column"),
@@ -2072,8 +2062,8 @@ pub enum HitPolicy {
 }
 
 /// Implementation of [Display] for HitPolicy.
-impl std::fmt::Display for HitPolicy {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for HitPolicy {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       HitPolicy::Unique => write!(f, "U"),
       HitPolicy::Any => write!(f, "A"),
@@ -2123,8 +2113,8 @@ pub enum BuiltinAggregator {
 }
 
 /// Implementation of [Display] for [BuiltinAggregator].
-impl std::fmt::Display for BuiltinAggregator {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for BuiltinAggregator {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(
       f,
       "{}",

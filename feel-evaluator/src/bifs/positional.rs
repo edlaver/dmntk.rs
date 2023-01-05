@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,16 +31,10 @@
  */
 
 use crate::bifs::core;
+use crate::macros::invalid_number_of_parameters;
 use dmntk_feel::bif::Bif;
 use dmntk_feel::value_null;
 use dmntk_feel::values::Value;
-
-macro_rules! invalid_number_of_parameters {
-  ($expected:expr, $actual:expr) => {{
-    use dmntk_feel::value_null;
-    value_null!("expected {} parameters, actual number of parameters is {}", $expected, $actual)
-  }};
-}
 
 ///
 pub fn evaluate_bif(bif: Bif, parameters: &[Value]) -> Value {

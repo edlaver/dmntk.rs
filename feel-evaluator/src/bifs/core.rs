@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 //! Core implementation of build-in functions.
 
 use crate::evaluate_equals;
+use crate::macros::invalid_argument_type;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
@@ -42,18 +43,6 @@ use std::borrow::Borrow;
 use std::cmp::Ordering;
 use std::convert::TryFrom;
 use std::str::FromStr;
-
-/// Builds null value with invalid argument type message.
-macro_rules! invalid_argument_type {
-  ($function:literal, $expected:expr, $actual:expr) => {
-    value_null!(
-      "core",
-      $function,
-      "{}",
-      format!("invalid argument type, expected {}, actual type is {}", $expected, $actual)
-    )
-  };
-}
 
 /// Returns the absolute value of the argument.
 pub fn abs(value: &Value) -> Value {
@@ -181,7 +170,7 @@ pub fn after(value1: &Value, value2: &Value) -> Value {
     },
     _ => {}
   }
-  invalid_argument_type!("before", "scalar or range of scalars", value1.type_of())
+  invalid_argument_type!("after", "scalar or range of scalars", value1.type_of())
 }
 
 /// Returns `false` if any item is `false`, `true` if empty or all items are true, else `null`.
@@ -1138,7 +1127,7 @@ pub fn is(value1: &Value, value2: &Value) -> Value {
       _ => Value::Boolean(false),
     },
     Value::DateTime(v1) => match value2 {
-      Value::DateTime(v2) => Value::Boolean(v1 == v2),
+      Value::DateTime(v2) => Value::Boolean(v1.is(v2)),
       _ => Value::Boolean(false),
     },
     Value::DaysAndTimeDuration(v1) => match value2 {
@@ -1149,7 +1138,7 @@ pub fn is(value1: &Value, value2: &Value) -> Value {
       Value::YearsAndMonthsDuration(v2) => Value::Boolean(v1 == v2),
       _ => Value::Boolean(false),
     },
-    _ => invalid_argument_type!("is", "", value1.type_of()),
+    _ => invalid_argument_type!("is", "scalar", value1.type_of()),
   }
 }
 
@@ -1487,6 +1476,7 @@ pub fn month_of_year(value: &Value) -> Value {
     if let Some(month_of_year) = opt_month_of_year {
       value_string!(month_of_year.0)
     } else {
+      //TODO this case is uncovered and must be eliminated after refactoring date and time crate
       value_null!("[month of year] no month")
     }
   }
@@ -2411,7 +2401,7 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
                 Value::DaysAndTimeDuration(offset) => {
-                  if let Some(feel_time) = FeelTime::new_hmso_opt(h, m, s, n, offset.as_seconds() as i32) {
+                  if let Some(feel_time) = FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32) {
                     Value::Time(feel_time)
                   } else {
                     value_null!("time_4 1")
@@ -2499,19 +2489,19 @@ pub fn week_of_year(value: &Value) -> Value {
 pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value {
   if let Value::Date(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration_1(from));
+      return Value::YearsAndMonthsDuration(&to.date() - from);
     }
     if let Value::Date(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(to - from);
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }
   if let Value::DateTime(from) = from_value {
     if let Value::DateTime(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(from));
+      return Value::YearsAndMonthsDuration(&to.date() - &from.date());
     }
     if let Value::Date(to) = to_value {
-      return Value::YearsAndMonthsDuration(to.ym_duration(&from.date()));
+      return Value::YearsAndMonthsDuration(to - &from.date());
     }
     return invalid_argument_type!("years and months duration", "date, date and time", to_value.type_of());
   }

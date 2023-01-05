@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,11 +59,11 @@ use walkdir::WalkDir;
 pub struct Workspace {
   /// Collection of [Definitions] stashed in [Workspace].
   definitions: Vec<Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].**namespace** attribute.
+  /// Map of [Definitions] indexed by [Definitions].`namespace` attribute.
   definitions_by_namespace: HashMap<String, Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].**name** attribute.
+  /// Map of [Definitions] indexed by [Definitions].`name` attribute.
   definitions_by_name: HashMap<String, Arc<Definitions>>,
-  /// Map of [ModelEvaluator] indexed by [Definitions].**name** attribute.
+  /// Map of [ModelEvaluator] indexed by [Definitions].`name` attribute.
   model_evaluators_by_name: HashMap<String, Arc<ModelEvaluator>>,
 }
 

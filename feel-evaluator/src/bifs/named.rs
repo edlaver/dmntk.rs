@@ -3,7 +3,7 @@
  *
  * MIT license
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,7 +15,7 @@
  *
  * Apache license, Version 2.0
  *
- * Copyright (c) 2018-2022 Dariusz Depta Engos Software
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -688,7 +688,7 @@ fn bif_overlaps_after(parameters: &NamedParameters) -> Value {
 fn bif_overlaps_before(parameters: &NamedParameters) -> Value {
   if let Some((value1, _)) = get_param(parameters, &NAME_RANGE_1) {
     if let Some((value2, _)) = get_param(parameters, &NAME_RANGE_2) {
-      core::overlaps_after(value1, value2)
+      core::overlaps_before(value1, value2)
     } else {
       parameter_not_found!(NAME_RANGE_2)
     }
@@ -837,18 +837,34 @@ fn bif_string_length(parameters: &NamedParameters) -> Value {
 }
 
 fn bif_sublist(parameters: &NamedParameters) -> Value {
-  if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
-    if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
-      if let Some((length_value, _)) = get_param(parameters, &NAME_LENGTH) {
-        core::sublist3(list_value, start_position_value, length_value)
+  match get_param_count(parameters) {
+    2 => {
+      if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
+        if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
+          core::sublist2(list_value, start_position_value)
+        } else {
+          parameter_not_found!(NAME_START_POSITION)
+        }
       } else {
-        core::sublist2(list_value, start_position_value)
+        parameter_not_found!(NAME_LIST)
       }
-    } else {
-      parameter_not_found!(NAME_START_POSITION)
     }
-  } else {
-    parameter_not_found!(NAME_LIST)
+    3 => {
+      if let Some((list_value, _)) = get_param(parameters, &NAME_LIST) {
+        if let Some((start_position_value, _)) = get_param(parameters, &NAME_START_POSITION) {
+          if let Some((length_value, _)) = get_param(parameters, &NAME_LENGTH) {
+            core::sublist3(list_value, start_position_value, length_value)
+          } else {
+            parameter_not_found!(NAME_LENGTH)
+          }
+        } else {
+          parameter_not_found!(NAME_START_POSITION)
+        }
+      } else {
+        parameter_not_found!(NAME_LIST)
+      }
+    }
+    n => invalid_number_of_parameters!("2,3", n),
   }
 }
 
@@ -968,5 +984,15 @@ fn get_param_count(parameters: &NamedParameters) -> usize {
     map.len()
   } else {
     0
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_get_param_count() {
+    assert_eq!(0, get_param_count(&Value::Boolean(false)))
   }
 }
