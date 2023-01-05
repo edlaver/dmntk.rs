@@ -179,9 +179,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "Null" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::Null(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::Null(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::Null.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -201,9 +203,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "number" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::Number(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::Number(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::Number.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -211,9 +215,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "boolean" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::Boolean(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::Boolean(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::Boolean.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -221,9 +227,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "date" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::Date(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::Date(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::Date.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -231,9 +239,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "time" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::Time(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::Time(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::Time.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -241,9 +251,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "dateTime" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::DateTime(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::DateTime(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::DateTime.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -251,9 +263,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "dayTimeDuration" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::DaysAndTimeDuration(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::DaysAndTimeDuration(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::DaysAndTimeDuration.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
@@ -261,9 +275,11 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
     "yearMonthDuration" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::Context(ctx) = value {
         if let Some(v) = ctx.get_entry(&variable_name) {
-          if let Value::YearsAndMonthsDuration(_) = v {
-            return (variable_name.clone(), v.clone());
-          }
+          return if let Value::YearsAndMonthsDuration(_) = v {
+            (variable_name.clone(), v.clone())
+          } else {
+            (variable_name.clone(), FeelType::YearsAndMonthsDuration.coerced(v))
+          };
         }
       }
       (variable_name.clone(), value_null!())
