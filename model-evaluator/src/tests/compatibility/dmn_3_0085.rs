@@ -83,9 +83,8 @@ fn _0005() {
 }
 
 #[test]
-#[ignore]
 fn _0006() {
-  assert_decision_service(&MODEL_EVALUATOR, "decision_005_1", r#"{}"#, r#"null"#);
+  assert_decision_service(&MODEL_EVALUATOR, "decision_005_1", r#"{}"#, r#"null(invalid number of arguments)"#);
 }
 
 #[test]

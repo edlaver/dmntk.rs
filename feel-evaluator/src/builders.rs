@@ -887,14 +887,14 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 ///
 fn build_function_invocation(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   match rhs {
-    AstNode::PositionalParameters(parameters) => build_function_invocation_positional(lhs, parameters),
-    node @ AstNode::NamedParameters(_) => build_function_invocation_named(lhs, node),
+    AstNode::PositionalParameters(parameters) => build_function_invocation_with_positional_parameters(lhs, parameters),
+    node @ AstNode::NamedParameters(_) => build_function_invocation_with_named_parameters(lhs, node),
     _ => Err(err_expected_positional_or_named_parameter()),
   }
 }
 
 ///
-fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
+fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
   let mut argument_evaluators = vec![];
   for node in rhs {
     argument_evaluators.push(build_evaluator(node)?);
@@ -905,7 +905,7 @@ fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Resul
     let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
       Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_positional(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, result_type),
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -915,7 +915,7 @@ fn build_function_invocation_positional(lhs: &AstNode, rhs: &[AstNode]) -> Resul
 }
 
 ///
-fn build_function_invocation_named(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let function_evaluator = build_evaluator(lhs)?;
   let arguments_evaluator = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
@@ -923,7 +923,7 @@ fn build_function_invocation_named(lhs: &AstNode, rhs: &AstNode) -> Result<Evalu
     let arguments = arguments_evaluator(scope);
     match function {
       Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_named(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_named_parameters(scope, &arguments, &parameters, &body, result_type),
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -2418,27 +2418,29 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
 }
 
 /// Evaluates function definition with positional parameters.
-fn eval_function_positional(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+fn eval_function_with_positional_parameters(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
   let mut ctx = FeelContext::default();
-  for (i, (parameter_name, parameter_type)) in parameters.iter().enumerate() {
-    if let Some(argument) = arguments.get(i) {
-      ctx.set_entry(parameter_name, parameter_type.coerced(argument))
-    } else {
-      return value_null!("invalid number of arguments");
-    }
+  if arguments.len() != parameters.len() {
+    return value_null!("invalid number of arguments");
+  }
+  for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
+    ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
   eval_function_definition(scope, &ctx, body, result_type)
 }
 
 /// Evaluates function definition with named parameters.
-fn eval_function_named(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
   let mut ctx = FeelContext::default();
-  if let Value::NamedParameters(map) = arguments {
+  if let Value::NamedParameters(argument_map) = arguments {
+    if argument_map.len() != parameters.len() {
+      return value_null!("invalid number of arguments");
+    }
     for (parameter_name, parameter_type) in parameters {
-      if let Some((argument, _)) = map.get(parameter_name) {
+      if let Some((argument, _)) = argument_map.get(parameter_name) {
         ctx.set_entry(parameter_name, parameter_type.coerced(argument))
       } else {
-        return value_null!("invalid number of arguments");
+        return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
     }
   }
