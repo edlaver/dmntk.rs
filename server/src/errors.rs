@@ -70,3 +70,7 @@ pub fn err_workspace_write_lock_failed() -> DmntkError {
 pub fn err_internal_error(message: &str) -> DmntkError {
   ServerError(message.to_string()).into()
 }
+
+pub fn err_invalid_parameter(description: &str) -> DmntkError {
+  ServerError(format!("invalid parameter '{description}'")).into()
+}
