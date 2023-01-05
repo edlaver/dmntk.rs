@@ -39,6 +39,7 @@ extern crate roxmltree;
 use crate::model::Definitions;
 use dmntk_common::Result;
 
+mod errors;
 pub mod model;
 
 /// Parses the XML document containing [Definitions] serialized to interchange format.

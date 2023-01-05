@@ -38,7 +38,7 @@ pub(crate) mod parser;
 #[cfg(test)]
 mod tests;
 
-use self::errors::*;
+use crate::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
 use std::borrow::Borrow;
@@ -2030,7 +2030,7 @@ impl TryFrom<&str> for DecisionTableOrientation {
       "Rule-as-Row" => Ok(DecisionTableOrientation::RuleAsRow),
       "Rule-as-Column" => Ok(DecisionTableOrientation::RuleAsColumn),
       "CrossTable" => Ok(DecisionTableOrientation::CrossTable),
-      other => Err(invalid_decision_table_orientation(other)),
+      other => Err(err_invalid_decision_table_orientation(other)),
     }
   }
 }
@@ -2092,7 +2092,7 @@ impl TryFrom<&str> for HitPolicy {
       "C#" => Ok(HitPolicy::Collect(BuiltinAggregator::Count)),
       "C<" => Ok(HitPolicy::Collect(BuiltinAggregator::Min)),
       "C>" => Ok(HitPolicy::Collect(BuiltinAggregator::Max)),
-      other => Err(invalid_decision_table_hit_policy(other)),
+      other => Err(err_invalid_decision_table_hit_policy(other)),
     }
   }
 }
@@ -2425,42 +2425,4 @@ pub enum DcKnownColor {
   Black = 0x000000,
   Silver = 0xC0C0C0,
   Gray = 0x808080,
-}
-
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Errors related to the model.
-  #[derive(Debug, PartialEq, Eq)]
-  pub enum ModelError {
-    InvalidDecisionTableOrientation(String),
-    InvalidDecisionTableHitPolicy(String),
-  }
-
-  impl From<ModelError> for DmntkError {
-    fn from(e: ModelError) -> Self {
-      DmntkError::new("ModelError", &format!("{e}"))
-    }
-  }
-
-  impl std::fmt::Display for ModelError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        ModelError::InvalidDecisionTableOrientation(s) => {
-          write!(f, "invalid decision table orientation: {s}")
-        }
-        ModelError::InvalidDecisionTableHitPolicy(s) => {
-          write!(f, "invalid decision table hit policy: {s}")
-        }
-      }
-    }
-  }
-
-  pub fn invalid_decision_table_orientation(orientation: &str) -> DmntkError {
-    ModelError::InvalidDecisionTableOrientation(orientation.to_owned()).into()
-  }
-
-  pub fn invalid_decision_table_hit_policy(hit_policy: &str) -> DmntkError {
-    ModelError::InvalidDecisionTableHitPolicy(hit_policy.to_owned()).into()
-  }
 }
