@@ -71,6 +71,6 @@ impl QualifiedName {
 impl From<Name> for QualifiedName {
   /// Converts a [Name] into [QualifiedName].
   fn from(name: Name) -> Self {
-    Self(name.to_string().split('.').map(|a| Name::from(a)).collect())
+    Self(name.to_string().split('.').map(Name::from).collect())
   }
 }
