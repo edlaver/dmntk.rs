@@ -32,9 +32,9 @@
 
 //! Parser for loading a model from the XML file containing DMN interchange format.
 
-use self::errors::*;
 use self::xml_utils::*;
 use super::*;
+use crate::errors::*;
 use dmntk_common::Result;
 use roxmltree::Node;
 
@@ -159,11 +159,11 @@ impl ModelParser {
       Ok(document) => {
         let definitions_node = document.root_element();
         if definitions_node.tag_name().name() != NODE_DEFINITIONS {
-          return Err(xml_unexpected_node(NODE_DEFINITIONS, definitions_node.tag_name().name()));
+          return Err(err_xml_unexpected_node(NODE_DEFINITIONS, definitions_node.tag_name().name()));
         }
         self.parse_definitions(&definitions_node)
       }
-      Err(reason) => Err(xml_parsing_model_failed(&reason.to_string())),
+      Err(reason) => Err(err_xml_parsing_model_failed(&reason.to_string())),
     }
   }
   /// Parses [Definitions].
@@ -417,7 +417,7 @@ impl ModelParser {
         "FEEL" => Ok(FunctionKind::Feel),
         "Java" => Ok(FunctionKind::Java),
         "PMML" => Ok(FunctionKind::Pmml),
-        other => Err(invalid_function_kind(other)),
+        other => Err(err_invalid_function_kind(other)),
       }
     } else {
       Ok(FunctionKind::Feel)
@@ -454,7 +454,7 @@ impl ModelParser {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       self.parse_information_item(&child_node)
     } else {
-      Err(xml_expected_mandatory_child_node(&node_name_pos(node), child_name))
+      Err(err_xml_expected_mandatory_child_node(&node_name_pos(node), child_name))
     }
   }
 
@@ -564,7 +564,7 @@ impl ModelParser {
   }
 
   fn parse_required_expression_instance(&self, node: &Node) -> Result<ExpressionInstance> {
-    self.parse_optional_expression_instance(node)?.ok_or_else(required_expression_instance_is_missing)
+    self.parse_optional_expression_instance(node)?.ok_or_else(err_required_expression_instance_is_missing)
   }
 
   fn parse_optional_expression_instance(&self, node: &Node) -> Result<Option<ExpressionInstance>> {
@@ -618,7 +618,7 @@ impl ModelParser {
     let input_expression = if let Ok(ref child_node) = required_child(node, NODE_INPUT_EXPRESSION) {
       required_child_required_content(child_node, NODE_TEXT)?
     } else {
-      return Err(required_input_expression_is_missing());
+      return Err(err_required_input_expression_is_missing());
     };
     let input_values = if let Some(ref child_node) = optional_child(node, NODE_INPUT_VALUES) {
       optional_child_required_content(child_node, NODE_TEXT)?
@@ -781,7 +781,7 @@ impl ModelParser {
           }
         }
         if elements.len() != columns.len() {
-          return Err(number_of_elements_in_row_differs_from_number_of_columns());
+          return Err(err_number_of_elements_in_row_differs_from_number_of_columns());
         }
         rows.push(List {
           id: optional_attribute(row_node, ATTR_ID),
@@ -841,7 +841,7 @@ impl ModelParser {
         "RULE ORDER" => Ok(HitPolicy::RuleOrder),
         "OUTPUT ORDER" => Ok(HitPolicy::OutputOrder),
         "COLLECT" => Ok(HitPolicy::Collect(self.parse_aggregation_attribute(node)?)),
-        other => Err(invalid_hit_policy(other)),
+        other => Err(err_invalid_hit_policy(other)),
       }
     } else {
       Ok(HitPolicy::Unique)
@@ -856,7 +856,7 @@ impl ModelParser {
         "SUM" => Ok(BuiltinAggregator::Sum),
         "MIN" => Ok(BuiltinAggregator::Min),
         "MAX" => Ok(BuiltinAggregator::Max),
-        other => Err(invalid_aggregation(other)),
+        other => Err(err_invalid_aggregation(other)),
       }
     } else {
       Ok(BuiltinAggregator::List)
@@ -1009,7 +1009,7 @@ impl ModelParser {
   fn parse_bounds(&self, node: &Node) -> Result<DcBounds> {
     match self.parse_optional_bounds(node) {
       Ok(Some(n)) => Ok(n),
-      _ => Err(required_child_node_is_missing(node.tag_name().name(), NODE_DMNDI_BOUNDS)),
+      _ => Err(err_required_child_node_is_missing(node.tag_name().name(), NODE_DMNDI_BOUNDS)),
     }
   }
 
@@ -1088,7 +1088,6 @@ impl ModelParser {
 
 /// Utility helper functions for processing XML structures.
 mod xml_utils {
-  use super::errors::*;
   use super::*;
   use dmntk_common::{OptHRef, Result};
   use roxmltree::Node;
@@ -1099,7 +1098,7 @@ mod xml_utils {
     if let Some(attr_value) = node.attribute(attr_name) {
       Ok(attr_value.to_owned())
     } else {
-      Err(xml_expected_mandatory_attribute(&node_name_pos(node), attr_name))
+      Err(err_xml_expected_mandatory_attribute(&node_name_pos(node), attr_name))
     }
   }
 
@@ -1115,12 +1114,12 @@ mod xml_utils {
 
   /// Returns the value of the mandatory color attribute.
   pub fn required_color_part(node: &Node, attr_name: &str) -> Result<u8> {
-    u8::from_str(&required_attribute(node, attr_name)?).map_err(|e| invalid_color_value(&e.to_string()))
+    u8::from_str(&required_attribute(node, attr_name)?).map_err(|e| err_invalid_color_value(&e.to_string()))
   }
 
   /// Returns the value of the mandatory double value.
   pub fn required_double(node: &Node, attr_name: &str) -> Result<f64> {
-    f64::from_str(&required_attribute(node, attr_name)?).map_err(|e| invalid_double_value(&e.to_string()))
+    f64::from_str(&required_attribute(node, attr_name)?).map_err(|e| err_invalid_double_value(&e.to_string()))
   }
 
   /// Returns the value of the optional attribute.
@@ -1148,7 +1147,7 @@ mod xml_utils {
     if let Some(text) = node.text() {
       Ok(text.to_owned())
     } else {
-      Err(xml_expected_mandatory_text_content(node.tag_name().name()))
+      Err(err_xml_expected_mandatory_text_content(node.tag_name().name()))
     }
   }
 
@@ -1162,7 +1161,7 @@ mod xml_utils {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       Ok(child_node)
     } else {
-      Err(required_child_node_is_missing(&node_name_pos(node), child_name))
+      Err(err_required_child_node_is_missing(&node_name_pos(node), child_name))
     }
   }
 
@@ -1176,7 +1175,7 @@ mod xml_utils {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       required_content(&child_node)
     } else {
-      Err(xml_expected_mandatory_child_node(&node_name_pos(node), child_name))
+      Err(err_xml_expected_mandatory_child_node(&node_name_pos(node), child_name))
     }
   }
 
@@ -1210,160 +1209,5 @@ mod xml_utils {
   /// XML utility function that returns node's name with node's position in the original document.
   pub fn node_name_pos(n: &Node) -> String {
     format!("`{}` at [{}]", n.tag_name().name(), n.document().text_pos_at(n.range().start))
-  }
-}
-
-/// Definitions of errors raised while parsing the XML model.
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Errors related with parsing the decision model.
-  enum ModelParserError {
-    /// Raised when parsed text is not a valid function kind,
-    /// accepted values are: `FEEL`, `Java` or `PMML`.
-    InvalidFunctionKind(String),
-    /// Raised when parsed text is not a valid hit policy,
-    /// accepted values are: `UNIQUE`, `FIRST`, `PRIORITY`,
-    /// `ANY`, `COLLECT`, `RULE ORDER`, or `OUTPUT ORDER`.
-    InvalidHitPolicy(String),
-    /// Raised when parsed text is not a valid aggregation for hit policy,
-    /// accepted values are: `COUNT`, `SUM`, `MIN`, or `MAX`.
-    InvalidAggregation(String),
-    /// Invalid value for a color.
-    InvalidColorValue(String),
-    /// Invalid value for a double.
-    InvalidDoubleValue(String),
-    /// Raised when required `inputExpression` node is missing.
-    RequiredInputExpressionIsMissing,
-    /// Raised when required child node is missing.
-    RequiredChildNodeIsMissing(String, String),
-    /// Raised when required expression instance is missing.
-    RequiredExpressionInstanceIsMissing,
-    /// Raised when the number of elements in a row differs from the number of columns in relation.
-    NumberOfElementsInRowDiffersFromNumberOfColumns,
-    ///
-    XmlParsingModelFailed(String),
-    ///
-    XmlUnexpectedNode(String, String),
-    ///
-    XmlExpectedMandatoryAttribute(String, String),
-    ///
-    XmlExpectedMandatoryChildNode(String, String),
-    ///
-    XmlExpectedMandatoryTextContent(String),
-  }
-
-  impl From<ModelParserError> for DmntkError {
-    fn from(e: ModelParserError) -> Self {
-      DmntkError::new("ModelParserError", &format!("{e}"))
-    }
-  }
-
-  impl std::fmt::Display for ModelParserError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-      match self {
-        ModelParserError::InvalidFunctionKind(s) => {
-          write!(f, "'{s}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`")
-        }
-        ModelParserError::InvalidHitPolicy(s) => {
-          write!(
-            f,
-            "'{s}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`"
-          )
-        }
-        ModelParserError::InvalidAggregation(s) => {
-          write!(f, "'{s}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`")
-        }
-        ModelParserError::InvalidColorValue(s) => {
-          write!(f, "conversion to valid color value failed with reason: {s}")
-        }
-        ModelParserError::InvalidDoubleValue(reason) => {
-          write!(f, "conversion to valid double value failed with reason: {reason}")
-        }
-        ModelParserError::RequiredInputExpressionIsMissing => {
-          write!(f, "required input expression in decision table's input clause is missing")
-        }
-        ModelParserError::RequiredChildNodeIsMissing(s1, s2) => {
-          write!(f, "required child node '{s2}' in parent node '{s1}' is missing")
-        }
-        ModelParserError::RequiredExpressionInstanceIsMissing => {
-          write!(f, "required expression instance in context entry is missing")
-        }
-        ModelParserError::NumberOfElementsInRowDiffersFromNumberOfColumns => {
-          write!(f, "number of elements in a row differs from the number of columns defined in a relation")
-        }
-        ModelParserError::XmlParsingModelFailed(s) => {
-          write!(f, "parsing model from XML failed with reason: {s}")
-        }
-        ModelParserError::XmlUnexpectedNode(s1, s2) => {
-          write!(f, "unexpected XML node, expected: {s1}, actual: {s2}")
-        }
-        ModelParserError::XmlExpectedMandatoryAttribute(s1, s2) => {
-          write!(f, "expected value for mandatory attribute `{s2}` in node `{s1}`")
-        }
-        ModelParserError::XmlExpectedMandatoryChildNode(s1, s2) => {
-          write!(f, "expected mandatory child node '{s2}' in parent node '{s1}'")
-        }
-        ModelParserError::XmlExpectedMandatoryTextContent(s) => {
-          write!(f, "expected mandatory text content in node: {s}")
-        }
-      }
-    }
-  }
-
-  pub fn invalid_function_kind(s: &str) -> DmntkError {
-    ModelParserError::InvalidFunctionKind(s.to_owned()).into()
-  }
-
-  pub fn invalid_hit_policy(s: &str) -> DmntkError {
-    ModelParserError::InvalidHitPolicy(s.to_owned()).into()
-  }
-
-  pub fn invalid_aggregation(s: &str) -> DmntkError {
-    ModelParserError::InvalidAggregation(s.to_owned()).into()
-  }
-
-  pub fn invalid_color_value(s: &str) -> DmntkError {
-    ModelParserError::InvalidColorValue(s.to_owned()).into()
-  }
-
-  pub fn invalid_double_value(reason: &str) -> DmntkError {
-    ModelParserError::InvalidDoubleValue(reason.to_owned()).into()
-  }
-
-  pub fn required_child_node_is_missing(s1: &str, s2: &str) -> DmntkError {
-    ModelParserError::RequiredChildNodeIsMissing(s1.to_owned(), s2.to_owned()).into()
-  }
-
-  pub fn required_input_expression_is_missing() -> DmntkError {
-    ModelParserError::RequiredInputExpressionIsMissing.into()
-  }
-
-  pub fn required_expression_instance_is_missing() -> DmntkError {
-    ModelParserError::RequiredExpressionInstanceIsMissing.into()
-  }
-
-  pub fn number_of_elements_in_row_differs_from_number_of_columns() -> DmntkError {
-    ModelParserError::NumberOfElementsInRowDiffersFromNumberOfColumns.into()
-  }
-
-  pub fn xml_parsing_model_failed(s: &str) -> DmntkError {
-    ModelParserError::XmlParsingModelFailed(s.to_owned()).into()
-  }
-
-  pub fn xml_unexpected_node(s1: &str, s2: &str) -> DmntkError {
-    ModelParserError::XmlUnexpectedNode(s1.to_owned(), s2.to_owned()).into()
-  }
-
-  pub fn xml_expected_mandatory_attribute(s1: &str, s2: &str) -> DmntkError {
-    ModelParserError::XmlExpectedMandatoryAttribute(s1.to_owned(), s2.to_owned()).into()
-  }
-
-  pub fn xml_expected_mandatory_child_node(s1: &str, s2: &str) -> DmntkError {
-    ModelParserError::XmlExpectedMandatoryChildNode(s1.to_owned(), s2.to_owned()).into()
-  }
-
-  pub fn xml_expected_mandatory_text_content(s: &str) -> DmntkError {
-    ModelParserError::XmlExpectedMandatoryTextContent(s.to_owned()).into()
   }
 }
