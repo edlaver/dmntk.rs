@@ -50,13 +50,14 @@ pub use decision_service::DecisionServiceEvaluator;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, Evaluator, FeelType, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelType, FunctionBody, Name, Scope};
 use dmntk_model::model::*;
 pub use input_data::InputDataEvaluator;
 pub use input_data_context::InputDataContextEvaluator;
 pub use item_definition::ItemDefinitionEvaluator;
 pub use item_definition_context::ItemDefinitionContextEvaluator;
 pub use item_definition_type::ItemDefinitionTypeEvaluator;
+use std::sync::Arc;
 
 ///
 pub fn information_item_type(type_ref: &str, evaluator: &ItemDefinitionTypeEvaluator) -> Option<FeelType> {
@@ -356,26 +357,35 @@ fn build_decision_table_evaluator(scope: &Scope, decision_table: &DecisionTable)
 
 ///
 fn build_function_definition_evaluator(scope: &Scope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
+  // resolve function definition's formal parameters
   let mut parameters = vec![];
-  let body = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
-  let function_evaluator = build_expression_instance_evaluator(scope, Some(body), model_evaluator)?;
+  let mut parameters_ctx = FeelContext::default();
   for parameter in function_definition.formal_parameters() {
-    let name = parameter.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-    let value_expression = parameter.value_expression().as_ref();
-    let evaluator = build_expression_instance_evaluator(scope, value_expression, model_evaluator)?;
-    parameters.push((name, evaluator));
-  }
-  Ok(Box::new(move |scope: &Scope| {
-    let mut params_ctx = FeelContext::default();
-    parameters.iter().for_each(|(name, evaluator)| params_ctx.set_entry(name, evaluator(scope)));
-    if let Value::FunctionDefinition(_, body, result_type) = function_evaluator(scope) {
-      scope.push(params_ctx);
-      let value = body.evaluate(scope);
-      scope.pop();
-      result_type.coerced(&value)
+    let parameter_name = parameter.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+    let parameter_type = if let Some(type_ref) = parameter.type_ref() {
+      information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
     } else {
-      value_null!("expected Value::FunctionDefinition in function definition evaluator")
-    }
+      FeelType::Any
+    };
+    parameters_ctx.set_entry(&parameter_name, Value::FeelType(parameter_type.clone()));
+    parameters.push((parameter_name, parameter_type));
+  }
+  // resolve function definition's result type
+  let result_type = if let Some(type_ref) = function_definition.type_ref() {
+    information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+  } else {
+    FeelType::Any
+  };
+  // prepare function definition's body evaluator
+  let body_expression_instance = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
+  scope.push(parameters_ctx);
+  let body_evaluator = build_expression_instance_evaluator(scope, Some(body_expression_instance), model_evaluator)?;
+  scope.pop();
+  let function_body_evaluator = Arc::new(body_evaluator);
+  let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
+  Ok(Box::new(move |_scope: &Scope| {
+    Value::FunctionDefinition(parameters.clone(), function_body.clone(), result_type.clone())
   }))
 }
 
@@ -397,13 +407,13 @@ fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_eval
     }
   }
   Ok(Box::new(move |scope: &Scope| {
-    let mut params_ctx = FeelContext::default();
+    let mut parameters_ctx = FeelContext::default();
     bindings.iter().for_each(|(param_name, param_type, evaluator)| {
       let param_value = evaluator(scope) as Value;
-      params_ctx.set_entry(param_name, param_type.coerced(&param_value))
+      parameters_ctx.set_entry(param_name, param_type.coerced(&param_value))
     });
     if let Value::FunctionDefinition(_, body, result_type) = function_evaluator(scope) {
-      scope.push(params_ctx);
+      scope.push(parameters_ctx);
       let value = body.evaluate(scope);
       scope.pop();
       result_type.coerced(&value)

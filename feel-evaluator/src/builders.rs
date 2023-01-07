@@ -806,7 +806,7 @@ fn build_function_body(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
     // // prepare function's body built as external function call (usually context that defines what to call)
     // let function_body = FunctionBody::External(Box::new(move |_:&Scope|eval( lhs)?));
     // Ok(Value::FunctionBody(function_body))
-    //FIXME implement external function body
+    //TODO implement body for external function
     Ok(Box::new(move |_: &Scope| value_null!("invalid body of the external function")))
   } else {
     let lhe = Arc::new(build_evaluator(lhs)?);
@@ -819,11 +819,11 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::FormalParameters(parameters) = lhv {
       if let Value::FunctionBody(function_body) = rhv {
-        //FIXME is `FeelType::Any` always ok for function definition?
+        //TODO is `FeelType::Any` always ok for function result type in function definition?
         Value::FunctionDefinition(parameters, function_body, FeelType::Any)
       } else {
         value_null!("invalid function body")
@@ -2419,37 +2419,37 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
 
 /// Evaluates function definition with positional parameters.
 fn eval_function_with_positional_parameters(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
-  let mut ctx = FeelContext::default();
+  let mut params_ctx = FeelContext::default();
   if arguments.len() != parameters.len() {
     return value_null!("invalid number of arguments");
   }
   for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
-    ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
+    params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
-  eval_function_definition(scope, &ctx, body, result_type)
+  eval_function_definition(scope, &params_ctx, body, result_type)
 }
 
 /// Evaluates function definition with named parameters.
 fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
-  let mut ctx = FeelContext::default();
+  let mut params_ctx = FeelContext::default();
   if let Value::NamedParameters(argument_map) = arguments {
     if argument_map.len() != parameters.len() {
       return value_null!("invalid number of arguments");
     }
     for (parameter_name, parameter_type) in parameters {
       if let Some((argument, _)) = argument_map.get(parameter_name) {
-        ctx.set_entry(parameter_name, parameter_type.coerced(argument))
+        params_ctx.set_entry(parameter_name, parameter_type.coerced(argument))
       } else {
         return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
     }
   }
-  eval_function_definition(scope, &ctx, body, result_type)
+  eval_function_definition(scope, &params_ctx, body, result_type)
 }
 
-/// Evaluates function definition with arguments (actual parameters) passed in context.
-fn eval_function_definition(scope: &Scope, ctx: &FeelContext, body: &FunctionBody, result_type: FeelType) -> Value {
-  scope.push(ctx.clone());
+/// Evaluates function definition with actual parameters passed in context.
+fn eval_function_definition(scope: &Scope, params_ctx: &FeelContext, body: &FunctionBody, result_type: FeelType) -> Value {
+  scope.push(params_ctx.clone());
   let result = body.evaluate(scope);
   scope.pop();
   result_type.coerced(&result)

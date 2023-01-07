@@ -484,7 +484,6 @@ impl ModelParser {
       extension_attributes: self.parse_extension_attributes(node),
       name: required_name(node)?,
       feel_name: optional_feel_name(node)?,
-      value_expression: self.parse_optional_expression_instance(node)?,
       type_ref: optional_attribute(node, ATTR_TYPE_REF),
       feel_type: None,
     })

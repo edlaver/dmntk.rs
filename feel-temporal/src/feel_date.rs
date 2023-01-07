@@ -60,7 +60,7 @@ impl FromStr for FeelDate {
   type Err = DmntkError;
   /// Converts [String] into [FeelDate].
   fn from_str(date: &str) -> Result<Self, Self::Err> {
-    let captures = RE_DATE.captures(date).ok_or(err_invalid_date_literal(date))?;
+    let captures = RE_DATE.captures(date).ok_or_else(|| err_invalid_date_literal(date))?;
     if let Some(year_match) = captures.name("year") {
       if let Ok(mut year) = year_match.as_str().parse::<Year>() {
         if captures.name("sign").is_some() {

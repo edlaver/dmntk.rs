@@ -690,8 +690,6 @@ pub struct InformationItem {
   name: String,
   /// Optional `FEEL` name of this [ItemDefinition].
   feel_name: Option<Name>,
-  /// The `Expression` whose value is assigned to this [InformationItem].
-  value_expression: Option<ExpressionInstance>,
   /// Optional qualified name of the type of this [InformationItem].
   type_ref: Option<String>,
   /// Optional `FEEL` type of this [InformationItem].
@@ -699,10 +697,6 @@ pub struct InformationItem {
 }
 
 impl InformationItem {
-  ///
-  pub fn value_expression(&self) -> &Option<ExpressionInstance> {
-    &self.value_expression
-  }
   ///
   pub fn type_ref(&self) -> &Option<String> {
     &self.type_ref
@@ -1015,8 +1009,7 @@ impl Expression for LiteralExpression {
 pub struct Invocation {
   /// An expression whose value is a function.
   called_function: ExpressionInstance,
-  /// Instances of [Binding] used to bind the formalParameters
-  /// of the `called_function` in this [Invocation].
+  /// Instances of [Binding] used to bind the formal parameters of the called function in this [Invocation].
   bindings: Vec<Binding>,
 }
 
