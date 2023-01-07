@@ -2451,6 +2451,7 @@ fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, paramet
 fn eval_function_definition(scope: &Scope, params_ctx: &FeelContext, body: &FunctionBody, result_type: FeelType) -> Value {
   scope.push(params_ctx.clone());
   let result = body.evaluate(scope);
+  println!("DDD: {}", result);
   scope.pop();
   result_type.coerced(&result)
 }
