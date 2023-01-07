@@ -2449,9 +2449,23 @@ fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, paramet
 
 /// Evaluates function definition with actual parameters passed in context.
 fn eval_function_definition(scope: &Scope, params_ctx: &FeelContext, body: &FunctionBody, result_type: FeelType) -> Value {
+  // Place actual parameters (arguments) on the top of the scope.
   scope.push(params_ctx.clone());
+  // Evaluate the function body and get the result.
   let result = body.evaluate(scope);
-  println!("DDD: {}", result);
-  scope.pop();
+  match result {
+    Value::FunctionDefinition(_, _, _) => {
+      // When the result is a function definition, then actual parameters passed to build it
+      // may have been used in the function body (closed in lambdas).
+      // In this case leave these actual parameters on the top of the scope,
+      // so the actual values are available while evaluating this function definition as lambda.
+    }
+    _ => {
+      // When the result is anything except a function definition,
+      // then pop actual parameters from the scope.
+      scope.pop();
+    }
+  }
+  // Apply type coercions for the result.
   result_type.coerced(&result)
 }

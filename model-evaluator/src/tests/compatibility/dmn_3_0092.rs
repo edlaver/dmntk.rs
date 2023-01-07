@@ -60,13 +60,11 @@ fn _0004() {
 }
 
 #[test]
-#[ignore]
 fn _0005() {
   assert_decision(&MODEL_EVALUATOR, "decision_005_1", &CTX, r#"20"#);
 }
 
 #[test]
-#[ignore]
 fn _0006() {
   assert_decision(&MODEL_EVALUATOR, "decision_006_1", &CTX, r#"30"#);
 }
@@ -84,7 +82,6 @@ fn _0008() {
 }
 
 #[test]
-#[ignore]
 fn _0009() {
   assert_decision(&MODEL_EVALUATOR, "decision_009_1", &CTX, r#"200"#);
 }
