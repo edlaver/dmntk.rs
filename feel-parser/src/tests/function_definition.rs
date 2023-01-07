@@ -32,8 +32,9 @@
 
 use super::accept;
 use crate::lalr::TokenType::*;
+use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
+use dmntk_feel::{scope, value_null, value_number, Scope};
 
 #[test]
 fn _0001() {
@@ -256,6 +257,43 @@ fn _0007() {
 
 #[test]
 fn _0008() {
+  let scope = scope!();
+  let mut ctx_inner = FeelContext::default();
+  ctx_inner.set_entry(&"c".into(), value_number!(10));
+  let mut ctx_outer = FeelContext::default();
+  ctx_outer.set_entry(&"b".into(), Value::Context(ctx_inner));
+  scope.set_entry(&"a".into(), Value::Context(ctx_outer));
+  accept(
+    &scope,
+    StartExpression,
+    r#"function(x) a.b.c * x"#,
+    r#"
+       FunctionDefinition
+       ├─ FormalParameters
+       │  └─ FormalParameter
+       │     ├─ ParameterName
+       │     │  └─ `x`
+       │     └─ FeelType
+       │        └─ Any
+       └─ FunctionBody
+          └─ Mul
+             ├─ Path
+             │  ├─ Path
+             │  │  ├─ Name
+             │  │  │  └─ `a`
+             │  │  └─ Name
+             │  │     └─ `b`
+             │  └─ Name
+             │     └─ `c`
+             └─ Name
+                └─ `x`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0009() {
   let scope = scope!();
   scope.set_entry(&"a".into(), value_null!());
   accept(
