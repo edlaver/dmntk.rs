@@ -37,3 +37,46 @@ fn _0001() {
   let scope = &te_scope(r#"{add: function (x: number, y: number) x + y }"#);
   te_number(false, scope, r#"add(17.82,32.18)"#, 50, 0);
 }
+
+#[test]
+fn _0002() {
+  let scope = &te_scope(
+    r#"{
+      a: 10,
+      add: function (x: number, y: number) x + y + a
+    }"#,
+  );
+  te_number(false, scope, r#"add(17.82,32.18)"#, 60, 0);
+}
+
+#[test]
+fn _0003() {
+  let scope = &te_scope(r#"{ add: function (x: number, y: number) x + y + a }"#);
+  te_null(false, scope, r#"add(17.82,32.18)"#, "context has no value for key 'a'");
+}
+
+#[test]
+fn _0004() {
+  let scope = &te_scope(
+    r#"{
+      a: {
+        b: {
+          c: 10
+        } 
+      },
+      add: function (x: number, y: number) x + y + a.b.c
+    }"#,
+  );
+  te_number(false, scope, r#"add(17.82,32.18)"#, 60, 0);
+}
+
+#[test]
+fn _0005() {
+  let scope = &te_scope(
+    r#"{
+      a: @"2023-01-07",
+      add: function (x: number, y: number) x + y + a.year
+    }"#,
+  );
+  te_number(false, scope, r#"add(17.82,32.18)"#, 2073, 0);
+}
