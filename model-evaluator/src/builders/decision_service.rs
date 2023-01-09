@@ -225,7 +225,8 @@ fn build_decision_service_evaluator(
     value_null!()
   });
   let function_body = dmntk_feel::FunctionBody::DecisionService(Arc::new(body_evaluator));
-  let function_definition = Value::FunctionDefinition(formal_parameters, function_body, output_variable_type_clone);
+  let closure = FeelContext::default();
+  let function_definition = Value::FunctionDefinition(formal_parameters, function_body, closure, output_variable_type_clone);
   let decision_service_as_function_definition_evaluator = Box::new(move |_: &Scope| function_definition.clone());
   // return decision service evaluator closure and evaluator of the decision service as function definition
   Ok((output_variable, decision_service_evaluator, decision_service_as_function_definition_evaluator))

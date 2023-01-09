@@ -384,8 +384,9 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   scope.pop();
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
+  let closure_ctx = FeelContext::default();
   Ok(Box::new(move |_scope: &Scope| {
-    Value::FunctionDefinition(parameters.clone(), function_body.clone(), result_type.clone())
+    Value::FunctionDefinition(parameters.clone(), function_body.clone(), closure_ctx.clone(), result_type.clone())
   }))
 }
 
@@ -412,9 +413,11 @@ fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_eval
       let param_value = evaluator(scope) as Value;
       parameters_ctx.set_entry(param_name, param_type.coerced(&param_value))
     });
-    if let Value::FunctionDefinition(_, body, result_type) = function_evaluator(scope) {
+    if let Value::FunctionDefinition(_, body, closure_ctx, result_type) = function_evaluator(scope) {
+      scope.push(closure_ctx);
       scope.push(parameters_ctx);
       let value = body.evaluate(scope);
+      scope.pop();
       scope.pop();
       result_type.coerced(&value)
     } else {
