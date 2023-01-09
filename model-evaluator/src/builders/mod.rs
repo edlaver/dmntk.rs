@@ -303,15 +303,14 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
 }
 
 ///
-fn build_expression_instance_evaluator(scope: &Scope, expression_instance: Option<&ExpressionInstance>, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_expression_instance_evaluator(scope: &Scope, expression_instance: &ExpressionInstance, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   match expression_instance {
-    Some(ExpressionInstance::Context(context)) => build_context_evaluator(scope, context, model_evaluator),
-    Some(ExpressionInstance::DecisionTable(decision_table)) => build_decision_table_evaluator(scope, decision_table),
-    Some(ExpressionInstance::FunctionDefinition(function_definition)) => build_function_definition_evaluator(scope, function_definition, model_evaluator),
-    Some(ExpressionInstance::Invocation(invocation)) => build_invocation_evaluator(scope, invocation, model_evaluator),
-    Some(ExpressionInstance::LiteralExpression(literal_expression)) => build_literal_expression_evaluator(scope, literal_expression),
-    Some(ExpressionInstance::Relation(relation)) => build_relation_evaluator(scope, relation, model_evaluator),
-    None => Ok(Box::new(move |_: &Scope| value_null!("no expression instance defined"))),
+    ExpressionInstance::Context(context) => build_context_evaluator(scope, context, model_evaluator),
+    ExpressionInstance::DecisionTable(decision_table) => build_decision_table_evaluator(scope, decision_table),
+    ExpressionInstance::FunctionDefinition(function_definition) => build_function_definition_evaluator(scope, function_definition, model_evaluator),
+    ExpressionInstance::Invocation(invocation) => build_invocation_evaluator(scope, invocation, model_evaluator),
+    ExpressionInstance::LiteralExpression(literal_expression) => build_literal_expression_evaluator(scope, literal_expression),
+    ExpressionInstance::Relation(relation) => build_relation_evaluator(scope, relation, model_evaluator),
   }
 }
 
@@ -322,11 +321,11 @@ fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &M
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
       let name = variable.feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
-      let evaluator = build_expression_instance_evaluator(scope, Some(&context_entry.value), model_evaluator)?;
+      let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
       scope.insert_null(name.clone());
       entry_evaluators.push((Some(name.clone()), evaluator));
     } else {
-      let evaluator = build_expression_instance_evaluator(scope, Some(&context_entry.value), model_evaluator)?;
+      let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
       entry_evaluators.push((None, evaluator));
     }
   }
@@ -380,7 +379,7 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   // prepare function definition's body evaluator
   let body_expression_instance = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
   scope.push(parameters_ctx);
-  let body_evaluator = build_expression_instance_evaluator(scope, Some(body_expression_instance), model_evaluator)?;
+  let body_evaluator = build_expression_instance_evaluator(scope, body_expression_instance, model_evaluator)?;
   scope.pop();
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
@@ -394,7 +393,7 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
 fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   let mut bindings = vec![];
-  let function_evaluator = build_expression_instance_evaluator(scope, Some(invocation.called_function()), model_evaluator)?;
+  let function_evaluator = build_expression_instance_evaluator(scope, invocation.called_function(), model_evaluator)?;
   for binding in invocation.bindings() {
     if let Some(binding_formula) = binding.binding_formula() {
       let param_name = binding.parameter().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
@@ -403,7 +402,7 @@ fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_eval
       } else {
         FeelType::Any
       };
-      let evaluator = build_expression_instance_evaluator(scope, Some(binding_formula), model_evaluator)?;
+      let evaluator = build_expression_instance_evaluator(scope, binding_formula, model_evaluator)?;
       bindings.push((param_name, param_type, evaluator));
     }
   }
@@ -441,7 +440,7 @@ fn build_relation_evaluator(scope: &Scope, relation: &Relation, model_evaluator:
     for (i, element) in row.elements().iter().enumerate() {
       if let Some(column) = relation.columns().get(i) {
         let name = column.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        let evaluator = build_expression_instance_evaluator(scope, Some(element), model_evaluator)?;
+        let evaluator = build_expression_instance_evaluator(scope, element, model_evaluator)?;
         evaluators.push((name, evaluator));
       }
     }
