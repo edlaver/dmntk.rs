@@ -65,7 +65,6 @@ fn _0005() {
 }
 
 #[test]
-#[ignore]
 fn _0006() {
   assert_decision(&MODEL_EVALUATOR, "decision_006_1", &CTX, r#"30"#);
 }
@@ -132,7 +131,8 @@ fn _0017() {
 #[test]
 #[ignore]
 fn _0018() {
-  assert_decision(&MODEL_EVALUATOR, "decision_017_1", &CTX, r#"null"#);
+  let ctx = context(r#"{input_017_1: "a"}"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_017_1", &ctx, r#"["a", "a", "z", "z"]"#);
 }
 
 #[test]

@@ -376,6 +376,7 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   } else {
     FeelType::Any
   };
+  let closure_ctx = scope.peek().clone();
   // prepare function definition's body evaluator
   let body_expression_instance = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
   scope.push(parameters_ctx);
@@ -383,9 +384,15 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   scope.pop();
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
-  let closure_ctx = FeelContext::default();
-  Ok(Box::new(move |_scope: &Scope| {
-    Value::FunctionDefinition(parameters.clone(), function_body.clone(), closure_ctx.clone(), result_type.clone())
+  //let closure_ctx = FeelContext::default();
+  Ok(Box::new(move |scope: &Scope| {
+    let mut a = FeelContext::default();
+    for (name, _) in closure_ctx.get_entries() {
+      if let Some(v) = scope.get_entry(name) {
+        a.set_entry(name, v);
+      }
+    }
+    Value::FunctionDefinition(parameters.clone(), function_body.clone(), a, result_type.clone())
   }))
 }
 
