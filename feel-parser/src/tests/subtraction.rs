@@ -115,8 +115,8 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry("Date-Time".into());
-  scope.set_entry("Date-Time2".into());
+  scope.set_name("Date-Time".into());
+  scope.set_name("Date-Time2".into());
   accept(
     &scope,
     StartExpression,
@@ -136,8 +136,8 @@ fn _0005() {
 #[ignore]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry("Date - Time".into());
-  scope.set_entry("Date - Time2".into());
+  scope.set_name("Date - Time".into());
+  scope.set_name("Date - Time2".into());
   accept(
     &scope,
     StartExpression,

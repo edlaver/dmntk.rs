@@ -32,7 +32,7 @@
 
 //! Implementation of the scope used while parsing FEEL expressions.
 
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use dmntk_feel::Name;
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -75,17 +75,17 @@ impl ParsingScope {
     self.stack.borrow_mut().push(ParsingContext::default())
   }
 
-  /// Sets a specified value for entry name in context placed on the top of the stack.
-  pub fn set_entry(&self, name: Name) {
-    if let Some(ctx) = self.stack.borrow_mut().last_mut() {
-      ctx.set_entry(name);
+  /// Sets a specified name in context placed on the top of the stack.
+  pub fn set_name(&self, name: Name) {
+    if let Some(last_ctx) = self.stack.borrow_mut().last_mut() {
+      last_ctx.set_name(name);
     }
   }
 
-  /// Sets a specified value for entry name in context placed on the top of the stack.
-  pub fn set_value(&self, name: Name, value: ParsingContextEntry) {
-    if let Some(ctx) = self.stack.borrow_mut().last_mut() {
-      ctx.set_value(name, value);
+  /// Sets parsing context under a specified name in context placed on the top of the stack.
+  pub fn set_context(&self, name: Name, ctx: ParsingContext) {
+    if let Some(last_ctx) = self.stack.borrow_mut().last_mut() {
+      last_ctx.set_context(name, ctx);
     }
   }
 

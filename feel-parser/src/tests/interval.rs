@@ -31,7 +31,7 @@
  */
 
 use super::*;
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use crate::lalr::TokenType::StartTextualExpression;
 
 #[test]
@@ -177,8 +177,8 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  scope.set_entry("a".into());
-  scope.set_entry("b".into());
+  scope.set_name("a".into());
+  scope.set_name("b".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -202,9 +202,9 @@ fn _0008() {
 fn _0009() {
   let scope = scope!();
   let mut ctx = ParsingContext::default();
-  ctx.set_entry("start".into());
-  ctx.set_entry("end".into());
-  scope.set_value("r".into(), ParsingContextEntry::Context(ctx));
+  ctx.set_name("start".into());
+  ctx.set_name("end".into());
+  scope.set_context("r".into(), ctx);
   accept(
     &scope,
     StartTextualExpression,
@@ -231,9 +231,9 @@ fn _0009() {
 #[test]
 fn _00010() {
   let scope = scope!();
-  scope.set_entry("r".into());
-  scope.set_entry("start".into());
-  scope.set_entry("end".into());
+  scope.set_name("r".into());
+  scope.set_name("start".into());
+  scope.set_name("end".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -260,10 +260,10 @@ fn _00010() {
 #[test]
 fn _00011() {
   let scope = scope!();
-  scope.set_entry("r".into());
-  scope.set_entry("s".into());
-  scope.set_entry("start".into());
-  scope.set_entry("end".into());
+  scope.set_name("r".into());
+  scope.set_name("s".into());
+  scope.set_name("start".into());
+  scope.set_name("end".into());
   accept(
     &scope,
     StartTextualExpression,

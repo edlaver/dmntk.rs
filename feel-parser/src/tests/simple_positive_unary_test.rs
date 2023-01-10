@@ -31,7 +31,7 @@
  */
 
 use super::*;
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use crate::dmntk_feel::Name;
 use crate::lalr::TokenType::StartTextualExpression;
 
@@ -108,8 +108,8 @@ fn _0005() {
   let scope = scope!();
   let mut ctx = ParsingContext::default();
   let name_power = Name::from("power");
-  ctx.set_entry(name_power);
-  scope.set_value("engine".into(), ParsingContextEntry::Context(ctx));
+  ctx.set_name(name_power);
+  scope.set_context("engine".into(), ctx);
   accept(
     &scope,
     StartTextualExpression,
@@ -129,8 +129,8 @@ fn _0005() {
 #[test]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry("engine".into());
-  scope.set_entry("power".into());
+  scope.set_name("engine".into());
+  scope.set_name("power".into());
   accept(
     &scope,
     StartTextualExpression,

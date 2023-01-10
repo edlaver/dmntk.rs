@@ -31,7 +31,7 @@
  */
 
 use super::*;
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use crate::lalr::TokenType::*;
 
 #[test]
@@ -229,7 +229,7 @@ fn _0006() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  scope.set_entry("a".into());
+  scope.set_name("a".into());
   accept(
     &scope,
     StartExpression,
@@ -257,10 +257,10 @@ fn _0007() {
 fn _0008() {
   let scope = scope!();
   let mut ctx_inner = ParsingContext::default();
-  ctx_inner.set_entry("c".into());
+  ctx_inner.set_name("c".into());
   let mut ctx_outer = ParsingContext::default();
-  ctx_outer.set_value("b".into(), ParsingContextEntry::Context(ctx_inner));
-  scope.set_value("a".into(), ParsingContextEntry::Context(ctx_outer));
+  ctx_outer.set_context("b".into(), ctx_inner);
+  scope.set_context("a".into(), ctx_outer);
   accept(
     &scope,
     StartExpression,
@@ -293,7 +293,7 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  scope.set_entry("a".into());
+  scope.set_name("a".into());
   accept(
     &scope,
     StartExpression,

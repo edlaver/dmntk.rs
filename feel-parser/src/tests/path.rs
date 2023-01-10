@@ -31,7 +31,7 @@
  */
 
 use super::*;
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use crate::lalr::TokenType::StartTextualExpression;
 
 #[test]
@@ -55,7 +55,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry("Manager".into());
+  scope.set_name("Manager".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -74,7 +74,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = scope!();
-  scope.set_entry("Manager".into());
+  scope.set_name("Manager".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -111,8 +111,8 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry("Manager".into());
-  scope.set_entry("Address".into());
+  scope.set_name("Manager".into());
+  scope.set_name("Address".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -135,10 +135,10 @@ fn _0005() {
 fn _0006() {
   let scope = scope!();
   let mut ctx_a = ParsingContext::default();
-  ctx_a.set_entry("Street".into());
+  ctx_a.set_name("Street".into());
   let mut ctx_b = ParsingContext::default();
-  ctx_b.set_value("Address".into(), ParsingContextEntry::Context(ctx_a));
-  scope.set_value("Manager".into(), ParsingContextEntry::Context(ctx_b));
+  ctx_b.set_context("Address".into(), ctx_a);
+  scope.set_context("Manager".into(), ctx_b);
   accept(
     &scope,
     StartTextualExpression,
@@ -161,8 +161,8 @@ fn _0006() {
 fn _0007() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
-  ctx_1.set_entry("principal".into());
-  scope.set_value("loan".into(), ParsingContextEntry::Context(ctx_1));
+  ctx_1.set_name("principal".into());
+  scope.set_context("loan".into(), ctx_1);
   accept(
     &scope,
     StartTextualExpression,
@@ -182,10 +182,10 @@ fn _0007() {
 fn _0008() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
-  ctx_1.set_entry("principal".into());
-  ctx_1.set_entry("rate".into());
-  ctx_1.set_entry("termMonths".into());
-  scope.set_value("loan".into(), ParsingContextEntry::Context(ctx_1));
+  ctx_1.set_name("principal".into());
+  ctx_1.set_name("rate".into());
+  ctx_1.set_name("termMonths".into());
+  scope.set_context("loan".into(), ctx_1);
   accept(
     &scope,
     StartTextualExpression,
@@ -211,8 +211,8 @@ fn _0008() {
 fn _0009() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
-  ctx_1.set_entry("fromString".into());
-  scope.set_value("Date".into(), ParsingContextEntry::Context(ctx_1));
+  ctx_1.set_name("fromString".into());
+  scope.set_context("Date".into(), ctx_1);
   accept(
     &scope,
     StartTextualExpression,

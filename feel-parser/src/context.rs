@@ -80,14 +80,14 @@ impl From<dmntk_feel::context::FeelContext> for ParsingContext {
 }
 
 impl ParsingContext {
-  ///
-  pub fn set_entry(&mut self, name: Name) {
+  /// Places a specified name in this parsing context.
+  pub fn set_name(&mut self, name: Name) {
     self.0.insert(name, ParsingContextEntry::Attributes);
   }
 
-  ///
-  pub fn set_value(&mut self, name: Name, entry: ParsingContextEntry) {
-    self.0.insert(name, entry);
+  /// Places parsing context under specified name.
+  pub fn set_context(&mut self, name: Name, ctx: ParsingContext) {
+    self.0.insert(name, ParsingContextEntry::Context(ctx));
   }
 
   /// Returns a list of flattened keys for this parsing context.

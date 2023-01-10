@@ -31,13 +31,13 @@
  */
 
 use super::*;
-use crate::context::{ParsingContext, ParsingContextEntry};
+use crate::context::ParsingContext;
 use crate::lalr::TokenType::StartTextualExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -56,7 +56,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -83,7 +83,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -106,7 +106,7 @@ fn _0003() {
 #[test]
 fn _0004() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -128,7 +128,7 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry("Numbers".into());
+  scope.set_name("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -148,7 +148,7 @@ fn _0005() {
 #[test]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -176,7 +176,7 @@ fn _0006() {
 #[test]
 fn _0006_1() {
   let scope = scope!();
-  scope.set_entry("Person".into());
+  scope.set_name("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -204,7 +204,7 @@ fn _0006_1() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  scope.set_entry("Numbers".into());
+  scope.set_name("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -224,10 +224,10 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  scope.set_entry("Power".into());
+  scope.set_name("Power".into());
   let mut ctx = ParsingContext::default();
-  ctx.set_entry("power".into());
-  scope.set_value("engine".into(), ParsingContextEntry::Context(ctx));
+  ctx.set_name("power".into());
+  scope.set_context("engine".into(), ctx);
   accept(
     &scope,
     StartTextualExpression,
@@ -249,10 +249,10 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  scope.set_entry("Power".into());
+  scope.set_name("Power".into());
   let mut ctx = ParsingContext::default();
-  ctx.set_entry("power".into());
-  scope.set_entry("engine".into());
+  ctx.set_name("power".into());
+  scope.set_name("engine".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -274,7 +274,7 @@ fn _0009() {
 #[test]
 fn _0010() {
   let scope = scope!();
-  scope.set_entry("Items".into());
+  scope.set_name("Items".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -295,7 +295,7 @@ fn _0010() {
 #[test]
 fn _0011() {
   let scope = scope!();
-  scope.set_entry("Numbers".into());
+  scope.set_name("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -315,7 +315,7 @@ fn _0011() {
 #[test]
 fn _0012() {
   let scope = scope!();
-  scope.set_entry("Numbers".into());
+  scope.set_name("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -335,7 +335,7 @@ fn _0012() {
 #[test]
 fn _0013() {
   let scope = scope!();
-  scope.set_entry("Numbers".into());
+  scope.set_name("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,

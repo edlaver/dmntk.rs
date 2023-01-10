@@ -59,8 +59,8 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry("a".into());
-  scope.set_entry("b".into());
+  scope.set_name("a".into());
+  scope.set_name("b".into());
   accept(
     &scope,
     StartTextualExpression,

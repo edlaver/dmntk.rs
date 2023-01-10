@@ -283,8 +283,8 @@ fn _00010() {
 #[test]
 fn _00011() {
   let scope = scope!();
-  scope.set_entry("d".into());
-  scope.set_entry("e".into());
+  scope.set_name("d".into());
+  scope.set_name("e".into());
   accept(
     &scope,
     StartContext,

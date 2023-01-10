@@ -189,7 +189,7 @@ impl<'lexer> Lexer<'lexer> {
 
   ///
   pub fn add_name_to_scope(&mut self, name: &Name) {
-    self.scope.set_entry(name.to_owned());
+    self.scope.set_name(name.to_owned());
   }
 
   /// Returns the next token from input.

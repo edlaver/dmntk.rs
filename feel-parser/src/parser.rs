@@ -637,7 +637,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
       self.yy_node_stack.push(AstNode::FormalParameter(parameter_name, parameter_type));
       // set the name of the parameter to local context on the top of the scope stack
       // this name will be properly interpreted as a name while parsing the function body
-      self.scope.set_entry(name.to_owned());
+      self.scope.set_name(name.to_owned());
     }
     Ok(())
   }
@@ -653,7 +653,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
       self.yy_node_stack.push(AstNode::FormalParameter(parameter_name, parameter_type));
       // set the name of the parameter to local context on the top of the scope stack
       // this name will be properly interpreted as a name while parsing the function body
-      self.scope.set_entry(name.to_owned());
+      self.scope.set_name(name.to_owned());
     }
     Ok(())
   }
