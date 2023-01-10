@@ -26,9 +26,11 @@
             <typeRef>string</typeRef>
         </itemComponent>
     </itemDefinition>
+
     <itemDefinition id="_tFlightTable" isCollection="true" name="tFlightTable">
         <typeRef>tFlight</typeRef>
     </itemDefinition>
+
     <itemDefinition id="_tPassenger" name="tPassenger">
         <itemComponent id="_tPassenger_Name" name="Name">
             <typeRef>string</typeRef>
@@ -43,18 +45,23 @@
             <typeRef>string</typeRef>
         </itemComponent>
     </itemDefinition>
+
     <itemDefinition id="_tPassengerTable" isCollection="true" name="tPassengerTable">
         <typeRef>tPassenger</typeRef>
     </itemDefinition>
+
     <itemDefinition id="_tFlightNumberList" isCollection="true" name="tFlightNumberList">
         <typeRef>string</typeRef>
     </itemDefinition>
+
     <inputData id="i_Flight_List" name="Flight List">
         <variable name="Flight List" typeRef="tFlightTable"/>
     </inputData>
+
     <inputData id="i_Passenger_List" name="Passenger List">
         <variable name="Passenger List" typeRef="tPassengerTable"/>
     </inputData>
+
     <decision name="Prioritized Waiting List" id="d_PrioritizedWaitingList">
         <variable name="Prioritized Waiting List" typeRef="tPassengerTable"/>
         <informationRequirement>
@@ -86,6 +93,7 @@
             </contextEntry>
         </context>
     </decision>
+
     <decision name="Rebooked Passengers" id="d_RebookedPassengers">
         <variable name="Rebooked Passengers" typeRef="tPassengerTable"/>
         <informationRequirement>
@@ -121,6 +129,7 @@
             </binding>
         </invocation>
     </decision>
+
     <businessKnowledgeModel id="b_PassengerPriority" name="passenger priority">
         <variable name="passenger priority" typeRef="boolean"/>
         <encapsulatedLogic>
@@ -229,6 +238,7 @@
             </decisionTable>
         </encapsulatedLogic>
     </businessKnowledgeModel>
+
     <businessKnowledgeModel id="b_ReassignNextPassenger" name="reassign next passenger">
         <variable name="reassign next passenger" typeRef="tPassengerTable"/>
         <encapsulatedLogic>
@@ -251,11 +261,14 @@
                 <contextEntry>
                     <variable name="Best Alternate Flight" typeRef="tFlight"/>
                     <literalExpression>
-                        <text>Flights[ From = Original Flight.From and
-                            To = Original Flight.To and
-                            Departure > Original Flight.Departure and
-                            Status = "scheduled" and
-                            has capacity( item, Reassigned Passengers List ) ][1]
+                        <text>
+                            Flights[
+                                     From = Original Flight.From and
+                                     To = Original Flight.To and
+                                     Departure > Original Flight.Departure and
+                                     Status = "scheduled" and
+                                     has capacity(item, Reassigned Passengers List)
+                                   ][1]
                         </text>
                     </literalExpression>
                 </contextEntry>
@@ -318,6 +331,7 @@
             <requiredKnowledge href="#b_HasCapacity"/>
         </knowledgeRequirement>
     </businessKnowledgeModel>
+
     <businessKnowledgeModel id="b_HasCapacity" name="has capacity">
         <variable name="has capacity" typeRef="boolean"/>
         <encapsulatedLogic>
