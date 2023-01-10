@@ -34,10 +34,9 @@
 
 use crate::ast_tree::ast_tree;
 use crate::types::FeelType;
-use crate::{Name, Scope};
+use crate::Name;
 use std::borrow::Borrow;
 use std::fmt;
-use std::fmt::Display;
 
 /// Type for optional AST node.
 pub type OptAstNode = Option<AstNode>;
@@ -331,7 +330,7 @@ pub enum AstNode {
   UnaryLt(Box<AstNode>),
 }
 
-impl Display for AstNode {
+impl fmt::Display for AstNode {
   /// Converts [AstNode] to textual representation, including child nodes.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}\n    ", ast_tree(self))
@@ -340,9 +339,9 @@ impl Display for AstNode {
 
 impl AstNode {
   /// Evaluates the result type of the expression represented by this node.
-  pub fn type_of(&self, scope: &Scope) -> FeelType {
+  pub fn type_of(&self) -> FeelType {
     match self {
-      AstNode::Add(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
+      AstNode::Add(lhs, rhs) => lhs.type_of().zip(&rhs.type_of()),
       AstNode::And { .. } => FeelType::Boolean,
       AstNode::At { .. } => FeelType::Any,
       AstNode::Between { .. } => FeelType::Boolean,
@@ -373,24 +372,24 @@ impl AstNode {
           FeelType::context(&type_entries)
         }
       }
-      AstNode::ContextTypeEntry(_, node) => node.type_of(scope),
+      AstNode::ContextTypeEntry(_, node) => node.type_of(),
       AstNode::ContextTypeEntryKey(name) => name.into(),
-      AstNode::Div(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
+      AstNode::Div(lhs, rhs) => lhs.type_of().zip(&rhs.type_of()),
       AstNode::EvaluatedExpression { .. } => FeelType::Any,
       AstNode::Exp { .. } => FeelType::Number,
       AstNode::ExpressionList { .. } => FeelType::Any,
       AstNode::FeelType(feel_type) => feel_type.clone(),
       AstNode::Filter { .. } => FeelType::Any,
       AstNode::For { .. } => FeelType::Any,
-      AstNode::FormalParameter(_, rhs) => rhs.type_of(scope),
+      AstNode::FormalParameter(_, rhs) => rhs.type_of(),
       AstNode::FormalParameters(_) => FeelType::Any,
       AstNode::FunctionBody { .. } => FeelType::Any,
       AstNode::FunctionDefinition { .. } => FeelType::Any,
       AstNode::FunctionInvocation { .. } => FeelType::Any,
       AstNode::FunctionType(a, b) => {
         if let AstNode::ParameterTypes(items) = a.borrow() {
-          let x = items.iter().map(|c| c.type_of(scope)).collect::<Vec<FeelType>>();
-          FeelType::function(&x, &b.type_of(scope))
+          let x = items.iter().map(|c| c.type_of()).collect::<Vec<FeelType>>();
+          FeelType::function(&x, &b.type_of())
         } else {
           FeelType::Any
         }
@@ -408,17 +407,17 @@ impl AstNode {
         if nodes.is_empty() {
           FeelType::Any
         } else {
-          let mut base_type = nodes[0].type_of(scope);
+          let mut base_type = nodes[0].type_of();
           for node in nodes.iter().skip(1) {
-            base_type = base_type.zip(&node.type_of(scope));
+            base_type = base_type.zip(&node.type_of());
           }
           base_type
         }
       }
-      AstNode::ListType(lhs) => FeelType::List(Box::new(lhs.type_of(scope))),
+      AstNode::ListType(lhs) => FeelType::List(Box::new(lhs.type_of())),
       AstNode::Mul { .. } => FeelType::Number,
       AstNode::Name(name) => name.into(),
-      AstNode::NamedParameter(_, rhs) => rhs.type_of(scope),
+      AstNode::NamedParameter(_, rhs) => rhs.type_of(),
       AstNode::NamedParameters { .. } => FeelType::Any,
       AstNode::Null => FeelType::Null,
       AstNode::Numeric(_, _) => FeelType::Number,
@@ -428,27 +427,17 @@ impl AstNode {
       AstNode::ParameterTypes(_) => FeelType::Any,
       AstNode::Path { .. } => FeelType::Any,
       AstNode::PositionalParameters { .. } => FeelType::Any,
-      AstNode::QualifiedName(nodes) => {
-        let names = nodes
-          .iter()
-          .filter_map(|node| if let AstNode::Name(name) = node { Some(name.clone()) } else { None })
-          .collect::<Vec<Name>>();
-        if let Some(value) = scope.search_deep(&names) {
-          value.type_of()
-        } else {
-          FeelType::Any
-        }
-      }
+      AstNode::QualifiedName(_) => FeelType::Any,
       AstNode::QualifiedNameSegment(_) => FeelType::Any,
       AstNode::QuantifiedContexts { .. } => FeelType::Any,
       AstNode::QuantifiedContext { .. } => FeelType::Any,
       AstNode::Every { .. } => FeelType::Any,
       AstNode::Some { .. } => FeelType::Any,
       AstNode::Range { .. } => FeelType::Any,
-      AstNode::RangeType(lhs) => FeelType::Range(Box::new(lhs.type_of(scope))),
-      AstNode::Satisfies(mid) => mid.type_of(scope),
+      AstNode::RangeType(lhs) => FeelType::Range(Box::new(lhs.type_of())),
+      AstNode::Satisfies(mid) => mid.type_of(),
       AstNode::String(_) => FeelType::String,
-      AstNode::Sub(lhs, rhs) => lhs.type_of(scope).zip(&rhs.type_of(scope)),
+      AstNode::Sub(lhs, rhs) => lhs.type_of().zip(&rhs.type_of()),
       AstNode::UnaryGe { .. } => FeelType::Boolean,
       AstNode::UnaryGt { .. } => FeelType::Boolean,
       AstNode::UnaryLt { .. } => FeelType::Boolean,

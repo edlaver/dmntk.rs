@@ -64,8 +64,8 @@ pub fn evaluate_max(values: Vec<Value>) -> Value {
 }
 
 /// Evaluates the type of the AST node.
-pub fn evaluate_node_type(scope: &Scope, node: &AstNode) -> FeelType {
-  node.type_of(scope)
+pub fn evaluate_node_type(_: &Scope, node: &AstNode) -> FeelType {
+  node.type_of()
 }
 
 /// Compares two values and returns `true` when the two `FEEL` values are equal.

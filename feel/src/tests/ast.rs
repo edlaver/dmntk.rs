@@ -1,5 +1,4 @@
-use crate::values::Value;
-use crate::{scope, value_number, AstNode, FeelType, Name, Scope};
+use crate::{AstNode, FeelType, Name};
 use std::collections::BTreeMap;
 
 macro_rules! s {
@@ -54,11 +53,8 @@ macro_rules! b_bool {
 }
 
 macro_rules! eqt {
-  ($a:expr, $b:expr, $s:expr) => {
-    assert_eq!($a, $b.type_of($s));
-  };
   ($a:expr, $b:expr) => {
-    assert_eq!($a, $b.type_of(&Scope::default()));
+    assert_eq!($a, $b.type_of());
   };
 }
 
@@ -81,10 +77,8 @@ fn test_equal() {
 }
 
 #[test]
-#[allow(clippy::redundant_clone)]
 fn test_clone() {
   let node_a = AstNode::Add(b_num!(1), b_num!(2));
-  let node_b = node_a.clone();
   assert_eq!(
     r#"
        Add
@@ -93,7 +87,7 @@ fn test_clone() {
        └─ Numeric
           └─ `2.`
     "#,
-    format!("{node_b}"),
+    format!("{node_a}"),
   );
 }
 
@@ -1256,10 +1250,8 @@ fn test_node_qualified_name() {
     node,
   );
   let node = &AstNode::QualifiedName(vec![_name!(count)]);
-  let scope = scope!();
-  scope.set_entry(&"count".into(), value_number!(10));
   eqd(r#"QualifiedName([Name(Name("count"))])"#, node);
-  eqt!(FeelType::Number, node, &scope);
+  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QualifiedName
