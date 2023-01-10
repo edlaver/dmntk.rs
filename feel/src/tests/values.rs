@@ -38,6 +38,7 @@ fn test_debug() {
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
+  let v_closure = FeelContext::default();
   eq_dbg!(r#"Boolean(false)"#, Value::Boolean(false));
   eq_dbg!(r#"BuiltInFunction(Time)"#, Value::BuiltInFunction(Bif::Time));
   eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
@@ -59,10 +60,13 @@ fn test_debug() {
   eq_dbg!(r#"FeelType(Number)"#, Value::FeelType(t_number.clone()));
   eq_dbg!(r#"FormalParameter(Name("a"), Number)"#, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_dbg!(r#"FormalParameters([])"#, Value::FormalParameters(vec![]));
-  eq_dbg!(r#"FunctionBody(FunctionBodyLiteralExpression)"#, Value::FunctionBody(v_function_body.clone()));
   eq_dbg!(
-    r#"FunctionDefinition([(Name("a"), Number)], FunctionBodyLiteralExpression, Number)"#,
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, t_number)
+    r#"FunctionBody(FunctionBodyLiteralExpression, FeelContext({}))"#,
+    Value::FunctionBody(v_function_body.clone(), v_closure.clone())
+  );
+  eq_dbg!(
+    r#"FunctionDefinition([(Name("a"), Number)], FunctionBodyLiteralExpression, FeelContext({}), Number)"#,
+    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number)
   );
   eq_dbg!(r#"IntervalEnd(Number(+1E+0), false)"#, Value::IntervalEnd(b_number.clone(), false));
   eq_dbg!(r#"IntervalStart(Number(+1E+0), false)"#, Value::IntervalStart(b_number.clone(), false));
@@ -108,6 +112,7 @@ fn test_display() {
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
+  let v_closure = FeelContext::default();
   eq_dsp!(r#"false"#, Value::Boolean(false));
   eq_dsp!(r#"BuiltInFunction"#, Value::BuiltInFunction(Bif::Time));
   eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
@@ -123,10 +128,10 @@ fn test_display() {
   eq_dsp!(r#"type(number)"#, Value::FeelType(t_number.clone()));
   eq_dsp!(r#"FormalParameter"#, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_dsp!(r#"FormalParameters"#, Value::FormalParameters(vec![]));
-  eq_dsp!(r#"FunctionBody"#, Value::FunctionBody(v_function_body.clone()));
+  eq_dsp!(r#"FunctionBody"#, Value::FunctionBody(v_function_body.clone(), v_closure.clone()));
   eq_dsp!(
     r#"FunctionDefinition"#,
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, t_number)
+    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number)
   );
   eq_dsp!(r#"IntervalEnd"#, Value::IntervalEnd(b_number.clone(), false));
   eq_dsp!(r#"IntervalStart"#, Value::IntervalStart(b_number.clone(), false));
@@ -165,6 +170,7 @@ fn test_type_of() {
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
+  let v_closure = FeelContext::default();
   eq_typ!(FeelType::Boolean, Value::Boolean(false));
   eq_typ!(FeelType::Any, Value::BuiltInFunction(Bif::Time));
   eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
@@ -180,10 +186,10 @@ fn test_type_of() {
   eq_typ!(FeelType::Number, Value::FeelType(t_number.clone()));
   eq_typ!(FeelType::Number, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_typ!(FeelType::Any, Value::FormalParameters(vec![]));
-  eq_typ!(FeelType::Any, Value::FunctionBody(v_function_body.clone()));
+  eq_typ!(FeelType::Any, Value::FunctionBody(v_function_body.clone(), v_closure.clone()));
   eq_typ!(
     FeelType::Function(vec![FeelType::Number], Box::new(FeelType::Number)),
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, t_number.clone())
+    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number.clone())
   );
   eq_typ!(FeelType::Number, Value::IntervalEnd(b_number.clone(), false));
   eq_typ!(FeelType::Number, Value::IntervalStart(b_number.clone(), false));

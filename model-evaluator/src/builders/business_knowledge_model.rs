@@ -32,17 +32,14 @@
 
 //! Builder for business knowledge model evaluators.
 
-use crate::builders::information_item_type;
+use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, FunctionBody, Name, Scope};
-use dmntk_model::model::{
-  BusinessKnowledgeModel, Context, DecisionTable, Definitions, DmnElement, ExpressionInstance, FunctionDefinition, Invocation, LiteralExpression, NamedElement, Relation,
-  RequiredVariable,
-};
+use dmntk_model::model::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -63,7 +60,7 @@ impl BusinessKnowledgeModelEvaluator {
   pub fn build(&mut self, definitions: &Definitions, model_evaluator: &ModelEvaluator) -> Result<()> {
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
-      let evaluator = build_business_knowledge_model_evaluator(business_knowledge_model, function_definition, model_evaluator)?;
+      let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_evaluator)?;
       let business_knowledge_model_id = business_knowledge_model.id().as_ref().ok_or_else(err_empty_identifier)?;
       let business_knowledge_model_name = &business_knowledge_model.name().to_string();
       let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
@@ -83,7 +80,8 @@ impl BusinessKnowledgeModelEvaluator {
 }
 
 ///
-fn build_business_knowledge_model_evaluator(
+fn build_bkm_evaluator(
+  definitions: &Definitions,
   business_knowledge_model: &BusinessKnowledgeModel,
   function_definition: &FunctionDefinition,
   model_evaluator: &ModelEvaluator,
@@ -114,9 +112,12 @@ fn build_business_knowledge_model_evaluator(
     let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
     knowledge_requirements.push(href.into());
   }
+  // bring into context the variables from knowledge requirements
+  bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), &mut local_context)?;
+  //TODO verify the above line - there was no such example in models
   if let Some(expression_instance) = function_definition.body() {
     let scope: Scope = local_context.into();
-    build_expression_instance_evaluator(
+    build_bkm_expression_instance_evaluator(
       &scope,
       formal_parameters,
       expression_instance,
@@ -131,7 +132,7 @@ fn build_business_knowledge_model_evaluator(
 }
 
 ///
-fn build_expression_instance_evaluator(
+fn build_bkm_expression_instance_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   expression_instance: &ExpressionInstance,
@@ -143,7 +144,7 @@ fn build_expression_instance_evaluator(
   match expression_instance {
     ExpressionInstance::Context(context) => {
       //
-      build_context_evaluator(
+      build_bkm_context_evaluator(
         scope,                  //
         formal_parameters,      //
         context,                //
@@ -155,7 +156,7 @@ fn build_expression_instance_evaluator(
     }
     ExpressionInstance::DecisionTable(decision_table) => {
       //
-      build_decision_table_evaluator(
+      build_bkm_decision_table_evaluator(
         scope,                  //
         formal_parameters,      //
         decision_table,         //
@@ -166,7 +167,7 @@ fn build_expression_instance_evaluator(
     }
     ExpressionInstance::FunctionDefinition(function_definition) => {
       //
-      build_function_definition_evaluator(
+      build_bkm_function_definition_evaluator(
         scope,                  //
         formal_parameters,      //
         function_definition,    //
@@ -178,7 +179,7 @@ fn build_expression_instance_evaluator(
     }
     ExpressionInstance::Invocation(invocation) => {
       //
-      build_invocation_evaluator(
+      build_bkm_invocation_evaluator(
         scope,                  //
         formal_parameters,      //
         invocation,             //
@@ -190,7 +191,7 @@ fn build_expression_instance_evaluator(
     }
     ExpressionInstance::LiteralExpression(literal_expression) => {
       //
-      build_literal_expression_evaluator(
+      build_bkm_literal_expression_evaluator(
         scope,                  //
         formal_parameters,      //
         literal_expression,     //
@@ -201,7 +202,7 @@ fn build_expression_instance_evaluator(
     }
     ExpressionInstance::Relation(relation) => {
       //
-      build_relation_evaluator(
+      build_bkm_relation_evaluator(
         scope,                  //
         formal_parameters,      //
         relation,               //
@@ -215,7 +216,7 @@ fn build_expression_instance_evaluator(
 }
 
 ///
-fn build_context_evaluator(
+fn build_bkm_context_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   context: &Context,
@@ -224,13 +225,14 @@ fn build_context_evaluator(
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_context_evaluator(scope, context, model_evaluator)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_context_evaluator(scope, context, model_evaluator)?;
+  let closure = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
 ///
-fn build_decision_table_evaluator(
+fn build_bkm_decision_table_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   decision_table: &DecisionTable,
@@ -238,13 +240,14 @@ fn build_decision_table_evaluator(
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_decision_table_evaluator(scope, decision_table)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_decision_table_evaluator(scope, decision_table)?;
+  let closure = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
 ///
-fn build_function_definition_evaluator(
+fn build_bkm_function_definition_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   function_definition: &FunctionDefinition,
@@ -253,13 +256,14 @@ fn build_function_definition_evaluator(
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_function_definition_evaluator(scope, function_definition, model_evaluator)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_function_definition_evaluator(scope, function_definition, model_evaluator)?;
+  let closure = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::FunctionDefinition(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
 ///
-fn build_invocation_evaluator(
+fn build_bkm_invocation_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   invocation: &Invocation,
@@ -268,13 +272,14 @@ fn build_invocation_evaluator(
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_invocation_evaluator(scope, invocation, model_evaluator)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_invocation_evaluator(scope, invocation, model_evaluator)?;
+  let closure = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Invocation(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
 ///
-fn build_literal_expression_evaluator(
+fn build_bkm_literal_expression_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   literal_expression: &LiteralExpression,
@@ -282,13 +287,14 @@ fn build_literal_expression_evaluator(
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_literal_expression_evaluator(scope, literal_expression)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::LiteralExpression(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_literal_expression_evaluator(scope, literal_expression)?;
+  let closure = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::LiteralExpression(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
 ///
-fn build_relation_evaluator(
+fn build_bkm_relation_evaluator(
   scope: &Scope,
   formal_parameters: Vec<(Name, FeelType)>,
   relation: &Relation,
@@ -297,13 +303,14 @@ fn build_relation_evaluator(
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
-  let evaluator = crate::builders::build_relation_evaluator(scope, relation, model_evaluator)?;
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::LiteralExpression(Arc::new(evaluator)), output_variable_type);
-  build_evaluator(output_variable_name, function, knowledge_requirements)
+  let evaluator = build_relation_evaluator(scope, relation, model_evaluator)?;
+  let closure = FeelContext::default();
+  let function_definition = Value::FunctionDefinition(formal_parameters, FunctionBody::Relation(Arc::new(evaluator)), closure, output_variable_type);
+  build_bkm_evaluator_from_function_definition(output_variable_name, function_definition, knowledge_requirements)
 }
 
 ///
-fn build_evaluator(name: Name, function: Value, knowledge_requirements: Vec<String>) -> Result<BusinessKnowledgeModelEvaluatorFn> {
+fn build_bkm_evaluator_from_function_definition(name: Name, function_definition: Value, knowledge_requirements: Vec<String>) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   Ok(Box::new(
     move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
       // acquire all evaluators needed
@@ -314,7 +321,7 @@ fn build_evaluator(name: Name, function: Value, knowledge_requirements: Vec<Stri
             business_knowledge_model_evaluator.evaluate(id, input_data, model_evaluator, output_data);
             decision_service_evaluator.evaluate(id, input_data, model_evaluator, output_data);
           });
-          output_data.set_entry(&name, function.clone())
+          output_data.set_entry(&name, function_definition.clone())
         }
       }
     },

@@ -179,8 +179,9 @@ impl ModelEvaluator {
     if let Ok(business_knowledge_model_evaluator) = self.business_knowledge_model_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
-      if let Some(Value::FunctionDefinition(parameters, body, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
+      if let Some(Value::FunctionDefinition(parameters, body, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
         let mut parameters_ctx = FeelContext::default();
+        parameters_ctx.zip(closure_ctx);
         for (name, _) in parameters {
           if let Some(value) = input_data.get_entry(name) {
             parameters_ctx.set_entry(name, value.to_owned());

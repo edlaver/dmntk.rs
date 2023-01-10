@@ -633,8 +633,8 @@ fn test_get_coerced() {
   assert_eq!(r#"[10]"#, t_list_number.coerced(&v_number).to_string());
   assert_eq!(r#"[10]"#, t_list_any.coerced(&v_number).to_string());
   assert_eq!(r#"1"#, t_number.coerced(&v_list_number_1).to_string());
-  assert_eq!(r#"null"#, t_number.coerced(&v_list_number_2).to_string());
-  assert_eq!(r#"null"#, t_number.coerced(&v_list_string_1).to_string());
+  assert_eq!(r#"null(after coercion)"#, t_number.coerced(&v_list_number_2).to_string());
+  assert_eq!(r#"null(after coercion)"#, t_number.coerced(&v_list_string_1).to_string());
   assert_eq!(r#"["a"]"#, t_list_string.coerced(&v_string).to_string());
   assert_eq!(r#"["a"]"#, t_list_any.coerced(&v_string).to_string());
   assert_eq!(r#""A""#, t_string.coerced(&v_list_string_1).to_string());
@@ -723,18 +723,21 @@ fn test_type_get_conformant_value() {
   let v_function_a = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(1)))),
+    FeelContext::default(),
     t_number.clone(),
   );
   let t_function_b = FeelType::function(&[FeelType::Number, FeelType::Number], &t_boolean);
   let v_function_b = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2)))),
+    FeelContext::default(),
     t_boolean.clone(),
   );
   let t_function_c = FeelType::function(&[FeelType::Number], &t_string);
   let v_function_c = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(3)))),
+    FeelContext::default(),
     t_string.clone(),
   );
   let t_function_d = FeelType::function(&[FeelType::Any], &t_string);

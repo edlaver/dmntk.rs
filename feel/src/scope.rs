@@ -102,18 +102,18 @@ impl Scope {
   /// Peeks a to context from the top of the stack.
   /// If the stack is empty, the default context is returned.
   pub fn peek(&self) -> FeelContext {
-    //FIXME maybe returning a reference is enough???
-    self.contexts.borrow_mut().last().map_or(FeelContext::default(), |ctx| ctx.clone())
+    //TODO maybe returning a reference is enough???
+    self.contexts.borrow().last().map_or(FeelContext::default(), |ctx| ctx.clone())
   }
   /// Returns a vector of flattened keys in all contexts in scope.
   pub fn flatten_keys(&self) -> HashSet<String> {
-    self.contexts.borrow_mut().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
+    self.contexts.borrow().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
   }
   /// Returns a value for an entry specified by name.
   /// Entries are searched from the last to the first context
   /// (from top to bottom of scope stack).
   pub fn get_entry(&self, name: &Name) -> Option<Value> {
-    for context in self.contexts.borrow_mut().iter().rev() {
+    for context in self.contexts.borrow().iter().rev() {
       if let Some(value) = context.get_entry(name) {
         return Some(value.clone());
       }
@@ -122,7 +122,7 @@ impl Scope {
   }
   ///
   pub fn search_deep(&self, names: &[Name]) -> Option<Value> {
-    for context in self.contexts.borrow_mut().iter().rev() {
+    for context in self.contexts.borrow().iter().rev() {
       if let Some(value) = context.search_deep(names) {
         return Some(value.clone());
       }

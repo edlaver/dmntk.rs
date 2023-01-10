@@ -206,6 +206,9 @@ impl FeelType {
   /// All these conversion rules are implemented in this function.
   ///
   pub fn coerced(&self, actual_value: &Value) -> Value {
+    if let Value::FunctionDefinition(_, _, _, _) = actual_value {
+      return actual_value.clone();
+    }
     // conforms to
     if actual_value.type_of().is_conformant(self) {
       return actual_value.clone();
@@ -230,8 +233,9 @@ impl FeelType {
         }
       }
     }
-    value_null!()
+    value_null!("after coercion")
   }
+
   ///
   pub fn get_conformant_value(&self, actual_value: &Value) -> Value {
     let actual_type = actual_value.type_of();
@@ -242,6 +246,7 @@ impl FeelType {
       value_null!("type '{}' is not conformant with value of type '{}'", self.to_string(), actual_type.to_string())
     }
   }
+
   /// Returns a new value cloned from provided value, and retrieved with type checking.
   pub fn get_value_checked(&self, value: &Value) -> Result<Value> {
     if let Value::Null(_) = value {
@@ -334,22 +339,27 @@ impl FeelType {
       Self::Any | Self::Boolean | Self::Date | Self::DateTime | Self::DaysAndTimeDuration | Self::Null | Self::Number | Self::String | Self::Time | Self::YearsAndMonthsDuration
     )
   }
+
   /// Creates a `list` type with specified items' type.
   pub fn list(items_type: &FeelType) -> FeelType {
     FeelType::List(Box::new(items_type.clone()))
   }
+
   /// Creates a `range` type with specified elements' type.
   pub fn range(elements_type: &FeelType) -> FeelType {
     FeelType::Range(Box::new(elements_type.clone()))
   }
+
   /// Creates a `context` type with specified entries.
   pub fn context(entries_types: &[(&Name, &FeelType)]) -> FeelType {
     FeelType::Context(entries_types.iter().map(|(name, typ)| ((*name).clone(), (*typ).clone())).collect())
   }
+
   /// Creates a `function` type with specified parameter types and result type.
   pub fn function(parameter_types: &[FeelType], result_type: &FeelType) -> FeelType {
     FeelType::Function(parameter_types.iter().map(|typ| (*typ).clone()).collect(), Box::new((*result_type).clone()))
   }
+
   ///
   pub fn zip(&self, other: &FeelType) -> Self {
     if self == other {
@@ -358,6 +368,7 @@ impl FeelType {
       FeelType::Any
     }
   }
+
   ///
   pub fn is_equivalent(&self, other: &FeelType) -> bool {
     match other {
@@ -420,6 +431,7 @@ impl FeelType {
       FeelType::YearsAndMonthsDuration => matches!(self, FeelType::YearsAndMonthsDuration),
     }
   }
+
   ///
   pub fn is_conformant(&self, other: &FeelType) -> bool {
     if self.is_equivalent(other) {

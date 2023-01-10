@@ -39,15 +39,13 @@ lazy_static! {
 }
 
 #[test]
-#[ignore]
 fn _0001() {
-  let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
+  let ctx = context(r##"{stringInputA: "feel", stringInputB: "#"}"##);
   assert_decision(&MODEL_EVALUATOR, "simple function invocation", &ctx, r##""feel#feel#""##);
 }
 
 #[test]
-#[ignore]
 fn _0002() {
-  let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
+  let ctx = context(r##"{stringInputA: "feel", stringInputB: "#"}"##);
   assert_decision(&MODEL_EVALUATOR, "named function invocation", &ctx, r##""#feel#feel""##);
 }

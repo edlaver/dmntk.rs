@@ -48,72 +48,99 @@ use std::ops::Deref;
 use std::str::FromStr;
 use std::sync::Arc;
 
+/// Context of evaluator builder.
+#[derive(Default)]
+pub struct BuilderContext {
+  variables: HashSet<Name>,
+  parameters: HashSet<Name>,
+}
+
+impl BuilderContext {
+  ///
+  fn clear(&mut self) {
+    self.variables.clear();
+    self.parameters.clear();
+  }
+  ///
+  fn add_variable(&mut self, variable_name: Name) {
+    self.variables.insert(variable_name);
+  }
+  ///
+  fn add_parameter(&mut self, parameter_name: Name) {
+    self.parameters.insert(parameter_name);
+  }
+  ///
+  fn get_closed(&self) -> HashSet<Name> {
+    self.variables.difference(&self.parameters).cloned().collect()
+  }
+}
+
 ///
-pub fn build_evaluator(node: &AstNode) -> Result<Evaluator> {
+pub fn build_evaluator(btx: &mut BuilderContext, node: &AstNode) -> Result<Evaluator> {
   match node {
-    AstNode::Add(lhs, rhs) => build_add(lhs, rhs),
-    AstNode::And(lhs, rhs) => build_and(lhs, rhs),
-    AstNode::At(rhs) => build_at(rhs),
-    AstNode::Between(lhs, mhs, rhs) => build_between(lhs, mhs, rhs),
-    AstNode::Boolean(lhs) => build_boolean(*lhs),
-    AstNode::Context(lhs) => build_context(lhs),
-    AstNode::ContextEntry(lhs, rhs) => build_context_entry(lhs, rhs),
-    AstNode::ContextEntryKey(lhs) => build_context_entry_key(lhs),
-    AstNode::ContextType(lhs) => build_context_type(lhs),
-    AstNode::ContextTypeEntry(lhs, rhs) => build_context_type_entry(lhs, rhs),
-    AstNode::ContextTypeEntryKey(lhs) => build_context_type_entry_key(lhs),
-    AstNode::Div(lhs, rhs) => build_div(lhs, rhs),
-    AstNode::Eq(lhs, rhs) => build_eq(lhs, rhs),
-    AstNode::EvaluatedExpression(lhs) => build_evaluated_expression(lhs),
-    AstNode::Every(lhs, rhs) => build_every(lhs, rhs),
-    AstNode::Exp(lhs, rhs) => build_exp(lhs, rhs),
-    AstNode::ExpressionList(lhs) => build_expression_list(lhs),
-    AstNode::FeelType(lhs) => build_feel_type(lhs),
-    AstNode::Filter(lhs, rhs) => build_filter(lhs, rhs),
-    AstNode::For(lhs, rhs) => build_for(lhs, rhs),
-    AstNode::FormalParameter(lhs, rhs) => build_formal_parameter(lhs, rhs),
-    AstNode::FormalParameters(lhs) => build_formal_parameters(lhs),
-    AstNode::FunctionBody(lhs, rhs) => build_function_body(lhs, rhs),
-    AstNode::FunctionDefinition(lhs, rhs) => build_function_definition(lhs, rhs),
-    AstNode::FunctionInvocation(lhs, rhs) => build_function_invocation(lhs, rhs),
-    AstNode::FunctionType(lhs, rhs) => build_function_type(lhs, rhs),
-    AstNode::Ge(lhs, rhs) => build_ge(lhs, rhs),
-    AstNode::Gt(lhs, rhs) => build_gt(lhs, rhs),
-    AstNode::If(lhs, mid, rhs) => build_if(lhs, mid, rhs),
-    AstNode::In(lhs, rhs) => build_in(lhs, rhs),
-    AstNode::InstanceOf(lhs, rhs) => build_instance_of(lhs, rhs),
-    AstNode::IntervalEnd(lhs, rhs) => build_interval_end(lhs, rhs),
-    AstNode::IntervalStart(lhs, rhs) => build_interval_start(lhs, rhs),
-    AstNode::Irrelevant => build_irrelevant(),
-    AstNode::Le(lhs, rhs) => build_le(lhs, rhs),
-    AstNode::List(items) => build_list(items),
-    AstNode::ListType(lhs) => build_list_type(lhs),
-    AstNode::Lt(lhs, rhs) => build_lt(lhs, rhs),
-    AstNode::Mul(lhs, rhs) => build_mul(lhs, rhs),
-    AstNode::Name(name) => build_name(name.clone()),
-    AstNode::NamedParameter(lhs, rhs) => build_named_parameter(lhs, rhs),
-    AstNode::NamedParameters(lhs) => build_named_parameters(lhs),
-    AstNode::Neg(rhs) => build_neg(rhs),
-    AstNode::NegatedList(lhs) => build_negated_list(lhs),
-    AstNode::Null => build_null(),
-    AstNode::Numeric(lhs, rhs) => build_numeric(lhs, rhs),
-    AstNode::Nq(lhs, rhs) => build_nq(lhs, rhs),
-    AstNode::Or(lhs, rhs) => build_or(lhs, rhs),
-    AstNode::Out(lhs, rhs) => build_out(lhs, rhs),
-    AstNode::ParameterName(lhs) => build_parameter_name(lhs),
-    AstNode::ParameterTypes(lhs) => build_parameter_types(lhs),
-    AstNode::Path(lhs, rhs) => build_path(lhs, rhs),
-    AstNode::QualifiedName(lhs) => build_qualified_name(lhs),
-    AstNode::QualifiedNameSegment(lhs) => build_qualified_name_segment(lhs),
-    AstNode::Range(lhs, rhs) => build_range(lhs, rhs),
-    AstNode::RangeType(lhs) => build_range_type(lhs),
-    AstNode::Some(lhs, rhs) => build_some(lhs, rhs),
-    AstNode::String(lhs) => build_string(lhs),
-    AstNode::Sub(lhs, rhs) => build_sub(lhs, rhs),
-    AstNode::UnaryGe(lhs) => build_unary_ge(lhs),
-    AstNode::UnaryGt(lhs) => build_unary_gt(lhs),
-    AstNode::UnaryLe(lhs) => build_unary_le(lhs),
-    AstNode::UnaryLt(lhs) => build_unary_lt(lhs),
+    AstNode::Add(lhs, rhs) => build_add(btx, lhs, rhs),
+    AstNode::And(lhs, rhs) => build_and(btx, lhs, rhs),
+    AstNode::At(rhs) => build_at(btx, rhs),
+    AstNode::Between(lhs, mhs, rhs) => build_between(btx, lhs, mhs, rhs),
+    AstNode::Boolean(lhs) => build_boolean(btx, *lhs),
+    AstNode::Context(lhs) => build_context(btx, lhs),
+    AstNode::ContextEntry(lhs, rhs) => build_context_entry(btx, lhs, rhs),
+    AstNode::ContextEntryKey(lhs) => build_context_entry_key(btx, lhs),
+    AstNode::ContextType(lhs) => build_context_type(btx, lhs),
+    AstNode::ContextTypeEntry(lhs, rhs) => build_context_type_entry(btx, lhs, rhs),
+    AstNode::ContextTypeEntryKey(lhs) => build_context_type_entry_key(btx, lhs),
+    AstNode::Div(lhs, rhs) => build_div(btx, lhs, rhs),
+    AstNode::Eq(lhs, rhs) => build_eq(btx, lhs, rhs),
+    AstNode::EvaluatedExpression(lhs) => build_evaluated_expression(btx, lhs),
+    AstNode::Every(lhs, rhs) => build_every(btx, lhs, rhs),
+    AstNode::Exp(lhs, rhs) => build_exp(btx, lhs, rhs),
+    AstNode::ExpressionList(lhs) => build_expression_list(btx, lhs),
+    AstNode::FeelType(lhs) => build_feel_type(btx, lhs),
+    AstNode::Filter(lhs, rhs) => build_filter(btx, lhs, rhs),
+    AstNode::For(lhs, rhs) => build_for(btx, lhs, rhs),
+    AstNode::FormalParameter(lhs, rhs) => build_formal_parameter(btx, lhs, rhs),
+    AstNode::FormalParameters(lhs) => build_formal_parameters(btx, lhs),
+    AstNode::FunctionBody(lhs, rhs) => build_function_body(btx, lhs, rhs),
+    AstNode::FunctionDefinition(lhs, rhs) => build_function_definition(btx, lhs, rhs),
+    AstNode::FunctionInvocation(lhs, rhs) => build_function_invocation(btx, lhs, rhs),
+    AstNode::FunctionType(lhs, rhs) => build_function_type(btx, lhs, rhs),
+    AstNode::Ge(lhs, rhs) => build_ge(btx, lhs, rhs),
+    AstNode::Gt(lhs, rhs) => build_gt(btx, lhs, rhs),
+    AstNode::If(lhs, mid, rhs) => build_if(btx, lhs, mid, rhs),
+    AstNode::In(lhs, rhs) => build_in(btx, lhs, rhs),
+    AstNode::InstanceOf(lhs, rhs) => build_instance_of(btx, lhs, rhs),
+    AstNode::IntervalEnd(lhs, rhs) => build_interval_end(btx, lhs, rhs),
+    AstNode::IntervalStart(lhs, rhs) => build_interval_start(btx, lhs, rhs),
+    AstNode::Irrelevant => build_irrelevant(btx),
+    AstNode::Le(lhs, rhs) => build_le(btx, lhs, rhs),
+    AstNode::List(items) => build_list(btx, items),
+    AstNode::ListType(lhs) => build_list_type(btx, lhs),
+    AstNode::Lt(lhs, rhs) => build_lt(btx, lhs, rhs),
+    AstNode::Mul(lhs, rhs) => build_mul(btx, lhs, rhs),
+    AstNode::Name(name) => build_name(btx, name.clone()),
+    AstNode::NamedParameter(lhs, rhs) => build_named_parameter(btx, lhs, rhs),
+    AstNode::NamedParameters(lhs) => build_named_parameters(btx, lhs),
+    AstNode::Neg(rhs) => build_neg(btx, rhs),
+    AstNode::NegatedList(lhs) => build_negated_list(btx, lhs),
+    AstNode::Null => build_null(btx),
+    AstNode::Numeric(lhs, rhs) => build_numeric(btx, lhs, rhs),
+    AstNode::Nq(lhs, rhs) => build_nq(btx, lhs, rhs),
+    AstNode::Or(lhs, rhs) => build_or(btx, lhs, rhs),
+    AstNode::Out(lhs, rhs) => build_out(btx, lhs, rhs),
+    AstNode::ParameterName(lhs) => build_parameter_name(btx, lhs),
+    AstNode::ParameterTypes(lhs) => build_parameter_types(btx, lhs),
+    AstNode::Path(lhs, rhs) => build_path(btx, lhs, rhs),
+    AstNode::QualifiedName(lhs) => build_qualified_name(btx, lhs),
+    AstNode::QualifiedNameSegment(lhs) => build_qualified_name_segment(btx, lhs),
+    AstNode::Range(lhs, rhs) => build_range(btx, lhs, rhs),
+    AstNode::RangeType(lhs) => build_range_type(btx, lhs),
+    AstNode::Some(lhs, rhs) => build_some(btx, lhs, rhs),
+    AstNode::String(lhs) => build_string(btx, lhs),
+    AstNode::Sub(lhs, rhs) => build_sub(btx, lhs, rhs),
+    AstNode::UnaryGe(lhs) => build_unary_ge(btx, lhs),
+    AstNode::UnaryGt(lhs) => build_unary_gt(btx, lhs),
+    AstNode::UnaryLe(lhs) => build_unary_le(btx, lhs),
+    AstNode::UnaryLt(lhs) => build_unary_lt(btx, lhs),
     AstNode::CommaList { .. }
     | AstNode::IterationContexts { .. }
     | AstNode::IterationContextSingle { .. }
@@ -126,9 +153,9 @@ pub fn build_evaluator(node: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_add(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -232,7 +259,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 /// Builds evaluator of temporal expression after `@` (at) literal.
-fn build_at(text: &str) -> Result<Evaluator> {
+fn build_at(_btx: &mut BuilderContext, text: &str) -> Result<Evaluator> {
   if let Ok(date) = FeelDate::from_str(text) {
     return Ok(Box::new(move |_: &Scope| Value::Date(date.clone())));
   }
@@ -252,10 +279,10 @@ fn build_at(text: &str) -> Result<Evaluator> {
 }
 
 ///
-fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let mhe = build_evaluator(mhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_between(btx: &mut BuilderContext, lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let mhe = build_evaluator(btx, mhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let mhv = mhe(scope);
@@ -344,7 +371,7 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
 }
 
 ///
-fn build_boolean(lhs: bool) -> Result<Evaluator> {
+fn build_boolean(_btx: &mut BuilderContext, lhs: bool) -> Result<Evaluator> {
   Ok(Box::new(move |_: &Scope| Value::Boolean(lhs)))
 }
 
@@ -362,9 +389,9 @@ fn build_boolean(lhs: bool) -> Result<Evaluator> {
 /// otherwise   false        false
 /// otherwise   otherwise    null
 /// ```
-fn build_and(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_and(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -394,10 +421,10 @@ fn build_and(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_context(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut evaluated_ctx = FeelContext::default();
@@ -425,9 +452,9 @@ fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_context_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_context_entry(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -440,16 +467,16 @@ fn build_context_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_context_entry_key(lhs: &Name) -> Result<Evaluator> {
+fn build_context_entry_key(_btx: &mut BuilderContext, lhs: &Name) -> Result<Evaluator> {
   let name = lhs.clone();
   Ok(Box::new(move |_: &Scope| Value::ContextEntryKey(name.clone())))
 }
 
 ///
-fn build_context_type(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_context_type(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut entries = BTreeMap::new();
@@ -463,9 +490,9 @@ fn build_context_type(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_context_type_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_context_type_entry(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -482,15 +509,15 @@ fn build_context_type_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_context_type_entry_key(lhs: &Name) -> Result<Evaluator> {
+fn build_context_type_entry_key(_btx: &mut BuilderContext, lhs: &Name) -> Result<Evaluator> {
   let name = lhs.clone();
   Ok(Box::new(move |_: &Scope| Value::ContextTypeEntryKey(name.clone())))
 }
 
 ///
-fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_div(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -559,10 +586,10 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_expression_list(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_expression_list(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut values = vec![];
@@ -574,9 +601,9 @@ fn build_expression_list(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_exp(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_exp(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -597,18 +624,18 @@ fn build_exp(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_feel_type(lhs: &FeelType) -> Result<Evaluator> {
+fn build_feel_type(_btx: &mut BuilderContext, lhs: &FeelType) -> Result<Evaluator> {
   let feel_type = lhs.clone();
   Ok(Box::new(move |_: &Scope| Value::FeelType(feel_type.clone())))
 }
 
 ///
-fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   let name_item: Name = "item".into();
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
+    let lhv = lhe(scope) as Value;
     match lhv {
       Value::List(values) => {
         let mut filtered_values = vec![];
@@ -638,7 +665,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             scope.pop();
           }
         }
-        let rhv = rhe(scope);
+        let rhv = rhe(scope) as Value;
         match rhv {
           Value::Number(index) => {
             if index.is_integer() {
@@ -722,22 +749,22 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_for(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let rhe = build_evaluator(rhs)?;
+fn build_for(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let rhe = build_evaluator(btx, rhs)?;
   let mut evaluators_single = vec![];
   let mut evaluators_range = vec![];
   if let AstNode::IterationContexts(items) = lhs {
     for item in items {
       if let AstNode::IterationContextSingle(variable_name, expr_node) = item {
         if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_single = build_evaluator(expr_node)?;
+          let evaluator_single = build_evaluator(btx, expr_node)?;
           evaluators_single.push((name.clone(), evaluator_single));
         }
       }
       if let AstNode::IterationContextRange(variable_name, range_start_node, range_end_node) = item {
         if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_range_start = build_evaluator(range_start_node)?;
-          let evaluator_range_end = build_evaluator(range_end_node)?;
+          let evaluator_range_start = build_evaluator(btx, range_start_node)?;
+          let evaluator_range_end = build_evaluator(btx, range_end_node)?;
           evaluators_range.push((name.clone(), evaluator_range_start, evaluator_range_end));
         }
       }
@@ -760,9 +787,9 @@ fn build_for(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_formal_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_formal_parameter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -779,10 +806,10 @@ fn build_formal_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_formal_parameters(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     Value::FormalParameters(
@@ -801,30 +828,41 @@ fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_function_body(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
+fn build_function_body(btx: &mut BuilderContext, lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
   if *rhs {
-    // // prepare function's body built as external function call (usually context that defines what to call)
+    // prepare function's body built as external function call (usually context that defines what to call)
     // let function_body = FunctionBody::External(Box::new(move |_:&Scope|eval( lhs)?));
     // Ok(Value::FunctionBody(function_body))
-    //FIXME implement external function body
+    //TODO implement body for external function
     Ok(Box::new(move |_: &Scope| value_null!("invalid body of the external function")))
   } else {
-    let lhe = Arc::new(build_evaluator(lhs)?);
-    Ok(Box::new(move |_: &Scope| Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()))))
+    //
+    let lhv = build_evaluator(btx, lhs)?;
+    let closed_names = btx.get_closed();
+    btx.clear();
+    let lhe = Arc::new(lhv);
+    Ok(Box::new(move |scope: &Scope| {
+      let mut closure = FeelContext::default();
+      for name in &closed_names {
+        if let Some(value) = scope.get_entry(name) {
+          closure.set_entry(name, value);
+        }
+      }
+      Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()), closure)
+    }))
   }
 }
 
 ///
-fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_function_definition(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  btx.clear();
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
-    if let Value::FormalParameters(parameters) = lhv {
-      if let Value::FunctionBody(function_body) = rhv {
-        //FIXME is `FeelType::Any` always ok for function definition?
-        Value::FunctionDefinition(parameters, function_body, FeelType::Any)
+    if let Value::FormalParameters(parameters) = lhe(scope) {
+      if let Value::FunctionBody(function_body, closure) = rhe(scope) {
+        //TODO is `FeelType::Any` always ok for function result type in function definition?
+        Value::FunctionDefinition(parameters, function_body, closure, FeelType::Any)
       } else {
         value_null!("invalid function body")
       }
@@ -835,9 +873,9 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
 }
 
 ///
-fn build_eq(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_eq(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -850,19 +888,19 @@ fn build_eq(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_evaluated_expression(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_evaluated_expression(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| lhe(scope)))
 }
 
 ///
-fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_every(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let mut expr_evaluators = vec![];
   if let AstNode::QuantifiedContexts(items) = lhs {
     for item in items {
       if let AstNode::QuantifiedContext(variable_name, expr_node) = item {
         if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_single = build_evaluator(expr_node)?;
+          let evaluator_single = build_evaluator(btx, expr_node)?;
           expr_evaluators.push((name.clone(), evaluator_single));
         }
       }
@@ -871,7 +909,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
-    let satisfies_evaluator = build_evaluator(satisfies)?;
+    let satisfies_evaluator = build_evaluator(btx, satisfies)?;
     Ok(Box::new(move |scope: &Scope| {
       let mut expression_evaluator = EveryExpressionEvaluator::new();
       for (name, expr_evaluator) in &expr_evaluators {
@@ -885,27 +923,29 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_function_invocation(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_function_invocation(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   match rhs {
-    AstNode::PositionalParameters(parameters) => build_function_invocation_with_positional_parameters(lhs, parameters),
-    node @ AstNode::NamedParameters(_) => build_function_invocation_with_named_parameters(lhs, node),
+    AstNode::PositionalParameters(parameters) => build_function_invocation_with_positional_parameters(btx, lhs, parameters),
+    node @ AstNode::NamedParameters(_) => build_function_invocation_with_named_parameters(btx, lhs, node),
     _ => Err(err_expected_positional_or_named_parameter()),
   }
 }
 
 ///
-fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
+fn build_function_invocation_with_positional_parameters(btx: &mut BuilderContext, lhs: &AstNode, rhs: &[AstNode]) -> Result<Evaluator> {
   let mut argument_evaluators = vec![];
   for node in rhs {
-    argument_evaluators.push(build_evaluator(node)?);
+    argument_evaluators.push(build_evaluator(btx, node)?);
   }
-  let function_evaluator = build_evaluator(lhs)?;
+  let function_evaluator = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let function = function_evaluator(scope);
     let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
       Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, closure_ctx, result_type) => {
+        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
+      }
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -915,15 +955,15 @@ fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[As
 }
 
 ///
-fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let function_evaluator = build_evaluator(lhs)?;
-  let arguments_evaluator = build_evaluator(rhs)?;
+fn build_function_invocation_with_named_parameters(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let function_evaluator = build_evaluator(btx, lhs)?;
+  let arguments_evaluator = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let function = function_evaluator(scope);
     let arguments = arguments_evaluator(scope);
     match function {
       Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, result_type) => eval_function_with_named_parameters(scope, &arguments, &parameters, &body, result_type),
+      Value::FunctionDefinition(parameters, body, closure_ctx, result_type) => eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type),
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -933,9 +973,9 @@ fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode)
 }
 
 ///
-fn build_function_type(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_function_type(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -956,9 +996,9 @@ fn build_function_type(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_ge(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -981,9 +1021,9 @@ fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_gt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_gt(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1006,10 +1046,10 @@ fn build_gt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_if(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let mhe = build_evaluator(mhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_if(btx: &mut BuilderContext, lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let mhe = build_evaluator(btx, mhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| match lhe(scope) {
     Value::Boolean(true) => mhe(scope),
     Value::Boolean(false) | Value::Null(_) => rhe(scope),
@@ -1018,9 +1058,9 @@ fn build_if(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_in(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -1060,8 +1100,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_interval_end(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_interval_end(btx: &mut BuilderContext, lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   let closed = *rhs;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
@@ -1070,8 +1110,8 @@ fn build_interval_end(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
 }
 
 ///
-fn build_interval_start(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_interval_start(btx: &mut BuilderContext, lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   let closed = *rhs;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
@@ -1080,14 +1120,14 @@ fn build_interval_start(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
 }
 
 ///
-fn build_irrelevant() -> Result<Evaluator> {
+fn build_irrelevant(_btx: &mut BuilderContext) -> Result<Evaluator> {
   Ok(Box::new(move |_: &Scope| Value::Irrelevant))
 }
 
 ///
-fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_instance_of(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1162,9 +1202,9 @@ fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_le(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_le(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1187,9 +1227,9 @@ fn build_le(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_lt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_lt(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1212,10 +1252,10 @@ fn build_lt(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_list(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_list(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut values = vec![];
@@ -1227,8 +1267,8 @@ fn build_list(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_list_type(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_list_type(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     if let Value::FeelType(feel_type) = lhv {
@@ -1240,9 +1280,9 @@ fn build_list_type(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_mul(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -1296,7 +1336,8 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_name(name: Name) -> Result<Evaluator> {
+fn build_name(btx: &mut BuilderContext, name: Name) -> Result<Evaluator> {
+  btx.add_variable(name.clone());
   Ok(Box::new(move |scope: &Scope| {
     if let Some(value) = scope.get_entry(&name) {
       value
@@ -1309,10 +1350,10 @@ fn build_name(name: Name) -> Result<Evaluator> {
 }
 
 ///
-fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_named_parameter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::ParameterName(name) = lhs {
     let lhv = Value::ParameterName(name.clone());
-    let rhe = build_evaluator(rhs)?;
+    let rhe = build_evaluator(btx, rhs)?;
     Ok(Box::new(move |scope: &Scope| {
       let rhv = rhe(scope);
       Value::NamedParameter(Box::new(lhv.clone()), Box::new(rhv))
@@ -1322,10 +1363,10 @@ fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   }
 }
 
-fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_named_parameters(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for item in lhs {
-    evaluators.push(build_evaluator(item)?);
+    evaluators.push(build_evaluator(btx, item)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut parameters = BTreeMap::new();
@@ -1343,8 +1384,8 @@ fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_neg(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_neg(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     match lhv {
@@ -1356,10 +1397,10 @@ fn build_neg(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_negated_list(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_negated_list(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut values = vec![];
@@ -1371,12 +1412,12 @@ fn build_negated_list(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_null() -> Result<Evaluator> {
+fn build_null(_btx: &mut BuilderContext) -> Result<Evaluator> {
   Ok(Box::new(move |_: &Scope| Value::Null(None)))
 }
 
 ///
-fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
+fn build_numeric(_btx: &mut BuilderContext, lhs: &str, rhs: &str) -> Result<Evaluator> {
   let text = format!("{lhs}.{rhs}");
   if let Ok(num) = text.parse::<FeelNumber>() {
     Ok(Box::new(move |_: &Scope| Value::Number(num)))
@@ -1386,9 +1427,9 @@ fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
 }
 
 ///
-fn build_nq(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_nq(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1414,9 +1455,9 @@ fn build_nq(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 /// otherwise   false        null
 /// otherwise   otherwise    null
 /// ```
-fn build_or(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_or(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1446,9 +1487,9 @@ fn build_or(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_out(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let ine = build_in(lhs, rhs)?;
-  let lhe = build_evaluator(lhs)?;
+fn build_out(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let ine = build_in(btx, lhs, rhs)?;
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let inv = ine(scope) as Value;
     let lhv = lhe(scope) as Value;
@@ -1460,16 +1501,17 @@ fn build_out(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_parameter_name(lhs: &Name) -> Result<Evaluator> {
-  let name = lhs.clone();
+fn build_parameter_name(btx: &mut BuilderContext, lhs: &Name) -> Result<Evaluator> {
+  let name = lhs.to_owned();
+  btx.add_parameter(name.clone());
   Ok(Box::new(move |_: &Scope| Value::ParameterName(name.clone())))
 }
 
 ///
-fn build_parameter_types(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_parameter_types(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut values = vec![];
@@ -1481,10 +1523,10 @@ fn build_parameter_types(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_qualified_name(lhs: &[AstNode]) -> Result<Evaluator> {
+fn build_qualified_name(btx: &mut BuilderContext, lhs: &[AstNode]) -> Result<Evaluator> {
   let mut evaluators = vec![];
   for node in lhs {
-    evaluators.push(build_evaluator(node)?);
+    evaluators.push(build_evaluator(btx, node)?);
   }
   Ok(Box::new(move |scope: &Scope| {
     let mut names = vec![];
@@ -1498,16 +1540,16 @@ fn build_qualified_name(lhs: &[AstNode]) -> Result<Evaluator> {
 }
 
 ///
-fn build_qualified_name_segment(name: &Name) -> Result<Evaluator> {
+fn build_qualified_name_segment(_btx: &mut BuilderContext, name: &Name) -> Result<Evaluator> {
   let name = name.to_owned();
   Ok(Box::new(move |_: &Scope| Value::QualifiedNameSegment(name.to_owned())))
 }
 
 ///
-fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_path(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::Name(name) = rhs.clone() {
     let qualified_name: QualifiedName = name.into();
-    let lhe = build_evaluator(lhs)?;
+    let lhe = build_evaluator(btx, lhs)?;
     Ok(Box::new(move |scope: &Scope| {
       let lhv = lhe(scope) as Value;
       match lhv {
@@ -1668,9 +1710,9 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_range(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_range(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     let rhv = rhe(scope);
@@ -1687,8 +1729,8 @@ fn build_range(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_range_type(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_range_type(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     if let Value::FeelType(feel_type) = lhv {
@@ -1700,13 +1742,13 @@ fn build_range_type(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+fn build_some(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let mut expr_evaluators = vec![];
   if let AstNode::QuantifiedContexts(items) = lhs {
     for item in items {
       if let AstNode::QuantifiedContext(variable_name, expr_node) = item {
         if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_single = build_evaluator(expr_node)?;
+          let evaluator_single = build_evaluator(btx, expr_node)?;
           expr_evaluators.push((name.clone(), evaluator_single));
         }
       }
@@ -1715,7 +1757,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     return Err(err_expected_ast_node("AstNode::QuantifiedContexts", &format!("{lhs:?}")));
   }
   if let AstNode::Satisfies(satisfies) = rhs {
-    let satisfies_evaluator = build_evaluator(satisfies)?;
+    let satisfies_evaluator = build_evaluator(btx, satisfies)?;
     Ok(Box::new(move |scope: &Scope| {
       let mut expression_evaluator = SomeExpressionEvaluator::new();
       for (name, expr_evaluator) in &expr_evaluators {
@@ -1729,15 +1771,15 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_string(lhs: &str) -> Result<Evaluator> {
+fn build_string(_btx: &mut BuilderContext, lhs: &str) -> Result<Evaluator> {
   let value = Value::String(lhs.to_string());
   Ok(Box::new(move |_: &Scope| value.clone()))
 }
 
 ///
-fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
-  let rhe = build_evaluator(rhs)?;
+fn build_sub(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
+  let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
@@ -1825,8 +1867,8 @@ fn build_sub(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_unary_ge(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_unary_ge(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     Value::UnaryGreaterOrEqual(Box::from(lhv))
@@ -1834,8 +1876,8 @@ fn build_unary_ge(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_unary_gt(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_unary_gt(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     Value::UnaryGreater(Box::from(lhv))
@@ -1843,8 +1885,8 @@ fn build_unary_gt(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_unary_le(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_unary_le(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     Value::UnaryLessOrEqual(Box::from(lhv))
@@ -1852,8 +1894,8 @@ fn build_unary_le(lhs: &AstNode) -> Result<Evaluator> {
 }
 
 ///
-fn build_unary_lt(lhs: &AstNode) -> Result<Evaluator> {
-  let lhe = build_evaluator(lhs)?;
+fn build_unary_lt(btx: &mut BuilderContext, lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(btx, lhs)?;
   Ok(Box::new(move |scope: &Scope| {
     let lhv = lhe(scope);
     Value::UnaryLess(Box::from(lhv))
@@ -2418,39 +2460,55 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
 }
 
 /// Evaluates function definition with positional parameters.
-fn eval_function_with_positional_parameters(scope: &Scope, arguments: &[Value], parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
-  let mut ctx = FeelContext::default();
+fn eval_function_with_positional_parameters(
+  scope: &Scope,
+  arguments: &[Value],
+  parameters: &[(Name, FeelType)],
+  body: &FunctionBody,
+  closure_ctx: FeelContext,
+  result_type: FeelType,
+) -> Value {
+  let mut params_ctx = FeelContext::default();
   if arguments.len() != parameters.len() {
     return value_null!("invalid number of arguments");
   }
   for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
-    ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
+    params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
-  eval_function_definition(scope, &ctx, body, result_type)
+  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
 
 /// Evaluates function definition with named parameters.
-fn eval_function_with_named_parameters(scope: &Scope, arguments: &Value, parameters: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
-  let mut ctx = FeelContext::default();
+fn eval_function_with_named_parameters(
+  scope: &Scope,
+  arguments: &Value,
+  parameters: &[(Name, FeelType)],
+  body: &FunctionBody,
+  closure_ctx: FeelContext,
+  result_type: FeelType,
+) -> Value {
+  let mut params_ctx = FeelContext::default();
   if let Value::NamedParameters(argument_map) = arguments {
     if argument_map.len() != parameters.len() {
       return value_null!("invalid number of arguments");
     }
     for (parameter_name, parameter_type) in parameters {
       if let Some((argument, _)) = argument_map.get(parameter_name) {
-        ctx.set_entry(parameter_name, parameter_type.coerced(argument))
+        params_ctx.set_entry(parameter_name, parameter_type.coerced(argument))
       } else {
         return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
     }
   }
-  eval_function_definition(scope, &ctx, body, result_type)
+  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
 
-/// Evaluates function definition with arguments (actual parameters) passed in context.
-fn eval_function_definition(scope: &Scope, ctx: &FeelContext, body: &FunctionBody, result_type: FeelType) -> Value {
-  scope.push(ctx.clone());
+/// Evaluates function definition with actual parameters passed in context.
+fn eval_function_definition(scope: &Scope, params_ctx: FeelContext, body: &FunctionBody, closure_ctx: FeelContext, result_type: FeelType) -> Value {
+  scope.push(closure_ctx);
+  scope.push(params_ctx);
   let result = body.evaluate(scope);
+  scope.pop();
   scope.pop();
   result_type.coerced(&result)
 }

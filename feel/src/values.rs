@@ -154,11 +154,12 @@ pub enum Value {
   FormalParameters(Vec<(Name, FeelType)>),
 
   /// Definition of the function body.
-  FunctionBody(FunctionBody),
+  /// Holds function body definition and the closure for lambdas.
+  FunctionBody(FunctionBody, FeelContext),
 
   /// Value representing the function definition.
-  /// This value holds the list of function's formal parameters, the function's body and expected result type.
-  FunctionDefinition(Vec<(Name, FeelType)>, FunctionBody, FeelType),
+  /// This value holds the list of function's formal parameters, the function's body, closure for lambdas and expected result type.
+  FunctionDefinition(Vec<(Name, FeelType)>, FunctionBody, FeelContext, FeelType),
 
   /// Value representing interval end.
   IntervalEnd(Box<Value>, bool),
@@ -243,7 +244,7 @@ impl std::fmt::Display for Value {
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
-      Value::FunctionBody(_) => write!(f, "FunctionBody"),
+      Value::FunctionBody(_, _) => write!(f, "FunctionBody"),
       Value::FunctionDefinition { .. } => write!(f, "FunctionDefinition"),
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
@@ -336,8 +337,8 @@ impl Value {
       Value::FeelType(feel_type) => feel_type.clone(),
       Value::FormalParameter(_, feel_type) => feel_type.clone(),
       Value::FormalParameters(_) => FeelType::Any,
-      Value::FunctionBody(_) => FeelType::Any,
-      Value::FunctionDefinition(parameters, _, result_type) => {
+      Value::FunctionBody(_, _) => FeelType::Any,
+      Value::FunctionDefinition(parameters, _, _, result_type) => {
         let parameter_types = parameters.iter().map(|(_, feel_type)| feel_type.clone()).collect();
         FeelType::Function(parameter_types, Box::new(result_type.clone()))
       }

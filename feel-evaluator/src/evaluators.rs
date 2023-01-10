@@ -30,6 +30,7 @@
  * limitations under the License.
  */
 
+use crate::builders::BuilderContext;
 use crate::errors::err_not_a_context;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
@@ -38,13 +39,13 @@ use dmntk_feel::{AstNode, Evaluator, FeelType, Scope};
 
 /// Evaluates a [Value] from given [AstNode].
 pub fn evaluate(scope: &Scope, node: &AstNode) -> Result<Value> {
-  let evaluator = crate::builders::build_evaluator(node)?;
+  let evaluator = crate::builders::build_evaluator(&mut BuilderContext::default(), node)?;
   Ok(evaluator(scope))
 }
 
 /// Prepares an evaluator for given [AstNode].
 pub fn prepare(node: &AstNode) -> Result<Evaluator> {
-  crate::builders::build_evaluator(node)
+  crate::builders::build_evaluator(&mut BuilderContext::default(), node)
 }
 
 /// Evaluates the sum of specified values.
@@ -80,7 +81,7 @@ pub fn evaluate_context(scope: &Scope, input: &str) -> Result<FeelContext> {
 
 /// Evaluates a context from AST node.
 pub fn evaluate_context_node(scope: &Scope, node: &AstNode) -> Result<FeelContext> {
-  let evaluator = crate::builders::build_evaluator(node)?;
+  let evaluator = crate::builders::build_evaluator(&mut BuilderContext::default(), node)?;
   if let Value::Context(context) = evaluator(scope) {
     Ok(context)
   } else {

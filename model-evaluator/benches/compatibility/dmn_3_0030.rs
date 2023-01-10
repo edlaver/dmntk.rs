@@ -41,7 +41,6 @@ lazy_static! {
 }
 
 #[bench]
-#[ignore]
 fn _0001(b: &mut Bencher) {
   let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
   let invocable_name = "simple function invocation";
@@ -50,7 +49,6 @@ fn _0001(b: &mut Bencher) {
 }
 
 #[bench]
-#[ignore]
 fn _0002(b: &mut Bencher) {
   let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
   let invocable_name = "named function invocation";

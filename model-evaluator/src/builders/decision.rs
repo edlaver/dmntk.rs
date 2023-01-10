@@ -32,16 +32,15 @@
 
 //! Builder for decision evaluators.
 
-use crate::builders::Variable;
+use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{Name, Scope};
-use dmntk_model::model::{Decision, Definitions, DmnElement, KnowledgeRequirement, NamedElement, RequiredVariable};
+use dmntk_feel::{value_null, Name, Scope};
+use dmntk_model::model::{Decision, Definitions, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
-use std::sync::Arc;
 
 /// Type alias for closures that evaluate decisions.
 ///
@@ -95,8 +94,6 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   let output_variable_name = output_variable.name.clone();
   // prepare output variable type for this decision
   let output_variable_type = output_variable.feel_type(&item_definition_type_evaluator);
-  // prepare expression instance for this decision
-  let expression_instance = decision.decision_logic().as_ref();
   // this context contains null values to all variable names, just to bring only the names into scope
   let mut ctx = FeelContext::default();
   // bring into context the variables from this decision's knowledge requirements
@@ -130,7 +127,12 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   }
   // prepare a scope and build expression instance evaluator
   let scope: Scope = ctx.into();
-  let evaluator = crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?;
+  // prepare expression instance for this decision
+  let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
+    crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?
+  } else {
+    Box::new(move |_: &Scope| value_null!("no decision logic defined in decision"))
+  };
   // prepare references to required knowledge, decisions and input data
   let mut required_knowledge_references: Vec<String> = vec![];
   let mut required_decision_references: Vec<String> = vec![];
@@ -196,23 +198,4 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   });
   // return the output variable, and decision evaluator closure
   Ok((output_variable, decision_evaluator))
-}
-
-///
-fn bring_knowledge_requirements_into_context(definitions: &Definitions, knowledge_requirements: &[Arc<KnowledgeRequirement>], ctx: &mut FeelContext) -> Result<()> {
-  for knowledge_requirement in knowledge_requirements {
-    let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
-    let required_knowledge_id: &str = href.into();
-    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
-      let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-      ctx.set_null(output_variable_name);
-      bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
-    } else if let Some(decision_service) = definitions.decision_service_by_id(required_knowledge_id) {
-      let output_variable_name = decision_service.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-      ctx.set_null(output_variable_name);
-    } else {
-      return Err(err_business_knowledge_model_with_reference_not_found(required_knowledge_id));
-    }
-  }
-  Ok(())
 }
