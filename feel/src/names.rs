@@ -83,7 +83,7 @@ impl From<&Name> for String {
 }
 
 impl fmt::Display for Name {
-  /// Implements [Display](std::fmt::Display) trait for [Name].
+  /// Implements [Display](fmt::Display) trait for [Name].
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}", self.0)
   }
