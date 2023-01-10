@@ -1,4 +1,5 @@
-use crate::{AstNode, FeelType, Name};
+use crate::AstNode;
+use dmntk_feel::{FeelType, Name};
 use std::collections::BTreeMap;
 
 macro_rules! s {

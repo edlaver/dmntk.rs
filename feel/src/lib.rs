@@ -40,7 +40,6 @@ extern crate dmntk_feel_number;
 extern crate dmntk_feel_temporal;
 extern crate regex;
 
-pub use ast::{AstNode, OptAstNode};
 pub use dmntk_feel_number::FeelNumber;
 pub use evaluator::Evaluator;
 pub use function::FunctionBody;
@@ -50,7 +49,6 @@ pub use scope::Scope;
 pub use strings::ToFeelString;
 pub use types::{is_built_in_type_name, FeelType, FEEL_TYPE_NAME_ANY};
 
-mod ast;
 pub mod bif;
 pub mod context;
 mod evaluator;

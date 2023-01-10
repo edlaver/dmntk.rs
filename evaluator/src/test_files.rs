@@ -69,7 +69,8 @@
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, Scope};
+use dmntk_feel::Scope;
+use dmntk_feel_parser::AstNode;
 
 /// Evaluates test cases loaded from input test file.
 pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {

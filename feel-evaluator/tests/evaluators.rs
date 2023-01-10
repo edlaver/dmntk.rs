@@ -1,6 +1,7 @@
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, FeelNumber, Scope};
+use dmntk_feel::{FeelNumber, Scope};
 use dmntk_feel_evaluator::{evaluate, evaluate_context, evaluate_context_node, evaluate_max, evaluate_min, evaluate_sum, prepare};
+use dmntk_feel_parser::AstNode;
 
 #[test]
 fn _0001() {

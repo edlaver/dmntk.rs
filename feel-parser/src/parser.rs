@@ -35,10 +35,11 @@
 use self::errors::*;
 use crate::lalr::{TokenType, *};
 use crate::lexer::{Lexer, TokenValue};
+use crate::AstNode;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, AstNode, FeelType, Name, Scope};
+use dmntk_feel::{value_null, FeelType, Name, Scope};
 
 /// Parses an `expression` as defined in grammar rule `1`.
 pub fn parse_expression(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {

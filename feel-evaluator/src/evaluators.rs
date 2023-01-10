@@ -35,7 +35,8 @@ use crate::errors::err_not_a_context;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, Evaluator, Scope};
+use dmntk_feel::{Evaluator, Scope};
+use dmntk_feel_parser::AstNode;
 
 /// Evaluates a [Value] from given [AstNode].
 pub fn evaluate(scope: &Scope, node: &AstNode) -> Result<Value> {

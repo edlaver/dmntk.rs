@@ -32,9 +32,8 @@
 
 //! Implementation of a node in Abstract Syntax Tree for `FEEL` grammar.
 
-use crate::types::FeelType;
-use crate::Name;
 use ascii_tree::*;
+use dmntk_feel::{FeelType, Name};
 use std::fmt;
 
 /// Type for optional AST node.

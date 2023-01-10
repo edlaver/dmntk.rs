@@ -35,7 +35,8 @@
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, AstNode, Evaluator, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, Name, Scope};
+use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{BuiltinAggregator, DecisionTable, HitPolicy};
 use std::cmp::Ordering;
 

@@ -36,7 +36,8 @@ use crate::errors::{err_empty_feel_name, err_unsupported_feel_type};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, AstNode, Evaluator, FeelType, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelType, Name, Scope};
+use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{Definitions, ItemDefinition, ItemDefinitionType, NamedElement};
 use std::collections::HashMap;
 

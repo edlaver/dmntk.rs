@@ -32,8 +32,10 @@
 
 //! Parser for `FEEL` language.
 
+extern crate ascii_tree;
 extern crate dmntk_feel;
 
+mod ast;
 mod lalr;
 mod lexer;
 mod parser;
@@ -41,4 +43,5 @@ mod parser;
 #[cfg(test)]
 mod tests;
 
+pub use ast::{AstNode, OptAstNode};
 pub use parser::{parse_boxed_expression, parse_context, parse_expression, parse_longest_name, parse_name, parse_textual_expression, parse_textual_expressions, parse_unary_tests};

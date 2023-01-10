@@ -38,6 +38,7 @@ use dmntk_feel::{scope, Name, Scope};
 
 mod addition;
 mod arithmetic_negation;
+mod ast;
 mod between;
 mod bifs;
 mod boxed_expression;

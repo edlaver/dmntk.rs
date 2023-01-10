@@ -30,7 +30,8 @@
  * limitations under the License.
  */
 
-use dmntk_feel::{scope, AstNode, Scope};
+use dmntk_feel::{scope, Scope};
+use dmntk_feel_parser::AstNode;
 
 #[test]
 fn _0001() {

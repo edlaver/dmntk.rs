@@ -629,6 +629,7 @@ dependencies = [
 name = "dmntk-feel-parser"
 version = "0.0.55-dev"
 dependencies = [
+ "ascii_tree",
  "difference",
  "dmntk-common",
  "dmntk-feel",
