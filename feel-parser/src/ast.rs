@@ -36,9 +36,6 @@ use ascii_tree::*;
 use dmntk_feel::{FeelType, Name};
 use std::fmt;
 
-/// Type for optional AST node.
-pub type OptAstNode = Option<AstNode>;
-
 /// Node of the Abstract Syntax Tree for `FEEL` grammar.
 #[derive(Debug, Clone, PartialEq)]
 pub enum AstNode {
