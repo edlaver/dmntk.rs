@@ -158,30 +158,37 @@ impl<'lexer> Lexer<'lexer> {
     }
   }
 
+  ///
   pub fn set_unary_tests(&mut self) {
     self.unary_tests = true;
   }
 
+  ///
   pub fn set_between(&mut self) {
     self.between = true;
   }
 
+  ///
   pub fn set_type_name(&mut self) {
     self.type_name = true;
   }
 
+  ///
   pub fn set_till_in(&mut self) {
     self.till_in = true;
   }
 
+  ///
   pub fn push_to_scope(&mut self) {
     self.scope.push(FeelContext::default());
   }
 
+  ///
   pub fn pop_from_scope(&mut self) {
     self.scope.pop();
   }
 
+  ///
   pub fn add_name_to_scope(&mut self, name: &Name) {
     self.scope.set_entry(name, value_null!());
   }
@@ -687,8 +694,8 @@ impl<'lexer> Lexer<'lexer> {
 
     // ------------------------------------------------------------------------
     // tweak with "date and time" and "duration" literals
-    // when these names are encountered then treat them as names of
-    // temporal functions
+    // when these names are encountered then treat them
+    // as the names of temporal functions
     // ------------------------------------------------------------------------
     let name_str = name.to_string();
     if matches!(name_str.as_str(), "date and time" | "duration") {

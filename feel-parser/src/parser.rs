@@ -33,8 +33,8 @@
 //! Implementation of the `LALR` parser for `FEEL` grammar.
 
 use self::errors::*;
-use crate::lalr::{TokenType, *};
-use crate::lexer::{Lexer, TokenValue};
+use crate::lalr::*;
+use crate::lexer::*;
 use crate::AstNode;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
@@ -260,7 +260,7 @@ impl<'parser> Parser<'parser> {
           // yy_n is the number of a rule to reduce with
           trace!(self, "  --------------------------------------------");
           trace!(self, "  reducing_using_rule = {}", self.yy_n);
-          crate::lalr::reduce(self, self.yy_n)?;
+          reduce(self, self.yy_n)?;
           trace!(self, "  --------------------------------------------");
           // pop the state stack and semantic value stack
           for _ in 0..self.yy_len {
