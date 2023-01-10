@@ -35,7 +35,7 @@ use crate::errors::err_not_a_context;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{AstNode, Evaluator, FeelType, Scope};
+use dmntk_feel::{AstNode, Evaluator, Scope};
 
 /// Evaluates a [Value] from given [AstNode].
 pub fn evaluate(scope: &Scope, node: &AstNode) -> Result<Value> {
@@ -63,10 +63,11 @@ pub fn evaluate_max(values: Vec<Value>) -> Value {
   crate::bifs::core::max(&values)
 }
 
-/// Evaluates the type of the AST node.
-pub fn evaluate_node_type(_: &Scope, node: &AstNode) -> FeelType {
-  node.type_of()
-}
+//
+// /// Evaluates the type of the AST node.
+// pub fn evaluate_node_type(_: &Scope, node: &AstNode) -> FeelType {
+//   node.type_of()
+// }
 
 /// Compares two values and returns `true` when the two `FEEL` values are equal.
 pub fn evaluate_equals(left: &Value, right: &Value) -> bool {

@@ -50,4 +50,4 @@ mod macros;
 #[cfg(test)]
 mod tests;
 
-pub use crate::evaluators::{evaluate, evaluate_context, evaluate_context_node, evaluate_equals, evaluate_max, evaluate_min, evaluate_node_type, evaluate_sum, prepare};
+pub use crate::evaluators::{evaluate, evaluate_context, evaluate_context_node, evaluate_equals, evaluate_max, evaluate_min, evaluate_sum, prepare};
