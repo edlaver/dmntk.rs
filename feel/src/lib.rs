@@ -51,7 +51,6 @@ pub use strings::ToFeelString;
 pub use types::{is_built_in_type_name, FeelType, FEEL_TYPE_NAME_ANY};
 
 mod ast;
-mod ast_tree;
 pub mod bif;
 pub mod context;
 mod evaluator;
