@@ -316,32 +316,41 @@ fn build_expression_instance_evaluator(scope: &Scope, expression_instance: &Expr
 
 ///
 fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   let mut entry_evaluators = vec![];
   scope.push(FeelContext::default());
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
-      let name = variable.feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
+      let variable_name = variable.feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
+      let variable_type = if let Some(type_ref) = variable.type_ref() {
+        if type_ref == "Any" {
+          FeelType::Any
+        } else {
+          information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+        }
+      } else {
+        FeelType::Any
+      };
       let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
-      scope.insert_null(name.clone());
-      entry_evaluators.push((Some(name.clone()), evaluator));
+      scope.insert_null(variable_name.clone());
+      entry_evaluators.push((Some(variable_name.clone()), variable_type, evaluator));
     } else {
       let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
-      entry_evaluators.push((None, evaluator));
+      entry_evaluators.push((None, FeelType::Any, evaluator));
     }
   }
   scope.pop();
   Ok(Box::new(move |scope: &Scope| {
     let mut evaluated_context = FeelContext::default();
-    for (opt_name, evaluator) in &entry_evaluators {
-      match opt_name {
-        Some(name) => {
-          let value = evaluator(scope) as Value;
-          scope.set_entry(name, value.clone());
-          evaluated_context.set_entry(name, value);
+    for (opt_variable_name, variable_type, evaluator) in &entry_evaluators {
+      let before = evaluator(scope) as Value;
+      let value = variable_type.coerced(&before);
+      match opt_variable_name {
+        Some(variable_name) => {
+          scope.set_entry(variable_name, value.clone());
+          evaluated_context.set_entry(variable_name, value);
         }
-        None => {
-          return evaluator(scope);
-        }
+        None => return value,
       }
     }
     Value::Context(evaluated_context)
@@ -464,6 +473,25 @@ fn build_relation_evaluator(scope: &Scope, relation: &Relation, model_evaluator:
     }
     Value::List(Values::new(results))
   }))
+}
+
+///
+fn bring_knowledge_requirements_into_context(definitions: &Definitions, knowledge_requirements: &[Arc<KnowledgeRequirement>], ctx: &mut FeelContext) -> Result<()> {
+  for knowledge_requirement in knowledge_requirements {
+    let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
+    let required_knowledge_id: &str = href.into();
+    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
+      let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+      ctx.set_null(output_variable_name);
+      bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
+    } else if let Some(decision_service) = definitions.decision_service_by_id(required_knowledge_id) {
+      let output_variable_name = decision_service.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+      ctx.set_null(output_variable_name);
+    } else {
+      return Err(err_business_knowledge_model_with_reference_not_found(required_knowledge_id));
+    }
+  }
+  Ok(())
 }
 
 #[cfg(test)]

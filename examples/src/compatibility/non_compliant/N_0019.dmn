@@ -3,6 +3,7 @@
              name="non-compliant-test-0019"
              id="_7b7b45dd-41c3-4461-8157-68d7b90de6a8"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+
     <itemDefinition id="_tFlight" name="tFlight">
         <itemComponent id="_tFlight_Flight" name="Flight Number">
             <typeRef>string</typeRef>
@@ -263,9 +264,6 @@
                     <literalExpression>
                         <text>
                             Flights[
-                                     From = Original Flight.From and
-                                     To = Original Flight.To and
-                                     Departure > Original Flight.Departure and
                                      Status = "scheduled" and
                                      has capacity(item, Reassigned Passengers List)
                                    ][1]

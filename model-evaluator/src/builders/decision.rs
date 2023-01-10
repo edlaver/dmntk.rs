@@ -32,16 +32,15 @@
 
 //! Builder for decision evaluators.
 
-use crate::builders::Variable;
+use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name, Scope};
-use dmntk_model::model::{Decision, Definitions, DmnElement, KnowledgeRequirement, NamedElement, RequiredVariable};
+use dmntk_model::model::{Decision, Definitions, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
-use std::sync::Arc;
 
 /// Type alias for closures that evaluate decisions.
 ///
@@ -199,23 +198,4 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   });
   // return the output variable, and decision evaluator closure
   Ok((output_variable, decision_evaluator))
-}
-
-///
-fn bring_knowledge_requirements_into_context(definitions: &Definitions, knowledge_requirements: &[Arc<KnowledgeRequirement>], ctx: &mut FeelContext) -> Result<()> {
-  for knowledge_requirement in knowledge_requirements {
-    let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
-    let required_knowledge_id: &str = href.into();
-    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
-      let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-      ctx.set_null(output_variable_name);
-      bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
-    } else if let Some(decision_service) = definitions.decision_service_by_id(required_knowledge_id) {
-      let output_variable_name = decision_service.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-      ctx.set_null(output_variable_name);
-    } else {
-      return Err(err_business_knowledge_model_with_reference_not_found(required_knowledge_id));
-    }
-  }
-  Ok(())
 }

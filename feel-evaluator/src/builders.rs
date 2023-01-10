@@ -635,7 +635,7 @@ fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Resul
   let rhe = build_evaluator(btx, rhs)?;
   let name_item: Name = "item".into();
   Ok(Box::new(move |scope: &Scope| {
-    let lhv = lhe(scope);
+    let lhv = lhe(scope) as Value;
     match lhv {
       Value::List(values) => {
         let mut filtered_values = vec![];
@@ -665,7 +665,7 @@ fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Resul
             scope.pop();
           }
         }
-        let rhv = rhe(scope);
+        let rhv = rhe(scope) as Value;
         match rhv {
           Value::Number(index) => {
             if index.is_integer() {

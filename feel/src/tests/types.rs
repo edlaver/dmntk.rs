@@ -633,8 +633,8 @@ fn test_get_coerced() {
   assert_eq!(r#"[10]"#, t_list_number.coerced(&v_number).to_string());
   assert_eq!(r#"[10]"#, t_list_any.coerced(&v_number).to_string());
   assert_eq!(r#"1"#, t_number.coerced(&v_list_number_1).to_string());
-  assert_eq!(r#"null"#, t_number.coerced(&v_list_number_2).to_string());
-  assert_eq!(r#"null"#, t_number.coerced(&v_list_string_1).to_string());
+  assert_eq!(r#"null(after coercion)"#, t_number.coerced(&v_list_number_2).to_string());
+  assert_eq!(r#"null(after coercion)"#, t_number.coerced(&v_list_string_1).to_string());
   assert_eq!(r#"["a"]"#, t_list_string.coerced(&v_string).to_string());
   assert_eq!(r#"["a"]"#, t_list_any.coerced(&v_string).to_string());
   assert_eq!(r#""A""#, t_string.coerced(&v_list_string_1).to_string());

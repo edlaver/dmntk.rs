@@ -41,12 +41,12 @@ lazy_static! {
 
 #[test]
 fn _0001() {
-  assert_decision(&MODEL_EVALUATOR, "decision_001", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_001", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0002() {
-  assert_decision(&MODEL_EVALUATOR, "decision_003", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_003", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -56,7 +56,7 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  assert_decision(&MODEL_EVALUATOR, "decision_005", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_005", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -66,7 +66,7 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  assert_decision(&MODEL_EVALUATOR, "decision_006_a", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_006_a", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -76,7 +76,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  assert_decision(&MODEL_EVALUATOR, "decision_007_a", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_007_a", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -96,12 +96,12 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_003", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_003", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0013() {
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_a", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_004_a", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -116,7 +116,7 @@ fn _0015() {
 
 #[test]
 fn _0016() {
-  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005_a", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision_bkm_005_a", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -126,22 +126,22 @@ fn _0017() {
 
 #[test]
 fn _0018() {
-  assert_decision(&MODEL_EVALUATOR, "invoke_002", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_002", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0019() {
-  assert_decision(&MODEL_EVALUATOR, "invoke_004", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_004", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0020() {
-  assert_decision(&MODEL_EVALUATOR, "invoke_005", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_005", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0021() {
-  assert_decision(&MODEL_EVALUATOR, "invoke_006", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "invoke_006", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -151,7 +151,7 @@ fn _0022() {
 
 #[test]
 fn _0023() {
-  assert_decision(&MODEL_EVALUATOR, "fd_002", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "fd_002", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -161,12 +161,12 @@ fn _0024() {
 
 #[test]
 fn _0025() {
-  assert_decision(&MODEL_EVALUATOR, "literal_002", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_002", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0026() {
-  assert_decision(&MODEL_EVALUATOR, "literal_004", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_004", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -176,12 +176,12 @@ fn _0027() {
 
 #[test]
 fn _0028() {
-  assert_decision(&MODEL_EVALUATOR, "literal_006", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_006", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0029() {
-  assert_decision(&MODEL_EVALUATOR, "ds_invoke_002_with_number", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "ds_invoke_002_with_number", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
@@ -191,13 +191,13 @@ fn _0030() {
 
 #[test]
 fn _0031() {
-  assert_decision(&MODEL_EVALUATOR, "decisionService_001", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decisionService_001", &CTX, r#"null(after coercion)"#);
 }
 
 #[test]
 fn _0032() {
   let ctx = context(r#"{decisionService_002_input_1: 10}"#);
-  assert_decision(&MODEL_EVALUATOR, "decisionService_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decisionService_002", &ctx, r#"null(after coercion)"#);
 }
 
 #[test]

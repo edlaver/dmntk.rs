@@ -32,17 +32,14 @@
 
 //! Builder for business knowledge model evaluators.
 
-use crate::builders::information_item_type;
+use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, FunctionBody, Name, Scope};
-use dmntk_model::model::{
-  BusinessKnowledgeModel, Context, DecisionTable, Definitions, DmnElement, ExpressionInstance, FunctionDefinition, Invocation, LiteralExpression, NamedElement, Relation,
-  RequiredVariable,
-};
+use dmntk_model::model::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -63,7 +60,7 @@ impl BusinessKnowledgeModelEvaluator {
   pub fn build(&mut self, definitions: &Definitions, model_evaluator: &ModelEvaluator) -> Result<()> {
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
-      let evaluator = build_bkm_evaluator(business_knowledge_model, function_definition, model_evaluator)?;
+      let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_evaluator)?;
       let business_knowledge_model_id = business_knowledge_model.id().as_ref().ok_or_else(err_empty_identifier)?;
       let business_knowledge_model_name = &business_knowledge_model.name().to_string();
       let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
@@ -84,6 +81,7 @@ impl BusinessKnowledgeModelEvaluator {
 
 ///
 fn build_bkm_evaluator(
+  definitions: &Definitions,
   business_knowledge_model: &BusinessKnowledgeModel,
   function_definition: &FunctionDefinition,
   model_evaluator: &ModelEvaluator,
@@ -114,6 +112,9 @@ fn build_bkm_evaluator(
     let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
     knowledge_requirements.push(href.into());
   }
+  // bring into context the variables from knowledge requirements
+  bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), &mut local_context)?;
+  //TODO verify the above line - there was no such example in models
   if let Some(expression_instance) = function_definition.body() {
     let scope: Scope = local_context.into();
     build_bkm_expression_instance_evaluator(

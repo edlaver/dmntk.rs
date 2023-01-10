@@ -113,7 +113,7 @@ mod tests {
     let context_str = r#"{Full Name: 50.0}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Full", "Name"]), Value::Null(None))),
+      Some((Name::new(&["Full", "Name"]), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_cba86e4d-e91c-46a2-9176-e9adf88e15db", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -141,7 +141,7 @@ mod tests {
     let context_str = r#"{Monthly Salary: "12000.00"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Monthly", "Salary"]), Value::Null(None))),
+      Some((Name::new(&["Monthly", "Salary"]), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -169,7 +169,7 @@ mod tests {
     let context_str = r#"{Is Affordable: "no"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Is", "Affordable"]), Value::Null(None))),
+      Some((Name::new(&["Is", "Affordable"]), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
