@@ -52,12 +52,6 @@ macro_rules! b_bool {
   };
 }
 
-macro_rules! eqt {
-  ($a:expr, $b:expr) => {
-    assert_eq!($a, $b.type_of());
-  };
-}
-
 /// Utility function for comparing debug strings.
 fn eqd(expected: &str, node: &AstNode) {
   assert_eq!(expected, format!("{node:?}"));
@@ -123,7 +117,6 @@ fn test_trace() {
 fn test_node_add() {
   let node = &AstNode::Add(b_num!(1, 23), b_num!(2, 34));
   eqd(r#"Add(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Add
@@ -136,7 +129,6 @@ fn test_node_add() {
   );
   let node = &AstNode::Add(b_num!(1, 23), Box::new(AstNode::String("12".to_string())));
   eqd(r#"Add(Numeric("1", "23"), String("12"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Add
@@ -153,7 +145,6 @@ fn test_node_add() {
 fn test_node_and() {
   let node = &AstNode::And(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   eqd(r#"And(Boolean(true), Boolean(false))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        And
@@ -170,7 +161,6 @@ fn test_node_and() {
 fn test_node_at() {
   let node = &AstNode::At("2022-09-26".to_string());
   eqd(r#"At("2022-09-26")"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        At
@@ -188,7 +178,6 @@ fn test_node_between() {
     Box::new(AstNode::Numeric(s!(10), s!())),
   );
   eqd(r#"Between(Name(Name("x")), Numeric("1", ""), Numeric("10", ""))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Between
@@ -207,7 +196,6 @@ fn test_node_between() {
 fn test_node_boolean() {
   let node = &AstNode::Boolean(true);
   eqd(r#"Boolean(true)"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Boolean
@@ -225,7 +213,6 @@ fn test_node_comma_list() {
     AstNode::Numeric("3".to_string(), "".to_string()),
   ]);
   eqd(r#"CommaList([Numeric("1", ""), Numeric("2", ""), Numeric("3", "")])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        CommaList
@@ -250,7 +237,6 @@ fn test_node_context() {
     r#"Context([ContextEntry(ContextEntryKey(Name("count")), Numeric("1", "")), ContextEntry(ContextEntryKey(Name("amount")), Numeric("99", "99"))])"#,
     node,
   );
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Context
@@ -273,7 +259,6 @@ fn test_node_context() {
 fn test_node_context_entry() {
   let node = &AstNode::ContextEntry(Box::new(AstNode::ContextEntryKey(s!("count").into())), Box::new(AstNode::Numeric(s!(1), s!())));
   eqd(r#"ContextEntry(ContextEntryKey(Name("count")), Numeric("1", ""))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ContextEntry
@@ -290,7 +275,6 @@ fn test_node_context_entry() {
 fn test_node_context_entry_key() {
   let node = &AstNode::ContextEntryKey(s!("count").into());
   eqd(r#"ContextEntryKey(Name("count"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ContextEntryKey
@@ -304,7 +288,6 @@ fn test_node_context_entry_key() {
 fn test_node_context_type() {
   let node = &AstNode::ContextType(vec![]);
   eqd(r#"ContextType([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ContextType
@@ -323,7 +306,6 @@ fn test_node_context_type() {
   let mut types: BTreeMap<Name, FeelType> = BTreeMap::new();
   types.insert(__name!(count), FeelType::Number);
   types.insert(__name!(amount), FeelType::Number);
-  eqt!(FeelType::Context(types), node);
   eqs(
     r#"
        ContextType
@@ -346,7 +328,6 @@ fn test_node_context_type() {
 fn test_node_context_type_entry() {
   let node = &AstNode::ContextTypeEntry(Box::new(AstNode::ContextTypeEntryKey(s!("count").into())), Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"ContextTypeEntry(ContextTypeEntryKey(Name("count")), FeelType(Number))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        ContextTypeEntry
@@ -363,7 +344,6 @@ fn test_node_context_type_entry() {
 fn test_node_context_type_entry_key() {
   let node = &AstNode::ContextTypeEntryKey(s!("count").into());
   eqd(r#"ContextTypeEntryKey(Name("count"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Name
@@ -377,7 +357,6 @@ fn test_node_context_type_entry_key() {
 fn test_node_div() {
   let node = &AstNode::Div(Box::new(AstNode::Numeric(s!(1), s!(23))), Box::new(AstNode::Numeric(s!(2), s!(34))));
   eqd(r#"Div(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Div
@@ -394,7 +373,6 @@ fn test_node_div() {
 fn test_node_eq() {
   let node = &AstNode::Eq(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Eq(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Eq
@@ -411,7 +389,6 @@ fn test_node_eq() {
 fn test_node_evaluated_expression() {
   let node = &AstNode::EvaluatedExpression(Box::new(AstNode::Name(s!("amount").into())));
   eqd(r#"EvaluatedExpression(Name(Name("amount")))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        EvaluatedExpression
@@ -426,7 +403,6 @@ fn test_node_evaluated_expression() {
 fn test_node_every() {
   let node = &AstNode::Every(Box::new(AstNode::Numeric(s!(1), s!())), Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])));
   eqd(r#"Every(Numeric("1", ""), List([Numeric("1", "")]))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Every
@@ -444,7 +420,6 @@ fn test_node_every() {
 fn test_node_exp() {
   let node = &AstNode::Exp(Box::new(AstNode::Numeric(s!(1), s!(23))), Box::new(AstNode::Numeric(s!(2), s!(34))));
   eqd(r#"Exp(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Exp
@@ -461,7 +436,6 @@ fn test_node_exp() {
 fn test_node_expression_list() {
   let node = &AstNode::ExpressionList(vec![]);
   eqd(r#"ExpressionList([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ExpressionList
@@ -471,7 +445,6 @@ fn test_node_expression_list() {
   );
   let node = &AstNode::ExpressionList(vec![AstNode::Numeric(s!(1), s!())]);
   eqd(r#"ExpressionList([Numeric("1", "")])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ExpressionList
@@ -489,7 +462,6 @@ fn test_node_filter() {
     Box::new(AstNode::Gt(Box::new(AstNode::Name(s!("count").into())), Box::new(AstNode::Numeric(s!(1), s!())))),
   );
   eqd(r#"Filter(List([Numeric("1", ""), Numeric("2", "")]), Gt(Name(Name("count")), Numeric("1", "")))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Filter
@@ -512,7 +484,6 @@ fn test_node_filter() {
 fn test_node_for() {
   let node = &AstNode::For(Box::new(AstNode::Name(s!("i").into())), Box::new(AstNode::List(vec![_num!(1), _num!(2)])));
   eqd(r#"For(Name(Name("i")), List([Numeric("1", ""), Numeric("2", "")]))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        For
@@ -532,7 +503,6 @@ fn test_node_for() {
 fn test_node_formal_parameter() {
   let node = &AstNode::FormalParameter(Box::new(AstNode::Name(s!("amount").into())), Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"FormalParameter(Name(Name("amount")), FeelType(Number))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        FormalParameter
@@ -549,7 +519,6 @@ fn test_node_formal_parameter() {
 fn test_node_formal_parameters() {
   let node = &AstNode::FormalParameters(vec![]);
   eqd(r#"FormalParameters([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        FormalParameters
@@ -563,7 +532,6 @@ fn test_node_formal_parameters() {
 fn test_node_function_body() {
   let node = &AstNode::FunctionBody(b_num!(1), false);
   eqd(r#"FunctionBody(Numeric("1", ""), false)"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        FunctionBody
@@ -578,7 +546,6 @@ fn test_node_function_body() {
 fn test_node_function_definition() {
   let node = &AstNode::FunctionDefinition(Box::new(AstNode::FormalParameters(vec![])), Box::new(AstNode::FunctionBody(b_num!(1), false)));
   eqd(r#"FunctionDefinition(FormalParameters([]), FunctionBody(Numeric("1", ""), false))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        FunctionDefinition
@@ -596,7 +563,6 @@ fn test_node_function_definition() {
 fn test_node_function_invocation() {
   let node = &AstNode::FunctionInvocation(b_name!(calculate), Box::new(AstNode::FormalParameters(vec![])));
   eqd(r#"FunctionInvocation(Name(Name("calculate")), FormalParameters([]))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        FunctionInvocation
@@ -613,7 +579,6 @@ fn test_node_function_invocation() {
 fn test_node_function_irrelevant() {
   let node = &AstNode::Irrelevant;
   eqd(r#"Irrelevant"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Irrelevant
@@ -629,7 +594,6 @@ fn test_node_function_type() {
     Box::new(AstNode::FeelType(FeelType::Boolean)),
   );
   eqd(r#"FunctionType(ParameterTypes([FeelType(Number)]), FeelType(Boolean))"#, node);
-  eqt!(FeelType::Function(vec![FeelType::Number], Box::new(FeelType::Boolean)), node);
   eqs(
     r#"
        FunctionType
@@ -643,7 +607,6 @@ fn test_node_function_type() {
   );
   let node = &AstNode::FunctionType(Box::new(AstNode::FeelType(FeelType::Boolean)), Box::new(AstNode::FeelType(FeelType::Boolean)));
   eqd(r#"FunctionType(FeelType(Boolean), FeelType(Boolean))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        FunctionType
@@ -660,7 +623,6 @@ fn test_node_function_type() {
 fn test_node_ge() {
   let node = &AstNode::Ge(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Ge(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Ge
@@ -677,7 +639,6 @@ fn test_node_ge() {
 fn test_node_gt() {
   let node = &AstNode::Gt(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Gt(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Gt
@@ -694,7 +655,6 @@ fn test_node_gt() {
 fn test_node_if() {
   let node = &AstNode::If(Box::new(AstNode::Gt(b_num!(1), b_num!(2))), b_bool!(true), b_bool!(false));
   eqd(r#"If(Gt(Numeric("1", ""), Numeric("2", "")), Boolean(true), Boolean(false))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        If
@@ -716,7 +676,6 @@ fn test_node_if() {
 fn test_node_in() {
   let node = &AstNode::In(b_num!(1), Box::new(AstNode::List(vec![_num!(1), _num!(2), _num!(3)])));
   eqd(r#"In(Numeric("1", ""), List([Numeric("1", ""), Numeric("2", ""), Numeric("3", "")]))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        In
@@ -738,7 +697,6 @@ fn test_node_in() {
 fn test_node_instance_of() {
   let node = &AstNode::InstanceOf(b_num!(1), Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"InstanceOf(Numeric("1", ""), FeelType(Number))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        InstanceOf
@@ -755,7 +713,6 @@ fn test_node_instance_of() {
 fn test_node_interval_end() {
   let node = &AstNode::IntervalEnd(b_num!(1), false);
   eqd(r#"IntervalEnd(Numeric("1", ""), false)"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        IntervalEnd (opened)
@@ -770,7 +727,6 @@ fn test_node_interval_end() {
 fn test_node_interval_start() {
   let node = &AstNode::IntervalStart(b_num!(100), true);
   eqd(r#"IntervalStart(Numeric("100", ""), true)"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        IntervalStart (closed)
@@ -788,7 +744,6 @@ fn test_node_iteration_contexts() {
     r#"IterationContexts([Range(Numeric("1", ""), Numeric("10", "")), Range(Numeric("100", ""), Numeric("110", ""))])"#,
     node,
   );
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        IterationContexts
@@ -814,7 +769,6 @@ fn test_node_iteration_context_single() {
     r#"IterationContextSingle(Name(Name("i")), List([Numeric("1", ""), Numeric("2", ""), Numeric("3", "")]))"#,
     node,
   );
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        IterationContextSingle
@@ -836,7 +790,6 @@ fn test_node_iteration_context_single() {
 fn test_node_iteration_context_range() {
   let node = &AstNode::IterationContextRange(b_name!(i), b_num!(1), b_num!(10));
   eqd(r#"IterationContextRange(Name(Name("i")), Numeric("1", ""), Numeric("10", ""))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        IterationContextRange
@@ -855,7 +808,6 @@ fn test_node_iteration_context_range() {
 fn test_node_le() {
   let node = &AstNode::Le(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Le(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Le
@@ -872,7 +824,6 @@ fn test_node_le() {
 fn test_node_list() {
   let node = &AstNode::List(vec![]);
   eqd(r#"List([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        List
@@ -882,7 +833,6 @@ fn test_node_list() {
   );
   let node = &AstNode::List(vec![_num!(1), _num!(2), _num!(3)]);
   eqd(r#"List([Numeric("1", ""), Numeric("2", ""), Numeric("3", "")])"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        List
@@ -901,7 +851,6 @@ fn test_node_list() {
 fn test_node_list_type() {
   let node = &AstNode::ListType(Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"ListType(FeelType(Number))"#, node);
-  eqt!(FeelType::List(Box::new(FeelType::Number)), node);
   eqs(
     r#"
        ListType
@@ -916,7 +865,6 @@ fn test_node_list_type() {
 fn test_node_lt() {
   let node = &AstNode::Lt(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Lt(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Lt
@@ -933,7 +881,6 @@ fn test_node_lt() {
 fn test_node_mul() {
   let node = &AstNode::Mul(Box::new(AstNode::Numeric(s!(1), s!(23))), Box::new(AstNode::Numeric(s!(2), s!(34))));
   eqd(r#"Mul(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Mul
@@ -950,7 +897,6 @@ fn test_node_mul() {
 fn test_node_name() {
   let node = &AstNode::Name(__name!(a));
   eqd(r#"Name(Name("a"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Name
@@ -960,7 +906,6 @@ fn test_node_name() {
   );
   let node = &AstNode::Name(__name!(number));
   eqd(r#"Name(Name("number"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Name
@@ -974,7 +919,6 @@ fn test_node_name() {
 fn test_node_named_parameter() {
   let node = &AstNode::NamedParameter(Box::new(AstNode::Name(s!("count").into())), Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"NamedParameter(Name(Name("count")), FeelType(Number))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        NamedParameter
@@ -991,7 +935,6 @@ fn test_node_named_parameter() {
 fn test_node_named_parameters() {
   let node = &AstNode::NamedParameters(vec![]);
   eqd(r#"NamedParameters([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        NamedParameters
@@ -1004,7 +947,6 @@ fn test_node_named_parameters() {
     Box::new(AstNode::FeelType(FeelType::Number)),
   )]);
   eqd(r#"NamedParameters([NamedParameter(Name(Name("count")), FeelType(Number))])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        NamedParameters
@@ -1022,7 +964,6 @@ fn test_node_named_parameters() {
 fn test_node_neg() {
   let node = &AstNode::Neg(Box::new(AstNode::Numeric(s!(1), s!(99))));
   eqd(r#"Neg(Numeric("1", "99"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Neg
@@ -1037,7 +978,6 @@ fn test_node_neg() {
 fn test_node_negated_list() {
   let node = &AstNode::NegatedList(vec![]);
   eqd(r#"NegatedList([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        NegatedList
@@ -1047,7 +987,6 @@ fn test_node_negated_list() {
   );
   let node = &AstNode::NegatedList(vec![AstNode::Numeric(s!(1), s!())]);
   eqd(r#"NegatedList([Numeric("1", "")])"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        NegatedList
@@ -1062,7 +1001,6 @@ fn test_node_negated_list() {
 fn test_node_nq() {
   let node = &AstNode::Nq(Box::new(AstNode::String(s!("a"))), Box::new(AstNode::String(s!("b"))));
   eqd(r#"Nq(String("a"), String("b"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Nq
@@ -1079,7 +1017,6 @@ fn test_node_nq() {
 fn test_node_number() {
   let node = &AstNode::Numeric(s!(123), s!(456));
   eqd(r#"Numeric("123", "456")"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Numeric
@@ -1093,7 +1030,6 @@ fn test_node_number() {
 fn test_node_null() {
   let node = &AstNode::Null;
   eqd(r#"Null"#, node);
-  eqt!(FeelType::Null, node);
   eqs(
     r#"
        Null
@@ -1106,7 +1042,6 @@ fn test_node_null() {
 fn test_node_or() {
   let node = &AstNode::Or(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   eqd(r#"Or(Boolean(true), Boolean(false))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Or
@@ -1126,7 +1061,6 @@ fn test_node_out() {
     Box::new(AstNode::Numeric("2".to_string(), "".to_string())),
   );
   eqd(r#"Out(Numeric("1", ""), Numeric("2", ""))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Out
@@ -1143,7 +1077,6 @@ fn test_node_out() {
 fn test_node_path() {
   let node = &AstNode::Path(b_name!(alpha), b_name!(beta));
   eqd(r#"Path(Name(Name("alpha")), Name(Name("beta")))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Path
@@ -1160,7 +1093,6 @@ fn test_node_path() {
 fn test_node_parameter_name() {
   let node = &AstNode::ParameterName(__name!(alpha));
   eqd(r#"ParameterName(Name("alpha"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ParameterName
@@ -1174,7 +1106,6 @@ fn test_node_parameter_name() {
 fn test_node_parameter_types() {
   let node = &AstNode::ParameterTypes(vec![]);
   eqd(r#"ParameterTypes([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ParameterTypes
@@ -1184,7 +1115,6 @@ fn test_node_parameter_types() {
   );
   let node = &AstNode::ParameterTypes(vec![AstNode::FeelType(FeelType::Number)]);
   eqd(r#"ParameterTypes([FeelType(Number)])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        ParameterTypes
@@ -1199,7 +1129,6 @@ fn test_node_parameter_types() {
 fn test_node_positional_parameters() {
   let node = &AstNode::PositionalParameters(vec![]);
   eqd(r#"PositionalParameters([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        PositionalParameters
@@ -1209,7 +1138,6 @@ fn test_node_positional_parameters() {
   );
   let node = &AstNode::PositionalParameters(vec![_num!(1), _num!(2)]);
   eqd(r#"PositionalParameters([Numeric("1", ""), Numeric("2", "")])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        PositionalParameters
@@ -1226,7 +1154,6 @@ fn test_node_positional_parameters() {
 fn test_node_qualified_name() {
   let node = &AstNode::QualifiedName(vec![]);
   eqd(r#"QualifiedName([])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QualifiedName
@@ -1236,7 +1163,6 @@ fn test_node_qualified_name() {
   );
   let node = &AstNode::QualifiedName(vec![_name!(a), _name!(b), _name!(c)]);
   eqd(r#"QualifiedName([Name(Name("a")), Name(Name("b")), Name(Name("c"))])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QualifiedName
@@ -1251,7 +1177,6 @@ fn test_node_qualified_name() {
   );
   let node = &AstNode::QualifiedName(vec![_name!(count)]);
   eqd(r#"QualifiedName([Name(Name("count"))])"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QualifiedName
@@ -1266,7 +1191,6 @@ fn test_node_qualified_name() {
 fn test_node_qualified_name_segment() {
   let node = &AstNode::QualifiedNameSegment(__name!(a));
   eqd(r#"QualifiedNameSegment(Name("a"))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Name
@@ -1280,7 +1204,6 @@ fn test_node_qualified_name_segment() {
 fn test_node_quantified_context() {
   let node = &AstNode::QuantifiedContext(b_name!(a), b_num!(10));
   eqd(r#"QuantifiedContext(Name(Name("a")), Numeric("10", ""))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QuantifiedContext
@@ -1300,7 +1223,6 @@ fn test_node_quantified_contexts() {
     r#"QuantifiedContexts([QuantifiedContext(Name(Name("a")), Numeric("10", "")), QuantifiedContext(Name(Name("b")), Numeric("20", ""))])"#,
     node,
   );
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        QuantifiedContexts
@@ -1323,7 +1245,6 @@ fn test_node_quantified_contexts() {
 fn test_node_range() {
   let node = &AstNode::Range(b_num!(1), b_num!(10));
   eqd(r#"Range(Numeric("1", ""), Numeric("10", ""))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Range
@@ -1340,7 +1261,6 @@ fn test_node_range() {
 fn test_node_range_type() {
   let node = &AstNode::RangeType(Box::new(AstNode::FeelType(FeelType::Number)));
   eqd(r#"RangeType(FeelType(Number))"#, node);
-  eqt!(FeelType::Range(Box::new(FeelType::Number)), node);
   eqs(
     r#"
        RangeType
@@ -1355,7 +1275,6 @@ fn test_node_range_type() {
 fn test_node_satisfies() {
   let node = &AstNode::Satisfies(Box::new(AstNode::Boolean(true)));
   eqd(r#"Satisfies(Boolean(true))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        Satisfies
@@ -1370,7 +1289,6 @@ fn test_node_satisfies() {
 fn test_node_some() {
   let node = &AstNode::Some(Box::new(AstNode::Numeric(s!(1), s!())), Box::new(AstNode::List(vec![AstNode::Numeric(s!(1), s!())])));
   eqd(r#"Some(Numeric("1", ""), List([Numeric("1", "")]))"#, node);
-  eqt!(FeelType::Any, node);
   eqs(
     r#"
        Some
@@ -1388,7 +1306,6 @@ fn test_node_some() {
 fn test_node_string() {
   let node = &AstNode::String(s!("alpha"));
   eqd(r#"String("alpha")"#, node);
-  eqt!(FeelType::String, node);
   eqs(
     r#"
        String
@@ -1402,7 +1319,6 @@ fn test_node_string() {
 fn test_node_sub() {
   let node = &AstNode::Sub(Box::new(AstNode::Numeric(s!(1), s!(23))), Box::new(AstNode::Numeric(s!(2), s!(34))));
   eqd(r#"Sub(Numeric("1", "23"), Numeric("2", "34"))"#, node);
-  eqt!(FeelType::Number, node);
   eqs(
     r#"
        Sub
@@ -1419,7 +1335,6 @@ fn test_node_sub() {
 fn test_node_unary_ge() {
   let node = &AstNode::UnaryGe(Box::new(AstNode::String(s!("a"))));
   eqd(r#"UnaryGe(String("a"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        UnaryGe
@@ -1434,7 +1349,6 @@ fn test_node_unary_ge() {
 fn test_node_unary_gt() {
   let node = &AstNode::UnaryGt(Box::new(AstNode::String(s!("a"))));
   eqd(r#"UnaryGt(String("a"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        UnaryGt
@@ -1449,7 +1363,6 @@ fn test_node_unary_gt() {
 fn test_node_unary_le() {
   let node = &AstNode::UnaryLe(Box::new(AstNode::String(s!("a"))));
   eqd(r#"UnaryLe(String("a"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        UnaryLe
@@ -1464,7 +1377,6 @@ fn test_node_unary_le() {
 fn test_node_unary_lt() {
   let node = &AstNode::UnaryLt(Box::new(AstNode::String(s!("a"))));
   eqd(r#"UnaryLt(String("a"))"#, node);
-  eqt!(FeelType::Boolean, node);
   eqs(
     r#"
        UnaryLt

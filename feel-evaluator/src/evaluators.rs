@@ -63,12 +63,6 @@ pub fn evaluate_max(values: Vec<Value>) -> Value {
   crate::bifs::core::max(&values)
 }
 
-//
-// /// Evaluates the type of the AST node.
-// pub fn evaluate_node_type(_: &Scope, node: &AstNode) -> FeelType {
-//   node.type_of()
-// }
-
 /// Compares two values and returns `true` when the two `FEEL` values are equal.
 pub fn evaluate_equals(left: &Value, right: &Value) -> bool {
   crate::builders::eval_ternary_equality(left, right).unwrap_or(false)
