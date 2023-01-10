@@ -396,3 +396,18 @@ fn _0049() {
   );
   te_be_value(false, scope, "DeptTable[number=10]", r#"{manager:"Smith",name:"Sales",number:10}"#);
 }
+
+#[test]
+fn _0050() {
+  let scope = &te_scope(
+    r#"{
+     check_eq: function(x,y) x = y,
+     check_neq: function(x,y) x != y,
+     num: 1 
+   }"#,
+  );
+  te_number(false, scope, "[1,2,3,4,5,6][check_eq(item,4)]", 4, 0);
+  te_number(false, scope, "[1,2,3,4,5,6][check_eq(item,5)]", 5, 0);
+  te_number(false, scope, "[1,2,3,4,5,6][check_eq(item,num)]", 1, 0);
+  te_be_value(false, scope, "[1,2,3,4,5,6][check_neq(item,num)]", "[2,3,4,5,6]");
+}
