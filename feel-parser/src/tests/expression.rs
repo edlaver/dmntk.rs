@@ -30,9 +30,8 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartExpression;
-use dmntk_feel::{scope, Scope};
 
 #[test]
 fn _0001() {

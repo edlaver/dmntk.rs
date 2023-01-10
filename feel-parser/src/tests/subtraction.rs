@@ -30,10 +30,8 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::{StartExpression, StartTextualExpression};
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
 
 #[test]
 fn _0001() {
@@ -117,8 +115,8 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry(&"Date-Time".into(), value_null!());
-  scope.set_entry(&"Date-Time2".into(), value_null!());
+  scope.set_entry("Date-Time".into());
+  scope.set_entry("Date-Time2".into());
   accept(
     &scope,
     StartExpression,
@@ -138,8 +136,8 @@ fn _0005() {
 #[ignore]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry(&"Date - Time".into(), value_null!());
-  scope.set_entry(&"Date - Time2".into(), value_null!());
+  scope.set_entry("Date - Time".into());
+  scope.set_entry("Date - Time2".into());
   accept(
     &scope,
     StartExpression,

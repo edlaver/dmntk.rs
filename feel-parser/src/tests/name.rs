@@ -30,20 +30,19 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
+use crate::scope::ParsingScope;
 
 /// Compares the given `name` with `expected` name after parsing.
-fn accept_name(scope: &Scope, name: &str, expected: &str) {
+fn accept_name(scope: &ParsingScope, name: &str, expected: &str) {
   accept(scope, StartTextualExpression, name, &format!("\n       Name\n       └─ `{expected}`\n    "), false);
 }
 
 #[test]
 fn _0001() {
   let scope = scope!();
-  scope.set_entry(&"hello world".into(), value_null!());
+  scope.set_entry("hello world".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -59,7 +58,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry(&"  \n  \n  \t  thing \n \t \t ".into(), value_null!());
+  scope.set_entry("  \n  \n  \t  thing \n \t \t ".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -75,7 +74,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = scope!();
-  scope.set_entry(&"income/loss".into(), value_null!());
+  scope.set_entry("income/loss".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -91,7 +90,7 @@ fn _0003() {
 #[test]
 fn _0004() {
   let scope = scope!();
-  scope.set_entry(&"fr**n*s".into(), value_null!());
+  scope.set_entry("fr**n*s".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -137,7 +136,7 @@ fn _0006() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  scope.set_entry(&"before.after".into(), value_null!());
+  scope.set_entry("before.after".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -152,39 +151,39 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert!(crate::parse_name(&scope, "5Cards", false).is_err());
 }
 
 #[test]
 fn _0009() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert!(crate::parse_name(&scope, "123.45", false).is_err());
 }
 
 #[test]
 fn _0010() {
   let scope = scope!();
-  scope.set_entry(&"thing".into(), value_null!());
-  scope.set_entry(&"one two three four".into(), value_null!());
-  scope.set_entry(&"one and two".into(), value_null!());
-  scope.set_entry(&"one or two".into(), value_null!());
-  scope.set_entry(&"before.after".into(), value_null!());
-  scope.set_entry(&"before.or.after".into(), value_null!());
-  scope.set_entry(&"before.and.after".into(), value_null!());
-  scope.set_entry(&"before.between.after".into(), value_null!());
-  scope.set_entry(&"before.next to between.worm".into(), value_null!());
-  scope.set_entry(&"income/loss".into(), value_null!());
-  scope.set_entry(&"per/month/income/loss".into(), value_null!());
-  scope.set_entry(&"a-b".into(), value_null!());
-  scope.set_entry(&"to-be-or-not-to-be".into(), value_null!());
-  scope.set_entry(&"that's".into(), value_null!());
-  scope.set_entry(&"ok that's".into(), value_null!());
-  scope.set_entry(&"bed+breakfast".into(), value_null!());
-  scope.set_entry(&"night+and+day".into(), value_null!());
-  scope.set_entry(&"fr**n*s".into(), value_null!());
-  scope.set_entry(&"bo++e--m*".into(), value_null!());
-  scope.set_entry(&"wh*t*v*r".into(), value_null!());
+  scope.set_entry("thing".into());
+  scope.set_entry("one two three four".into());
+  scope.set_entry("one and two".into());
+  scope.set_entry("one or two".into());
+  scope.set_entry("before.after".into());
+  scope.set_entry("before.or.after".into());
+  scope.set_entry("before.and.after".into());
+  scope.set_entry("before.between.after".into());
+  scope.set_entry("before.next to between.worm".into());
+  scope.set_entry("income/loss".into());
+  scope.set_entry("per/month/income/loss".into());
+  scope.set_entry("a-b".into());
+  scope.set_entry("to-be-or-not-to-be".into());
+  scope.set_entry("that's".into());
+  scope.set_entry("ok that's".into());
+  scope.set_entry("bed+breakfast".into());
+  scope.set_entry("night+and+day".into());
+  scope.set_entry("fr**n*s".into());
+  scope.set_entry("bo++e--m*".into());
+  scope.set_entry("wh*t*v*r".into());
   accept_name(&scope, "thing", "thing");
   accept_name(&scope, "one two three four", "one two three four");
   accept_name(&scope, "one and two", "one and two");
@@ -210,7 +209,7 @@ fn _0010() {
 #[test]
 fn _0011() {
   let scope = scope!();
-  scope.set_entry(&"?".into(), value_null!());
+  scope.set_entry("?".into());
   accept(
     &scope,
     StartTextualExpression,

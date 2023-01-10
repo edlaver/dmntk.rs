@@ -87,6 +87,11 @@ impl Jsonify for Scope {
 }
 
 impl Scope {
+  /// Temporary - remove
+  pub fn contexts(&self) -> Vec<FeelContext> {
+    self.contexts.borrow().clone()
+  }
+
   /// Creates a new and empty [Scope].
   pub fn new() -> Self {
     Self { contexts: RefCell::new(vec![]) }

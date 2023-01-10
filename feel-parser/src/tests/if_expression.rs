@@ -30,10 +30,8 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
 
 #[test]
 fn _0001() {
@@ -61,8 +59,8 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry(&"a".into(), value_null!());
-  scope.set_entry(&"b".into(), value_null!());
+  scope.set_entry("a".into());
+  scope.set_entry("b".into());
   accept(
     &scope,
     StartTextualExpression,

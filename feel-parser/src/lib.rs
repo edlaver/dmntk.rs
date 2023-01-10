@@ -36,12 +36,15 @@ extern crate ascii_tree;
 extern crate dmntk_feel;
 
 mod ast;
+mod context;
 mod lalr;
 mod lexer;
 mod parser;
+mod scope;
 
 #[cfg(test)]
 mod tests;
 
 pub use ast::AstNode;
 pub use parser::{parse_boxed_expression, parse_context, parse_expression, parse_longest_name, parse_name, parse_textual_expression, parse_textual_expressions, parse_unary_tests};
+pub use scope::ParsingScope;

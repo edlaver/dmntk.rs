@@ -30,16 +30,14 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartExpression;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
 
 #[test]
 fn _0001() {
   let scope = scope!();
-  scope.set_entry(&"Date".into(), value_null!());
-  scope.set_entry(&"fromString".into(), value_null!());
+  scope.set_entry("Date".into());
+  scope.set_entry("fromString".into());
   accept(
     &scope,
     StartExpression,

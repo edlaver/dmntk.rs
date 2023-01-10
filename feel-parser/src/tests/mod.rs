@@ -33,8 +33,9 @@
 use crate::lalr::TokenType;
 use crate::lalr::TokenType::StartTextualExpression;
 use crate::parser::Parser;
+use crate::scope::ParsingScope;
 use difference::Changeset;
-use dmntk_feel::{scope, Name, Scope};
+use dmntk_feel::Name;
 
 mod addition;
 mod arithmetic_negation;
@@ -76,8 +77,18 @@ mod temporal_date_time;
 mod textual_expressions;
 mod unary_tests;
 
+/// Creates a parsing scope.
+macro_rules! scope {
+  () => {{
+    use crate::tests::ParsingScope;
+    ParsingScope::default()
+  }};
+}
+
+pub(crate) use scope;
+
 /// Parses the input text and compared the result with expected value.
-fn accept(scope: &Scope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) {
+fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) {
   let node = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
   let actual = node.to_string();
   if actual != expected {
@@ -93,7 +104,7 @@ fn accept(scope: &Scope, start_token_type: TokenType, input: &str, expected: &st
 
 #[test]
 fn test_parse_textual_expression() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(
     r#"
        Add
@@ -108,7 +119,7 @@ fn test_parse_textual_expression() {
 
 #[test]
 fn test_parse_textual_expressions() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(
     r#"
        ExpressionList
@@ -134,7 +145,7 @@ fn test_parse_textual_expressions() {
 
 #[test]
 fn test_parse_unary_tests() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(
     r#"
        ExpressionList
@@ -153,7 +164,7 @@ fn test_parse_unary_tests() {
 
 #[test]
 fn test_parse_boxed_expression() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(
     r#"
        List
@@ -172,7 +183,7 @@ fn test_parse_boxed_expression() {
 
 #[test]
 fn test_parse_context() {
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(
     r#"
        Context
@@ -189,7 +200,7 @@ fn test_parse_context() {
 #[test]
 fn test_parse_name() {
   let name_a: Name = Name::new(&["Full", "House"]);
-  let scope = scope!();
+  let scope = dmntk_feel::Scope::default();
   assert_eq!(name_a, crate::parse_name(&scope, "Full House", false).unwrap());
 }
 

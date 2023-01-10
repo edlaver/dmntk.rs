@@ -30,12 +30,10 @@
  * limitations under the License.
  */
 
-use super::accept;
-use crate::dmntk_feel::values::Value;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::dmntk_feel::Name;
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::{scope, value_null, value_number, FeelNumber, Scope};
 
 #[test]
 fn _0001() {
@@ -108,10 +106,10 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  let mut ctx: FeelContext = Default::default();
+  let mut ctx = ParsingContext::default();
   let name_power = Name::from("power");
-  ctx.set_entry(&name_power, value_number!(2805, 1));
-  scope.set_entry(&"engine".into(), Value::Context(ctx));
+  ctx.set_entry(name_power);
+  scope.set_value("engine".into(), ParsingContextEntry::Context(ctx));
   accept(
     &scope,
     StartTextualExpression,
@@ -131,8 +129,8 @@ fn _0005() {
 #[test]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry(&"engine".into(), value_null!());
-  scope.set_entry(&"power".into(), value_null!());
+  scope.set_entry("engine".into());
+  scope.set_entry("power".into());
   accept(
     &scope,
     StartTextualExpression,

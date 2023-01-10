@@ -30,10 +30,8 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::*;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
 
 #[test]
 fn _0001() {
@@ -285,8 +283,8 @@ fn _00010() {
 #[test]
 fn _00011() {
   let scope = scope!();
-  scope.set_entry(&"d".into(), value_null!());
-  scope.set_entry(&"e".into(), value_null!());
+  scope.set_entry("d".into());
+  scope.set_entry("e".into());
   accept(
     &scope,
     StartContext,

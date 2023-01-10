@@ -30,11 +30,10 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartUnaryTests;
 use crate::parser::Parser;
 use dmntk_common::DmntkError;
-use dmntk_feel::{scope, Scope};
 
 #[test]
 fn _0001() {

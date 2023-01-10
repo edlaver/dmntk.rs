@@ -32,11 +32,10 @@
 
 //! Testing parsing of invalid statements.
 
+use super::*;
 use crate::lalr::TokenType::{StartExpression, StartTextualExpression};
 use crate::parser::Parser;
-use crate::tests::accept;
 use dmntk_common::DmntkError;
-use dmntk_feel::{scope, Scope};
 use std::str::from_utf8;
 
 /// Utility function to shorten repeatable code in tests.

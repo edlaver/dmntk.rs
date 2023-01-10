@@ -30,17 +30,14 @@
  * limitations under the License.
  */
 
-use super::accept;
-use crate::dmntk_feel::context::FeelContext;
-use crate::dmntk_feel::values::Value;
-use crate::dmntk_feel::Name;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::{scope, value_null, value_number, FeelNumber, Scope};
 
 #[test]
 fn _0001() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -59,7 +56,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -86,7 +83,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -109,7 +106,7 @@ fn _0003() {
 #[test]
 fn _0004() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -131,7 +128,7 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry(&"Numbers".into(), value_null!());
+  scope.set_entry("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -151,7 +148,7 @@ fn _0005() {
 #[test]
 fn _0006() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -179,7 +176,7 @@ fn _0006() {
 #[test]
 fn _0006_1() {
   let scope = scope!();
-  scope.set_entry(&"Person".into(), value_null!());
+  scope.set_entry("Person".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -207,7 +204,7 @@ fn _0006_1() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  scope.set_entry(&"Numbers".into(), value_null!());
+  scope.set_entry("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -227,11 +224,10 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  scope.set_entry(&"Power".into(), value_number!(255, 1));
-  let mut ctx: FeelContext = Default::default();
-  let name_power = Name::from("power");
-  ctx.set_entry(&name_power, value_number!(2805, 1));
-  scope.set_entry(&"engine".into(), Value::Context(ctx));
+  scope.set_entry("Power".into());
+  let mut ctx = ParsingContext::default();
+  ctx.set_entry("power".into());
+  scope.set_value("engine".into(), ParsingContextEntry::Context(ctx));
   accept(
     &scope,
     StartTextualExpression,
@@ -253,11 +249,10 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  scope.set_entry(&"Power".into(), value_number!(255, 1));
-  let mut ctx: FeelContext = Default::default();
-  let name_power = Name::from("power");
-  ctx.set_entry(&name_power, Value::Boolean(false));
-  scope.set_entry(&"engine".into(), Value::Context(ctx));
+  scope.set_entry("Power".into());
+  let mut ctx = ParsingContext::default();
+  ctx.set_entry("power".into());
+  scope.set_entry("engine".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -279,7 +274,7 @@ fn _0009() {
 #[test]
 fn _0010() {
   let scope = scope!();
-  scope.set_entry(&"Items".into(), value_null!());
+  scope.set_entry("Items".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -300,7 +295,7 @@ fn _0010() {
 #[test]
 fn _0011() {
   let scope = scope!();
-  scope.set_entry(&"Numbers".into(), value_null!());
+  scope.set_entry("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -320,7 +315,7 @@ fn _0011() {
 #[test]
 fn _0012() {
   let scope = scope!();
-  scope.set_entry(&"Numbers".into(), value_null!());
+  scope.set_entry("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -340,7 +335,7 @@ fn _0012() {
 #[test]
 fn _0013() {
   let scope = scope!();
-  scope.set_entry(&"Numbers".into(), value_null!());
+  scope.set_entry("Numbers".into());
   accept(
     &scope,
     StartTextualExpression,

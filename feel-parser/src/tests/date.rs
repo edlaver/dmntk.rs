@@ -30,9 +30,8 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::{scope, Scope};
 
 #[test]
 fn date_1() {

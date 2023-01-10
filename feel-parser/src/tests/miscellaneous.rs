@@ -32,21 +32,19 @@
 
 //! Additional test for expressions found in compatibility tests.
 
-use super::accept;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::lalr::TokenType::{List, StartTextualExpression};
 use crate::parser::Parser;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_number, FeelNumber, Scope};
 
 #[test]
 fn _0001() {
   let scope = scope!();
-  let mut ctx_1 = FeelContext::default();
-  ctx_1.set_entry(&"principal".into(), value_number!(60000));
-  ctx_1.set_entry(&"rate".into(), value_number!(375, 4));
-  ctx_1.set_entry(&"termMonths".into(), value_number!(360));
-  scope.set_entry(&"loan".into(), Value::Context(ctx_1));
+  let mut ctx = ParsingContext::default();
+  ctx.set_entry("principal".into());
+  ctx.set_entry("rate".into());
+  ctx.set_entry("termMonths".into());
+  scope.set_value("loan".into(), ParsingContextEntry::Context(ctx));
   accept(
     &scope,
     StartTextualExpression,

@@ -34,10 +34,9 @@
 
 use self::errors::*;
 use crate::lalr::TokenType;
+use crate::scope::ParsingScope;
 use dmntk_common::Result;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Name, Scope};
+use dmntk_feel::Name;
 
 /// Definition of a single space character.
 const WS: char = ' ';
@@ -117,7 +116,7 @@ pub enum TokenValue {
 /// FEEL lexer.
 pub struct Lexer<'lexer> {
   /// Parsing scope.
-  scope: &'lexer Scope,
+  scope: &'lexer ParsingScope,
   /// Starting token type, returned before the first token.
   start_token_type: Option<TokenType>,
   /// Input characters.
@@ -145,7 +144,7 @@ pub struct Lexer<'lexer> {
 /// FEEL lexer implementation.
 impl<'lexer> Lexer<'lexer> {
   /// Creates a new lexer for specified input text.
-  pub fn new(scope: &'lexer Scope, start_token_type: TokenType, input: &str) -> Self {
+  pub fn new(scope: &'lexer ParsingScope, start_token_type: TokenType, input: &str) -> Self {
     Self {
       scope,
       start_token_type: Some(start_token_type),
@@ -180,7 +179,7 @@ impl<'lexer> Lexer<'lexer> {
 
   ///
   pub fn push_to_scope(&mut self) {
-    self.scope.push(FeelContext::default());
+    self.scope.push_default();
   }
 
   ///
@@ -190,7 +189,7 @@ impl<'lexer> Lexer<'lexer> {
 
   ///
   pub fn add_name_to_scope(&mut self, name: &Name) {
-    self.scope.set_entry(name, value_null!());
+    self.scope.set_entry(name.to_owned());
   }
 
   /// Returns the next token from input.

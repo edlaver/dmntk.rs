@@ -35,35 +35,34 @@
 use self::errors::*;
 use crate::lalr::*;
 use crate::lexer::*;
+use crate::scope::ParsingScope;
 use crate::AstNode;
 use dmntk_common::Result;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelType, Name, Scope};
+use dmntk_feel::{FeelType, Name, Scope};
 
 /// Parses an `expression` as defined in grammar rule `1`.
 pub fn parse_expression(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartExpression, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartExpression, input, trace).parse()
 }
 
 /// Parses a `textual expression` as defined in grammar rule `2`.
 pub fn parse_textual_expression(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartTextualExpression, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartTextualExpression, input, trace).parse()
 }
 
 /// Parses `textual expressions` as defined in grammar rule `3`.
 pub fn parse_textual_expressions(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartTextualExpressions, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartTextualExpressions, input, trace).parse()
 }
 
 /// Parses `unary tests` as defined in grammar rule `17`.
 pub fn parse_unary_tests(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartUnaryTests, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartUnaryTests, input, trace).parse()
 }
 
 /// Parses a `name` as defined grammar rule `25`.
 pub fn parse_name(scope: &Scope, input: &str, trace: bool) -> Result<Name> {
-  if let AstNode::Name(name) = Parser::new(scope, TokenType::StartTextualExpression, input, trace).parse()? {
+  if let AstNode::Name(name) = Parser::new(&scope.into(), TokenType::StartTextualExpression, input, trace).parse()? {
     Ok(name)
   } else {
     Err(err_not_a_feel_name(input))
@@ -77,12 +76,12 @@ pub fn parse_longest_name(input: &str) -> Result<Name> {
 
 /// Parses a `boxed expression` as defined in grammar rule `53`.
 pub fn parse_boxed_expression(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartBoxedExpression, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartBoxedExpression, input, trace).parse()
 }
 
 /// Parses a `context` as defined in grammar rule `59`.
 pub fn parse_context(scope: &Scope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(scope, TokenType::StartContext, input, trace).parse()
+  Parser::new(&scope.into(), TokenType::StartContext, input, trace).parse()
 }
 
 enum Action {
@@ -118,7 +117,7 @@ macro_rules! trace_action {
 /// Parser.
 pub struct Parser<'parser> {
   /// Parsing scope.
-  scope: &'parser Scope,
+  scope: &'parser ParsingScope,
   /// Parsed input.
   input: &'parser str,
   /// Flag indicating whether the tracing messages should be printed to standard output.
@@ -147,7 +146,7 @@ pub struct Parser<'parser> {
 
 impl<'parser> Parser<'parser> {
   /// Creates a new parser.
-  pub fn new(scope: &'parser Scope, start_token_type: TokenType, input: &'parser str, trace: bool) -> Self {
+  pub fn new(scope: &'parser ParsingScope, start_token_type: TokenType, input: &'parser str, trace: bool) -> Self {
     let lexer = Lexer::new(scope, start_token_type, input);
     Self {
       scope,
@@ -638,7 +637,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
       self.yy_node_stack.push(AstNode::FormalParameter(parameter_name, parameter_type));
       // set the name of the parameter to local context on the top of the scope stack
       // this name will be properly interpreted as a name while parsing the function body
-      self.scope.set_entry(name, value_null!());
+      self.scope.set_entry(name.to_owned());
     }
     Ok(())
   }
@@ -654,7 +653,7 @@ impl<'parser> ReduceActions for Parser<'parser> {
       self.yy_node_stack.push(AstNode::FormalParameter(parameter_name, parameter_type));
       // set the name of the parameter to local context on the top of the scope stack
       // this name will be properly interpreted as a name while parsing the function body
-      self.scope.set_entry(name, value_null!());
+      self.scope.set_entry(name.to_owned());
     }
     Ok(())
   }
@@ -662,8 +661,8 @@ impl<'parser> ReduceActions for Parser<'parser> {
   ///
   fn action_formal_parameters_begin(&mut self) -> Result<()> {
     trace_action!(self, "function_formal_parameters_begin");
-    // when the list of formal parameters begins, push a local context onto scope stack
-    self.scope.push(FeelContext::default());
+    // when the list of formal parameters begins, push an empty local context onto the scope stack
+    self.scope.push_default();
     Ok(())
   }
 

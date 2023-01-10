@@ -30,11 +30,9 @@
  * limitations under the License.
  */
 
-use super::accept;
-use crate::dmntk_feel::context::FeelContext;
-use crate::dmntk_feel::values::Value;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::{scope, value_null, value_number, Scope};
 
 #[test]
 fn _0001() {
@@ -179,8 +177,8 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  scope.set_entry(&"a".into(), value_number!(10));
-  scope.set_entry(&"b".into(), value_number!(20));
+  scope.set_entry("a".into());
+  scope.set_entry("b".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -203,10 +201,10 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  let mut ctx: FeelContext = Default::default();
-  ctx.set_entry(&"start".into(), value_null!());
-  ctx.set_entry(&"end".into(), value_null!());
-  scope.set_entry(&"r".into(), Value::Context(ctx));
+  let mut ctx = ParsingContext::default();
+  ctx.set_entry("start".into());
+  ctx.set_entry("end".into());
+  scope.set_value("r".into(), ParsingContextEntry::Context(ctx));
   accept(
     &scope,
     StartTextualExpression,
@@ -233,9 +231,9 @@ fn _0009() {
 #[test]
 fn _00010() {
   let scope = scope!();
-  scope.set_entry(&"r".into(), value_null!());
-  scope.set_entry(&"start".into(), value_null!());
-  scope.set_entry(&"end".into(), value_null!());
+  scope.set_entry("r".into());
+  scope.set_entry("start".into());
+  scope.set_entry("end".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -262,10 +260,10 @@ fn _00010() {
 #[test]
 fn _00011() {
   let scope = scope!();
-  scope.set_entry(&"r".into(), value_null!());
-  scope.set_entry(&"s".into(), value_null!());
-  scope.set_entry(&"start".into(), value_null!());
-  scope.set_entry(&"end".into(), value_null!());
+  scope.set_entry("r".into());
+  scope.set_entry("s".into());
+  scope.set_entry("start".into());
+  scope.set_entry("end".into());
   accept(
     &scope,
     StartTextualExpression,

@@ -30,12 +30,9 @@
  * limitations under the License.
  */
 
-use super::accept;
-use crate::dmntk_feel::context::FeelContext;
-use crate::dmntk_feel::values::Value;
-use crate::dmntk_feel::Name;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::lalr::TokenType::StartTextualExpression;
-use dmntk_feel::{scope, value_null, value_number, FeelNumber, Scope};
 
 #[test]
 fn _0001() {
@@ -58,7 +55,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let scope = scope!();
-  scope.set_entry(&"Manager".into(), value_null!());
+  scope.set_entry("Manager".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -77,7 +74,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = scope!();
-  scope.set_entry(&"Manager".into(), value_null!());
+  scope.set_entry("Manager".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -114,8 +111,8 @@ fn _0004() {
 #[test]
 fn _0005() {
   let scope = scope!();
-  scope.set_entry(&"Manager".into(), value_null!());
-  scope.set_entry(&"Address".into(), value_null!());
+  scope.set_entry("Manager".into());
+  scope.set_entry("Address".into());
   accept(
     &scope,
     StartTextualExpression,
@@ -137,11 +134,11 @@ fn _0005() {
 #[test]
 fn _0006() {
   let scope = scope!();
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&"Street".into(), Value::String("Alt Hof Str.".to_string()));
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&Name::from("Address"), Value::Context(ctx_a));
-  scope.set_entry(&"Manager".into(), Value::Context(ctx_b));
+  let mut ctx_a = ParsingContext::default();
+  ctx_a.set_entry("Street".into());
+  let mut ctx_b = ParsingContext::default();
+  ctx_b.set_value("Address".into(), ParsingContextEntry::Context(ctx_a));
+  scope.set_value("Manager".into(), ParsingContextEntry::Context(ctx_b));
   accept(
     &scope,
     StartTextualExpression,
@@ -163,9 +160,9 @@ fn _0006() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  let mut ctx_1 = FeelContext::default();
-  ctx_1.set_entry(&"principal".into(), value_number!(60000));
-  scope.set_entry(&"loan".into(), Value::Context(ctx_1));
+  let mut ctx_1 = ParsingContext::default();
+  ctx_1.set_entry("principal".into());
+  scope.set_value("loan".into(), ParsingContextEntry::Context(ctx_1));
   accept(
     &scope,
     StartTextualExpression,
@@ -184,11 +181,11 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  let mut ctx_1 = FeelContext::default();
-  ctx_1.set_entry(&"principal".into(), value_number!(60000));
-  ctx_1.set_entry(&"rate".into(), value_number!(375, 4));
-  ctx_1.set_entry(&"termMonths".into(), value_number!(360));
-  scope.set_entry(&"loan".into(), Value::Context(ctx_1));
+  let mut ctx_1 = ParsingContext::default();
+  ctx_1.set_entry("principal".into());
+  ctx_1.set_entry("rate".into());
+  ctx_1.set_entry("termMonths".into());
+  scope.set_value("loan".into(), ParsingContextEntry::Context(ctx_1));
   accept(
     &scope,
     StartTextualExpression,
@@ -213,9 +210,9 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  let mut ctx_1 = FeelContext::default();
-  ctx_1.set_entry(&"fromString".into(), value_null!());
-  scope.set_entry(&"Date".into(), Value::Context(ctx_1));
+  let mut ctx_1 = ParsingContext::default();
+  ctx_1.set_entry("fromString".into());
+  scope.set_value("Date".into(), ParsingContextEntry::Context(ctx_1));
   accept(
     &scope,
     StartTextualExpression,

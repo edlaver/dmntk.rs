@@ -30,11 +30,9 @@
  * limitations under the License.
  */
 
-use super::accept;
+use super::*;
+use crate::context::{ParsingContext, ParsingContextEntry};
 use crate::lalr::TokenType::*;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, value_number, Scope};
 
 #[test]
 fn _0001() {
@@ -231,7 +229,7 @@ fn _0006() {
 #[test]
 fn _0007() {
   let scope = scope!();
-  scope.set_entry(&"a".into(), value_null!());
+  scope.set_entry("a".into());
   accept(
     &scope,
     StartExpression,
@@ -258,11 +256,11 @@ fn _0007() {
 #[test]
 fn _0008() {
   let scope = scope!();
-  let mut ctx_inner = FeelContext::default();
-  ctx_inner.set_entry(&"c".into(), value_number!(10));
-  let mut ctx_outer = FeelContext::default();
-  ctx_outer.set_entry(&"b".into(), Value::Context(ctx_inner));
-  scope.set_entry(&"a".into(), Value::Context(ctx_outer));
+  let mut ctx_inner = ParsingContext::default();
+  ctx_inner.set_entry("c".into());
+  let mut ctx_outer = ParsingContext::default();
+  ctx_outer.set_value("b".into(), ParsingContextEntry::Context(ctx_inner));
+  scope.set_value("a".into(), ParsingContextEntry::Context(ctx_outer));
   accept(
     &scope,
     StartExpression,
@@ -295,7 +293,7 @@ fn _0008() {
 #[test]
 fn _0009() {
   let scope = scope!();
-  scope.set_entry(&"a".into(), value_null!());
+  scope.set_entry("a".into());
   accept(
     &scope,
     StartExpression,
