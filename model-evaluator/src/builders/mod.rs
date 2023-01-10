@@ -376,7 +376,7 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   } else {
     FeelType::Any
   };
-  let closure_ctx = scope.peek().clone();
+  let closure_ctx = scope.peek();
   // prepare function definition's body evaluator
   let body_expression_instance = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
   scope.push(parameters_ctx);
