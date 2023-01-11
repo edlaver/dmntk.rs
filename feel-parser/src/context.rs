@@ -34,10 +34,11 @@
 
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, Name};
+use std::collections::btree_map::Iter;
 use std::collections::{BTreeMap, HashSet};
 
 /// Attributes of the element in parsing context.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ParsingContextEntry {
   ///
   Context(ParsingContext),
@@ -46,7 +47,7 @@ pub enum ParsingContextEntry {
 }
 
 /// Parsing context.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct ParsingContext(BTreeMap<Name, ParsingContextEntry>);
 
 impl From<dmntk_feel::context::FeelContext> for ParsingContext {
@@ -88,6 +89,11 @@ impl ParsingContext {
   /// Places parsing context under specified name.
   pub fn set_context(&mut self, name: Name, ctx: ParsingContext) {
     self.0.insert(name, ParsingContextEntry::Context(ctx));
+  }
+
+  /// Returns an iterator over the entries.
+  pub fn get_entries(&self) -> Iter<Name, ParsingContextEntry> {
+    self.0.iter()
   }
 
   /// Returns a list of flattened keys for this parsing context.

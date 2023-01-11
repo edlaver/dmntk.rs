@@ -64,15 +64,33 @@ impl Default for ParsingScope {
   }
 }
 
+impl From<ParsingContext> for ParsingScope {
+  /// Creates a [ParsingScope] from [ParsingContext].
+  fn from(ctx: ParsingContext) -> Self {
+    Self { stack: RefCell::new(vec![ctx]) }
+  }
+}
+
 impl ParsingScope {
   /// Returns a context removed from the top of the stack.
   pub fn pop(&self) -> Option<ParsingContext> {
     self.stack.borrow_mut().pop()
   }
 
+  /// Returns a copy of the parsing context placed on the top of the stack.
+  /// When the stack is empty, the default parsing context is returned.
+  pub fn peek(&self) -> ParsingContext {
+    self.stack.borrow().last().cloned().unwrap_or(ParsingContext::default())
+  }
+
+  /// Puts a context on the top of the stack.
+  pub fn push(&self, ctx: ParsingContext) {
+    self.stack.borrow_mut().push(ctx);
+  }
+
   /// Pushes a default parsing context on top of the stack.
   pub fn push_default(&self) {
-    self.stack.borrow_mut().push(ParsingContext::default())
+    self.stack.borrow_mut().push(ParsingContext::default());
   }
 
   /// Sets a specified name in context placed on the top of the stack.
