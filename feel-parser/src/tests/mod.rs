@@ -30,52 +30,9 @@
  * limitations under the License.
  */
 
-use crate::lalr::TokenType;
-use crate::lalr::TokenType::StartTextualExpression;
-use crate::parser::Parser;
-use crate::scope::ParsingScope;
-use difference::Changeset;
-use dmntk_feel::Name;
-
-mod addition;
-mod arithmetic_negation;
 mod ast;
-mod between;
 mod bifs;
-mod boxed_expression;
-mod comment;
-mod comparison;
-mod conjunction;
-mod context;
-mod date;
-mod disjunction;
-mod division;
-mod every_expression;
-mod exponentiation;
-mod expression;
-mod filter;
-mod for_expression;
-mod function_definition;
-mod function_invocation;
-mod if_expression;
-mod instance_of;
-mod interval;
-mod invalid;
-mod list;
-mod literal;
-mod miscellaneous;
-mod multiplication;
-mod name;
-mod numeric_literal;
-mod path;
-mod range;
-mod simple_positive_unary_test;
-mod some_expression;
-mod subtraction;
-mod temporal_date;
-mod temporal_date_time;
-mod textual_expressions;
-mod unary_tests;
+mod expr;
 
 /// Creates a parsing scope.
 macro_rules! scope {
@@ -85,6 +42,12 @@ macro_rules! scope {
   }};
 }
 
+use crate::lalr::TokenType;
+use crate::lalr::TokenType::StartTextualExpression;
+use crate::parser::Parser;
+use crate::ParsingScope;
+use difference::Changeset;
+use dmntk_feel::Name;
 pub(crate) use scope;
 
 /// Parses the input text and compared the result with expected value.
