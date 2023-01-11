@@ -37,18 +37,18 @@ use dmntk_feel::{FeelType, Name};
 use std::collections::btree_map::Iter;
 use std::collections::{BTreeMap, HashSet};
 
-/// Attributes of the element in parsing context.
+/// Types of entries in parsing context.
 #[derive(Clone)]
-pub enum ParsingContextEntry {
-  ///
+pub enum ParsingEntry {
+  /// Parsing entry representing a context.
   Context(ParsingContext),
-  ///
-  Attributes,
+  /// Parsing entry representing a variable.
+  Variable,
 }
 
 /// Parsing context.
 #[derive(Default, Clone)]
-pub struct ParsingContext(BTreeMap<Name, ParsingContextEntry>);
+pub struct ParsingContext(BTreeMap<Name, ParsingEntry>);
 
 impl From<dmntk_feel::context::FeelContext> for ParsingContext {
   /// Temporary - remove.
@@ -57,18 +57,18 @@ impl From<dmntk_feel::context::FeelContext> for ParsingContext {
     for (name, value) in ctx.iter() {
       match value {
         Value::Context(inner_ctx) => {
-          entries.insert(name.to_owned(), ParsingContextEntry::Context(inner_ctx.clone().into()));
+          entries.insert(name.to_owned(), ParsingEntry::Context(inner_ctx.clone().into()));
         }
         Value::FeelType(feel_type) => {
-          entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
+          entries.insert(name.to_owned(), ParsingEntry::Variable);
           if let FeelType::Context(feel_type_ctx) = feel_type {
             for name in feel_type_ctx.keys() {
-              entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
+              entries.insert(name.to_owned(), ParsingEntry::Variable);
             }
           }
         }
         _ => {
-          entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
+          entries.insert(name.to_owned(), ParsingEntry::Variable);
         }
       }
     }
@@ -79,16 +79,16 @@ impl From<dmntk_feel::context::FeelContext> for ParsingContext {
 impl ParsingContext {
   /// Places a specified name in this parsing context.
   pub fn set_name(&mut self, name: Name) {
-    self.0.insert(name, ParsingContextEntry::Attributes);
+    self.0.insert(name, ParsingEntry::Variable);
   }
 
   /// Places parsing context under specified name.
   pub fn set_context(&mut self, name: Name, ctx: ParsingContext) {
-    self.0.insert(name, ParsingContextEntry::Context(ctx));
+    self.0.insert(name, ParsingEntry::Context(ctx));
   }
 
   /// Returns an iterator over the entries.
-  pub fn get_entries(&self) -> Iter<Name, ParsingContextEntry> {
+  pub fn get_entries(&self) -> Iter<Name, ParsingEntry> {
     self.0.iter()
   }
 
@@ -97,7 +97,7 @@ impl ParsingContext {
     let mut keys: HashSet<String> = HashSet::new();
     for (key, value) in self.0.iter() {
       keys.insert(key.into());
-      if let ParsingContextEntry::Context(sub_ctx) = value {
+      if let ParsingEntry::Context(sub_ctx) = value {
         let sub_keys = sub_ctx.flatten_keys();
         if !sub_keys.is_empty() {
           for sub_key in sub_keys {
