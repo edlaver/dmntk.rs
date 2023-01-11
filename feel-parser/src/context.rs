@@ -60,8 +60,9 @@ impl From<dmntk_feel::context::FeelContext> for ParsingContext {
           entries.insert(name.to_owned(), ParsingContextEntry::Context(inner_ctx.clone().into()));
         }
         Value::FeelType(feel_type) => {
-          if let FeelType::Context(a) = feel_type {
-            for name in a.keys() {
+          entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
+          if let FeelType::Context(feel_type_ctx) = feel_type {
+            for name in feel_type_ctx.keys() {
               entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
             }
           }
@@ -69,11 +70,6 @@ impl From<dmntk_feel::context::FeelContext> for ParsingContext {
         _ => {
           entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
         }
-      }
-      if let Value::Context(inner_ctx) = value {
-        entries.insert(name.to_owned(), ParsingContextEntry::Context(inner_ctx.clone().into()));
-      } else {
-        entries.insert(name.to_owned(), ParsingContextEntry::Attributes);
       }
     }
     Self(entries)
