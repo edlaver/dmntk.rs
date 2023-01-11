@@ -77,18 +77,12 @@ impl ParsingScope {
     self.stack.borrow_mut().pop()
   }
 
-  /// Returns a copy of the parsing context placed on the top of the stack.
-  /// When the stack is empty, the default parsing context is returned.
-  pub fn peek(&self) -> ParsingContext {
-    self.stack.borrow().last().cloned().unwrap_or(ParsingContext::default())
-  }
-
   /// Puts a context on the top of the stack.
   pub fn push(&self, ctx: ParsingContext) {
     self.stack.borrow_mut().push(ctx);
   }
 
-  /// Pushes a default parsing context on top of the stack.
+  /// Puts a default context on the top of the stack.
   pub fn push_default(&self) {
     self.stack.borrow_mut().push(ParsingContext::default());
   }
@@ -100,14 +94,14 @@ impl ParsingScope {
     }
   }
 
-  /// Sets parsing context under a specified name in context placed on the top of the stack.
+  /// Sets a context under a specified name in the context placed on the top of the stack.
   pub fn set_context(&self, name: Name, ctx: ParsingContext) {
     if let Some(last_ctx) = self.stack.borrow_mut().last_mut() {
       last_ctx.set_context(name, ctx);
     }
   }
 
-  /// Returns a vector of flattened keys in all contexts in scope.
+  /// Returns a set of flattened keys from all contexts in scope.
   pub fn flatten_keys(&self) -> HashSet<String> {
     self.stack.borrow().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
   }
