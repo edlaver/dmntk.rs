@@ -35,7 +35,7 @@
 extern crate test;
 
 use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, Scope};
+use dmntk_feel::{scope, value_null, FeelScope};
 use dmntk_feel_parser::parse_expression;
 use test::Bencher;
 
@@ -63,8 +63,8 @@ fn feel_parser_quantified_expression_0003(b: &mut Bencher) {
 #[bench]
 fn feel_parser_quantified_expression_0004(b: &mut Bencher) {
   let scope = scope!();
-  scope.set_entry(&"n".into(), value_null!());
-  scope.set_entry(&"m".into(), value_null!());
+  scope.set_value(&"n".into(), value_null!());
+  scope.set_value(&"m".into(), value_null!());
   let input = r#"every n in [1,2,3], m in <= 100 satisfies n > 1.5 * m"#;
   b.iter(|| parse_expression(&scope, input, false));
 }

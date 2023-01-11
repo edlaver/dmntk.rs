@@ -203,7 +203,7 @@ impl Workspace {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use dmntk_feel::Scope;
+  use dmntk_feel::FeelScope;
 
   fn assert_state(workspace: &Workspace, state: (usize, usize, usize, usize)) {
     assert_eq!(state.0, workspace.definitions.len());
@@ -272,7 +272,7 @@ mod tests {
     assert_state(&workspace, (1, 1, 1, 1));
 
     // evaluate existing model and invocable
-    let input_data = dmntk_feel_evaluator::evaluate_context(&Scope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
+    let input_data = dmntk_feel_evaluator::evaluate_context(&FeelScope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
     let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Greeting Message", &input_data).unwrap();
     assert_eq!(r#""Hello John Doe""#, value.to_string());
 

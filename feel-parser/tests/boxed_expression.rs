@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use dmntk_feel::{scope, Scope};
+use dmntk_feel::{scope, FeelScope};
 use dmntk_feel_parser::AstNode;
 
 #[test]

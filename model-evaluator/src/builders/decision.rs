@@ -38,7 +38,7 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Name, Scope};
+use dmntk_feel::{value_null, FeelScope, Name};
 use dmntk_model::model::{Decision, Definitions, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
 
@@ -126,12 +126,12 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
     }
   }
   // prepare a scope and build expression instance evaluator
-  let scope: Scope = ctx.into();
+  let scope: FeelScope = ctx.into();
   // prepare expression instance for this decision
   let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
     crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?
   } else {
-    Box::new(move |_: &Scope| value_null!("no decision logic defined in decision"))
+    Box::new(move |_: &FeelScope| value_null!("no decision logic defined in decision"))
   };
   // prepare references to required knowledge, decisions and input data
   let mut required_knowledge_references: Vec<String> = vec![];
@@ -184,7 +184,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
               });
               required_input_ctx.zip(&required_knowledge_ctx);
               // place the result under the name of the output variable
-              let scope: Scope = required_input_ctx.into();
+              let scope: FeelScope = required_input_ctx.into();
               let decision_result = evaluator(&scope) as Value;
               let coerced_decision_result = output_variable_type.coerced(&decision_result);
               output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);

@@ -104,7 +104,7 @@ fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expect
 
 #[test]
 fn test_parse_textual_expression() {
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(
     r#"
        Add
@@ -119,7 +119,7 @@ fn test_parse_textual_expression() {
 
 #[test]
 fn test_parse_textual_expressions() {
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(
     r#"
        ExpressionList
@@ -145,7 +145,7 @@ fn test_parse_textual_expressions() {
 
 #[test]
 fn test_parse_unary_tests() {
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(
     r#"
        ExpressionList
@@ -164,7 +164,7 @@ fn test_parse_unary_tests() {
 
 #[test]
 fn test_parse_boxed_expression() {
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(
     r#"
        List
@@ -183,7 +183,7 @@ fn test_parse_boxed_expression() {
 
 #[test]
 fn test_parse_context() {
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(
     r#"
        Context
@@ -200,7 +200,7 @@ fn test_parse_context() {
 #[test]
 fn test_parse_name() {
   let name_a: Name = Name::new(&["Full", "House"]);
-  let scope = dmntk_feel::Scope::default();
+  let scope = dmntk_feel::FeelScope::default();
   assert_eq!(name_a, crate::parse_name(&scope, "Full House", false).unwrap());
 }
 

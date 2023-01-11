@@ -37,7 +37,7 @@ use difference::Changeset;
 use dmntk_common::ascii_ctrl::*;
 use dmntk_common::{ascii256, ascii_none, Jsonify};
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::FeelScope;
 use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
 
 /// Available command-line actions.
@@ -374,7 +374,7 @@ fn get_cli_action() -> Action {
 fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
   match std::fs::read_to_string(feel_file_name) {
     Ok(feel_expression) => match std::fs::read_to_string(ctx_file_name) {
-      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&Scope::default(), &context_definition) {
+      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.into(), &feel_expression, false) {
           Ok(ast_root_node) => {
             println!("    AST:{}", ast_root_node.to_string().trim_end());
@@ -393,7 +393,7 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
 fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
   match std::fs::read_to_string(feel_file_name) {
     Ok(textual_expression) => match std::fs::read_to_string(ctx_file_name) {
-      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&Scope::default(), &context_definition) {
+      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.clone().into(), &textual_expression, false) {
           Ok(ast_root_node) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
             Ok(result) => {
@@ -473,7 +473,7 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
       return;
     }
   };
-  let input_data = match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
+  let input_data = match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
     Ok(input_data) => input_data,
     Err(reason) => {
       eprintln!("evaluating input data failed with reason: {reason}");
@@ -648,7 +648,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
 fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name: &str) {
   match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match std::fs::read_to_string(input_file_name) {
-      Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
+      Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
         Ok(input_data) => match dmntk_model::parse(&dmn_file_content) {
           Ok(definitions) => match dmntk_evaluator::ModelEvaluator::new(&definitions) {
             Ok(model_evaluator) => {

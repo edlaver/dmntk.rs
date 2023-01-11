@@ -2,7 +2,7 @@ use crate::context::FeelContext;
 use crate::names::Name;
 use crate::types::{is_built_in_type_name, FeelType};
 use crate::values::{Value, Values};
-use crate::{value_null, value_number, FeelNumber, FunctionBody, Scope};
+use crate::{value_null, value_number, FeelNumber, FeelScope, FunctionBody};
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::sync::Arc;
 
@@ -722,21 +722,21 @@ fn test_type_get_conformant_value() {
   let t_function_a = FeelType::function(&[FeelType::Number, FeelType::Number], &t_number);
   let v_function_a = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
-    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(1)))),
+    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(1)))),
     FeelContext::default(),
     t_number.clone(),
   );
   let t_function_b = FeelType::function(&[FeelType::Number, FeelType::Number], &t_boolean);
   let v_function_b = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
-    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2)))),
+    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2)))),
     FeelContext::default(),
     t_boolean.clone(),
   );
   let t_function_c = FeelType::function(&[FeelType::Number], &t_string);
   let v_function_c = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone())],
-    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(3)))),
+    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(3)))),
     FeelContext::default(),
     t_string.clone(),
   );

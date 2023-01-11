@@ -36,7 +36,7 @@ use crate::evaluate_equals;
 use crate::macros::invalid_argument_type;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
+use dmntk_feel::{value_null, value_number, value_string, FeelNumber, FeelScope, Name, ToFeelString};
 use dmntk_feel_temporal::{DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear};
 use regex::Regex;
 use std::borrow::Borrow;
@@ -1865,7 +1865,7 @@ pub fn sort(list: &Value, ordering_function: &Value) -> Value {
           let mut ctx = FeelContext::default();
           ctx.set_entry(&parameters[0].0, x.clone());
           ctx.set_entry(&parameters[1].0, y.clone());
-          let scope: Scope = ctx.into();
+          let scope: FeelScope = ctx.into();
           if let Value::Boolean(result) = body.evaluate(&scope) {
             if result {
               Ordering::Less

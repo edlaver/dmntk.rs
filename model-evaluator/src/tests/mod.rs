@@ -33,7 +33,7 @@
 use crate::ModelEvaluator;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::FeelScope;
 use std::sync::Arc;
 
 #[cfg(test)]
@@ -44,7 +44,7 @@ mod model;
 
 /// Utility function that creates a `FEEL` context from specified input expression.
 pub fn context(input: &str) -> FeelContext {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   match dmntk_feel_parser::parse_context(&scope, input, false) {
     Ok(node) => match dmntk_feel_evaluator::prepare(&node) {
       Ok(evaluator) => match evaluator(&scope) {

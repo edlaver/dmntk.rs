@@ -50,7 +50,7 @@ pub use decision_service::DecisionServiceEvaluator;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, Evaluator, FeelType, FunctionBody, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
 pub use input_data::InputDataEvaluator;
 pub use input_data_context::InputDataContextEvaluator;
@@ -303,7 +303,7 @@ fn build_variable_evaluator(variable: &Variable) -> Result<VariableEvaluatorFn> 
 }
 
 ///
-fn build_expression_instance_evaluator(scope: &Scope, expression_instance: &ExpressionInstance, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_expression_instance_evaluator(scope: &FeelScope, expression_instance: &ExpressionInstance, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   match expression_instance {
     ExpressionInstance::Context(context) => build_context_evaluator(scope, context, model_evaluator),
     ExpressionInstance::DecisionTable(decision_table) => build_decision_table_evaluator(scope, decision_table),
@@ -315,7 +315,7 @@ fn build_expression_instance_evaluator(scope: &Scope, expression_instance: &Expr
 }
 
 ///
-fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   let mut entry_evaluators = vec![];
   scope.push(FeelContext::default());
@@ -332,7 +332,7 @@ fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &M
         FeelType::Any
       };
       let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
-      scope.insert_null(variable_name.clone());
+      scope.set_name(variable_name.clone());
       entry_evaluators.push((Some(variable_name.clone()), variable_type, evaluator));
     } else {
       let evaluator = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
@@ -340,14 +340,14 @@ fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &M
     }
   }
   scope.pop();
-  Ok(Box::new(move |scope: &Scope| {
+  Ok(Box::new(move |scope: &FeelScope| {
     let mut evaluated_context = FeelContext::default();
     for (opt_variable_name, variable_type, evaluator) in &entry_evaluators {
       let before = evaluator(scope) as Value;
       let value = variable_type.coerced(&before);
       match opt_variable_name {
         Some(variable_name) => {
-          scope.set_entry(variable_name, value.clone());
+          scope.set_value(variable_name, value.clone());
           evaluated_context.set_entry(variable_name, value);
         }
         None => return value,
@@ -358,13 +358,13 @@ fn build_context_evaluator(scope: &Scope, context: &Context, model_evaluator: &M
 }
 
 ///
-fn build_decision_table_evaluator(scope: &Scope, decision_table: &DecisionTable) -> Result<Evaluator> {
+fn build_decision_table_evaluator(scope: &FeelScope, decision_table: &DecisionTable) -> Result<Evaluator> {
   let decision_table_evaluator = decision_table::build_decision_table_evaluator(scope, decision_table)?;
-  Ok(Box::new(move |scope: &Scope| decision_table_evaluator(scope)))
+  Ok(Box::new(move |scope: &FeelScope| decision_table_evaluator(scope)))
 }
 
 ///
-fn build_function_definition_evaluator(scope: &Scope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   // resolve function definition's formal parameters
   let mut parameters = vec![];
@@ -394,10 +394,10 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
   //let closure_ctx = FeelContext::default();
-  Ok(Box::new(move |scope: &Scope| {
+  Ok(Box::new(move |scope: &FeelScope| {
     let mut a = FeelContext::default();
     for (name, _) in closure_ctx.get_entries() {
-      if let Some(v) = scope.get_entry(name) {
+      if let Some(v) = scope.get_value(name) {
         a.set_entry(name, v);
       }
     }
@@ -406,7 +406,7 @@ fn build_function_definition_evaluator(scope: &Scope, function_definition: &Func
 }
 
 ///
-fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   let mut bindings = vec![];
   let function_evaluator = build_expression_instance_evaluator(scope, invocation.called_function(), model_evaluator)?;
@@ -422,7 +422,7 @@ fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_eval
       bindings.push((param_name, param_type, evaluator));
     }
   }
-  Ok(Box::new(move |scope: &Scope| {
+  Ok(Box::new(move |scope: &FeelScope| {
     let mut parameters_ctx = FeelContext::default();
     bindings.iter().for_each(|(param_name, param_type, evaluator)| {
       let param_value = evaluator(scope) as Value;
@@ -442,14 +442,14 @@ fn build_invocation_evaluator(scope: &Scope, invocation: &Invocation, model_eval
 }
 
 ///
-fn build_literal_expression_evaluator(scope: &Scope, literal_expression: &LiteralExpression) -> Result<Evaluator> {
+fn build_literal_expression_evaluator(scope: &FeelScope, literal_expression: &LiteralExpression) -> Result<Evaluator> {
   let text = literal_expression.text().as_ref().ok_or_else(err_empty_literal_expression)?;
   let node = dmntk_feel_parser::parse_expression(scope, text, false)?;
   dmntk_feel_evaluator::prepare(&node)
 }
 
 ///
-fn build_relation_evaluator(scope: &Scope, relation: &Relation, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let mut rows = vec![];
   for row in relation.rows() {
     let mut evaluators = vec![];
@@ -462,7 +462,7 @@ fn build_relation_evaluator(scope: &Scope, relation: &Relation, model_evaluator:
     }
     rows.push(evaluators);
   }
-  Ok(Box::new(move |scope: &Scope| {
+  Ok(Box::new(move |scope: &FeelScope| {
     let mut results = vec![];
     for row in &rows {
       let mut evaluated_context = FeelContext::default();

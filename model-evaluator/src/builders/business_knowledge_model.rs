@@ -38,7 +38,7 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{FeelType, FunctionBody, Name, Scope};
+use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -116,7 +116,7 @@ fn build_bkm_evaluator(
   bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), &mut local_context)?;
   //TODO verify the above line - there was no such example in models
   if let Some(expression_instance) = function_definition.body() {
-    let scope: Scope = local_context.into();
+    let scope: FeelScope = local_context.into();
     build_bkm_expression_instance_evaluator(
       &scope,
       formal_parameters,
@@ -133,7 +133,7 @@ fn build_bkm_evaluator(
 
 ///
 fn build_bkm_expression_instance_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   expression_instance: &ExpressionInstance,
   output_variable_name: Name,
@@ -217,7 +217,7 @@ fn build_bkm_expression_instance_evaluator(
 
 ///
 fn build_bkm_context_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   context: &Context,
   output_variable_name: Name,
@@ -233,7 +233,7 @@ fn build_bkm_context_evaluator(
 
 ///
 fn build_bkm_decision_table_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   decision_table: &DecisionTable,
   output_variable_name: Name,
@@ -248,7 +248,7 @@ fn build_bkm_decision_table_evaluator(
 
 ///
 fn build_bkm_function_definition_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   function_definition: &FunctionDefinition,
   output_variable_name: Name,
@@ -264,7 +264,7 @@ fn build_bkm_function_definition_evaluator(
 
 ///
 fn build_bkm_invocation_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   invocation: &Invocation,
   output_variable_name: Name,
@@ -280,7 +280,7 @@ fn build_bkm_invocation_evaluator(
 
 ///
 fn build_bkm_literal_expression_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   literal_expression: &LiteralExpression,
   output_variable_name: Name,
@@ -295,7 +295,7 @@ fn build_bkm_literal_expression_evaluator(
 
 ///
 fn build_bkm_relation_evaluator(
-  scope: &Scope,
+  scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   relation: &Relation,
   output_variable_name: Name,

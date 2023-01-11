@@ -35,11 +35,11 @@ use crate::errors::err_not_a_context;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{Evaluator, Scope};
+use dmntk_feel::{Evaluator, FeelScope};
 use dmntk_feel_parser::AstNode;
 
 /// Evaluates a [Value] from given [AstNode].
-pub fn evaluate(scope: &Scope, node: &AstNode) -> Result<Value> {
+pub fn evaluate(scope: &FeelScope, node: &AstNode) -> Result<Value> {
   let evaluator = crate::builders::build_evaluator(&mut BuilderContext::default(), node)?;
   Ok(evaluator(scope))
 }
@@ -70,13 +70,13 @@ pub fn evaluate_equals(left: &Value, right: &Value) -> bool {
 }
 
 /// Evaluates a context from text containing `FEEL` expression.
-pub fn evaluate_context(scope: &Scope, input: &str) -> Result<FeelContext> {
+pub fn evaluate_context(scope: &FeelScope, input: &str) -> Result<FeelContext> {
   let node = &dmntk_feel_parser::parse_context(scope, input, false)?;
   evaluate_context_node(scope, node)
 }
 
 /// Evaluates a context from AST node.
-pub fn evaluate_context_node(scope: &Scope, node: &AstNode) -> Result<FeelContext> {
+pub fn evaluate_context_node(scope: &FeelScope, node: &AstNode) -> Result<FeelContext> {
   let evaluator = crate::builders::build_evaluator(&mut BuilderContext::default(), node)?;
   if let Value::Context(context) = evaluator(scope) {
     Ok(context)

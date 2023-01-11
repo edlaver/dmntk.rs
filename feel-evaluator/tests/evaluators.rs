@@ -1,17 +1,17 @@
 use dmntk_feel::values::Value;
-use dmntk_feel::{FeelNumber, Scope};
+use dmntk_feel::{FeelNumber, FeelScope};
 use dmntk_feel_evaluator::{evaluate, evaluate_context, evaluate_context_node, evaluate_max, evaluate_min, evaluate_sum, prepare};
 use dmntk_feel_parser::AstNode;
 
 #[test]
 fn _0001() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   assert_eq!("{}", evaluate_context(&scope, r#"{}"#).unwrap().to_string());
 }
 
 #[test]
 fn _0002() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::Context(vec![AstNode::ContextEntry(
     Box::new(AstNode::ContextEntryKey("alpha".into())),
     Box::new(AstNode::Boolean(true)),
@@ -21,7 +21,7 @@ fn _0002() {
 
 #[test]
 fn _0003() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::Boolean(true);
   assert_eq!(
     "FeelEvaluatorError: expected FEEL context as an input",
@@ -31,7 +31,7 @@ fn _0003() {
 
 #[test]
 fn _0004() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::Add(
     Box::new(AstNode::Numeric("1".to_string(), "23".to_string())),
     Box::new(AstNode::Numeric("1".to_string(), "77".to_string())),
@@ -61,7 +61,7 @@ fn _0007() {
 
 #[test]
 fn _0008() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::FunctionInvocation(Box::new(AstNode::Name("calculate".into())), Box::new(AstNode::Boolean(true)));
   assert_eq!(
     "FeelEvaluatorError: expected positional or named parameter",
@@ -71,7 +71,7 @@ fn _0008() {
 
 #[test]
 fn _0009() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::FunctionInvocation(
     Box::new(AstNode::Name("calculate".into())),
     Box::new(AstNode::NamedParameters(vec![AstNode::NamedParameter(
@@ -87,7 +87,7 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::Every(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   assert_eq!(
     "FeelEvaluatorError: expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
@@ -97,7 +97,7 @@ fn _0010() {
 
 #[test]
 fn _0011() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::Some(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   assert_eq!(
     "FeelEvaluatorError: expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
@@ -107,7 +107,7 @@ fn _0011() {
 
 #[test]
 fn _0012() {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   let node = AstNode::CommaList(vec![]);
   assert_eq!(
     "FeelEvaluatorError: unexpected AST node in evaluator builder CommaList([])",

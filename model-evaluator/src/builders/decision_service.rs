@@ -38,7 +38,7 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Evaluator, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelScope, Name};
 use dmntk_model::model::{DecisionService, Definitions, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -77,7 +77,7 @@ impl DecisionServiceEvaluator {
   /// Returns a decision service as function definition with specified identifier.
   pub fn evaluate_as_function_definition(&self, id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
     if let Some(entry) = self.evaluators.get(id) {
-      let scope: Scope = input_data.clone().into();
+      let scope: FeelScope = input_data.clone().into();
       let function_definition = entry.2(&scope) as Value;
       let output_variable_name = entry.0.name.clone();
       output_data.set_entry(&output_variable_name, function_definition);
@@ -211,7 +211,7 @@ fn build_decision_service_evaluator(
     output_variable_name.clone()
   });
   // prepare function body for function definition to be built from decision service evaluator closure
-  let body_evaluator = Box::new(move |scope: &Scope| {
+  let body_evaluator = Box::new(move |scope: &FeelScope| {
     let input_data = scope.peek();
     let mut output_data = FeelContext::default();
     if let Ok(decision_service_evaluator) = model_evaluator.decision_service_evaluator() {
@@ -227,7 +227,7 @@ fn build_decision_service_evaluator(
   let function_body = dmntk_feel::FunctionBody::DecisionService(Arc::new(body_evaluator));
   let closure = FeelContext::default();
   let function_definition = Value::FunctionDefinition(formal_parameters, function_body, closure, output_variable_type_clone);
-  let decision_service_as_function_definition_evaluator = Box::new(move |_: &Scope| function_definition.clone());
+  let decision_service_as_function_definition_evaluator = Box::new(move |_: &FeelScope| function_definition.clone());
   // return decision service evaluator closure and evaluator of the decision service as function definition
   Ok((output_variable, decision_service_evaluator, decision_service_as_function_definition_evaluator))
 }

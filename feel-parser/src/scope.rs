@@ -44,9 +44,9 @@ pub struct ParsingScope {
   stack: RefCell<Vec<ParsingContext>>,
 }
 
-impl From<&dmntk_feel::Scope> for ParsingScope {
+impl From<&dmntk_feel::FeelScope> for ParsingScope {
   /// Temporary - remove
-  fn from(scope: &dmntk_feel::Scope) -> Self {
+  fn from(scope: &dmntk_feel::FeelScope) -> Self {
     let stack = RefCell::new(vec![]);
     for feel_context in scope.contexts() {
       stack.borrow_mut().push(feel_context.into());

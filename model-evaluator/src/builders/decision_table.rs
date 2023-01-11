@@ -35,7 +35,7 @@
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, Evaluator, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelScope, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{BuiltinAggregator, DecisionTable, HitPolicy};
 use std::cmp::Ordering;
@@ -258,7 +258,7 @@ impl EvaluatedDecisionTable {
 }
 
 ///
-fn parse_decision_table(scope: &Scope, decision_table: &DecisionTable) -> Result<ParsedDecisionTable> {
+fn parse_decision_table(scope: &FeelScope, decision_table: &DecisionTable) -> Result<ParsedDecisionTable> {
   // parse input expressions and input values
   let mut input_expressions_and_values = vec![];
   for input_clause in &decision_table.input_clauses {
@@ -347,7 +347,7 @@ fn parse_decision_table(scope: &Scope, decision_table: &DecisionTable) -> Result
 }
 
 ///
-fn evaluate_parsed_decision_table(scope: &Scope, parsed_decision_table: &ParsedDecisionTable) -> EvaluatedDecisionTable {
+fn evaluate_parsed_decision_table(scope: &FeelScope, parsed_decision_table: &ParsedDecisionTable) -> EvaluatedDecisionTable {
   // evaluate only non-empty output values
   let mut output_values = vec![];
   for evaluator in parsed_decision_table.output_values_evaluators.iter().flatten() {
@@ -390,10 +390,10 @@ fn evaluate_parsed_decision_table(scope: &Scope, parsed_decision_table: &ParsedD
 }
 
 ///
-pub fn build_decision_table_evaluator(scope: &Scope, decision_table: &DecisionTable) -> Result<Evaluator> {
+pub fn build_decision_table_evaluator(scope: &FeelScope, decision_table: &DecisionTable) -> Result<Evaluator> {
   let hit_policy = decision_table.hit_policy;
   let parsed_decision_table = parse_decision_table(scope, decision_table)?;
-  Ok(Box::new(move |scope: &Scope| {
+  Ok(Box::new(move |scope: &FeelScope| {
     let evaluated_decision_table = evaluate_parsed_decision_table(scope, &parsed_decision_table);
     match hit_policy {
       HitPolicy::Unique => evaluated_decision_table.evaluate_hit_policy_unique(),

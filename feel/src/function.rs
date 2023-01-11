@@ -33,7 +33,7 @@
 //! `FEEL` or `DMN` function body definition.
 
 use crate::values::Value;
-use crate::{Evaluator, Scope};
+use crate::{Evaluator, FeelScope};
 use std::fmt;
 use std::fmt::Debug;
 use std::sync::Arc;
@@ -64,8 +64,8 @@ pub enum FunctionBody {
 }
 
 impl FunctionBody {
-  /// Evaluates function body, takes a [Scope] as input and returns evaluated [Value].
-  pub fn evaluate(&self, scope: &Scope) -> Value {
+  /// Evaluates function body, takes a [FeelScope] as input and returns evaluated [Value].
+  pub fn evaluate(&self, scope: &FeelScope) -> Value {
     match self {
       FunctionBody::Context(evaluator) => evaluator(scope),
       FunctionBody::LiteralExpression(evaluator) => evaluator(scope),

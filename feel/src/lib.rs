@@ -45,7 +45,7 @@ pub use evaluator::Evaluator;
 pub use function::FunctionBody;
 pub use names::Name;
 pub use qualified_names::QualifiedName;
-pub use scope::Scope;
+pub use scope::FeelScope;
 pub use strings::ToFeelString;
 pub use types::{is_built_in_type_name, FeelType, FEEL_TYPE_NAME_ANY};
 

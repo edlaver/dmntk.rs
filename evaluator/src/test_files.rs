@@ -69,14 +69,14 @@
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::FeelScope;
 use dmntk_feel_parser::AstNode;
 
 /// Evaluates test cases loaded from input test file.
 pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
   let mut test_cases = vec![];
   if let Some(separator) = detect_separator(input) {
-    let scope = Scope::default();
+    let scope = FeelScope::default();
     for unary_tests in split_test_cases(input, &separator) {
       match dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
         Ok(ast_node) => match ast_node {

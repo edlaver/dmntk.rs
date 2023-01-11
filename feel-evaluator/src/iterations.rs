@@ -34,7 +34,7 @@
 
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{Evaluator, Name, Scope};
+use dmntk_feel::{Evaluator, FeelScope, Name};
 
 ///
 enum FeelIterationType {
@@ -199,7 +199,7 @@ impl ForExpressionEvaluator {
     }
   }
   ///
-  pub fn evaluate(&mut self, scope: &Scope, evaluator: &Evaluator) -> Values {
+  pub fn evaluate(&mut self, scope: &FeelScope, evaluator: &Evaluator) -> Values {
     let mut results = vec![];
     self.feel_iterator.run(|ctx| {
       let mut iteration_context = ctx.clone();
@@ -234,7 +234,7 @@ impl SomeExpressionEvaluator {
     self.feel_iterator.add_list(name, values);
   }
   ///
-  pub fn evaluate(&mut self, scope: &Scope, evaluator: &Evaluator) -> Value {
+  pub fn evaluate(&mut self, scope: &FeelScope, evaluator: &Evaluator) -> Value {
     let mut result = false;
     self.feel_iterator.run(|ctx| {
       scope.push(ctx.clone());
@@ -268,7 +268,7 @@ impl EveryExpressionEvaluator {
     self.feel_iterator.add_list(name, values);
   }
   ///
-  pub fn evaluate(&mut self, scope: &Scope, evaluator: &Evaluator) -> Value {
+  pub fn evaluate(&mut self, scope: &FeelScope, evaluator: &Evaluator) -> Value {
     let mut result = true;
     self.feel_iterator.run(|ctx| {
       scope.push(ctx.clone());

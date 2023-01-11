@@ -36,7 +36,7 @@ use crate::errors::{err_empty_feel_name, err_unsupported_feel_type};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
-use dmntk_feel::{value_null, Evaluator, FeelType, Name, Scope};
+use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{Definitions, ItemDefinition, ItemDefinitionType, NamedElement};
 use std::collections::HashMap;
@@ -91,7 +91,7 @@ fn build_allowed_values_evaluator(item_definition: &ItemDefinition) -> Result<Op
   let mut av_evaluator = None;
   if let Some(unary_tests) = item_definition.allowed_values() {
     if let Some(text) = unary_tests.text() {
-      let scope = Scope::default();
+      let scope = FeelScope::default();
       let unary_tests_node = dmntk_feel_parser::parse_unary_tests(&scope, text, false)?;
       let node = AstNode::In(Box::new(AstNode::Name("?".into())), Box::new(unary_tests_node));
       av_evaluator = Some(dmntk_feel_evaluator::prepare(&node)?);
@@ -103,8 +103,8 @@ fn build_allowed_values_evaluator(item_definition: &ItemDefinition) -> Result<Op
 ///
 fn check_allowed_values(value: Value, av_evaluator: Option<&Evaluator>) -> Value {
   if let Some(evaluator) = av_evaluator {
-    let scope = Scope::default();
-    scope.set_entry(&"?".into(), value.clone());
+    let scope = FeelScope::default();
+    scope.set_value(&"?".into(), value.clone());
     if evaluator(&scope).is_true() {
       value
     } else {
