@@ -212,7 +212,7 @@ fn build_decision_service_evaluator(
   });
   // prepare function body for function definition to be built from decision service evaluator closure
   let body_evaluator = Box::new(move |scope: &FeelScope| {
-    let input_data = scope.peek();
+    let input_data = scope.peek().unwrap_or_default();
     let mut output_data = FeelContext::default();
     if let Ok(decision_service_evaluator) = model_evaluator.decision_service_evaluator() {
       let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &model_evaluator, &mut output_data);

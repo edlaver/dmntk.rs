@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! IMplementation of the `FEEL` scope.
+//! Implementation of the `FEEL` scope.
 
 use crate::context::FeelContext;
 use crate::values::Value;
@@ -104,11 +104,10 @@ impl FeelScope {
     self.stack.borrow_mut().pop()
   }
 
-  /// Peeks a to context from the top of the stack.
+  /// Peeks a context from the top of the stack.
   /// If the stack is empty, the default context is returned.
-  pub fn peek(&self) -> FeelContext {
-    //TODO maybe returning a reference is enough???
-    self.stack.borrow().last().map_or(FeelContext::default(), |ctx| ctx.clone())
+  pub fn peek(&self) -> Option<FeelContext> {
+    self.stack.borrow().last().cloned()
   }
 
   /// Returns a value of an entry with specified name.

@@ -364,7 +364,7 @@ fn build_decision_table_evaluator(scope: &FeelScope, decision_table: &DecisionTa
 }
 
 ///
-fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
+fn build_function_definition_evaluator(parsing_scope: &FeelScope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<Evaluator> {
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   // resolve function definition's formal parameters
   let mut parameters = vec![];
@@ -385,15 +385,14 @@ fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &
   } else {
     FeelType::Any
   };
-  let closure_ctx = scope.peek();
   // prepare function definition's body evaluator
   let body_expression_instance = function_definition.body().as_ref().ok_or_else(err_empty_function_body)?;
-  scope.push(parameters_ctx);
-  let body_evaluator = build_expression_instance_evaluator(scope, body_expression_instance, model_evaluator)?;
-  scope.pop();
+  parsing_scope.push(parameters_ctx);
+  let body_evaluator = build_expression_instance_evaluator(parsing_scope, body_expression_instance, model_evaluator)?;
+  parsing_scope.pop();
+  let closure_ctx = parsing_scope.pop().unwrap_or_default();
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
-  //let closure_ctx = FeelContext::default();
   Ok(Box::new(move |scope: &FeelScope| {
     let mut a = FeelContext::default();
     for (name, _) in closure_ctx.get_entries() {

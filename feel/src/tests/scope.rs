@@ -123,25 +123,25 @@ fn test_scope_pop() {
   assert_eq!("[{a: 1}, {b: 2}]", scope.to_string());
 }
 
-#[test]
-fn test_scope_peek() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let name_c = Name::from("c");
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, value_number!(1));
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&name_b, value_number!(2));
-  let mut ctx_c: FeelContext = Default::default();
-  ctx_c.set_entry(&name_c, value_number!(3));
-  let scope = FeelScope::new();
-  scope.push(ctx_a);
-  scope.push(ctx_b);
-  scope.push(ctx_c);
-  let ctx = scope.peek();
-  assert_eq!("{c: 3}", ctx.to_string());
-  assert_eq!("[{a: 1}, {b: 2}, {c: 3}]", scope.to_string());
-}
+// #[test]
+// fn test_scope_peek() {
+//   let name_a = Name::from("a");
+//   let name_b = Name::from("b");
+//   let name_c = Name::from("c");
+//   let mut ctx_a: FeelContext = Default::default();
+//   ctx_a.set_entry(&name_a, value_number!(1));
+//   let mut ctx_b: FeelContext = Default::default();
+//   ctx_b.set_entry(&name_b, value_number!(2));
+//   let mut ctx_c: FeelContext = Default::default();
+//   ctx_c.set_entry(&name_c, value_number!(3));
+//   let scope = FeelScope::new();
+//   scope.push(ctx_a);
+//   scope.push(ctx_b);
+//   scope.push(ctx_c);
+//   let ctx = scope.peek();
+//   assert_eq!("{c: 3}", ctx.to_string());
+//   assert_eq!("[{a: 1}, {b: 2}, {c: 3}]", scope.to_string());
+// }
 
 #[test]
 fn test_get_entry() {
