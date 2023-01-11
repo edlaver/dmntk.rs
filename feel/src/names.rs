@@ -42,8 +42,7 @@ pub struct Name(String);
 impl From<Vec<String>> for Name {
   /// Converts a vector of strings into [Name].
   fn from(value: Vec<String>) -> Self {
-    let a = value.iter().map(|s| s.as_str()).collect::<Vec<&str>>();
-    Self::new(&a)
+    Self::new(&value.iter().map(|string| string.as_str()).collect::<Vec<&str>>())
   }
 }
 
