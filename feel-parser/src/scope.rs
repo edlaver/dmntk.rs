@@ -38,7 +38,6 @@ use std::cell::RefCell;
 use std::collections::HashSet;
 
 /// Parsing scope.
-#[derive(Debug)]
 pub struct ParsingScope {
   /// The stack of parsing contexts.
   stack: RefCell<Vec<ParsingContext>>,

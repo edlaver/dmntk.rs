@@ -38,7 +38,7 @@ use std::collections::btree_map::Iter;
 use std::collections::{BTreeMap, HashSet};
 
 /// Attributes of the element in parsing context.
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub enum ParsingContextEntry {
   ///
   Context(ParsingContext),
@@ -47,14 +47,14 @@ pub enum ParsingContextEntry {
 }
 
 /// Parsing context.
-#[derive(Debug, Default, Clone)]
+#[derive(Default, Clone)]
 pub struct ParsingContext(BTreeMap<Name, ParsingContextEntry>);
 
 impl From<dmntk_feel::context::FeelContext> for ParsingContext {
   /// Temporary - remove.
-  fn from(context: dmntk_feel::context::FeelContext) -> Self {
+  fn from(ctx: dmntk_feel::context::FeelContext) -> Self {
     let mut entries = BTreeMap::new();
-    for (name, value) in context.iter() {
+    for (name, value) in ctx.iter() {
       match value {
         Value::Context(inner_ctx) => {
           entries.insert(name.to_owned(), ParsingContextEntry::Context(inner_ctx.clone().into()));
