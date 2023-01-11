@@ -32,7 +32,7 @@
 
 //! Implementation of the lexer for `FEEL` grammar.
 
-use self::errors::*;
+use crate::errors::*;
 use crate::lalr::TokenType;
 use crate::scope::ParsingScope;
 use dmntk_common::Result;
@@ -1005,36 +1005,6 @@ fn flatten_name_parts(parts: &[String]) -> String {
     .replace(" ' ", "'")
     .replace(" + ", "+")
     .replace(" * ", "*")
-}
-
-/// Definitions of errors raised by the lexer.
-pub mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Lexer errors.
-  struct LexerError(String);
-
-  impl From<LexerError> for DmntkError {
-    fn from(e: LexerError) -> Self {
-      DmntkError::new("LexerError", &e.0)
-    }
-  }
-
-  pub fn err_unexpected_eof() -> DmntkError {
-    LexerError("unexpected end of file".to_string()).into()
-  }
-
-  pub fn err_expected_hex_digit(ch: char) -> DmntkError {
-    LexerError(format!("expected hex digit but encountered '{ch}'")).into()
-  }
-
-  pub fn err_unicode_value_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {value:X}")).into()
-  }
-
-  pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {value:X}")).into()
-  }
 }
 
 #[cfg(test)]

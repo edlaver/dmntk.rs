@@ -32,57 +32,13 @@
 
 //! Implementation of the `LALR` parser for `FEEL` grammar.
 
-use self::errors::*;
+use crate::errors::*;
 use crate::lalr::*;
 use crate::lexer::*;
 use crate::scope::ParsingScope;
 use crate::AstNode;
 use dmntk_common::Result;
-use dmntk_feel::{FeelScope, FeelType, Name};
-
-/// Parses an `expression` as defined in grammar rule `1`.
-pub fn parse_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartExpression, input, trace).parse()
-}
-
-/// Parses a `textual expression` as defined in grammar rule `2`.
-pub fn parse_textual_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartTextualExpression, input, trace).parse()
-}
-
-/// Parses `textual expressions` as defined in grammar rule `3`.
-pub fn parse_textual_expressions(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartTextualExpressions, input, trace).parse()
-}
-
-/// Parses `unary tests` as defined in grammar rule `17`.
-pub fn parse_unary_tests(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartUnaryTests, input, trace).parse()
-}
-
-/// Parses a `name` as defined grammar rule `25`.
-pub fn parse_name(scope: &FeelScope, input: &str, trace: bool) -> Result<Name> {
-  if let AstNode::Name(name) = Parser::new(&scope.into(), TokenType::StartTextualExpression, input, trace).parse()? {
-    Ok(name)
-  } else {
-    Err(err_not_a_feel_name(input))
-  }
-}
-
-/// Parses the `longest name` as defined in grammar rule `25`.
-pub fn parse_longest_name(input: &str) -> Result<Name> {
-  parse_name(&Default::default(), input, false)
-}
-
-/// Parses a `boxed expression` as defined in grammar rule `53`.
-pub fn parse_boxed_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartBoxedExpression, input, trace).parse()
-}
-
-/// Parses a `context` as defined in grammar rule `59`.
-pub fn parse_context(scope: &FeelScope, input: &str, trace: bool) -> Result<AstNode> {
-  Parser::new(&scope.into(), TokenType::StartContext, input, trace).parse()
-}
+use dmntk_feel::{FeelType, Name};
 
 enum Action {
   Accept,
@@ -1230,29 +1186,5 @@ impl<'parser> ReduceActions for Parser<'parser> {
       self.yy_node_stack.push(AstNode::NegatedList(items));
     }
     Ok(())
-  }
-}
-
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Parser error.
-  struct ParserError(String);
-
-  impl From<ParserError> for DmntkError {
-    /// Creates [DmntkError] from [ParserError].
-    fn from(e: ParserError) -> Self {
-      DmntkError::new("ParserError", &e.0)
-    }
-  }
-
-  /// Creates an error when `FEEL` name was expected on input, but something else encountered.
-  pub fn err_not_a_feel_name(s: &str) -> DmntkError {
-    ParserError(format!("expected `FEEL` name on input but found `{s}`")).into()
-  }
-
-  /// Creates syntax error on specified input.
-  pub fn err_syntax_error(input: &str) -> DmntkError {
-    ParserError(format!("syntax error: {input}")).into()
   }
 }
