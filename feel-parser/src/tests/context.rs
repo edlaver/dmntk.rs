@@ -33,7 +33,7 @@
 use crate::context::ParsingContext;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::FeelType;
+use dmntk_feel::{FeelType, Name};
 
 #[test]
 fn test_display() {
@@ -162,4 +162,140 @@ fn test_from_feel_context_0009() {
   fctx_b.set_entry(&"y".into(), Value::Context(fctx_a));
   let pctx: ParsingContext = fctx_b.into();
   assert_eq!("{x: <v>, y: {a: <v>, b: {c: <v>, d: <v>}}}", format!("{pctx}"));
+}
+
+#[test]
+fn test_context_flatten_keys_one_level() {
+  let name_a = Name::from("a");
+  let name_b = Name::from("b");
+  let mut ctx: ParsingContext = Default::default();
+  ctx.set_name(name_a);
+  ctx.set_name(name_b);
+  assert_eq!(r#"{a: <v>, b: <v>}"#, ctx.to_string());
+  let keys = ctx.flatten_keys();
+  assert_eq!(2, keys.len());
+  assert!(keys.contains("a"));
+  assert!(keys.contains("b"));
+}
+
+#[test]
+fn test_flatten_two_levels() {
+  let name_a = Name::from("a");
+  let name_b = Name::from("b");
+  let name_c = Name::from("c");
+  let mut ctx_b: ParsingContext = Default::default();
+  ctx_b.set_name(name_a.clone());
+  ctx_b.set_name(name_b.clone());
+  ctx_b.set_name(name_c.clone());
+  let mut ctx_a: ParsingContext = Default::default();
+  ctx_a.set_name(name_a);
+  ctx_a.set_name(name_b);
+  ctx_a.set_context(name_c, ctx_b);
+  let keys = ctx_a.flatten_keys();
+  assert_eq!(6, keys.len());
+  assert!(keys.contains("a"));
+  assert!(keys.contains("b"));
+  assert!(keys.contains("c"));
+  assert!(keys.contains("c . a"));
+  assert!(keys.contains("c . b"));
+  assert!(keys.contains("c . c"));
+}
+
+#[test]
+fn test_flatten_three_levels() {
+  let name_a = Name::from("a");
+  let name_b = Name::from("b");
+  let name_c = Name::from("c");
+  let name_d = Name::from("d");
+  let mut ctx_c: ParsingContext = Default::default();
+  ctx_c.set_name(name_a.clone());
+  ctx_c.set_name(name_b.clone());
+  ctx_c.set_name(name_c.clone());
+  ctx_c.set_name(name_d.clone());
+  let mut ctx_b: ParsingContext = Default::default();
+  ctx_b.set_name(name_a.clone());
+  ctx_b.set_name(name_b.clone());
+  ctx_b.set_name(name_c.clone());
+  ctx_b.set_context(name_d, ctx_c);
+  let mut ctx_a: ParsingContext = Default::default();
+  ctx_a.set_name(name_a);
+  ctx_a.set_name(name_b);
+  ctx_a.set_context(name_c, ctx_b);
+  let keys = ctx_a.flatten_keys();
+  assert_eq!(16, keys.len());
+  assert!(keys.contains("a"));
+  assert!(keys.contains("b"));
+  assert!(keys.contains("c"));
+  assert!(keys.contains("d"));
+  assert!(keys.contains("c . a"));
+  assert!(keys.contains("c . b"));
+  assert!(keys.contains("c . c"));
+  assert!(keys.contains("c . d"));
+  assert!(keys.contains("c . d . a"));
+  assert!(keys.contains("c . d . b"));
+  assert!(keys.contains("c . d . c"));
+  assert!(keys.contains("c . d . d"));
+  assert!(keys.contains("d . a"));
+  assert!(keys.contains("d . b"));
+  assert!(keys.contains("d . c"));
+  assert!(keys.contains("d . d"));
+}
+
+#[test]
+fn test_flatten_list_values() {
+  let name_a = Name::from("a");
+  let name_b = Name::from("b");
+  let name_c = Name::from("c");
+  let name_d = Name::from("d");
+  let mut ctx_c: ParsingContext = Default::default();
+  ctx_c.set_name(name_a.clone());
+  ctx_c.set_name(name_b.clone());
+  ctx_c.set_name(name_c.clone());
+  ctx_c.set_name(name_d.clone());
+  let mut ctx_b: ParsingContext = Default::default();
+  ctx_b.set_name(name_a.clone());
+  ctx_b.set_name(name_b);
+  ctx_b.set_name(name_c);
+  ctx_b.set_context(name_d, ctx_c);
+  let mut ctx_a: ParsingContext = Default::default();
+  ctx_a.set_context(name_a, ctx_b);
+  let keys = ctx_a.flatten_keys();
+  assert_eq!(16, keys.len());
+  assert!(keys.contains("a"));
+  assert!(keys.contains("b"));
+  assert!(keys.contains("c"));
+  assert!(keys.contains("d"));
+  assert!(keys.contains("a . a"));
+  assert!(keys.contains("a . b"));
+  assert!(keys.contains("a . c"));
+  assert!(keys.contains("a . d"));
+  assert!(keys.contains("d . a"));
+  assert!(keys.contains("d . b"));
+  assert!(keys.contains("d . c"));
+  assert!(keys.contains("d . d"));
+  assert!(keys.contains("a . d . a"));
+  assert!(keys.contains("a . d . b"));
+  assert!(keys.contains("a . d . c"));
+  assert!(keys.contains("a . d . d"));
+}
+
+#[test]
+fn test_flatten_names_with_additional_characters() {
+  let name_a = Name::new(&["lorem", "ipsum", "dolor", "sit", "amet"]);
+  let name_b = Name::new(&["b"]);
+  let name_c = Name::new(&["now", "let", "'", "s", "go", "to", "the", "next", "paragraph"]);
+  let name_d = Name::new(&["Curabitur", "rhoncus", "+", "sodales", "odio", "in", "fringilla"]);
+  let mut ctx_b: ParsingContext = Default::default();
+  ctx_b.set_name(name_d);
+  let mut ctx_a: ParsingContext = Default::default();
+  ctx_a.set_name(name_a);
+  ctx_a.set_name(name_b);
+  ctx_a.set_context(name_c, ctx_b);
+  let keys = ctx_a.flatten_keys();
+  assert_eq!(5, keys.len());
+  assert!(keys.contains("b"));
+  assert!(keys.contains("lorem ipsum dolor sit amet"));
+  assert!(keys.contains("now let's go to the next paragraph"));
+  assert!(keys.contains("now let's go to the next paragraph . Curabitur rhoncus+sodales odio in fringilla"));
+  assert!(keys.contains("Curabitur rhoncus+sodales odio in fringilla"));
 }

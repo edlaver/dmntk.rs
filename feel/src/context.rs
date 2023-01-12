@@ -36,11 +36,10 @@ use self::errors::*;
 use crate::names::Name;
 use crate::qualified_names::QualifiedName;
 use crate::strings::ToFeelString;
-use crate::types::FeelType;
 use crate::value_null;
 use crate::values::Value;
 use dmntk_common::{DmntkError, Jsonify};
-use std::collections::{BTreeMap, HashSet};
+use std::collections::BTreeMap;
 use std::convert::TryFrom;
 use std::fmt;
 use std::ops::Deref;
@@ -182,43 +181,6 @@ impl FeelContext {
   /// All non existing intermediary contexts will be created.
   pub fn create_entry(&mut self, qname: &QualifiedName, value: Value) {
     self.create_deep(qname.as_slice(), value);
-  }
-  /// Returns a list of flattened keys for this [FeelContext].
-  pub fn flatten_keys(&self) -> HashSet<String> {
-    let mut keys: HashSet<String> = HashSet::new();
-    for (key, value) in self.0.iter() {
-      keys.insert(key.into());
-      if let Value::Context(sub_ctx) = value {
-        let sub_keys = sub_ctx.flatten_keys();
-        if !sub_keys.is_empty() {
-          for sub_key in sub_keys {
-            keys.insert(sub_key.clone());
-            keys.insert(format!("{key} . {sub_key}"));
-          }
-        }
-      }
-      if let Value::List(items) = value {
-        for item in items.as_vec() {
-          if let Value::Context(item_ctx) = item {
-            let sub_keys = item_ctx.flatten_keys();
-            if !sub_keys.is_empty() {
-              for sub_key in sub_keys {
-                keys.insert(sub_key.clone());
-                keys.insert(format!("{key} . {sub_key}"));
-              }
-            }
-          }
-        }
-      }
-      if let Value::FeelType(FeelType::Context(type_entries)) = value {
-        for name in type_entries.keys() {
-          let sub_key = name.to_string();
-          keys.insert(sub_key.clone());
-          keys.insert(format!("{key} . {sub_key}"));
-        }
-      }
-    }
-    keys.iter().cloned().collect()
   }
 
   /// Searches for a value of an entry pointed by specified qualified name.
