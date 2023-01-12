@@ -411,3 +411,23 @@ fn _0050() {
   te_number(false, scope, "[1,2,3,4,5,6][check_eq(item,num)]", 1, 0);
   te_be_value(false, scope, "[1,2,3,4,5,6][check_neq(item,num)]", "[2,3,4,5,6]");
 }
+
+#[test]
+fn _0051() {
+  let scope = &te_scope(
+    r#"{
+      "Flight List": [
+        { "Flight Number": "UA456",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA123",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
+        { "Flight Number": "UA789",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T21:00:00", "Arrival": @"2017-01-01T23:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA1001", "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 0, "Status": "scheduled" },
+        { "Flight Number": "UA1111", "From": "SFO", "To": "LAX", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 2, "Status": "scheduled" }]
+    }"#,
+  );
+  te_be_value(
+    false,
+    scope,
+    "Flight List[1]",
+    r#"{"Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Departure": @"2017-01-01T19:00:00", "Flight Number": "UA456", "From": "SFO", "Status": "scheduled", "To": "SNA"}"#,
+  );
+}
