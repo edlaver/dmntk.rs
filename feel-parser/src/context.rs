@@ -154,12 +154,12 @@ impl ParsingContext {
   }
 
   /// Returns a list of flattened keys for this parsing context.
-  pub fn flatten_keys(&self) -> HashSet<String> {
+  pub fn flattened_keys(&self) -> HashSet<String> {
     let mut keys: HashSet<String> = HashSet::new();
     for (key, value) in self.0.iter() {
       keys.insert(key.into());
       if let ParsingEntry::Context(sub_ctx) = value {
-        let sub_keys = sub_ctx.flatten_keys();
+        let sub_keys = sub_ctx.flattened_keys();
         if !sub_keys.is_empty() {
           for sub_key in sub_keys {
             keys.insert(sub_key.clone());

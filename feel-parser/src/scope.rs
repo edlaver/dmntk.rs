@@ -101,7 +101,7 @@ impl ParsingScope {
   }
 
   /// Returns a set of flattened keys from all contexts in scope.
-  pub fn flatten_keys(&self) -> HashSet<String> {
-    self.stack.borrow().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
+  pub fn flattened_keys(&self) -> HashSet<String> {
+    self.stack.borrow().iter().flat_map(|ctx| ctx.flattened_keys()).collect::<HashSet<String>>()
   }
 }

@@ -172,7 +172,7 @@ fn test_context_flatten_keys_one_level() {
   ctx.set_name(name_a);
   ctx.set_name(name_b);
   assert_eq!(r#"{a: <v>, b: <v>}"#, ctx.to_string());
-  let keys = ctx.flatten_keys();
+  let keys = ctx.flattened_keys();
   assert_eq!(2, keys.len());
   assert!(keys.contains("a"));
   assert!(keys.contains("b"));
@@ -191,7 +191,7 @@ fn test_flatten_two_levels() {
   ctx_a.set_name(name_a);
   ctx_a.set_name(name_b);
   ctx_a.set_context(name_c, ctx_b);
-  let keys = ctx_a.flatten_keys();
+  let keys = ctx_a.flattened_keys();
   assert_eq!(6, keys.len());
   assert!(keys.contains("a"));
   assert!(keys.contains("b"));
@@ -221,7 +221,7 @@ fn test_flatten_three_levels() {
   ctx_a.set_name(name_a);
   ctx_a.set_name(name_b);
   ctx_a.set_context(name_c, ctx_b);
-  let keys = ctx_a.flatten_keys();
+  let keys = ctx_a.flattened_keys();
   assert_eq!(16, keys.len());
   assert!(keys.contains("a"));
   assert!(keys.contains("b"));
@@ -259,7 +259,7 @@ fn test_flatten_list_values() {
   ctx_b.set_context(name_d, ctx_c);
   let mut ctx_a: ParsingContext = Default::default();
   ctx_a.set_context(name_a, ctx_b);
-  let keys = ctx_a.flatten_keys();
+  let keys = ctx_a.flattened_keys();
   assert_eq!(16, keys.len());
   assert!(keys.contains("a"));
   assert!(keys.contains("b"));
@@ -291,7 +291,7 @@ fn test_flatten_names_with_additional_characters() {
   ctx_a.set_name(name_a);
   ctx_a.set_name(name_b);
   ctx_a.set_context(name_c, ctx_b);
-  let keys = ctx_a.flatten_keys();
+  let keys = ctx_a.flattened_keys();
   assert_eq!(5, keys.len());
   assert!(keys.contains("b"));
   assert!(keys.contains("lorem ipsum dolor sit amet"));

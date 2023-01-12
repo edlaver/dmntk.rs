@@ -659,7 +659,7 @@ impl<'lexer> Lexer<'lexer> {
 
     // begin with with the longest name containing all parts
     let mut part_count = parts.len();
-    let flattened_keys = self.scope.flatten_keys();
+    let flattened_keys = self.scope.flattened_keys();
     while part_count > 0 {
       // take a sublist of the original part list until the list is empty
       let part_sublist = &parts[..part_count];
