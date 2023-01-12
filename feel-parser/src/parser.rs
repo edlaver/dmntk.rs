@@ -261,6 +261,7 @@ impl<'parser> Parser<'parser> {
           if self.yy_trace {
             node.trace();
           }
+          self.scope.prepare_closed_names(&node);
           return Ok(node);
         }
       }

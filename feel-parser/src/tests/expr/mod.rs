@@ -52,6 +52,7 @@ mod if_expression;
 mod instance_of;
 mod interval;
 mod invalid;
+mod lambdas;
 mod list;
 mod literal;
 mod miscellaneous;

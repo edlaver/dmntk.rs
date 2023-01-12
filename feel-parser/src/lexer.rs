@@ -663,14 +663,15 @@ impl<'lexer> Lexer<'lexer> {
     while part_count > 0 {
       // take a sublist of the original part list until the list is empty
       let part_sublist = &parts[..part_count];
-      // flatten the name parts to compare it with built-in names and keys in current context
+      // flatten the name parts to compare it with built-in names and keys in current scope
       let name = flatten_name_parts(part_sublist);
       // check if the flattened name exists as a key in the current context
       if flattened_keys.contains(&name) {
         // return to the input all characters that do not belong to the name that was found
         self.position = consumed_positions[part_count - 1] + 1;
+        let part_vector = part_sublist.to_vec();
         // return the name that exists in the current context
-        return Ok((TokenType::Name, TokenValue::Name(part_sublist.to_vec().into())));
+        return Ok((TokenType::Name, TokenValue::Name(part_vector.into())));
       }
       part_count -= 1;
     }
