@@ -641,7 +641,7 @@ fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Resul
       Value::List(values) => {
         let mut filtered_values = vec![];
         for value in values.as_vec() {
-          let (added_local_context, has_item_entry) = if let Value::Context(local_context) = &value {
+          let (added_local_context, has_item_entry) = if let Value::Context(local_context) = value {
             scope.push(local_context.clone());
             if local_context.contains_entry(&name_item) {
               (true, true)
