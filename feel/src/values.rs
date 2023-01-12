@@ -351,7 +351,7 @@ impl Value {
         } else {
           let item_type = values.as_vec()[0].type_of();
           for item in values.as_vec() {
-            if item.type_of() != item_type {
+            if !item.type_of().is_conformant(&item_type) {
               return FeelType::List(Box::new(FeelType::Any));
             }
           }

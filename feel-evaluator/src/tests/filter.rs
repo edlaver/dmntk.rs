@@ -50,7 +50,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let scope = &te_scope(r#"{A:[]}"#);
-  te_null(false, scope, "A[1]", "index in filter is out of range [1..0], actual index is 1");
+  te_null(false, scope, "A[1]", "");
 }
 
 #[test]

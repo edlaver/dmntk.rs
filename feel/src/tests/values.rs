@@ -2,7 +2,7 @@ use crate::bif::Bif;
 use crate::context::FeelContext;
 use crate::function::FunctionBody;
 use crate::values::{Value, Values};
-use crate::{value_number, FeelNumber, FeelScope, FeelType, Name, ToFeelString};
+use crate::{value_null, value_number, FeelNumber, FeelScope, FeelType, Name, ToFeelString};
 use dmntk_common::Jsonify;
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::collections::BTreeMap;
@@ -215,6 +215,30 @@ fn test_type_of() {
   eq_typ!(FeelType::Boolean, Value::UnaryLess(b_number.clone()));
   eq_typ!(FeelType::Boolean, Value::UnaryLessOrEqual(b_number));
   eq_typ!(FeelType::YearsAndMonthsDuration, Value::YearsAndMonthsDuration(v_years_and_months_duration));
+}
+
+#[test]
+fn test_type_of_list_with_context() {
+  let mut ctx_a = FeelContext::default();
+  ctx_a.set_entry(&"a".into(), Value::String("alfa".to_string()));
+  ctx_a.set_entry(&"b".into(), Value::String("beta".to_string()));
+  let mut ctx_b = FeelContext::default();
+  ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
+  ctx_b.set_entry(&"b".into(), Value::String("gamma".to_string()));
+  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
+}
+
+#[test]
+fn test_type_of_list_with_context_and_nulls() {
+  let mut ctx_a = FeelContext::default();
+  ctx_a.set_entry(&"a".into(), Value::String("alfa".to_string()));
+  ctx_a.set_entry(&"b".into(), Value::String("beta".to_string()));
+  let mut ctx_b = FeelContext::default();
+  ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
+  ctx_b.set_entry(&"b".into(), value_null!());
+  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
 }
 
 #[test]

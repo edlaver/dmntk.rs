@@ -39,6 +39,7 @@ use crate::value_null;
 use crate::values::{Value, Values};
 use dmntk_common::{DmntkError, Result};
 use std::collections::BTreeMap;
+use std::fmt;
 use std::str::FromStr;
 
 pub const FEEL_TYPE_NAME_ANY: &str = "Any";
@@ -93,9 +94,9 @@ pub enum FeelType {
   YearsAndMonthsDuration,
 }
 
-impl std::fmt::Display for FeelType {
+impl fmt::Display for FeelType {
   ///
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       FeelType::Any => write!(f, "{FEEL_TYPE_NAME_ANY}"),
       FeelType::Boolean => write!(f, "{FEEL_TYPE_NAME_BOOLEAN}"),
@@ -440,10 +441,8 @@ impl FeelType {
     if let FeelType::Null = self {
       return true;
     }
-    if let FeelType::Any = other {
-      return true;
-    }
     match other {
+      FeelType::Any => return true,
       FeelType::List(type_other) => {
         if let FeelType::List(type_self) = self {
           return type_self.is_conformant(type_other);

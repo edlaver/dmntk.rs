@@ -218,14 +218,17 @@ pub fn any(values: &[Value]) -> Value {
 
 /// Returns new list with items appended.
 pub fn append(list: &Value, values: &[Value]) -> Value {
-  if let Value::List(items) = list {
-    let mut appended = items.clone();
-    for value in values {
-      appended.add(value.clone());
+  match list {
+    Value::List(items) => {
+      let mut appended = items.clone();
+      for value in values {
+        appended.add(value.clone());
+      }
+      Value::List(appended)
     }
-    return Value::List(appended);
+    v @ Value::Null(_) => v.clone(),
+    other => invalid_argument_type!("append", "list", other.type_of()),
   }
-  invalid_argument_type!("append", "list", list.type_of())
 }
 
 /// TBD
@@ -472,7 +475,7 @@ pub fn count(list: &Value) -> Value {
   if let Value::List(items) = list {
     Value::Number(items.as_vec().len().into())
   } else {
-    invalid_argument_type!("count", "list", list.type_of())
+    Value::Number(1.into())
   }
 }
 

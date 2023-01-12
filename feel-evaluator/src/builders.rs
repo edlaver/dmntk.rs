@@ -672,46 +672,52 @@ fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Resul
           Value::Number(index) => {
             if index.is_integer() {
               let list_size = values.as_vec().len();
-              if !index.is_negative() {
-                let n = {
-                  if let Ok(u_index) = usize::try_from(index) {
-                    u_index
+              if list_size > 0 {
+                if !index.is_negative() {
+                  let n = {
+                    if let Ok(u_index) = usize::try_from(index) {
+                      u_index
+                    } else {
+                      return value_null!("index is out of range {}", index.to_string());
+                    }
+                  };
+                  if n > 0 && n <= list_size {
+                    if let Some(value) = values.as_vec().get(n - 1) {
+                      value.to_owned()
+                    } else {
+                      value_null!("no value in filter for index {}", n)
+                    }
                   } else {
-                    return value_null!("index is out of range {}", index.to_string());
-                  }
-                };
-                if n > 0 && n <= list_size {
-                  if let Some(value) = values.as_vec().get(n - 1) {
-                    value.to_owned()
-                  } else {
-                    value_null!("no value in filter for index {}", n)
+                    value_null!("index in filter is out of range [1..{}], actual index is {}", list_size, n)
                   }
                 } else {
-                  value_null!("index in filter is out of range [1..{}], actual index is {}", list_size, n)
+                  let n = {
+                    if let Ok(u_index) = usize::try_from(index.abs()) {
+                      u_index
+                    } else {
+                      return value_null!("index is out of range {}", index.to_string());
+                    }
+                  };
+                  if n > 0 && n <= list_size {
+                    if let Some(value) = values.as_vec().get(list_size - n) {
+                      value.to_owned()
+                    } else {
+                      value_null!("no value in filter for index -{}", n)
+                    }
+                  } else {
+                    value_null!("index in filter is out of range [-{}..-1], actual index is -{}", list_size, n)
+                  }
                 }
               } else {
-                let n = {
-                  if let Ok(u_index) = usize::try_from(index.abs()) {
-                    u_index
-                  } else {
-                    return value_null!("index is out of range {}", index.to_string());
-                  }
-                };
-                if n > 0 && n <= list_size {
-                  if let Some(value) = values.as_vec().get(list_size - n) {
-                    value.to_owned()
-                  } else {
-                    value_null!("no value in filter for index -{}", n)
-                  }
-                } else {
-                  value_null!("index in filter is out of range [-{}..-1], actual index is -{}", list_size, n)
-                }
+                // return null when the list is empty, no matter what value has the index
+                value_null!()
               }
             } else {
               value_null!("index in filter must be an integer value, actual value is {}", index)
             }
           }
           _ => {
+            // coerse the result list
             if filtered_values.len() == 1 {
               filtered_values[0].to_owned()
             } else {
@@ -1007,17 +1013,33 @@ fn build_ge(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Ev
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Boolean(lh >= rh),
-        _ => value_null!("eval_less_or_equal_string"),
+        _ => value_null!("eval_greater_or_equal_string"),
       },
       Value::String(lh) => match rhv {
         Value::String(rh) => Value::Boolean(lh >= rh),
-        _ => value_null!("eval_less_or_equal_string"),
+        _ => value_null!("eval_greater_or_equal_string"),
       },
       Value::Date(lh) => match rhv {
         Value::Date(rh) => Value::Boolean(lh >= rh),
-        _ => value_null!("eval_less_or_equal_date"),
+        _ => value_null!("eval_greater_or_equal_date"),
       },
-      _ => value_null!("eval_less_or_equal"),
+      Value::DateTime(lh) => match rhv {
+        Value::DateTime(rh) => Value::Boolean(lh >= rh),
+        _ => value_null!("eval_greater_or_equal_date_time"),
+      },
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => Value::Boolean(lh >= rh),
+        _ => value_null!("eval_greater_or_equal_time"),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Boolean(lh >= rh),
+        _ => value_null!("eval_greater_or_equal_days_and_time_duration"),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::YearsAndMonthsDuration(rh) => Value::Boolean(lh >= rh),
+        _ => value_null!("eval_greater_or_equal_years_and_months_duration"),
+      },
+      _ => value_null!("eval_greater_or_equal"),
     }
   }))
 }
@@ -1027,8 +1049,8 @@ fn build_gt(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Ev
   let lhe = build_evaluator(btx, lhs)?;
   let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Boolean(lh > rh),
@@ -1041,6 +1063,22 @@ fn build_gt(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Ev
       Value::Date(lh) => match rhv {
         Value::Date(rh) => Value::Boolean(lh > rh),
         _ => value_null!("eval_greater_then_date"),
+      },
+      Value::DateTime(lh) => match rhv {
+        Value::DateTime(rh) => Value::Boolean(lh > rh),
+        _ => value_null!("eval_greater_then_date_time"),
+      },
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => Value::Boolean(lh > rh),
+        _ => value_null!("eval_greater_then_time"),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Boolean(lh > rh),
+        _ => value_null!("eval_greater_days_and_time_duration"),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::YearsAndMonthsDuration(rh) => Value::Boolean(lh > rh),
+        _ => value_null!("eval_greater_years_and_months_duration"),
       },
       _ => value_null!("eval_greater_then"),
     }
@@ -1223,6 +1261,22 @@ fn build_le(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Ev
         Value::Date(rh) => Value::Boolean(lh <= rh),
         _ => value_null!("eval_less_or_equal_date"),
       },
+      Value::DateTime(lh) => match rhv {
+        Value::DateTime(rh) => Value::Boolean(lh <= rh),
+        _ => value_null!("eval_less_or_equal_date_time"),
+      },
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => Value::Boolean(lh <= rh),
+        _ => value_null!("eval_less_or_equal_time"),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Boolean(lh <= rh),
+        _ => value_null!("eval_less_or_equal_days_and_time_duration"),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::YearsAndMonthsDuration(rh) => Value::Boolean(lh <= rh),
+        _ => value_null!("eval_less_or_equal_years_and_months_duration"),
+      },
       _ => value_null!("eval_less_or_equal"),
     }
   }))
@@ -1247,6 +1301,22 @@ fn build_lt(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Ev
       Value::Date(lh) => match rhv {
         Value::Date(rh) => Value::Boolean(lh < rh),
         _ => value_null!("eval_less_then_date"),
+      },
+      Value::DateTime(lh) => match rhv {
+        Value::DateTime(rh) => Value::Boolean(lh < rh),
+        _ => value_null!("eval_less_then_date_time"),
+      },
+      Value::Time(lh) => match rhv {
+        Value::Time(rh) => Value::Boolean(lh < rh),
+        _ => value_null!("eval_less_then_time"),
+      },
+      Value::DaysAndTimeDuration(lh) => match rhv {
+        Value::DaysAndTimeDuration(rh) => Value::Boolean(lh < rh),
+        _ => value_null!("eval_less_then_days_and_time_duration"),
+      },
+      Value::YearsAndMonthsDuration(lh) => match rhv {
+        Value::YearsAndMonthsDuration(rh) => Value::Boolean(lh < rh),
+        _ => value_null!("eval_less_then_years_and_months_duration"),
       },
       _ => value_null!("eval_less_then"),
     }
@@ -1701,6 +1771,7 @@ fn build_path(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<
             other => value_null!("no such property in unary less or equal: {}", other),
           }
         }
+        Value::Null(_) => value_null!(),
         other => value_null!("build_path: unexpected type :{}, for property: {}", other, qualified_name),
       }
     }))

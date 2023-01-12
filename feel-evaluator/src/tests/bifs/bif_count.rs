@@ -60,12 +60,8 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  te_null(
-    false,
-    &scope!(),
-    r#"count(1)"#,
-    r#"[core::count] invalid argument type, expected list, actual type is number"#,
-  );
+  // non list value os coerced into a list with one number
+  te_number(false, &scope!(), r#"count(1)"#, 1, 0);
 }
 
 #[test]
