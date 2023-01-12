@@ -32,10 +32,13 @@
 
 //! Implementation of the parsing context.
 
+use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, Name};
+use std::borrow::Borrow;
 use std::collections::btree_map::Iter;
 use std::collections::{BTreeMap, HashSet};
+use std::fmt;
 
 /// Types of entries in parsing context.
 #[derive(Clone)]
@@ -46,26 +49,84 @@ pub enum ParsingEntry {
   Variable,
 }
 
+impl fmt::Display for ParsingEntry {
+  /// Converts parsing entry into text representation.
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(
+      f,
+      "{}",
+      match self {
+        ParsingEntry::Context(ctx) => ctx.to_string(),
+        ParsingEntry::Variable => "<v>".to_string(),
+      }
+    )
+  }
+}
+
+impl From<FeelType> for ParsingEntry {
+  /// Converts a reference to feel type into parsing entry.
+  fn from(value: FeelType) -> Self {
+    Self::from(&value)
+  }
+}
+
+impl From<&FeelType> for ParsingEntry {
+  /// Converts a feel type into parsing entry.
+  fn from(value: &FeelType) -> Self {
+    match value {
+      FeelType::Context(feel_type_ctx) => {
+        let mut entries = BTreeMap::new();
+        for (name, feel_type) in feel_type_ctx {
+          entries.insert(name.to_owned(), feel_type.into());
+        }
+        ParsingEntry::Context(ParsingContext(entries))
+      }
+      FeelType::List(feel_type_items) => {
+        let feel_type = feel_type_items.borrow();
+        if let FeelType::Context(_) = feel_type {
+          Self::from(feel_type)
+        } else {
+          ParsingEntry::Variable
+        }
+      }
+      _ => ParsingEntry::Variable,
+    }
+  }
+}
+
 /// Parsing context.
 #[derive(Default, Clone)]
 pub struct ParsingContext(BTreeMap<Name, ParsingEntry>);
 
-impl From<dmntk_feel::context::FeelContext> for ParsingContext {
-  /// Temporary - remove.
-  fn from(ctx: dmntk_feel::context::FeelContext) -> Self {
+impl fmt::Display for ParsingContext {
+  /// Converts parsing context into text representation.
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(
+      f,
+      "{{{}}}",
+      self.0.iter().map(|(name, entry)| { format!(r#"{name}: {entry}"#) }).collect::<Vec<String>>().join(", ")
+    )
+  }
+}
+
+impl From<FeelContext> for ParsingContext {
+  /// Converts feel context into parsing context.
+  fn from(ctx: FeelContext) -> Self {
+    Self::from(&ctx)
+  }
+}
+
+impl From<&FeelContext> for ParsingContext {
+  /// Converts a reference to feel context into parsing context.
+  fn from(value: &FeelContext) -> Self {
     let mut entries = BTreeMap::new();
-    for (name, value) in ctx.iter() {
+    for (name, value) in value.iter() {
       match value {
-        Value::Context(inner_ctx) => {
-          entries.insert(name.to_owned(), ParsingEntry::Context(inner_ctx.clone().into()));
+        Value::Context(ctx) => {
+          entries.insert(name.to_owned(), ParsingEntry::Context(ctx.into()));
         }
         Value::FeelType(feel_type) => {
-          entries.insert(name.to_owned(), ParsingEntry::Variable);
-          if let FeelType::Context(feel_type_ctx) = feel_type {
-            for name in feel_type_ctx.keys() {
-              entries.insert(name.to_owned(), ParsingEntry::Variable);
-            }
-          }
+          entries.insert(name.to_owned(), feel_type.into());
         }
         _ => {
           entries.insert(name.to_owned(), ParsingEntry::Variable);

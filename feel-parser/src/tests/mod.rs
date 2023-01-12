@@ -32,6 +32,7 @@
 
 mod ast;
 mod bifs;
+mod context;
 mod expr;
 
 /// Creates a parsing scope.

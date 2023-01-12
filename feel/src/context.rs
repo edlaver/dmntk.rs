@@ -42,6 +42,7 @@ use crate::values::Value;
 use dmntk_common::{DmntkError, Jsonify};
 use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
+use std::fmt;
 use std::ops::Deref;
 
 /// Type alias for context entries.
@@ -77,9 +78,9 @@ impl From<FeelContext> for Value {
   }
 }
 
-impl std::fmt::Display for FeelContext {
+impl fmt::Display for FeelContext {
   ///
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(
       f,
       "{{{}}}",
