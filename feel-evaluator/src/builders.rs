@@ -656,7 +656,8 @@ fn build_filter(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Resul
             special_context.set_entry(&name_item, value.clone());
             scope.push(special_context);
           }
-          if let Value::Boolean(true) = rhe(scope) {
+          let rhv = rhe(scope) as Value;
+          if let Value::Boolean(true) = rhv {
             filtered_values.push(value.clone());
           }
           if !has_item_entry {

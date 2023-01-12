@@ -40,15 +40,6 @@ lazy_static! {
     r#"{
     "Flight List": [
       {
-        "Flight Number": "UA123",
-        "From": "SFO",
-        "To": "SNA",
-        "Departure": @"2017-01-01T18:00:00",
-        "Arrival": @"2017-01-01T19:00:00",
-        "Capacity": 5,
-        "Status": "cancelled"
-      },
-      {
         "Flight Number": "UA456",
         "From": "SFO",
         "To": "SNA",
@@ -56,6 +47,15 @@ lazy_static! {
         "Arrival": @"2017-01-01T20:00:00",
         "Capacity": 2,
         "Status": "scheduled"
+      },
+      {
+        "Flight Number": "UA123",
+        "From": "SFO",
+        "To": "SNA",
+        "Departure": @"2017-01-01T18:00:00",
+        "Arrival": @"2017-01-01T19:00:00",
+        "Capacity": 5,
+        "Status": "cancelled"
       },
       {
         "Flight Number": "UA789",
