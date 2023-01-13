@@ -48,9 +48,9 @@ mod scope;
 mod tests;
 
 pub use ast::AstNode;
+pub use closure::ClosureContext;
 pub use scope::ParsingScope;
 
-use crate::closure::ClosureContext;
 use crate::errors::*;
 use crate::lalr::TokenType;
 use crate::parser::Parser;
