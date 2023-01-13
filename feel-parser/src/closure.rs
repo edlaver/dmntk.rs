@@ -33,142 +33,148 @@
 //! Implementation of the context for closures (lambdas).
 
 use crate::AstNode;
-use dmntk_feel::Name;
+use dmntk_feel::{Name, QualifiedName};
+use std::fmt;
 
 /// Context for closures (lambdas).
 #[derive(Debug, PartialEq)]
 pub struct ClosureContext {
-  //
+  /// Collection of qualified names constituting a closure context.
+  qualified_names: Vec<QualifiedName>,
+}
+
+impl fmt::Display for ClosureContext {
+  /// Implements [Display](fmt::Display) trait for [ClosureContext].
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "[{}]", self.qualified_names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(", "))
+  }
 }
 
 impl ClosureContext {
   ///
   pub fn new(node: &AstNode) -> Self {
-    let mut closure_context = ClosureContext {};
-    closure_context.visit1(node, 0);
+    let mut closure_context = ClosureContext { qualified_names: vec![] };
+    closure_context.visit_1(node, 0);
     closure_context
   }
 
-  ///
-  fn visit0(&mut self, _: usize) -> Vec<Name> {
+  /// Returns an empty vector of names.
+  fn visit_0(&mut self, _: usize) -> Vec<Name> {
     vec![]
   }
 
-  ///
-  fn visit1(&mut self, node: &AstNode, level: usize) -> Vec<Name> {
+  /// Visits a single AST node.
+  fn visit_1(&mut self, node: &AstNode, path_level: usize) -> Vec<Name> {
     match node {
-      AstNode::Add(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::And(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::At(_) => self.visit0(level),
-      AstNode::Between(lhs, mhs, rhs) => self.visit3(lhs, mhs, rhs, level),
-      AstNode::Boolean(_) => self.visit0(level),
-      AstNode::CommaList(lhs) => self.visit4(lhs, level),
-      AstNode::Context(lhs) => self.visit4(lhs, level),
-      AstNode::ContextEntry(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::ContextEntryKey(_) => self.visit0(level),
-      AstNode::ContextType(lhs) => self.visit4(lhs, level),
-      AstNode::ContextTypeEntry(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::ContextTypeEntryKey(_) => self.visit0(level),
-      AstNode::Div(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Eq(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::EvaluatedExpression(lhs) => self.visit1(lhs, level),
-      AstNode::Every(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Exp(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::ExpressionList(lhs) => self.visit4(lhs, level),
-      AstNode::FeelType(_) => self.visit0(level),
-      AstNode::Filter(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::For(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::FormalParameter(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::FormalParameters(lhs) => self.visit4(lhs, level),
-      AstNode::FunctionBody(lhs, _) => self.visit1(lhs, level),
-      AstNode::FunctionDefinition(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::FunctionInvocation(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::FunctionType(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Ge(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Gt(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::If(lhs, mhs, rhs) => self.visit3(lhs, mhs, rhs, level),
-      AstNode::In(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::InstanceOf(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::IntervalEnd(lhs, _) => self.visit1(lhs, level),
-      AstNode::IntervalStart(lhs, _) => self.visit1(lhs, level),
-      AstNode::Irrelevant => self.visit0(level),
-      AstNode::IterationContexts(lhs) => self.visit4(lhs, level),
-      AstNode::IterationContextSingle(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::IterationContextRange(lhs, mhs, rhs) => self.visit3(lhs, mhs, rhs, level),
-      AstNode::Le(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::List(lhs) => self.visit4(lhs, level),
-      AstNode::ListType(lhs) => self.visit1(lhs, level),
-      AstNode::Lt(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Mul(lhs, rhs) => self.visit2(lhs, rhs, level),
+      AstNode::Add(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::And(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::At(_) => self.visit_0(path_level),
+      AstNode::Between(lhs, mhs, rhs) => self.visit_3(lhs, mhs, rhs, path_level),
+      AstNode::Boolean(_) => self.visit_0(path_level),
+      AstNode::CommaList(lhs) => self.visit_list(lhs, path_level),
+      AstNode::Context(lhs) => self.visit_list(lhs, path_level),
+      AstNode::ContextEntry(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::ContextEntryKey(_) => self.visit_0(path_level),
+      AstNode::ContextType(lhs) => self.visit_list(lhs, path_level),
+      AstNode::ContextTypeEntry(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::ContextTypeEntryKey(_) => self.visit_0(path_level),
+      AstNode::Div(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Eq(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::EvaluatedExpression(lhs) => self.visit_1(lhs, path_level),
+      AstNode::Every(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Exp(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::ExpressionList(lhs) => self.visit_list(lhs, path_level),
+      AstNode::FeelType(_) => self.visit_0(path_level),
+      AstNode::Filter(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::For(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::FormalParameter(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::FormalParameters(lhs) => self.visit_list(lhs, path_level),
+      AstNode::FunctionBody(lhs, _) => self.visit_1(lhs, path_level),
+      AstNode::FunctionDefinition(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::FunctionInvocation(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::FunctionType(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Ge(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Gt(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::If(lhs, mhs, rhs) => self.visit_3(lhs, mhs, rhs, path_level),
+      AstNode::In(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::InstanceOf(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::IntervalEnd(lhs, _) => self.visit_1(lhs, path_level),
+      AstNode::IntervalStart(lhs, _) => self.visit_1(lhs, path_level),
+      AstNode::Irrelevant => self.visit_0(path_level),
+      AstNode::IterationContexts(lhs) => self.visit_list(lhs, path_level),
+      AstNode::IterationContextSingle(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::IterationContextRange(lhs, mhs, rhs) => self.visit_3(lhs, mhs, rhs, path_level),
+      AstNode::Le(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::List(lhs) => self.visit_list(lhs, path_level),
+      AstNode::ListType(lhs) => self.visit_1(lhs, path_level),
+      AstNode::Lt(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Mul(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
       AstNode::Name(name) => {
-        if level == 0 {
-          // println!("name = {:?}", name);
-
-          //TODO here collect the name for closure
+        if path_level == 0 {
+          let closure_name = name.clone();
+          self.qualified_names.push(closure_name.into());
         }
         vec![name.clone()]
       }
-      AstNode::NamedParameter(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::NamedParameters(lhs) => self.visit4(lhs, level),
-      AstNode::Neg(lhs) => self.visit1(lhs, level),
-      AstNode::NegatedList(lhs) => self.visit4(lhs, level),
-      AstNode::Null => self.visit0(level),
-      AstNode::Numeric(_, _) => self.visit0(level),
-      AstNode::Nq(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Or(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::Out(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::ParameterName(_) => self.visit0(level),
-      AstNode::ParameterTypes(lhs) => self.visit4(lhs, level),
+      AstNode::NamedParameter(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::NamedParameters(lhs) => self.visit_list(lhs, path_level),
+      AstNode::Neg(lhs) => self.visit_1(lhs, path_level),
+      AstNode::NegatedList(lhs) => self.visit_list(lhs, path_level),
+      AstNode::Null => self.visit_0(path_level),
+      AstNode::Numeric(_, _) => self.visit_0(path_level),
+      AstNode::Nq(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Or(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::Out(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::ParameterName(_) => self.visit_0(path_level),
+      AstNode::ParameterTypes(lhs) => self.visit_list(lhs, path_level),
       AstNode::Path(lhs, rhs) => {
-        let mut parts = self.visit1(rhs, level + 1);
-        let mut name = self.visit1(lhs, level + 1);
+        let mut parts = self.visit_1(rhs, path_level + 1);
+        let mut name = self.visit_1(lhs, path_level + 1);
         parts.append(&mut name);
-        let mut a = parts.clone();
-        a.reverse();
-        if level == 0 {
-          // println!("path = {:?}", a);
-
-          //TODO here collect the qualified name for closure
+        if path_level == 0 {
+          let mut closure_parts = parts.clone();
+          closure_parts.reverse();
+          self.qualified_names.push(closure_parts.into());
         }
         parts
       }
-      AstNode::PositionalParameters(lhs) => self.visit4(lhs, level),
-      AstNode::QualifiedName(lhs) => self.visit4(lhs, level),
-      AstNode::QualifiedNameSegment(_name) => self.visit0(level), //TODO verify if also must be used
-      AstNode::QuantifiedContext(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::QuantifiedContexts(lhs) => self.visit4(lhs, level),
-      AstNode::Range(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::RangeType(lhs) => self.visit1(lhs, level),
-      AstNode::Some(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::String(_) => self.visit0(level),
-      AstNode::Sub(lhs, rhs) => self.visit2(lhs, rhs, level),
-      AstNode::UnaryGe(lhs) => self.visit1(lhs, level),
-      AstNode::UnaryGt(lhs) => self.visit1(lhs, level),
-      AstNode::UnaryLe(lhs) => self.visit1(lhs, level),
-      AstNode::UnaryLt(lhs) => self.visit1(lhs, level),
-      AstNode::Satisfies(lhs) => self.visit1(lhs, level),
+      AstNode::PositionalParameters(lhs) => self.visit_list(lhs, path_level),
+      AstNode::QualifiedName(lhs) => self.visit_list(lhs, path_level),
+      AstNode::QualifiedNameSegment(_name) => self.visit_0(path_level), //TODO verify if also must be used
+      AstNode::QuantifiedContext(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::QuantifiedContexts(lhs) => self.visit_list(lhs, path_level),
+      AstNode::Range(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::RangeType(lhs) => self.visit_1(lhs, path_level),
+      AstNode::Some(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::String(_) => self.visit_0(path_level),
+      AstNode::Sub(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
+      AstNode::UnaryGe(lhs) => self.visit_1(lhs, path_level),
+      AstNode::UnaryGt(lhs) => self.visit_1(lhs, path_level),
+      AstNode::UnaryLe(lhs) => self.visit_1(lhs, path_level),
+      AstNode::UnaryLt(lhs) => self.visit_1(lhs, path_level),
+      AstNode::Satisfies(lhs) => self.visit_1(lhs, path_level),
     }
   }
 
-  ///
-  fn visit2(&mut self, lhs: &AstNode, rhs: &AstNode, level: usize) -> Vec<Name> {
-    self.visit1(lhs, level);
-    self.visit1(rhs, level);
+  /// Visits two AST nodes.
+  fn visit_2(&mut self, lhs: &AstNode, rhs: &AstNode, path_level: usize) -> Vec<Name> {
+    self.visit_1(lhs, path_level);
+    self.visit_1(rhs, path_level);
     vec![]
   }
 
-  ///
-  fn visit3(&mut self, lhs: &AstNode, mhs: &AstNode, rhs: &AstNode, level: usize) -> Vec<Name> {
-    self.visit1(lhs, level);
-    self.visit1(mhs, level);
-    self.visit1(rhs, level);
+  /// Visits three AST nodes.
+  fn visit_3(&mut self, lhs: &AstNode, mhs: &AstNode, rhs: &AstNode, path_level: usize) -> Vec<Name> {
+    self.visit_1(lhs, path_level);
+    self.visit_1(mhs, path_level);
+    self.visit_1(rhs, path_level);
     vec![]
   }
 
-  ///
-  fn visit4(&mut self, lhs: &Vec<AstNode>, level: usize) -> Vec<Name> {
+  /// Visits a list of AST nodes.
+  fn visit_list(&mut self, lhs: &Vec<AstNode>, path_level: usize) -> Vec<Name> {
     for item in lhs {
-      self.visit1(item, level);
+      self.visit_1(item, path_level);
     }
     vec![]
   }
