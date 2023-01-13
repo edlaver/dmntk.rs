@@ -43,7 +43,7 @@ use test::Bencher;
 fn feel_evaluator_bif_abs_0001(b: &mut Bencher) {
   let scope = scope!();
   let input = r#"abs(-1)"#;
-  let node = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
+  let (node, _) = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
   let evaluator = prepare(&node).unwrap();
   assert_eq!(value_number!(1), evaluator(&scope));
   b.iter(|| evaluator(&scope));

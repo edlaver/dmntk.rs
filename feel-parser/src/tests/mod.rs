@@ -53,7 +53,7 @@ pub(crate) use scope;
 
 /// Parses the input text and compared the result with expected value.
 fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) {
-  let node = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
+  let (node, _) = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
   let actual = node.to_string();
   if actual != expected {
     println!("EXPECTED:\n------------------------------------------------------------{expected}\n");
@@ -69,6 +69,7 @@ fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expect
 #[test]
 fn test_parse_textual_expression() {
   let scope = dmntk_feel::FeelScope::default();
+  let (node, _) = crate::parse_textual_expression(&scope, "1+2", false).unwrap();
   assert_eq!(
     r#"
        Add
@@ -77,13 +78,14 @@ fn test_parse_textual_expression() {
        └─ Numeric
           └─ `2.`
     "#,
-    crate::parse_textual_expression(&scope, "1+2", false).unwrap().to_string()
+    node.to_string()
   );
 }
 
 #[test]
 fn test_parse_textual_expressions() {
   let scope = dmntk_feel::FeelScope::default();
+  let (node, _) = crate::parse_textual_expressions(&scope, "1+2,2+3,3*4", false).unwrap();
   assert_eq!(
     r#"
        ExpressionList
@@ -103,13 +105,14 @@ fn test_parse_textual_expressions() {
           └─ Numeric
              └─ `4.`
     "#,
-    crate::parse_textual_expressions(&scope, "1+2,2+3,3*4", false).unwrap().to_string()
+    node.to_string()
   );
 }
 
 #[test]
 fn test_parse_unary_tests() {
   let scope = dmntk_feel::FeelScope::default();
+  let (node, _) = crate::parse_unary_tests(&scope, "1,2,3,4", false).unwrap();
   assert_eq!(
     r#"
        ExpressionList
@@ -122,13 +125,14 @@ fn test_parse_unary_tests() {
        └─ Numeric
           └─ `4.`
     "#,
-    crate::parse_unary_tests(&scope, "1,2,3,4", false).unwrap().to_string()
+    node.to_string()
   );
 }
 
 #[test]
 fn test_parse_boxed_expression() {
   let scope = dmntk_feel::FeelScope::default();
+  let (node, _) = crate::parse_boxed_expression(&scope, "[1,2,3,4]", false).unwrap();
   assert_eq!(
     r#"
        List
@@ -141,13 +145,15 @@ fn test_parse_boxed_expression() {
        └─ Numeric
           └─ `4.`
     "#,
-    crate::parse_boxed_expression(&scope, "[1,2,3,4]", false).unwrap().to_string()
+    node.to_string()
   );
 }
 
 #[test]
 fn test_parse_context() {
   let scope = dmntk_feel::FeelScope::default();
+  let (node, _) = crate::parse_context(&scope, "{age: 50}", false).unwrap();
+
   assert_eq!(
     r#"
        Context
@@ -157,7 +163,7 @@ fn test_parse_context() {
           └─ Numeric
              └─ `50.`
     "#,
-    crate::parse_context(&scope, "{age: 50}", false).unwrap().to_string()
+    node.to_string()
   );
 }
 

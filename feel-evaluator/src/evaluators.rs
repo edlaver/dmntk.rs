@@ -71,7 +71,7 @@ pub fn evaluate_equals(left: &Value, right: &Value) -> bool {
 
 /// Evaluates a context from text containing `FEEL` expression.
 pub fn evaluate_context(scope: &FeelScope, input: &str) -> Result<FeelContext> {
-  let node = &dmntk_feel_parser::parse_context(scope, input, false)?;
+  let (node, _) = &dmntk_feel_parser::parse_context(scope, input, false)?;
   evaluate_context_node(scope, node)
 }
 

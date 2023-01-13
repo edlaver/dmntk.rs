@@ -376,7 +376,7 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
     Ok(feel_expression) => match std::fs::read_to_string(ctx_file_name) {
       Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.into(), &feel_expression, false) {
-          Ok(ast_root_node) => {
+          Ok((ast_root_node, _)) => {
             println!("    AST:{}", ast_root_node.to_string().trim_end());
           }
           Err(reason) => eprintln!("parsing expression failed with reason: {reason}"),
@@ -395,7 +395,7 @@ fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
     Ok(textual_expression) => match std::fs::read_to_string(ctx_file_name) {
       Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.clone().into(), &textual_expression, false) {
-          Ok(ast_root_node) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
+          Ok((ast_root_node, _)) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
             Ok(result) => {
               println!("{result}");
             }
@@ -422,7 +422,7 @@ fn test_feel_expression(test_file_name: &str, feel_file_name: &str, summary_only
           for (test_no, (input_data, expected)) in test_cases.iter().enumerate() {
             let scope = input_data.clone().into();
             match dmntk_feel_parser::parse_expression(&scope, &feel_file_content, false) {
-              Ok(node) => match dmntk_evaluator::evaluate(&scope, &node) {
+              Ok((node, _)) => match dmntk_evaluator::evaluate(&scope, &node) {
                 Ok(actual) => display_test_case_result(&actual, expected, &test_no, &mut passed, &mut failed, summary_only, color),
                 Err(reason) => eprintln!("evaluating expression failed with reason: {reason}"),
               },
