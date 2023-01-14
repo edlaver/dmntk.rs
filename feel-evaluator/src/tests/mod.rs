@@ -30,12 +30,11 @@
  * limitations under the License.
  */
 
+use crate::builders::build_evaluator;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelNumber, FeelScope};
 use dmntk_feel_parser::AstNode;
 use dmntk_feel_temporal::{Day, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, Month, Year};
-
-use crate::builders::{build_evaluator, BuilderContext};
 
 mod addition;
 mod arithmetic_negation;
@@ -195,7 +194,7 @@ pub fn te_time(trace: bool, scope: &FeelScope, s: &str, expected: FeelTime) {
 /// Utility function that tests evaluation to specified value.
 pub fn te_value(trace: bool, scope: &FeelScope, actual: &str, expected: &str) {
   match dmntk_feel_parser::parse_textual_expression(scope, expected, trace) {
-    Ok(node) => match build_evaluator(&mut BuilderContext::default(), &node) {
+    Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => textual_expression(trace, scope, actual, evaluator(scope)),
       Err(reason) => {
         println!("{reason}");
@@ -267,7 +266,7 @@ pub fn boxed_expression(trace: bool, scope: &FeelScope, text: &str, expected: Va
 /// The result must be equal to expected value, otherwise an error is reported.
 fn textual_expression(trace: bool, scope: &FeelScope, text: &str, expected: Value) {
   match dmntk_feel_parser::parse_textual_expression(scope, text, trace) {
-    Ok(node) => match build_evaluator(&mut BuilderContext::default(), &node) {
+    Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
         let actual = evaluator(scope) as Value;
         assert_eq!(actual, expected, "ERROR\nexpected: {expected}\n  actual: {actual}\n");
@@ -285,7 +284,7 @@ fn textual_expression(trace: bool, scope: &FeelScope, text: &str, expected: Valu
 /// Utility function that checks if unary tests are correctly parsed.
 pub fn valid_unary_tests(trace: bool, scope: &FeelScope, text: &str) {
   match dmntk_feel_parser::parse_unary_tests(scope, text, trace) {
-    Ok(node) => match build_evaluator(&mut BuilderContext::default(), &node) {
+    Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
         if let v @ Value::Null(_) = evaluator(scope) {
           panic!("evaluating unary tests failed, value: {v}")
