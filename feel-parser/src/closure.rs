@@ -61,10 +61,15 @@ impl fmt::Display for ClosureBuilder {
 
 impl ClosureBuilder {
   ///
-  pub fn new(node: &AstNode) -> Self {
+  pub fn from_node(node: &AstNode) -> Closure {
     let mut closure_context = ClosureBuilder::default();
     closure_context.visit_1(node, 0);
     closure_context
+      .names
+      .difference(&closure_context.parameter_names)
+      .cloned()
+      .collect::<Vec<QualifiedName>>()
+      .into()
   }
 
   ///
