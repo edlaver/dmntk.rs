@@ -30,59 +30,32 @@
  * limitations under the License.
  */
 
-//! `FEEL` qualified names.
+//! TODO update doc
 
-use crate::Name;
+use crate::QualifiedName;
+use std::collections::btree_set::Iter;
+use std::collections::BTreeSet;
 use std::fmt;
-use std::ops::Deref;
 
-/// FEEL `QualifiedName`.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct QualifiedName(Vec<Name>);
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct Closure(BTreeSet<QualifiedName>);
 
-impl QualifiedName {
-  /// Creates a [QualifiedName] from [Names](Name).
-  pub fn new(names: &[&Name]) -> Self {
-    Self(names.iter().map(|&v| v.clone()).collect::<Vec<Name>>())
-  }
-}
-
-impl fmt::Display for QualifiedName {
-  /// Implements [Display](fmt::Display) trait for [QualifiedName].
+impl fmt::Display for Closure {
+  /// Converts closure to text.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "{}", self.0.iter().map(|v| v.to_string()).collect::<Vec<String>>().join("."))
+    write!(f, "[{}]", self.0.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(","))
   }
 }
 
-impl Deref for QualifiedName {
-  type Target = Vec<Name>;
-  fn deref(&self) -> &Self::Target {
-    &self.0
+impl From<Vec<QualifiedName>> for Closure {
+  fn from(value: Vec<QualifiedName>) -> Self {
+    Self(value.iter().cloned().collect())
   }
 }
 
-impl QualifiedName {
-  /// Appends this [QualifiedName] with a given [Name].
-  pub fn push(&mut self, name: Name) {
-    self.0.push(name);
-  }
-}
-
-impl From<Name> for QualifiedName {
-  /// Converts a name into qualified name.
-  fn from(value: Name) -> Self {
-    Self(value.to_string().split('.').map(Name::from).collect())
-  }
-}
-
-impl From<Vec<Name>> for QualifiedName {
-  /// Converts a vector of names into qualified name.
-  fn from(value: Vec<Name>) -> Self {
-    let mut names = vec![];
-    for name in value {
-      let mut sub_names = name.to_string().split('.').map(Name::from).collect::<Vec<Name>>();
-      names.append(&mut sub_names);
-    }
-    Self(names)
+impl Closure {
+  /// Returns and iterator over closure items.
+  pub fn iter(&self) -> Iter<QualifiedName> {
+    self.0.iter()
   }
 }

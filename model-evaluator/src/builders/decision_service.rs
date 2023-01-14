@@ -36,6 +36,7 @@ use crate::builders::{build_variable_evaluator, Variable};
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
+use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, Name};
@@ -225,8 +226,9 @@ fn build_decision_service_evaluator(
     value_null!()
   });
   let function_body = dmntk_feel::FunctionBody::DecisionService(Arc::new(body_evaluator));
-  let closure = FeelContext::default();
-  let function_definition = Value::FunctionDefinition(formal_parameters, function_body, closure, output_variable_type_clone);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function_definition = Value::FunctionDefinition(formal_parameters, function_body, closure, closure_ctx, output_variable_type_clone);
   let decision_service_as_function_definition_evaluator = Box::new(move |_: &FeelScope| function_definition.clone());
   // return decision service evaluator closure and evaluator of the decision service as function definition
   Ok((output_variable, decision_service_evaluator, decision_service_as_function_definition_evaluator))

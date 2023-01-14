@@ -1,3 +1,4 @@
+use crate::closure::Closure;
 use crate::context::FeelContext;
 use crate::names::Name;
 use crate::types::{is_built_in_type_name, FeelType};
@@ -723,6 +724,7 @@ fn test_type_get_conformant_value() {
   let v_function_a = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(1)))),
+    Closure::default(),
     FeelContext::default(),
     t_number.clone(),
   );
@@ -730,6 +732,7 @@ fn test_type_get_conformant_value() {
   let v_function_b = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone()), (name_b.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2)))),
+    Closure::default(),
     FeelContext::default(),
     t_boolean.clone(),
   );
@@ -737,6 +740,7 @@ fn test_type_get_conformant_value() {
   let v_function_c = Value::FunctionDefinition(
     vec![(name_a.clone(), t_number.clone())],
     FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(3)))),
+    Closure::default(),
     FeelContext::default(),
     t_string.clone(),
   );

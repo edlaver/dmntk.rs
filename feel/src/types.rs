@@ -207,7 +207,7 @@ impl FeelType {
   /// All these conversion rules are implemented in this function.
   ///
   pub fn coerced(&self, actual_value: &Value) -> Value {
-    if let Value::FunctionDefinition(_, _, _, _) = actual_value {
+    if let Value::FunctionDefinition(_, _, _, _, _) = actual_value {
       return actual_value.clone();
     }
     // conforms to

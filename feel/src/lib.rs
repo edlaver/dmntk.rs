@@ -50,6 +50,7 @@ pub use strings::ToFeelString;
 pub use types::{is_built_in_type_name, FeelType, FEEL_TYPE_NAME_ANY};
 
 pub mod bif;
+pub mod closure;
 pub mod context;
 mod evaluator;
 mod function;

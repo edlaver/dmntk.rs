@@ -43,7 +43,6 @@ macro_rules! scope {
   }};
 }
 
-use crate::closure::ClosureContext;
 use crate::lalr::TokenType;
 use crate::lalr::TokenType::StartTextualExpression;
 use crate::parser::Parser;
@@ -53,8 +52,8 @@ use dmntk_feel::Name;
 pub(crate) use scope;
 
 /// Parses the input text and compared the result with expected value.
-fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) -> ClosureContext {
-  let (node, closure) = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
+fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) {
+  let (node, _) = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
   let actual = node.to_string();
   if actual != expected {
     println!("EXPECTED:\n------------------------------------------------------------{expected}\n");
@@ -65,7 +64,6 @@ fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expect
     );
   }
   assert_eq!(expected, actual);
-  closure
 }
 
 #[test]

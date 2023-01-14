@@ -1861,7 +1861,7 @@ pub fn reverse(list: &Value) -> Value {
 ///
 pub fn sort(list: &Value, ordering_function: &Value) -> Value {
   if let Value::List(items) = list.clone() {
-    if let Value::FunctionDefinition(parameters, body, _, _) = ordering_function {
+    if let Value::FunctionDefinition(parameters, body, _, _, _) = ordering_function {
       if parameters.len() == 2 {
         let mut elements = items.as_vec().clone();
         elements.sort_by(|x, y| {

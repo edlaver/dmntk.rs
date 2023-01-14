@@ -48,6 +48,7 @@ pub use business_knowledge_model::BusinessKnowledgeModelEvaluator;
 pub use decision::DecisionEvaluator;
 pub use decision_service::DecisionServiceEvaluator;
 use dmntk_common::{DmntkError, Result};
+use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody, Name};
@@ -390,6 +391,7 @@ fn build_function_definition_evaluator(parsing_scope: &FeelScope, function_defin
   parsing_scope.push(parameters_ctx);
   let body_evaluator = build_expression_instance_evaluator(parsing_scope, body_expression_instance, model_evaluator)?;
   parsing_scope.pop();
+  let closure = Closure::default();
   let closure_ctx = parsing_scope.pop().unwrap_or_default();
   let function_body_evaluator = Arc::new(body_evaluator);
   let function_body = FunctionBody::LiteralExpression(function_body_evaluator);
@@ -400,7 +402,7 @@ fn build_function_definition_evaluator(parsing_scope: &FeelScope, function_defin
         a.set_entry(name, v);
       }
     }
-    Value::FunctionDefinition(parameters.clone(), function_body.clone(), a, result_type.clone())
+    Value::FunctionDefinition(parameters.clone(), function_body.clone(), closure.clone(), a, result_type.clone())
   }))
 }
 
@@ -427,7 +429,7 @@ fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_
       let param_value = evaluator(scope) as Value;
       parameters_ctx.set_entry(param_name, param_type.coerced(&param_value))
     });
-    if let Value::FunctionDefinition(_, body, closure_ctx, result_type) = function_evaluator(scope) {
+    if let Value::FunctionDefinition(_, body, _, closure_ctx, result_type) = function_evaluator(scope) {
       scope.push(closure_ctx);
       scope.push(parameters_ctx);
       let value = body.evaluate(scope);

@@ -48,7 +48,7 @@ mod scope;
 mod tests;
 
 pub use ast::AstNode;
-pub use closure::ClosureContext;
+pub use closure::ClosureBuilder;
 pub use scope::ParsingScope;
 
 use crate::errors::*;
@@ -58,22 +58,22 @@ use dmntk_common::Result;
 use dmntk_feel::{FeelScope, Name};
 
 /// Parses an `expression` as defined in grammar rule `1`.
-pub fn parse_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartExpression, input, trace).parse()
 }
 
 /// Parses a `textual expression` as defined in grammar rule `2`.
-pub fn parse_textual_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_textual_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartTextualExpression, input, trace).parse()
 }
 
 /// Parses `textual expressions` as defined in grammar rule `3`.
-pub fn parse_textual_expressions(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_textual_expressions(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartTextualExpressions, input, trace).parse()
 }
 
 /// Parses `unary tests` as defined in grammar rule `17`.
-pub fn parse_unary_tests(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_unary_tests(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartUnaryTests, input, trace).parse()
 }
 
@@ -92,11 +92,11 @@ pub fn parse_longest_name(input: &str) -> Result<Name> {
 }
 
 /// Parses a `boxed expression` as defined in grammar rule `53`.
-pub fn parse_boxed_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_boxed_expression(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartBoxedExpression, input, trace).parse()
 }
 
 /// Parses a `context` as defined in grammar rule `59`.
-pub fn parse_context(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureContext)> {
+pub fn parse_context(scope: &FeelScope, input: &str, trace: bool) -> Result<(AstNode, ClosureBuilder)> {
   Parser::new(&scope.into(), TokenType::StartContext, input, trace).parse()
 }

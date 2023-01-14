@@ -36,10 +36,11 @@ use crate::iterations::{EveryExpressionEvaluator, ForExpressionEvaluator, SomeEx
 use crate::macros::invalid_argument_type;
 use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
+use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, Evaluator, FeelNumber, FeelScope, FeelType, FunctionBody, Name, QualifiedName};
-use dmntk_feel_parser::AstNode;
+use dmntk_feel_parser::{AstNode, ClosureBuilder};
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, HashSet};
@@ -856,7 +857,7 @@ fn build_function_body(btx: &mut BuilderContext, lhs: &AstNode, rhs: &bool) -> R
           closure.set_entry(name, value);
         }
       }
-      Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()), closure)
+      Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()))
     }))
   }
 }
@@ -864,18 +865,19 @@ fn build_function_body(btx: &mut BuilderContext, lhs: &AstNode, rhs: &bool) -> R
 ///
 fn build_function_definition(btx: &mut BuilderContext, lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   btx.clear();
+  let closure = ClosureBuilder::from_function_definition(lhs, rhs);
   let lhe = build_evaluator(btx, lhs)?;
   let rhe = build_evaluator(btx, rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
     if let Value::FormalParameters(parameters) = lhe(scope) {
-      if let Value::FunctionBody(function_body, closure) = rhe(scope) {
+      if let Value::FunctionBody(function_body) = rhe(scope) {
         //TODO is `FeelType::Any` always ok for function result type in function definition?
-        Value::FunctionDefinition(parameters, function_body, closure, FeelType::Any)
+        Value::FunctionDefinition(parameters, function_body, closure.clone(), FeelContext::default(), FeelType::Any)
       } else {
-        value_null!("invalid function body")
+        value_null!("invalid body in function definition")
       }
     } else {
-      value_null!("invalid formal parameters")
+      value_null!("invalid formal parameters in function definition")
     }
   }))
 }
@@ -951,8 +953,8 @@ fn build_function_invocation_with_positional_parameters(btx: &mut BuilderContext
     let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
       Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, closure_ctx, result_type) => {
-        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
+      Value::FunctionDefinition(parameters, body, closure, closure_ctx, result_type) => {
+        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure, closure_ctx, result_type)
       }
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
@@ -971,7 +973,9 @@ fn build_function_invocation_with_named_parameters(btx: &mut BuilderContext, lhs
     let arguments = arguments_evaluator(scope);
     match function {
       Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, closure_ctx, result_type) => eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type),
+      Value::FunctionDefinition(parameters, body, closure, closure_ctx, result_type) => {
+        eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure, closure_ctx, result_type)
+      }
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
         function as Value
@@ -2538,6 +2542,7 @@ fn eval_function_with_positional_parameters(
   arguments: &[Value],
   parameters: &[(Name, FeelType)],
   body: &FunctionBody,
+  closure: Closure,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
@@ -2548,7 +2553,7 @@ fn eval_function_with_positional_parameters(
   for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
     params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
-  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
+  eval_function_definition(scope, params_ctx, body, closure, closure_ctx, result_type)
 }
 
 /// Evaluates function definition with named parameters.
@@ -2557,6 +2562,7 @@ fn eval_function_with_named_parameters(
   arguments: &Value,
   parameters: &[(Name, FeelType)],
   body: &FunctionBody,
+  closure: Closure,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
@@ -2573,14 +2579,23 @@ fn eval_function_with_named_parameters(
       }
     }
   }
-  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
+  eval_function_definition(scope, params_ctx, body, closure, closure_ctx, result_type)
 }
 
 /// Evaluates function definition with actual parameters passed in context.
-fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &FunctionBody, closure_ctx: FeelContext, result_type: FeelType) -> Value {
+fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &FunctionBody, _: Closure, closure_ctx: FeelContext, result_type: FeelType) -> Value {
   scope.push(closure_ctx);
   scope.push(params_ctx);
-  let result = body.evaluate(scope);
+  let mut result = body.evaluate(scope);
+  if let Value::FunctionDefinition(fd_params, fd_body, fd_closure, fd_closure_ctx, fd_result_type) = &result {
+    let mut new_closure_ctx = fd_closure_ctx.clone();
+    for a in fd_closure.iter() {
+      if let Some(b) = scope.search_entry(a) {
+        new_closure_ctx.create_entry(a, b);
+      }
+    }
+    result = Value::FunctionDefinition(fd_params.to_owned(), fd_body.to_owned(), fd_closure.to_owned(), new_closure_ctx, fd_result_type.to_owned());
+  }
   scope.pop();
   scope.pop();
   result_type.coerced(&result)

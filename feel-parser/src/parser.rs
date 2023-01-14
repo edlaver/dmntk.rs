@@ -32,7 +32,7 @@
 
 //! Implementation of the `LALR` parser for `FEEL` grammar.
 
-use crate::closure::ClosureContext;
+use crate::closure::ClosureBuilder;
 use crate::errors::*;
 use crate::lalr::*;
 use crate::lexer::*;
@@ -123,7 +123,7 @@ impl<'parser> Parser<'parser> {
   }
 
   /// Parses the input.
-  pub fn parse(&mut self) -> Result<(AstNode, ClosureContext)> {
+  pub fn parse(&mut self) -> Result<(AstNode, ClosureBuilder)> {
     let mut action = Action::NewState;
     loop {
       match action {
@@ -262,7 +262,7 @@ impl<'parser> Parser<'parser> {
           if self.yy_trace {
             node.trace();
           }
-          let closure = ClosureContext::new(&node);
+          let closure = ClosureBuilder::new(&node);
           return Ok((node, closure));
         }
       }

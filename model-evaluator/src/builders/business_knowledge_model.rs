@@ -36,6 +36,7 @@ use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
+use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
@@ -226,8 +227,9 @@ fn build_bkm_context_evaluator(
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_context_evaluator(scope, context, model_evaluator)?;
-  let closure = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -241,8 +243,15 @@ fn build_bkm_decision_table_evaluator(
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_decision_table_evaluator(scope, decision_table)?;
-  let closure = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::DecisionTable(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::DecisionTable(Arc::new(evaluator)),
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -257,8 +266,15 @@ fn build_bkm_function_definition_evaluator(
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_function_definition_evaluator(scope, function_definition, model_evaluator)?;
-  let closure = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::FunctionDefinition(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::FunctionDefinition(Arc::new(evaluator)),
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -273,8 +289,9 @@ fn build_bkm_invocation_evaluator(
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_invocation_evaluator(scope, invocation, model_evaluator)?;
-  let closure = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Invocation(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Invocation(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -288,8 +305,15 @@ fn build_bkm_literal_expression_evaluator(
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_literal_expression_evaluator(scope, literal_expression)?;
-  let closure = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::LiteralExpression(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::LiteralExpression(Arc::new(evaluator)),
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -304,8 +328,9 @@ fn build_bkm_relation_evaluator(
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   let evaluator = build_relation_evaluator(scope, relation, model_evaluator)?;
-  let closure = FeelContext::default();
-  let function_definition = Value::FunctionDefinition(formal_parameters, FunctionBody::Relation(Arc::new(evaluator)), closure, output_variable_type);
+  let closure = Closure::default();
+  let closure_ctx = FeelContext::default();
+  let function_definition = Value::FunctionDefinition(formal_parameters, FunctionBody::Relation(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
   build_bkm_evaluator_from_function_definition(output_variable_name, function_definition, knowledge_requirements)
 }
 

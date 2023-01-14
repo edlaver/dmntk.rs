@@ -34,6 +34,7 @@
 
 use self::errors::*;
 use crate::bif::Bif;
+use crate::closure::Closure;
 use crate::context::FeelContext;
 use crate::names::Name;
 use crate::strings::ToFeelString;
@@ -44,6 +45,7 @@ use dmntk_feel_number::FeelNumber;
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::collections::BTreeMap;
 use std::convert::TryFrom;
+use std::fmt;
 use std::ops::Deref;
 use std::str::FromStr;
 
@@ -154,12 +156,22 @@ pub enum Value {
   FormalParameters(Vec<(Name, FeelType)>),
 
   /// Definition of the function body.
-  /// Holds function body definition and the closure for lambdas.
-  FunctionBody(FunctionBody, FeelContext),
+  FunctionBody(FunctionBody),
 
   /// Value representing the function definition.
   /// This value holds the list of function's formal parameters, the function's body, closure for lambdas and expected result type.
-  FunctionDefinition(Vec<(Name, FeelType)>, FunctionBody, FeelContext, FeelType),
+  FunctionDefinition(
+    /// Formal parameters of the function.
+    Vec<(Name, FeelType)>,
+    /// Body of the function.
+    FunctionBody,
+    /// Closed names from function context (closure names).
+    Closure,
+    /// Values of the closed names (closure values).
+    FeelContext,
+    /// Return type of the function.
+    FeelType,
+  ),
 
   /// Value representing interval end.
   IntervalEnd(Box<Value>, bool),
@@ -209,25 +221,25 @@ pub enum Value {
   /// Value for storing time as [FeelTime].
   Time(FeelTime),
 
-  /// **UnaryGreater** value...
+  /// `UnaryGreater` value...
   UnaryGreater(Box<Value>),
 
-  /// **UnaryGreaterOrEqual** value...
+  /// `UnaryGreaterOrEqual` value...
   UnaryGreaterOrEqual(Box<Value>),
 
-  /// **UnaryLess** value...
+  /// `UnaryLess` value...
   UnaryLess(Box<Value>),
 
-  /// **UnaryLessOrEqual** value...
+  /// `UnaryLessOrEqual` value...
   UnaryLessOrEqual(Box<Value>),
 
   /// Value for storing years and months duration.
   YearsAndMonthsDuration(FeelYearsAndMonthsDuration),
 }
 
-impl std::fmt::Display for Value {
+impl fmt::Display for Value {
   ///
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Value::Boolean(value) => write!(f, "{value}"),
       Value::BuiltInFunction(_) => write!(f, "BuiltInFunction"),
@@ -244,7 +256,7 @@ impl std::fmt::Display for Value {
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
-      Value::FunctionBody(_, _) => write!(f, "FunctionBody"),
+      Value::FunctionBody(_) => write!(f, "FunctionBody"),
       Value::FunctionDefinition { .. } => write!(f, "FunctionDefinition"),
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
@@ -337,8 +349,8 @@ impl Value {
       Value::FeelType(feel_type) => feel_type.clone(),
       Value::FormalParameter(_, feel_type) => feel_type.clone(),
       Value::FormalParameters(_) => FeelType::Any,
-      Value::FunctionBody(_, _) => FeelType::Any,
-      Value::FunctionDefinition(parameters, _, _, result_type) => {
+      Value::FunctionBody(_) => FeelType::Any,
+      Value::FunctionDefinition(parameters, _, _, _, result_type) => {
         let parameter_types = parameters.iter().map(|(_, feel_type)| feel_type.clone()).collect();
         FeelType::Function(parameter_types, Box::new(result_type.clone()))
       }

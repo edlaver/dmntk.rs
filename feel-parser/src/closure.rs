@@ -33,29 +33,50 @@
 //! Implementation of the context for closures (lambdas).
 
 use crate::AstNode;
+use dmntk_feel::closure::Closure;
 use dmntk_feel::{Name, QualifiedName};
+use std::collections::BTreeSet;
 use std::fmt;
 
 /// Context for closures (lambdas).
-#[derive(Debug, PartialEq)]
-pub struct ClosureContext {
-  /// Collection of qualified names constituting a closure context.
-  qualified_names: Vec<QualifiedName>,
+#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ClosureBuilder {
+  /// Collection of parameter names in function definitions.
+  parameter_names: BTreeSet<QualifiedName>,
+  /// Collection of names used in expressions.
+  names: BTreeSet<QualifiedName>,
+  /// Collection of closed names.
+  closure: BTreeSet<QualifiedName>,
 }
 
-impl fmt::Display for ClosureContext {
-  /// Implements [Display](fmt::Display) trait for [ClosureContext].
+impl fmt::Display for ClosureBuilder {
+  /// Implements [Display](fmt::Display) trait for [ClosureBuilder].
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "[{}]", self.qualified_names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(", "))
+    let parameter_names = self.parameter_names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
+    let names = self.names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
+    let closure = self.closure.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
+    write!(f, "[{names}]-[{parameter_names}]=[{closure}]")
   }
 }
 
-impl ClosureContext {
+impl ClosureBuilder {
   ///
   pub fn new(node: &AstNode) -> Self {
-    let mut closure_context = ClosureContext { qualified_names: vec![] };
+    let mut closure_context = ClosureBuilder::default();
     closure_context.visit_1(node, 0);
     closure_context
+  }
+
+  ///
+  pub fn from_function_definition(lhs: &AstNode, rhs: &AstNode) -> Closure {
+    let mut closure_context = ClosureBuilder::default();
+    closure_context.visit_2(lhs, rhs, 0);
+    closure_context
+      .names
+      .difference(&closure_context.parameter_names)
+      .cloned()
+      .collect::<Vec<QualifiedName>>()
+      .into()
   }
 
   /// Returns an empty vector of names.
@@ -112,7 +133,7 @@ impl ClosureContext {
       AstNode::Name(name) => {
         if path_level == 0 {
           let closure_name = name.clone();
-          self.qualified_names.push(closure_name.into());
+          self.names.insert(closure_name.into());
         }
         vec![name.clone()]
       }
@@ -125,7 +146,11 @@ impl ClosureContext {
       AstNode::Nq(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
       AstNode::Or(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
       AstNode::Out(lhs, rhs) => self.visit_2(lhs, rhs, path_level),
-      AstNode::ParameterName(_) => self.visit_0(path_level),
+      AstNode::ParameterName(name) => {
+        let parameter_name = name.clone();
+        self.parameter_names.insert(parameter_name.into());
+        vec![name.clone()]
+      }
       AstNode::ParameterTypes(lhs) => self.visit_list(lhs, path_level),
       AstNode::Path(lhs, rhs) => {
         let mut parts = self.visit_1(rhs, path_level + 1);
@@ -134,7 +159,7 @@ impl ClosureContext {
         if path_level == 0 {
           let mut closure_parts = parts.clone();
           closure_parts.reverse();
-          self.qualified_names.push(closure_parts.into());
+          self.names.insert(closure_parts.into());
         }
         parts
       }

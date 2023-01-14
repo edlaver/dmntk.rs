@@ -34,7 +34,7 @@
 
 use crate::context::FeelContext;
 use crate::values::Value;
-use crate::Name;
+use crate::{Name, QualifiedName};
 use dmntk_common::Jsonify;
 use std::cell::RefCell;
 use std::fmt;
@@ -127,6 +127,16 @@ impl FeelScope {
   pub fn search(&self, names: &[Name]) -> Option<Value> {
     for context in self.stack.borrow().iter().rev() {
       if let Some(value) = context.search_deep(names) {
+        return Some(value.clone());
+      }
+    }
+    None
+  }
+
+  /// Searches for a value of an entry pointed by specified qualified name.
+  pub fn search_entry(&self, qname: &QualifiedName) -> Option<Value> {
+    for context in self.stack.borrow().iter().rev() {
+      if let Some(value) = context.search_entry(qname) {
         return Some(value.clone());
       }
     }
