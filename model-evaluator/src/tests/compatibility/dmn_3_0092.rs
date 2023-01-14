@@ -91,7 +91,6 @@ fn _0010() {
 }
 
 #[test]
-#[ignore]
 fn _0011() {
   assert_decision(&MODEL_EVALUATOR, "decision_010_1_a", &CTX, r#"120"#);
 }

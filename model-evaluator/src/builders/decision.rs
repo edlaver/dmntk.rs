@@ -132,7 +132,8 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   scope.push(input_requirements_ctx.clone());
   // prepare expression instance for this decision
   let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
-    build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?
+    let (evl, _) = build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?;
+    evl
   } else {
     Box::new(move |_: &FeelScope| value_null!("no decision logic defined in decision"))
   };

@@ -32,7 +32,7 @@
 
 //! TODO update doc
 
-use crate::QualifiedName;
+use crate::{Name, QualifiedName};
 use std::collections::btree_set::Iter;
 use std::collections::BTreeSet;
 use std::fmt;
@@ -57,5 +57,11 @@ impl Closure {
   /// Returns and iterator over closure items.
   pub fn iter(&self) -> Iter<QualifiedName> {
     self.0.iter()
+  }
+
+  ///
+  pub fn remove(&mut self, name: Name) {
+    let qname: QualifiedName = name.into();
+    self.0.remove(&qname);
   }
 }
