@@ -94,42 +94,45 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   let output_variable_name = output_variable.name.clone();
   // prepare output variable type for this decision
   let output_variable_type = output_variable.feel_type(&item_definition_type_evaluator);
-  // this context contains null values to all variable names, just to bring only the names into scope
-  let mut ctx = FeelContext::default();
+  // holds variables for required decisions and required knowledge
+  let mut knowledge_requirements_ctx = FeelContext::default();
+  // hods variables for required inputs
+  let mut input_requirements_ctx = FeelContext::default();
   // bring into context the variables from this decision's knowledge requirements
-  bring_knowledge_requirements_into_context(definitions, decision.knowledge_requirements(), &mut ctx)?;
+  bring_knowledge_requirements_into_context(definitions, decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
   // bring into context the variables from information requirements
   for information_requirement in decision.information_requirements() {
+    // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
-      // bring into context the variable from required decision
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
         let variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        //FIXME below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
+        //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
         let variable_type_ref = if required_decision.variable().type_ref().is_some() {
           required_decision.variable().type_ref().as_ref().unwrap().clone()
         } else {
           "Any".to_string()
         };
-        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, &variable_name, &mut ctx);
-        ctx.set_entry(&variable_name, Value::FeelType(variable_type));
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, &variable_name, &mut knowledge_requirements_ctx);
+        knowledge_requirements_ctx.set_entry(&variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
-        bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut ctx)?;
+        bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
       }
     }
     if let Some(href) = information_requirement.required_input() {
       // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
         let variable_name = required_input.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
-        let variable_type = input_data_context_evaluator.eval(href.into(), &mut ctx, &item_definition_context_evaluator);
-        ctx.set_entry(&variable_name, Value::FeelType(variable_type));
+        let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, &item_definition_context_evaluator);
+        input_requirements_ctx.set_entry(&variable_name, Value::FeelType(variable_type));
       }
     }
   }
   // prepare a scope and build expression instance evaluator
-  let scope: FeelScope = ctx.into();
+  let scope: FeelScope = knowledge_requirements_ctx.into();
+  scope.push(input_requirements_ctx.clone());
   // prepare expression instance for this decision
   let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
-    crate::builders::build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?
+    build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?
   } else {
     Box::new(move |_: &FeelScope| value_null!("no decision logic defined in decision"))
   };

@@ -36,7 +36,6 @@ use crate::iterations::{EveryExpressionEvaluator, ForExpressionEvaluator, SomeEx
 use crate::macros::invalid_argument_type;
 use dmntk_common::Result;
 use dmntk_feel::bif::Bif;
-use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, Evaluator, FeelNumber, FeelScope, FeelType, FunctionBody, Name, QualifiedName};
@@ -833,8 +832,15 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
   Ok(Box::new(move |scope: &FeelScope| {
     if let Value::FormalParameters(parameters) = lhe(scope) {
       if let Value::FunctionBody(function_body) = rhe(scope) {
+        // evaluate closure context
+        let mut closure_ctx = FeelContext::default();
+        for closure_name in closure.iter() {
+          if let Some(closure_value) = scope.search_entry(closure_name) {
+            closure_ctx.create_entry(closure_name, closure_value);
+          }
+        }
         //TODO is `FeelType::Any` always ok for function result type in function definition?
-        Value::FunctionDefinition(parameters, function_body, closure.clone(), FeelContext::default(), FeelType::Any)
+        Value::FunctionDefinition(parameters, function_body, closure.clone(), closure_ctx, FeelType::Any)
       } else {
         value_null!("invalid body in function definition")
       }
@@ -911,12 +917,12 @@ fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[As
   }
   let function_evaluator = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let function = function_evaluator(scope);
+    let function = function_evaluator(scope) as Value;
     let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
       Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, closure, closure_ctx, result_type) => {
-        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure, closure_ctx, result_type)
+      Value::FunctionDefinition(parameters, body, _, closure_ctx, result_type) => {
+        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
       }
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
@@ -935,8 +941,8 @@ fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode)
     let arguments = arguments_evaluator(scope);
     match function {
       Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, closure, closure_ctx, result_type) => {
-        eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure, closure_ctx, result_type)
+      Value::FunctionDefinition(parameters, body, _, closure_ctx, result_type) => {
+        eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
       }
       _ => value_null!(
         "feel-evaluator: expected built-in function name or function definition, actual value is {}",
@@ -2502,7 +2508,6 @@ fn eval_function_with_positional_parameters(
   arguments: &[Value],
   parameters: &[(Name, FeelType)],
   body: &FunctionBody,
-  closure: Closure,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
@@ -2513,7 +2518,7 @@ fn eval_function_with_positional_parameters(
   for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
     params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
-  eval_function_definition(scope, params_ctx, body, closure, closure_ctx, result_type)
+  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
 
 /// Evaluates function definition with named parameters.
@@ -2522,7 +2527,6 @@ fn eval_function_with_named_parameters(
   arguments: &Value,
   parameters: &[(Name, FeelType)],
   body: &FunctionBody,
-  closure: Closure,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
@@ -2539,19 +2543,19 @@ fn eval_function_with_named_parameters(
       }
     }
   }
-  eval_function_definition(scope, params_ctx, body, closure, closure_ctx, result_type)
+  eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
 
 /// Evaluates function definition with actual parameters passed in context.
-fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &FunctionBody, _: Closure, closure_ctx: FeelContext, result_type: FeelType) -> Value {
+fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &FunctionBody, closure_ctx: FeelContext, result_type: FeelType) -> Value {
   scope.push(closure_ctx);
   scope.push(params_ctx);
   let mut result = body.evaluate(scope);
   if let Value::FunctionDefinition(fd_params, fd_body, fd_closure, fd_closure_ctx, fd_result_type) = &result {
     let mut new_closure_ctx = fd_closure_ctx.clone();
-    for a in fd_closure.iter() {
-      if let Some(b) = scope.search_entry(a) {
-        new_closure_ctx.create_entry(a, b);
+    for closure_name in fd_closure.iter() {
+      if let Some(closure_value) = scope.search_entry(closure_name) {
+        new_closure_ctx.create_entry(closure_name, closure_value);
       }
     }
     result = Value::FunctionDefinition(fd_params.to_owned(), fd_body.to_owned(), fd_closure.to_owned(), new_closure_ctx, fd_result_type.to_owned());

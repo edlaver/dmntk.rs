@@ -1861,11 +1861,11 @@ pub fn reverse(list: &Value) -> Value {
 ///
 pub fn sort(list: &Value, ordering_function: &Value) -> Value {
   if let Value::List(items) = list.clone() {
-    if let Value::FunctionDefinition(parameters, body, _, _, _) = ordering_function {
+    if let Value::FunctionDefinition(parameters, body, _, closure_ctx, _) = ordering_function {
       if parameters.len() == 2 {
         let mut elements = items.as_vec().clone();
         elements.sort_by(|x, y| {
-          let mut ctx = FeelContext::default();
+          let mut ctx = closure_ctx.clone();
           ctx.set_entry(&parameters[0].0, x.clone());
           ctx.set_entry(&parameters[1].0, y.clone());
           let scope: FeelScope = ctx.into();

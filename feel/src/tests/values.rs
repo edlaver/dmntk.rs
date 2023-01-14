@@ -130,7 +130,7 @@ fn test_display() {
   eq_dsp!(r#"FormalParameters"#, Value::FormalParameters(vec![]));
   eq_dsp!(r#"FunctionBody"#, Value::FunctionBody(v_function_body.clone()));
   eq_dsp!(
-    r#"FunctionDefinition"#,
+    r#"FunctionDefinition([(Name("a"), Number)],_,[],{},number)"#,
     Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, v_closure_ctx, t_number)
   );
   eq_dsp!(r#"IntervalEnd"#, Value::IntervalEnd(b_number.clone(), false));

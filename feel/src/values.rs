@@ -257,7 +257,7 @@ impl fmt::Display for Value {
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
       Value::FunctionBody(_) => write!(f, "FunctionBody"),
-      Value::FunctionDefinition { .. } => write!(f, "FunctionDefinition"),
+      Value::FunctionDefinition(parameters, _, closure, closure_ctx, return_type) => write!(f, "FunctionDefinition({parameters:?},_,{closure},{closure_ctx},{return_type})"),
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
       Value::Irrelevant => write!(f, "Irrelevant"),
