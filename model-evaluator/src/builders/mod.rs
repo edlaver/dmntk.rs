@@ -445,7 +445,7 @@ fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_
 ///
 fn build_literal_expression_evaluator(scope: &FeelScope, literal_expression: &LiteralExpression) -> Result<Evaluator> {
   let text = literal_expression.text().as_ref().ok_or_else(err_empty_literal_expression)?;
-  let (node, _) = dmntk_feel_parser::parse_expression(scope, text, false)?;
+  let node = dmntk_feel_parser::parse_expression(scope, text, false)?;
   dmntk_feel_evaluator::prepare(&node)
 }
 

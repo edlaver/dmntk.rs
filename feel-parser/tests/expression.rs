@@ -41,6 +41,6 @@ fn _0001() {
     AstNode::Numeric("2".to_string(), "".to_string()),
     AstNode::Numeric("3".to_string(), "".to_string()),
   ]);
-  let (actual, _) = dmntk_feel_parser::parse_expression(&scope, "[1,2,3]", false).unwrap();
+  let actual = dmntk_feel_parser::parse_expression(&scope, "[1,2,3]", false).unwrap();
   assert_eq!(expected, actual);
 }

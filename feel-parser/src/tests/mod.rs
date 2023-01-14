@@ -53,7 +53,7 @@ pub(crate) use scope;
 
 /// Parses the input text and compared the result with expected value.
 fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expected: &str, trace: bool) {
-  let (node, _) = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
+  let node = Parser::new(scope, start_token_type, input, trace).parse().unwrap();
   let actual = node.to_string();
   if actual != expected {
     println!("EXPECTED:\n------------------------------------------------------------{expected}\n");
@@ -69,7 +69,7 @@ fn accept(scope: &ParsingScope, start_token_type: TokenType, input: &str, expect
 #[test]
 fn test_parse_textual_expression() {
   let scope = dmntk_feel::FeelScope::default();
-  let (node, _) = crate::parse_textual_expression(&scope, "1+2", false).unwrap();
+  let node = crate::parse_textual_expression(&scope, "1+2", false).unwrap();
   assert_eq!(
     r#"
        Add
@@ -85,7 +85,7 @@ fn test_parse_textual_expression() {
 #[test]
 fn test_parse_textual_expressions() {
   let scope = dmntk_feel::FeelScope::default();
-  let (node, _) = crate::parse_textual_expressions(&scope, "1+2,2+3,3*4", false).unwrap();
+  let node = crate::parse_textual_expressions(&scope, "1+2,2+3,3*4", false).unwrap();
   assert_eq!(
     r#"
        ExpressionList
@@ -112,7 +112,7 @@ fn test_parse_textual_expressions() {
 #[test]
 fn test_parse_unary_tests() {
   let scope = dmntk_feel::FeelScope::default();
-  let (node, _) = crate::parse_unary_tests(&scope, "1,2,3,4", false).unwrap();
+  let node = crate::parse_unary_tests(&scope, "1,2,3,4", false).unwrap();
   assert_eq!(
     r#"
        ExpressionList
@@ -132,7 +132,7 @@ fn test_parse_unary_tests() {
 #[test]
 fn test_parse_boxed_expression() {
   let scope = dmntk_feel::FeelScope::default();
-  let (node, _) = crate::parse_boxed_expression(&scope, "[1,2,3,4]", false).unwrap();
+  let node = crate::parse_boxed_expression(&scope, "[1,2,3,4]", false).unwrap();
   assert_eq!(
     r#"
        List
@@ -152,7 +152,7 @@ fn test_parse_boxed_expression() {
 #[test]
 fn test_parse_context() {
   let scope = dmntk_feel::FeelScope::default();
-  let (node, _) = crate::parse_context(&scope, "{age: 50}", false).unwrap();
+  let node = crate::parse_context(&scope, "{age: 50}", false).unwrap();
 
   assert_eq!(
     r#"

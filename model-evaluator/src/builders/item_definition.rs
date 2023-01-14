@@ -92,7 +92,7 @@ fn build_allowed_values_evaluator(item_definition: &ItemDefinition) -> Result<Op
   if let Some(unary_tests) = item_definition.allowed_values() {
     if let Some(text) = unary_tests.text() {
       let scope = FeelScope::default();
-      let (unary_tests_node, _) = dmntk_feel_parser::parse_unary_tests(&scope, text, false)?;
+      let unary_tests_node = dmntk_feel_parser::parse_unary_tests(&scope, text, false)?;
       let node = AstNode::In(Box::new(AstNode::Name("?".into())), Box::new(unary_tests_node));
       av_evaluator = Some(dmntk_feel_evaluator::prepare(&node)?);
     }

@@ -43,7 +43,7 @@ use test::Bencher;
 fn feel_evaluator_subtraction_0001(b: &mut Bencher) {
   let scope = scope!();
   let input = r#"2-1"#;
-  let (node, _) = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
+  let node = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
   let evaluator = prepare(&node).unwrap();
   assert_eq!(value_number!(1), evaluator(&scope));
   b.iter(|| evaluator(&scope));
@@ -53,7 +53,7 @@ fn feel_evaluator_subtraction_0001(b: &mut Bencher) {
 fn feel_evaluator_subtraction_0002(b: &mut Bencher) {
   let scope = scope!();
   let input = r#"5-2-1"#;
-  let (node, _) = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
+  let node = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
   let evaluator = prepare(&node).unwrap();
   assert_eq!(value_number!(2), evaluator(&scope));
   b.iter(|| evaluator(&scope));
@@ -65,7 +65,7 @@ fn feel_evaluator_subtraction_0003(b: &mut Bencher) {
   scope.set_value(&"a".into(), value_null!());
   scope.set_value(&"b".into(), value_null!());
   let input = r#"a-b"#;
-  let (node, _) = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
+  let node = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
   let evaluator = prepare(&node).unwrap();
   scope.set_value(&"a".into(), value_number!(18));
   scope.set_value(&"b".into(), value_number!(3));

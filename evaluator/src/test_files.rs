@@ -79,7 +79,7 @@ pub fn evaluate_test_cases(input: &str) -> Result<Vec<(FeelContext, Value)>> {
     let scope = FeelScope::default();
     for unary_tests in split_test_cases(input, &separator) {
       match dmntk_feel_parser::parse_unary_tests(&scope, unary_tests, false) {
-        Ok((ast_node, _)) => match ast_node {
+        Ok(ast_node) => match ast_node {
           AstNode::ExpressionList(nodes) => {
             if nodes.len() == 2 {
               if let Ok(input_data) = dmntk_feel_evaluator::evaluate_context_node(&scope, &nodes[0]) {

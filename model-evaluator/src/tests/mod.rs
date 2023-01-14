@@ -46,7 +46,7 @@ mod model;
 pub fn context(input: &str) -> FeelContext {
   let scope = FeelScope::default();
   match dmntk_feel_parser::parse_context(&scope, input, false) {
-    Ok((node, _)) => match dmntk_feel_evaluator::prepare(&node) {
+    Ok(node) => match dmntk_feel_evaluator::prepare(&node) {
       Ok(evaluator) => match evaluator(&scope) {
         Value::Context(ctx) => ctx,
         other => panic!("ERROR: expected context value, actual value is: {}", other as Value),
