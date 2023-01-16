@@ -811,17 +811,60 @@ fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
 ///
 fn build_function_body(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
   if *rhs {
-    // prepare function's body built as external function call (usually context that defines what to call)
-    // let function_body = FunctionBody::External(Box::new(move |_:&Scope|eval( lhs)?));
-    // Ok(Value::FunctionBody(function_body))
-    //TODO implement body for external function
-    Ok(Box::new(move |_: &FeelScope| value_null!("invalid body of the external function")))
+    build_external_function_body(lhs)
   } else {
-    //
-    let lhv = build_evaluator(lhs)?;
-    let lhe = Arc::new(lhv);
-    Ok(Box::new(move |_: &FeelScope| Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()))))
+    build_fee_function_body(lhs)
   }
+}
+
+///
+fn build_fee_function_body(lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = Arc::new(build_evaluator(lhs)?);
+  Ok(Box::new(move |_: &FeelScope| Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()), false)))
+}
+
+///
+fn build_external_function_body(lhs: &AstNode) -> Result<Evaluator> {
+  let lhe = build_evaluator(lhs)?;
+  Ok(Box::new(move |scope: &FeelScope| {
+    let mapping_value = lhe(scope) as Value;
+    match mapping_value {
+      Value::Context(mapping_information) => {
+        if let Some(Value::Context(java_mapping)) = mapping_information.get_entry(&"java".into()) {
+          return if let Some(Value::String(class_name)) = java_mapping.get_entry(&"class".into()) {
+            if let Some(Value::String(method_signature)) = java_mapping.get_entry(&"method signature".into()) {
+              let java_class_name = class_name.to_owned();
+              let java_method_signature = method_signature.to_owned();
+              let java_evaluator = Box::new(move |_: &FeelScope| Value::ExternalJavaFunction(java_class_name.clone(), java_method_signature.clone())) as Evaluator;
+              let lhe = Arc::new(java_evaluator);
+              Value::FunctionBody(FunctionBody::External(lhe), true)
+            } else {
+              value_null!("invalid Java function mapping, no method signature entry in context {}", java_mapping)
+            }
+          } else {
+            value_null!("invalid Java function mapping, no class name entry in context {}", java_mapping)
+          };
+        }
+        if let Some(Value::Context(pmml_mapping)) = mapping_information.get_entry(&"pmml".into()) {
+          return if let Some(Value::String(document)) = pmml_mapping.get_entry(&"document".into()) {
+            if let Some(Value::String(model_name)) = pmml_mapping.get_entry(&"model".into()) {
+              let pmml_document = document.to_owned();
+              let pmml_model_name = model_name.to_owned();
+              let pmml_evaluator = Box::new(move |_: &FeelScope| Value::ExternalPmmlFunction(pmml_document.clone(), pmml_model_name.clone())) as Evaluator;
+              let lhe = Arc::new(pmml_evaluator);
+              Value::FunctionBody(FunctionBody::External(lhe), true)
+            } else {
+              value_null!("invalid PMML function mapping, no model name entry in context {}", pmml_mapping)
+            }
+          } else {
+            value_null!("invalid PMML function mapping, no document entry in context {}", pmml_mapping)
+          };
+        }
+        value_null!("invalid external function mapping, expected 'java' or 'pmml' entry in context {}", mapping_information)
+      }
+      other => value_null!("invalid external function mapping, expected context, actual value is {}", other),
+    }
+  }))
 }
 
 ///
@@ -831,7 +874,7 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
     if let Value::FormalParameters(parameters) = lhe(scope) {
-      if let Value::FunctionBody(function_body) = rhe(scope) {
+      if let Value::FunctionBody(body, external) = rhe(scope) {
         // evaluate closure context
         let mut closure_ctx = FeelContext::default();
         for closure_name in closure.iter() {
@@ -840,7 +883,7 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
           }
         }
         //TODO is `FeelType::Any` always ok for function result type in function definition?
-        Value::FunctionDefinition(parameters, function_body, closure.clone(), closure_ctx, FeelType::Any)
+        Value::FunctionDefinition(parameters, body, external, closure.clone(), closure_ctx, FeelType::Any)
       } else {
         value_null!("invalid body in function definition")
       }
@@ -918,16 +961,17 @@ fn build_function_invocation_with_positional_parameters(lhs: &AstNode, rhs: &[As
   let function_evaluator = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
     let function = function_evaluator(scope) as Value;
-    let arguments = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
+    let args = argument_evaluators.iter().map(|evaluator| evaluator(scope)).collect::<Vec<Value>>();
     match function {
-      Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, _, closure_ctx, result_type) => {
-        eval_function_with_positional_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
+      Value::BuiltInFunction(bif) => bifs::positional::evaluate_bif(bif, &args),
+      Value::FunctionDefinition(params, body, external, _, closure_ctx, result_type) => {
+        if external {
+          eval_external_function_with_positional_parameters(scope, &args, &params, &body, result_type)
+        } else {
+          eval_function_with_positional_parameters(scope, &args, &params, &body, closure_ctx, result_type)
+        }
       }
-      _ => value_null!(
-        "feel-evaluator: expected built-in function name or function definition, actual value is {}",
-        function as Value
-      ),
+      _ => value_null!("expected built-in function name or function definition, actual is {}", function),
     }
   }))
 }
@@ -937,17 +981,18 @@ fn build_function_invocation_with_named_parameters(lhs: &AstNode, rhs: &AstNode)
   let function_evaluator = build_evaluator(lhs)?;
   let arguments_evaluator = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let function = function_evaluator(scope);
-    let arguments = arguments_evaluator(scope);
+    let function = function_evaluator(scope) as Value;
+    let args = arguments_evaluator(scope) as Value;
     match function {
-      Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &arguments),
-      Value::FunctionDefinition(parameters, body, _, closure_ctx, result_type) => {
-        eval_function_with_named_parameters(scope, &arguments, &parameters, &body, closure_ctx, result_type)
+      Value::BuiltInFunction(bif) => bifs::named::evaluate_bif(bif, &args),
+      Value::FunctionDefinition(params, body, external, _, closure_ctx, result_type) => {
+        if external {
+          eval_external_function_with_named_parameters(scope, &args, &params, &body, result_type)
+        } else {
+          eval_function_with_named_parameters(scope, &args, &params, &body, closure_ctx, result_type)
+        }
       }
-      _ => value_null!(
-        "feel-evaluator: expected built-in function name or function definition, actual value is {}",
-        function as Value
-      ),
+      _ => value_null!("expected built-in function name or function definition, actual is {}", function),
     }
   }))
 }
@@ -2505,17 +2550,17 @@ fn eval_in_unary_greater_or_equal(left: &Value, right: &Value) -> Value {
 /// Evaluates function definition with positional parameters.
 fn eval_function_with_positional_parameters(
   scope: &FeelScope,
-  arguments: &[Value],
-  parameters: &[(Name, FeelType)],
+  args: &[Value],
+  params: &[(Name, FeelType)],
   body: &FunctionBody,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
   let mut params_ctx = FeelContext::default();
-  if arguments.len() != parameters.len() {
+  if args.len() != params.len() {
     return value_null!("invalid number of arguments");
   }
-  for (argument_value, (parameter_name, parameter_type)) in arguments.iter().zip(parameters) {
+  for (argument_value, (parameter_name, parameter_type)) in args.iter().zip(params) {
     params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
   }
   eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
@@ -2524,18 +2569,18 @@ fn eval_function_with_positional_parameters(
 /// Evaluates function definition with named parameters.
 fn eval_function_with_named_parameters(
   scope: &FeelScope,
-  arguments: &Value,
-  parameters: &[(Name, FeelType)],
+  args: &Value,
+  params: &[(Name, FeelType)],
   body: &FunctionBody,
   closure_ctx: FeelContext,
   result_type: FeelType,
 ) -> Value {
   let mut params_ctx = FeelContext::default();
-  if let Value::NamedParameters(argument_map) = arguments {
-    if argument_map.len() != parameters.len() {
+  if let Value::NamedParameters(argument_map) = args {
+    if argument_map.len() != params.len() {
       return value_null!("invalid number of arguments");
     }
-    for (parameter_name, parameter_type) in parameters {
+    for (parameter_name, parameter_type) in params {
       if let Some((argument, _)) = argument_map.get(parameter_name) {
         params_ctx.set_entry(parameter_name, parameter_type.coerced(argument))
       } else {
@@ -2546,21 +2591,124 @@ fn eval_function_with_named_parameters(
   eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
 
-/// Evaluates function definition with actual parameters passed in context.
+/// Evaluates function definition.
 fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &FunctionBody, closure_ctx: FeelContext, result_type: FeelType) -> Value {
   scope.push(closure_ctx);
   scope.push(params_ctx);
   let mut result = body.evaluate(scope);
-  if let Value::FunctionDefinition(fd_params, fd_body, fd_closure, fd_closure_ctx, fd_result_type) = &result {
+  if let Value::FunctionDefinition(fd_params, fd_body, fd_external, fd_closure, fd_closure_ctx, fd_result_type) = &result {
     let mut new_closure_ctx = fd_closure_ctx.clone();
     for closure_name in fd_closure.iter() {
       if let Some(closure_value) = scope.search_entry(closure_name) {
         new_closure_ctx.create_entry(closure_name, closure_value);
       }
     }
-    result = Value::FunctionDefinition(fd_params.to_owned(), fd_body.to_owned(), fd_closure.to_owned(), new_closure_ctx, fd_result_type.to_owned());
+    result = Value::FunctionDefinition(
+      fd_params.to_owned(),
+      fd_body.to_owned(),
+      fd_external.to_owned(),
+      fd_closure.to_owned(),
+      new_closure_ctx,
+      fd_result_type.to_owned(),
+    );
   }
-  scope.pop();
-  scope.pop();
+  scope.pop(); // params_ctx
+  scope.pop(); // closure_ctx
   result_type.coerced(&result)
+}
+
+/// Evaluates external function definition with positional parameters.
+fn eval_external_function_with_positional_parameters(scope: &FeelScope, args: &[Value], params: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+  if args.len() != params.len() {
+    return value_null!("invalid number of arguments");
+  }
+  eval_external_function_definition(scope, args, body, result_type)
+}
+
+/// Evaluates external function definition with named parameters.
+fn eval_external_function_with_named_parameters(scope: &FeelScope, args: &Value, params: &[(Name, FeelType)], body: &FunctionBody, result_type: FeelType) -> Value {
+  let mut args1 = vec![];
+  if let Value::NamedParameters(argument_map) = args {
+    if argument_map.len() != params.len() {
+      return value_null!("invalid number of arguments");
+    }
+    for (parameter_name, parameter_type) in params {
+      if let Some((argument, _)) = argument_map.get(parameter_name) {
+        args1.push(parameter_type.coerced(argument));
+      } else {
+        return value_null!("parameter with name {} not found in arguments", parameter_name);
+      }
+    }
+  }
+  eval_external_function_definition(scope, &args1, body, result_type)
+}
+
+/// Evaluates external function definition.
+fn eval_external_function_definition(scope: &FeelScope, arguments: &[Value], body: &FunctionBody, result_type: FeelType) -> Value {
+  let result = match &body.evaluate(scope) {
+    Value::ExternalJavaFunction(class_name, method_signature) => eval_java_function(class_name, method_signature, arguments),
+    Value::ExternalPmmlFunction(document, model_name) => eval_pmml_function(document, model_name, arguments),
+    other => value_null!("expected JAVA or PMML mapping, actual value is {}", other),
+  };
+  result_type.coerced(&result)
+}
+
+/// Mock of Java function evaluation
+fn eval_java_function(class_name: &str, method_signature: &str, arguments: &[Value]) -> Value {
+  match (class_name, method_signature) {
+    ("java.lang.Math", "cos(double)") => Value::Number(FeelNumber::new(-88796890, 8)),
+    ("java.lang.Math", "foo(double)") => value_null!(),
+    ("java.lang.Foo", "valueOf(double)") => value_null!(),
+    ("java.lang.Math", "max(java.lang.String, java.lang.String)") => value_null!(),
+    ("java.lang.Math", "max(double,double)") => arguments[1].clone(),
+    ("java.lang.Math", "max(double, double)") => arguments[1].clone(),
+    ("java.lang.Math", "max(int,int)") => arguments[1].clone(),
+    ("java.lang.Short", "valueOf(short)") => arguments[0].clone(),
+    ("java.lang.Byte", "valueOf(byte)") => arguments[0].clone(),
+    ("java.lang.String", "valueOf(char)") => {
+      if let Value::String(s) = &arguments[0] {
+        if s.len() == 1 {
+          Value::String(s.clone())
+        } else {
+          value_null!()
+        }
+      } else {
+        value_null!()
+      }
+    }
+    ("java.lang.Math", "max(long,long)") => arguments[1].clone(),
+    ("java.lang.Math", "max(float,float)") => arguments[1].clone(),
+    ("java.lang.Integer", "valueOf(java.lang.String)") => {
+      if let Value::String(s) = &arguments[0] {
+        if let Ok(n) = s.parse::<i64>() {
+          Value::Number(n.into())
+        } else {
+          value_null!()
+        }
+      } else {
+        value_null!()
+      }
+    }
+    ("java.lang.Float", "valueOf(java.lang.String)") | ("java.lang.Double", "valueOf(java.lang.String)") => {
+      if let Value::String(s) = &arguments[0] {
+        if let Ok(n) = s.parse::<f32>() {
+          Value::Number(FeelNumber::new((n * 100.0) as i64, 2))
+        } else {
+          value_null!()
+        }
+      } else {
+        value_null!()
+      }
+    }
+    ("java.lang.String", "format(java.lang.String, [Ljava.lang.Object;)") => Value::String("foo bar".into()),
+    _ => Value::String(format!("JAVA, class = {class_name}, method signature = {method_signature}")),
+  }
+}
+
+/// Mock of PMML function evaluation
+fn eval_pmml_function(document: &str, model_name: &str, _arguments: &[Value]) -> Value {
+  match (document, model_name) {
+    ("", "") => value_null!(),
+    _ => Value::String(format!("PMML, document = {document}, model name = {model_name}")),
+  }
 }

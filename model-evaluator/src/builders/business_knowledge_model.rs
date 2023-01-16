@@ -229,7 +229,14 @@ fn build_bkm_context_evaluator(
   let (evaluator, _) = build_context_evaluator(scope, context, model_evaluator)?;
   let closure = Closure::default();
   let closure_ctx = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Context(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
+  let function = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::Context(Arc::new(evaluator)),
+    false,
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -248,6 +255,7 @@ fn build_bkm_decision_table_evaluator(
   let function = Value::FunctionDefinition(
     formal_parameters,
     FunctionBody::DecisionTable(Arc::new(evaluator)),
+    false,
     closure,
     closure_ctx,
     output_variable_type,
@@ -271,6 +279,7 @@ fn build_bkm_function_definition_evaluator(
   let function = Value::FunctionDefinition(
     formal_parameters,
     FunctionBody::FunctionDefinition(Arc::new(evaluator)),
+    false,
     closure,
     closure_ctx,
     output_variable_type,
@@ -291,7 +300,14 @@ fn build_bkm_invocation_evaluator(
   let (evaluator, _) = build_invocation_evaluator(scope, invocation, model_evaluator)?;
   let closure = Closure::default();
   let closure_ctx = FeelContext::default();
-  let function = Value::FunctionDefinition(formal_parameters, FunctionBody::Invocation(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
+  let function = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::Invocation(Arc::new(evaluator)),
+    false,
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function, knowledge_requirements)
 }
 
@@ -310,6 +326,7 @@ fn build_bkm_literal_expression_evaluator(
   let function = Value::FunctionDefinition(
     formal_parameters,
     FunctionBody::LiteralExpression(Arc::new(evaluator)),
+    false,
     closure,
     closure_ctx,
     output_variable_type,
@@ -330,7 +347,14 @@ fn build_bkm_relation_evaluator(
   let (evaluator, _) = build_relation_evaluator(scope, relation, model_evaluator)?;
   let closure = Closure::default();
   let closure_ctx = FeelContext::default();
-  let function_definition = Value::FunctionDefinition(formal_parameters, FunctionBody::Relation(Arc::new(evaluator)), closure, closure_ctx, output_variable_type);
+  let function_definition = Value::FunctionDefinition(
+    formal_parameters,
+    FunctionBody::Relation(Arc::new(evaluator)),
+    false,
+    closure,
+    closure_ctx,
+    output_variable_type,
+  );
   build_bkm_evaluator_from_function_definition(output_variable_name, function_definition, knowledge_requirements)
 }
 

@@ -119,6 +119,22 @@ pub enum Value {
   /// Value representing a collection of comma-separated list of expressions.
   ExpressionList(Values),
 
+  /// Value representing a mapping to externally defined `Java` function.
+  ExternalJavaFunction(
+    /// Class name.
+    String,
+    /// Method signature.
+    String,
+  ),
+
+  /// Value representing a mapping to externally defined `PMML` function.
+  ExternalPmmlFunction(
+    /// Document.
+    String,
+    /// Model name.
+    String,
+  ),
+
   /// Value representing a context.
   Context(FeelContext),
 
@@ -156,7 +172,12 @@ pub enum Value {
   FormalParameters(Vec<(Name, FeelType)>),
 
   /// Definition of the function body.
-  FunctionBody(FunctionBody),
+  FunctionBody(
+    /// Body of the function.
+    FunctionBody,
+    /// Flag indicating if the function's body is an external function, `true` == external.
+    bool,
+  ),
 
   /// Value representing the function definition.
   /// This value holds the list of function's formal parameters, the function's body, closure for lambdas and expected result type.
@@ -165,6 +186,8 @@ pub enum Value {
     Vec<(Name, FeelType)>,
     /// Body of the function.
     FunctionBody,
+    /// Flag indicating if the function's body is an external function, `true` == external.
+    bool,
     /// Closed names from function context (closure names).
     Closure,
     /// Values of the closed names (closure values).
@@ -243,7 +266,6 @@ impl fmt::Display for Value {
     match self {
       Value::Boolean(value) => write!(f, "{value}"),
       Value::BuiltInFunction(_) => write!(f, "BuiltInFunction"),
-      Value::ExpressionList(items) => write!(f, "{items}"),
       Value::Context(context) => write!(f, "{context}"),
       Value::ContextEntry(_, _) => write!(f, "ContextEntry"),
       Value::ContextEntryKey(name) => write!(f, "{name}"),
@@ -253,11 +275,16 @@ impl fmt::Display for Value {
       Value::Date(date) => write!(f, "{date}"),
       Value::DateTime(date_time) => write!(f, "{date_time}"),
       Value::DaysAndTimeDuration(dt_duration) => write!(f, "{dt_duration}"),
+      Value::ExpressionList(items) => write!(f, "{items}"),
+      Value::ExternalJavaFunction(class_name, method_signature) => write!(f, "ExternalJavaFunction({class_name}, {method_signature})"),
+      Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPMMLFunction({iri}, {model_name})"),
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
-      Value::FunctionBody(_) => write!(f, "FunctionBody"),
-      Value::FunctionDefinition(parameters, _, closure, closure_ctx, return_type) => write!(f, "FunctionDefinition({parameters:?},_,{closure},{closure_ctx},{return_type})"),
+      Value::FunctionBody(_, external) => write!(f, "FunctionBody{}", if *external { " (external)" } else { "" }),
+      Value::FunctionDefinition(parameters, _body, external, closure, closure_ctx, return_type) => {
+        write!(f, "FunctionDefinition({parameters:?},_,{external},{closure},{closure_ctx},{return_type})")
+      }
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
       Value::Irrelevant => write!(f, "Irrelevant"),
@@ -330,7 +357,6 @@ impl Value {
     match self {
       Value::Boolean(_) => FeelType::Boolean,
       Value::BuiltInFunction(_) => FeelType::Any,
-      Value::ExpressionList(_) => FeelType::Any,
       Value::Context(context) => {
         let mut entries = BTreeMap::new();
         for (name, value) in context.deref() {
@@ -346,11 +372,14 @@ impl Value {
       Value::Date(_) => FeelType::Date,
       Value::DateTime(_) => FeelType::DateTime,
       Value::DaysAndTimeDuration(_) => FeelType::DaysAndTimeDuration,
+      Value::ExpressionList(_) => FeelType::Any,
+      Value::ExternalJavaFunction(_, _) => FeelType::Any,
+      Value::ExternalPmmlFunction(_, _) => FeelType::Any,
       Value::FeelType(feel_type) => feel_type.clone(),
       Value::FormalParameter(_, feel_type) => feel_type.clone(),
       Value::FormalParameters(_) => FeelType::Any,
-      Value::FunctionBody(_) => FeelType::Any,
-      Value::FunctionDefinition(parameters, _, _, _, result_type) => {
+      Value::FunctionBody(_, _) => FeelType::Any,
+      Value::FunctionDefinition(parameters, _, _, _, _, result_type) => {
         let parameter_types = parameters.iter().map(|(_, feel_type)| feel_type.clone()).collect();
         FeelType::Function(parameter_types, Box::new(result_type.clone()))
       }

@@ -59,7 +59,7 @@ pub enum FunctionBody {
   Relation(FunctionBodyEvaluator),
   /// Function body created from decision service defined in `DMN` model.
   DecisionService(FunctionBodyEvaluator),
-  /// Function body created from externally defined function (`Java`, `PMML`).
+  /// Function body created from externally defined function in `Java` or `PMML`.
   External(FunctionBodyEvaluator),
 }
 
