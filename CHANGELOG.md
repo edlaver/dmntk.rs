@@ -10,7 +10,8 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed non-conformant functionality tested by flight rebooking test suite.
 - Refactored **dmntk-feel-parser** component.
 - Improved code coverage.
-- Implemented more compatibility tests (99,5% passes). 
+- Implemented more compatibility tests (99,9% passes).
+- Implemented external Java functions invocation with mocked tests.
 
 ## [v0.0.54 (3rd alpha)] - 2023-01-10
 
