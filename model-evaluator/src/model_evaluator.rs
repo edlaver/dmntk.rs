@@ -91,9 +91,9 @@ impl ModelEvaluator {
   }
 
   /// Creates an instance of [ModelEvaluator] from multiple definitions.
-  pub fn new_1(defs: &[&Definitions]) -> Result<Arc<Self>> {
+  pub fn new_1(defs: &[(Option<Name>, &Definitions)]) -> Result<Arc<Self>> {
     let model_evaluator = Arc::new(ModelEvaluator::default());
-    for definitions in defs {
+    for (_opt_import_name, definitions) in defs {
       model_evaluator.input_data_evaluator.write().unwrap().build(definitions)?;
       model_evaluator.input_data_context_evaluator.write().unwrap().build(definitions)?;
       model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;

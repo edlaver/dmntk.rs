@@ -33,7 +33,7 @@
 use crate::ModelEvaluator;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::FeelScope;
+use dmntk_feel::{FeelScope, Name};
 use dmntk_model::model::Definitions;
 use std::sync::Arc;
 
@@ -64,12 +64,18 @@ fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
 }
 
 /// Utility function that builds a model evaluator from XML model definitions.
-fn build_model_evaluators(model_content: &[&str]) -> Arc<ModelEvaluator> {
-  let definitions = model_content.iter().map(|content| dmntk_model::parse(content).unwrap()).collect::<Vec<Definitions>>();
-  let definition_references = definitions.iter().collect::<Vec<&Definitions>>();
-  //let _ = ModelBuilder::new(&refs);
+fn build_model_evaluators(model_content: &[(Option<Name>, &str)]) -> Arc<ModelEvaluator> {
+  let mut definitions = vec![];
+  for (opt_name, content) in model_content {
+    definitions.push((opt_name.clone(), dmntk_model::parse(content).unwrap()));
+  }
+  let defs = definitions
+    .iter()
+    .map(|(opt_name, definitions)| (opt_name.clone(), definitions))
+    .collect::<Vec<(Option<Name>, &Definitions)>>();
+  //let _ = ModelBuilder::new(&defs);
   //ModelEvaluator::new(&dmntk_model::parse(model_content[0]).unwrap()).unwrap()
-  ModelEvaluator::new_1(&definition_references).unwrap()
+  ModelEvaluator::new_1(&defs).unwrap()
 }
 
 /// Utility function that evaluates a `Decision` specified by name and compares the result.

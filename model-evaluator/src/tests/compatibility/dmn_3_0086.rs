@@ -32,22 +32,23 @@
 
 use super::super::*;
 use crate::model_evaluator::ModelEvaluator;
+use dmntk_examples::*;
 use std::sync::Arc;
 
 lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0086);
+  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluators(&[(Some("myimport".into()), DMN_3_0086_IMPORT), (None, DMN_3_0086)]);
 }
 
 #[test]
 #[ignore]
 fn _0001() {
   let ctx = context(r#"{A Person: {age: 21,name: "John Doe"}}"#);
-  assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#""Hello John Doe!""#);
 }
 
 #[test]
 #[ignore]
 fn _0002() {
   let ctx = context(r#"{A Person: {age: 47,name: "John Doe"}}"#);
-  assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#""Respectfully, Hello John Doe!""#);
 }
