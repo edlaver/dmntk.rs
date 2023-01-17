@@ -162,17 +162,17 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
             if let Ok(item_definition_evaluator) = model_evaluator.item_definition_evaluator() {
               // prepare context containing values from required knowledge and required decisions
               let mut required_knowledge_ctx: FeelContext = Default::default();
-              // evaluate required knowledge as values from business knowledge models
-              required_knowledge_references.iter().for_each(|business_knowledge_model_id| {
-                business_knowledge_model_evaluator.evaluate(business_knowledge_model_id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx)
+              required_knowledge_references.iter().for_each(|id| {
+                // evaluate required knowledge as values from business knowledge models
+                business_knowledge_model_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx)
               });
-              // evaluate required knowledge as decision service function definitions
-              required_knowledge_references
-                .iter()
-                .for_each(|decision_service_id| decision_service_evaluator.evaluate_fun_def(decision_service_id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx));
-              // evaluate required decisions as values from decisions
-              required_decision_references.iter().for_each(|decision_id| {
-                decision_evaluator.evaluate(decision_id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx);
+              required_knowledge_references.iter().for_each(|id| {
+                // evaluate required knowledge as decision service function definitions
+                decision_service_evaluator.evaluate_fd(id, input_data_ctx, &mut required_knowledge_ctx)
+              });
+              required_decision_references.iter().for_each(|id| {
+                // evaluate required decisions as values from decisions
+                decision_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx);
               });
               // values from required knowledge may be overridden by input data
               required_knowledge_ctx.overwrite(input_data_ctx);

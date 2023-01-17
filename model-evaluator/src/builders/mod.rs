@@ -128,6 +128,8 @@ type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name
 pub struct Variable {
   pub name: Name,
   pub type_ref: Option<String>,
+  /// Evaluated FEEL type for this variable.
+  pub feel_type: FeelType,
 }
 
 impl TryFrom<&InformationItem> for Variable {
@@ -136,7 +138,8 @@ impl TryFrom<&InformationItem> for Variable {
   fn try_from(value: &InformationItem) -> Result<Self, Self::Error> {
     let name = value.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
     let type_ref = value.type_ref().clone();
-    Ok(Self { name, type_ref })
+    let feel_type = FeelType::Any;
+    Ok(Self { name, type_ref, feel_type })
   }
 }
 

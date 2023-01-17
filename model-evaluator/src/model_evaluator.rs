@@ -86,6 +86,7 @@ impl ModelEvaluator {
       .write()
       .unwrap()
       .build(definitions, Arc::clone(&model_evaluator))?;
+    model_evaluator.decision_service_evaluator.write().unwrap().build_function_definitions(&model_evaluator);
     Ok(model_evaluator)
   }
 
@@ -105,6 +106,7 @@ impl ModelEvaluator {
         .write()
         .unwrap()
         .build(definitions, Arc::clone(&model_evaluator))?;
+      model_evaluator.decision_service_evaluator.write().unwrap().build_function_definitions(&model_evaluator);
     }
     Ok(model_evaluator)
   }

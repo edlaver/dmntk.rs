@@ -71,8 +71,8 @@ impl BusinessKnowledgeModelEvaluator {
   /// Evaluates a business knowledge model with specified identifier.
   /// When a required business knowledge model is found, then its evaluator
   /// is executed, and the result is stored in `evaluated_ctx`.
-  pub fn evaluate(&self, id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
-    if let Some(evaluator) = self.evaluators.get(id) {
+  pub fn evaluate(&self, business_knowledge_model_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
+    if let Some(evaluator) = self.evaluators.get(business_knowledge_model_id) {
       evaluator(input_data, model_evaluator, output_data);
     }
   }
