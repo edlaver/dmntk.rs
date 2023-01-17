@@ -168,7 +168,7 @@ fn _2_0002() {
 
 #[test]
 fn _3_0086_import() {
-  let definitions = crate::parse(dmntk_examples::DMN_3_0086_IMPORT).unwrap();
+  let definitions = crate::parse(dmntk_examples::DMN_3_0086).unwrap();
   assert_eq!("_25a9c1b8-ee39-4c1e-906f-56c11677925a", definitions.id().as_ref().unwrap().as_str());
   let dmndi = definitions.dmndi.unwrap();
   // there are no shared styles defined
@@ -222,7 +222,7 @@ fn _3_0086_import() {
   let shape_2 = get_shape(&dmndi.diagrams.get(0).unwrap().diagram_elements, 2).unwrap();
   assert_eq!("_42d5102d-9f7a-4ba7-9f11-e4371b8527e6", shape_2.id.as_ref().unwrap());
   // there is a third shape's dmn_element_ref
-  assert_eq!("include1:_32543811-b499-4608-b784-6c6f294b1c58", shape_2.dmn_element_ref.as_ref().unwrap());
+  assert_eq!("_32543811-b499-4608-b784-6c6f294b1c58", shape_2.dmn_element_ref.as_ref().unwrap());
   // there is a third shape's bound - height
   assert!(59.0_f64.eq(&shape_2.bounds.height));
   // there is a third shape's bound - width

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<definitions name="Model B"
+             id="_2a1d771a-a899-4fef-abd6-fc894332337c"
+             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             namespace="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c">
+    <import namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"
+            name="modelA"
+            importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>
+    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e23" name="Evaluating Say Hello">
+        <variable name="Evaluating Say Hello" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
+        <informationRequirement id="_d3627327-056c-4117-b167-df7029d21511">
+            <requiredDecision href="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5"/>
+        </informationRequirement>
+        <literalExpression typeRef="string" id="_026e05fb-6c07-4046-9c52-716ba5619a69">
+            <text>"Evaluating Say Hello to: "+modelA.Greet the Person</text>
+        </literalExpression>
+    </decision>
+</definitions>

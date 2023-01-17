@@ -35,10 +35,7 @@ use crate::model_evaluator::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = {
-    //
-    build_model_evaluator(dmntk_examples::DMN_3_0086_IMPORT)
-  };
+  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0086);
 }
 
 #[test]

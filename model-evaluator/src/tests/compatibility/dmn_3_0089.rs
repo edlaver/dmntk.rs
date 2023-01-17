@@ -36,11 +36,28 @@ use std::sync::Arc;
 
 lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0089);
+  static ref MODEL_EVALUATOR_A: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0089_MODEL_A);
 }
 
 #[test]
 #[ignore]
 fn _0001() {
-  let ctx = context(r#"{Model B: {modelA: {Person name: "B.A.John"}},Model B2: {modelA: {Person name: "B2.A.John2"}}}"#);
-  assert_decision(&MODEL_EVALUATOR, "Evaluation DS", &ctx, r#"null"#);
+  let ctx = context(
+    r#"{
+      Model B:  { modelA: { Person name: "B.A.John"   } },
+      Model B2: { modelA: { Person name: "B2.A.John2" } }
+    }"#,
+  );
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "Model C Decision based on Bs",
+    &ctx,
+    r#""B: Evaluating Say Hello to: Hello, B.A.John; B2: Evaluating Say Hello to: Hello, B2.A.John2""#,
+  );
+}
+
+#[test]
+fn _0002() {
+  let ctx = context(r#" { Person name: "Dariusz" } "#);
+  assert_decision(&MODEL_EVALUATOR_A, "Greet the Person", &ctx, r#""Hello, Dariusz""#);
 }

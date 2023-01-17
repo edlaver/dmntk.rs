@@ -424,7 +424,7 @@ fn _3_0085() {
 
 #[test]
 fn _3_0086_import() {
-  let definitions = crate::parse(dmntk_examples::DMN_3_0086_IMPORT).unwrap();
+  let definitions = crate::parse(dmntk_examples::DMN_3_0086).unwrap();
   assert_eq!("_25a9c1b8-ee39-4c1e-906f-56c11677925a", definitions.id().as_ref().unwrap().as_str());
   let imports = definitions.imports();
   assert_eq!(1, imports.len());
