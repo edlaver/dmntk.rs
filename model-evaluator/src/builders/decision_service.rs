@@ -45,9 +45,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Type of closure that evaluates a decision service.
-///
 /// Fn(input_data, model evaluator, output data)
-///
 type DecisionServiceEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 ///

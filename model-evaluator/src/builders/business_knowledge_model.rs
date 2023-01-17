@@ -45,9 +45,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Type of closure that evaluates business knowledge model.
-///
 /// Fn(input data, model evaluator, output data)
-///
 type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
 
 /// Business knowledge model evaluator.

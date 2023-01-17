@@ -66,7 +66,7 @@ fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
 /// Utility function that builds a model evaluator from XML model definitions.
 fn build_model_evaluators(model_content: &[&str]) -> Arc<ModelEvaluator> {
   let defs = model_content.iter().map(|content| dmntk_model::parse(content).unwrap()).collect::<Vec<Definitions>>();
-  let refs = defs.iter().map(|definitions| definitions).collect::<Vec<&Definitions>>();
+  let refs = defs.iter().collect::<Vec<&Definitions>>();
   let _ = ModelBuilder::new(&refs);
   ModelEvaluator::new(&dmntk_model::parse(model_content[0]).unwrap()).unwrap()
 }

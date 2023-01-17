@@ -58,7 +58,7 @@ pub struct ModelBuilder {
 
 impl ModelBuilder {
   ///
-  pub fn new(defs: &[&Definitions]) -> Result<()> {
+  pub fn new(defs: &[&Definitions]) -> Result<Self> {
     // display temporarily the relations between imported models
     // for definitions in defs {
     //   println!("DDD: {:30} {}", definitions.name(), definitions.namespace());
@@ -67,7 +67,7 @@ impl ModelBuilder {
     //   }
     //   println!("DDD:\n");
     // }
-    //let mut model_builder = ModelBuilder::default();
+    let model_builder = ModelBuilder::default();
     for definitions in defs.iter() {
       println!("DDD: Building = {:30} {}", definitions.name(), definitions.namespace());
       // model_builder.input_data_evaluator_builder.build(definitions)?;
@@ -76,7 +76,7 @@ impl ModelBuilder {
       // model_builder.item_definition_context_evaluator_builder.build(definitions)?;
       // model_builder.item_definition_type_evaluator_builder.build(definitions)?;
     }
-    Ok(())
+    Ok(model_builder)
   }
   /*
 

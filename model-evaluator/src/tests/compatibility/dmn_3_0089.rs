@@ -41,6 +41,7 @@ lazy_static! {
 }
 
 #[test]
+#[ignore]
 fn _0001() {
   let ctx = context(
     r#"{

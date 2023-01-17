@@ -43,9 +43,7 @@ use dmntk_model::model::{Decision, Definitions, DmnElement, NamedElement, Requir
 use std::collections::HashMap;
 
 /// Type alias for closures that evaluate decisions.
-///
-/// `Fn(input data, model evaluator, output data)`
-///
+/// Fn(input data, model evaluator, output data)
 type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 ///
