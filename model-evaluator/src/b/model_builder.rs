@@ -31,7 +31,7 @@
  */
 
 use dmntk_common::Result;
-use dmntk_model::model::{Definitions, NamedElement};
+use dmntk_model::model::Definitions;
 
 /// Model builder.
 #[derive(Default)]
@@ -59,17 +59,8 @@ pub struct ModelBuilder {
 impl ModelBuilder {
   ///
   pub fn new(defs: &[&Definitions]) -> Result<Self> {
-    // display temporarily the relations between imported models
-    // for definitions in defs {
-    //   println!("DDD: {:30} {}", definitions.name(), definitions.namespace());
-    //   for import in definitions.imports() {
-    //     println!("DDD:  ==> {:25} {}", import.feel_name().as_ref().unwrap().to_string(), import.namespace());
-    //   }
-    //   println!("DDD:\n");
-    // }
     let model_builder = ModelBuilder::default();
-    for definitions in defs.iter() {
-      println!("DDD: Building = {:30} {}", definitions.name(), definitions.namespace());
+    for _definitions in defs.iter() {
       // model_builder.input_data_evaluator_builder.build(definitions)?;
       // model_builder.input_data_context_evaluator_builder.build(definitions)?;
       // model_builder.item_definition_evaluator_builder.build(definitions)?;

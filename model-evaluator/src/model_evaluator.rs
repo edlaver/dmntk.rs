@@ -36,7 +36,7 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
-use dmntk_model::model::{Definitions, NamedElement};
+use dmntk_model::model::Definitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock, RwLockReadGuard};
 
@@ -93,7 +93,6 @@ impl ModelEvaluator {
   pub fn new_1(defs: &[&Definitions]) -> Result<Arc<Self>> {
     let model_evaluator = Arc::new(ModelEvaluator::default());
     for definitions in defs {
-      println!("DDD: {}", definitions.name());
       model_evaluator.input_data_evaluator.write().unwrap().build(definitions)?;
       model_evaluator.input_data_context_evaluator.write().unwrap().build(definitions)?;
       model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;
