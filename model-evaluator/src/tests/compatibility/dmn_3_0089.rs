@@ -32,15 +32,15 @@
 
 use super::super::*;
 use crate::model_evaluator::ModelEvaluator;
+use dmntk_examples::*;
 use std::sync::Arc;
 
 lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0089);
-  static ref MODEL_EVALUATOR_A: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0089_MODEL_A);
+  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B, DMN_3_0089_MODEL_B2, DMN_3_0089]);
+  static ref MODEL_EVALUATOR_A: Arc<ModelEvaluator> = build_model_evaluator(DMN_3_0089_MODEL_A);
 }
 
 #[test]
-#[ignore]
 fn _0001() {
   let ctx = context(
     r#"{

@@ -30,10 +30,11 @@
  * limitations under the License.
  */
 
-use crate::ModelEvaluator;
+use crate::{ModelBuilder, ModelEvaluator};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
+use dmntk_model::model::Definitions;
 use std::sync::Arc;
 
 #[cfg(test)]
@@ -60,6 +61,14 @@ pub fn context(input: &str) -> FeelContext {
 /// Utility function that builds a model evaluator from XML model definitions.
 fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
   ModelEvaluator::new(&dmntk_model::parse(model_content).unwrap()).unwrap()
+}
+
+/// Utility function that builds a model evaluator from XML model definitions.
+fn build_model_evaluators(model_content: &[&str]) -> Arc<ModelEvaluator> {
+  let defs = model_content.iter().map(|content| dmntk_model::parse(content).unwrap()).collect::<Vec<Definitions>>();
+  let refs = defs.iter().map(|definitions| definitions).collect::<Vec<&Definitions>>();
+  let _ = ModelBuilder::new(&refs);
+  ModelEvaluator::new(&dmntk_model::parse(model_content[0]).unwrap()).unwrap()
 }
 
 /// Utility function that evaluates a `Decision` specified by name and compares the result.
