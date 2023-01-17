@@ -32,7 +32,7 @@
 
 //! Builder for decision service evaluators.
 
-use crate::builders::{build_variable_evaluator, Variable};
+use crate::builders::variable::Variable;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
@@ -78,7 +78,7 @@ impl DecisionServiceEvaluator {
     for decision_service_id in identifiers {
       let evaluator = Arc::clone(model_evaluator);
       self.evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
-        let output_variable_type = entry.0.feel_type.clone();
+        let output_variable_type = entry.0.feel_type().clone();
         let body_evaluator = Box::new(move |scope: &FeelScope| {
           let input_data = scope.peek().unwrap_or_default();
           let mut output_data = FeelContext::default();
@@ -166,7 +166,7 @@ fn build_decision_service_evaluator(decision_service: &DecisionService, model_ev
       //let a = model_evaluator.item_definition_type_evaluator()?;
       let parameter_type = decision_output_variable.resolve_feel_type(&item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
-      let evaluator = build_variable_evaluator(decision_output_variable)?;
+      let evaluator = decision_output_variable.build_evaluator()?;
       input_decision_results_evaluators.push(evaluator);
     }
   }

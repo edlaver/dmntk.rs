@@ -32,6 +32,7 @@
 
 //! Builder for decision evaluators.
 
+use crate::builders::variable::Variable;
 use crate::builders::*;
 use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;

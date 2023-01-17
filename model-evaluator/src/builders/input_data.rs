@@ -33,7 +33,7 @@
 //! Builder for input data evaluators.
 
 use crate::builders::item_definition::ItemDefinitionEvaluator;
-use crate::builders::{build_variable_evaluator, Variable, VariableEvaluatorFn};
+use crate::builders::variable::{Variable, VariableEvaluatorFn};
 use crate::errors::err_empty_identifier;
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
@@ -56,7 +56,7 @@ impl InputDataEvaluator {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
       let variable = Variable::try_from(input_data.variable())?;
-      let evaluator = build_variable_evaluator(&variable)?;
+      let evaluator = variable.build_evaluator()?;
       self.evaluators.insert(input_data_id.to_owned(), (variable, evaluator));
     }
     Ok(())
