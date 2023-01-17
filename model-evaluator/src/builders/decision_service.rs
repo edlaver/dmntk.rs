@@ -74,7 +74,7 @@ impl DecisionServiceEvaluator {
     self.evaluators.get(decision_service_id).map(|entry| entry.1(input_data, model_evaluator, output_data))
   }
   /// Returns a decision service as function definition with specified identifier.
-  pub fn evaluate_as_function_definition(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
+  pub fn evaluate_to_function_definition(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
     if let Some(entry) = self.evaluators.get(decision_service_id) {
       let scope: FeelScope = input_data.clone().into();
       let function_definition = entry.2(&scope) as Value;

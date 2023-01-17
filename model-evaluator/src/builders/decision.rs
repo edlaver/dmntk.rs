@@ -169,7 +169,7 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
               // evaluate required knowledge as decision service function definitions
               required_knowledge_references
                 .iter()
-                .for_each(|decision_service_id| decision_service_evaluator.evaluate_as_function_definition(decision_service_id, input_data_ctx, &mut required_knowledge_ctx));
+                .for_each(|decision_service_id| decision_service_evaluator.evaluate_to_function_definition(decision_service_id, input_data_ctx, &mut required_knowledge_ctx));
               // evaluate required decisions as values from decisions
               required_decision_references.iter().for_each(|decision_identifier| {
                 decision_evaluator.evaluate(decision_identifier, input_data_ctx, model_evaluator, &mut required_knowledge_ctx);
