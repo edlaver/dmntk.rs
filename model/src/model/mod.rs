@@ -421,8 +421,7 @@ pub struct Definitions {
   drg_elements_by_id: HashMap<String, Arc<DrgElement>>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   business_context_elements: Vec<BusinessContextElementInstance>,
-  /// Container used to import externally defined elements and make them available
-  /// for use by elements in this [Definitions].
+  /// Container used to import externally defined elements and make them available for use by elements in this [Definitions].
   imports: Vec<Import>,
   /// Optional Diagram Interchange information contained within this [Definitions].
   dmndi: Option<Dmndi>,
