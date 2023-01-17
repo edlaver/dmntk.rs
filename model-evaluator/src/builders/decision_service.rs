@@ -70,12 +70,12 @@ impl DecisionServiceEvaluator {
     Ok(())
   }
   /// Evaluates a decision service with specified identifier.
-  pub fn evaluate(&self, id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
-    self.evaluators.get(id).map(|entry| entry.1(input_data, model_evaluator, output_data))
+  pub fn evaluate(&self, decision_service_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
+    self.evaluators.get(decision_service_id).map(|entry| entry.1(input_data, model_evaluator, output_data))
   }
   /// Returns a decision service as function definition with specified identifier.
-  pub fn evaluate_as_function_definition(&self, id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
-    if let Some(entry) = self.evaluators.get(id) {
+  pub fn evaluate_as_function_definition(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
+    if let Some(entry) = self.evaluators.get(decision_service_id) {
       let scope: FeelScope = input_data.clone().into();
       let function_definition = entry.2(&scope) as Value;
       let output_variable_name = entry.0.name.clone();
