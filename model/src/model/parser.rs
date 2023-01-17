@@ -1105,6 +1105,11 @@ mod xml_utils {
     required_attribute(node, ATTR_NAME)
   }
 
+  // /// Returns required `FEEL` name for specified node.
+  // pub fn required_feel_name(node: &Node) -> Result<Name> {
+  //   dmntk_feel_parser::parse_longest_name(&required_name(node)?)
+  // }
+
   /// Returns optional `FEEL` name for specified node.
   pub fn optional_feel_name(node: &Node) -> Result<Option<Name>> {
     Ok(dmntk_feel_parser::parse_longest_name(&required_name(node)?).ok())
