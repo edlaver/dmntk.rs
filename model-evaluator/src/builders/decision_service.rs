@@ -48,10 +48,8 @@ use std::sync::Arc;
 /// Fn(input_data, model evaluator, output data)
 type DecisionServiceEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
-type FP = Vec<(Name, FeelType)>;
-
 ///
-type DecisionServiceEvaluatorEntry = (Variable, FP, DecisionServiceEvaluatorFn, Option<Evaluator>);
+type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionServiceEvaluatorFn, Option<Evaluator>);
 
 ///
 #[derive(Default)]
@@ -163,7 +161,6 @@ fn build_decision_service_evaluator(decision_service: &DecisionService, model_ev
   for decision_id in &input_decisions {
     if let Some(decision_output_variable) = decision_evaluator.get_output_variable(decision_id) {
       let parameter_name = decision_output_variable.name.clone();
-      //let a = model_evaluator.item_definition_type_evaluator()?;
       let parameter_type = decision_output_variable.resolve_feel_type(&item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
       let evaluator = decision_output_variable.build_evaluator()?;
