@@ -87,11 +87,12 @@ fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, mode
   let item_definition_context_evaluator = model_evaluator.item_definition_context_evaluator()?;
   let input_data_context_evaluator = model_evaluator.input_data_context_evaluator()?;
   // get output variable
-  let output_variable = Variable::try_from(decision.variable())?;
+  let mut output_variable = Variable::try_from(decision.variable())?;
+  output_variable.update_feel_type(&item_definition_type_evaluator);
   // prepare output variable name for this decision
   let output_variable_name = output_variable.name.clone();
   // prepare output variable type for this decision
-  let output_variable_type = output_variable.feel_type(&item_definition_type_evaluator);
+  let output_variable_type = output_variable.feel_type().clone();
   // holds variables for required decisions and required knowledge
   let mut knowledge_requirements_ctx = FeelContext::default();
   // hods variables for required inputs

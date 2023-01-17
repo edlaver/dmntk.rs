@@ -76,14 +76,14 @@ impl DecisionServiceEvaluator {
   pub fn build_function_definitions(&mut self, model_evaluator: &Arc<ModelEvaluator>) {
     let identifiers = self.evaluators.keys().cloned().collect::<Vec<String>>();
     for decision_service_id in identifiers {
-      let a = Arc::clone(&model_evaluator);
+      let evaluator = Arc::clone(model_evaluator);
       self.evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
         let output_variable_type = entry.0.feel_type.clone();
         let body_evaluator = Box::new(move |scope: &FeelScope| {
           let input_data = scope.peek().unwrap_or_default();
           let mut output_data = FeelContext::default();
-          if let Ok(decision_service_evaluator) = a.decision_service_evaluator() {
-            let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &a, &mut output_data);
+          if let Ok(decision_service_evaluator) = evaluator.decision_service_evaluator() {
+            let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &evaluator, &mut output_data);
             if let Some(out_variable_name) = opt_out_variable_name {
               if let Some(result_value) = output_data.get_entry(&out_variable_name) {
                 return result_value.clone();
@@ -124,13 +124,13 @@ fn build_decision_service_evaluator(decision_service: &DecisionService, model_ev
   let decision_evaluator = model_evaluator.decision_evaluator()?;
 
   let mut output_variable = Variable::try_from(decision_service.variable())?;
+  output_variable.update_feel_type(&item_definition_type_evaluator);
 
   // prepare output variable name for this decision
   let output_variable_name = output_variable.name.clone();
 
   // prepare output variable type for this decision
-  let output_variable_type = output_variable.feel_type(&item_definition_type_evaluator);
-  output_variable.feel_type = output_variable_type.clone();
+  let output_variable_type = output_variable.feel_type().clone();
 
   // prepare references to required input data
   let input_data_references: Vec<String> = decision_service.input_data().iter().map(|href| href.into()).collect();
@@ -151,7 +151,7 @@ fn build_decision_service_evaluator(decision_service: &DecisionService, model_ev
   for input_data_id in &input_data_references {
     if let Some(input_data_variable) = input_data_evaluator.get_input_variable(input_data_id) {
       let parameter_name = input_data_variable.name.clone();
-      let parameter_type = input_data_variable.feel_type(&item_definition_type_evaluator);
+      let parameter_type = input_data_variable.resolve_feel_type(&item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
     }
   }
@@ -164,7 +164,7 @@ fn build_decision_service_evaluator(decision_service: &DecisionService, model_ev
     if let Some(decision_output_variable) = decision_evaluator.get_output_variable(decision_id) {
       let parameter_name = decision_output_variable.name.clone();
       //let a = model_evaluator.item_definition_type_evaluator()?;
-      let parameter_type = decision_output_variable.feel_type(&item_definition_type_evaluator);
+      let parameter_type = decision_output_variable.resolve_feel_type(&item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
       let evaluator = build_variable_evaluator(decision_output_variable)?;
       input_decision_results_evaluators.push(evaluator);

@@ -129,7 +129,7 @@ pub struct Variable {
   pub name: Name,
   pub type_ref: Option<String>,
   /// Evaluated FEEL type for this variable.
-  pub feel_type: FeelType,
+  feel_type: FeelType,
 }
 
 impl TryFrom<&InformationItem> for Variable {
@@ -138,19 +138,36 @@ impl TryFrom<&InformationItem> for Variable {
   fn try_from(value: &InformationItem) -> Result<Self, Self::Error> {
     let name = value.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
     let type_ref = value.type_ref().clone();
-    let feel_type = FeelType::Any;
-    Ok(Self { name, type_ref, feel_type })
+    Ok(Self {
+      name,
+      type_ref,
+      feel_type: FeelType::Any,
+    })
   }
 }
 
 impl Variable {
-  ///
-  fn feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
+  /// Resolves the FEEL type of the variable.
+  fn resolve_feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
     if let Some(type_ref) = &self.type_ref {
       information_item_type(type_ref, item_definition_type_evaluator).unwrap_or(FeelType::Any)
     } else {
       FeelType::Any
     }
+  }
+
+  /// Updates the FEEL type of the variable.
+  fn update_feel_type(&mut self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) {
+    self.feel_type = if let Some(type_ref) = &self.type_ref {
+      information_item_type(type_ref, item_definition_type_evaluator).unwrap_or(FeelType::Any)
+    } else {
+      FeelType::Any
+    }
+  }
+
+  /// Returns a reference to variable's FEEL type.
+  fn feel_type(&self) -> &FeelType {
+    &self.feel_type
   }
 }
 
