@@ -145,15 +145,11 @@ const ATTR_X: &str = "x";
 const ATTR_Y: &str = "y";
 
 #[derive(Default)]
-pub struct ModelParser {
-  requirements_by_id: HashMap<String, Requirement>,
-}
+pub struct ModelParser {}
 
 impl ModelParser {
   /// Parses the XML document containing [Definitions] serialized to interchange format.
   pub fn parse(&mut self, xml: &str) -> Result<Definitions> {
-    // clear all properties
-    self.requirements_by_id.clear();
     // parse document
     match roxmltree::Document::parse(xml) {
       Ok(document) => {
@@ -187,12 +183,7 @@ impl ModelParser {
       business_context_elements: self.parse_business_context_elements(node)?,
       imports: self.parse_imports(node)?,
       dmndi: None, // diagram (if present) is parsed below
-      requirements_by_id: HashMap::new(),
     };
-    // assign requirements found in definitions
-    for (id, requirement) in self.requirements_by_id.drain() {
-      definitions.requirements_by_id.insert(id, requirement);
-    }
     // parse diagram if present
     self.parse_dmndi(node, &mut definitions)?;
     Ok(definitions)
@@ -482,7 +473,7 @@ impl ModelParser {
     })
   }
 
-  fn parse_information_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<InformationRequirement>>> {
+  fn parse_information_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<InformationRequirement>> {
     let mut information_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       information_requirement_items.push(self.parse_information_requirement(&child_node)?);
@@ -490,8 +481,8 @@ impl ModelParser {
     Ok(information_requirement_items)
   }
 
-  fn parse_information_requirement(&mut self, node: &Node) -> Result<Arc<InformationRequirement>> {
-    let req = Arc::new(InformationRequirement {
+  fn parse_information_requirement(&mut self, node: &Node) -> Result<InformationRequirement> {
+    let req = InformationRequirement {
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
@@ -499,14 +490,11 @@ impl ModelParser {
       extension_attributes: self.parse_extension_attributes(node),
       required_decision: optional_child_required_href(node, NODE_REQUIRED_DECISION)?,
       required_input: optional_child_required_href(node, NODE_REQUIRED_INPUT)?,
-    });
-    if let Some(id) = req.id() {
-      self.requirements_by_id.insert(id.clone(), Requirement::Information(Arc::clone(&req)));
-    }
+    };
     Ok(req)
   }
 
-  fn parse_knowledge_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<KnowledgeRequirement>>> {
+  fn parse_knowledge_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<KnowledgeRequirement>> {
     let mut knowledge_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       knowledge_requirement_items.push(self.parse_knowledge_requirement(&child_node)?);
@@ -514,22 +502,19 @@ impl ModelParser {
     Ok(knowledge_requirement_items)
   }
 
-  fn parse_knowledge_requirement(&mut self, node: &Node) -> Result<Arc<KnowledgeRequirement>> {
-    let req = Arc::new(KnowledgeRequirement {
+  fn parse_knowledge_requirement(&mut self, node: &Node) -> Result<KnowledgeRequirement> {
+    let req = KnowledgeRequirement {
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
       required_knowledge: optional_child_required_href(node, NODE_REQUIRED_KNOWLEDGE)?,
-    });
-    if let Some(id) = req.id() {
-      self.requirements_by_id.insert(id.clone(), Requirement::Knowledge(Arc::clone(&req)));
-    }
+    };
     Ok(req)
   }
 
-  fn parse_authority_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<Arc<AuthorityRequirement>>> {
+  fn parse_authority_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<AuthorityRequirement>> {
     let mut authority_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
       authority_requirement_items.push(self.parse_authority_requirement(&child_node)?);
@@ -537,8 +522,8 @@ impl ModelParser {
     Ok(authority_requirement_items)
   }
 
-  fn parse_authority_requirement(&mut self, node: &Node) -> Result<Arc<AuthorityRequirement>> {
-    let req = Arc::new(AuthorityRequirement {
+  fn parse_authority_requirement(&mut self, node: &Node) -> Result<AuthorityRequirement> {
+    let req = AuthorityRequirement {
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
@@ -547,10 +532,7 @@ impl ModelParser {
       required_authority: optional_child_required_href(node, NODE_REQUIRED_AUTHORITY)?,
       required_decision: optional_child_required_href(node, NODE_REQUIRED_DECISION)?,
       required_input: optional_child_required_href(node, NODE_REQUIRED_INPUT)?,
-    });
-    if let Some(id) = req.id() {
-      self.requirements_by_id.insert(id.clone(), Requirement::Authority(Arc::clone(&req)));
-    }
+    };
     Ok(req)
   }
 

@@ -191,7 +191,7 @@ impl From<(&Option<Name>, &BusinessKnowledgeModel)> for DefBusinessKnowledgeMode
       name: business_knowledge_model.name().to_string(),
       variable: (opt_import_name, business_knowledge_model.variable()).into(),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
-      knowledge_requirements: business_knowledge_model.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      knowledge_requirements: business_knowledge_model.knowledge_requirements().clone(),
     }
   }
 }
@@ -241,8 +241,8 @@ impl From<(&Option<Name>, &Decision)> for DefDecision {
       name: decision.name().to_string(),
       variable: (opt_import_name, decision.variable()).into(),
       decision_logic: decision.decision_logic().clone(),
-      information_requirements: decision.information_requirements().iter().map(|a| a.as_ref().clone()).collect(),
-      knowledge_requirements: decision.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      information_requirements: decision.information_requirements().clone(),
+      knowledge_requirements: decision.knowledge_requirements().clone(),
     }
   }
 }

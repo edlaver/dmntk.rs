@@ -81,7 +81,7 @@ fn add_svg_content(html: &str, definitions: &Definitions, model_definitions: &De
           }
           DmnDiagramElement::DmnEdge(edge) => {
             if let Some(id) = &edge.dmn_element_ref {
-              if let Some(requirement) = definitions.requirements_by_id().get(id) {
+              if let Some(requirement) = definitions.requirement(id) {
                 match requirement {
                   Requirement::Information(_) => {
                     // information requirement is depicted as solid line with dark-filled arrow

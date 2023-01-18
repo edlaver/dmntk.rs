@@ -41,11 +41,9 @@ mod tests;
 use crate::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
-use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt;
 use std::slice::Iter;
-use std::sync::Arc;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
 pub const URI_MODEL: &str = "https://www.omg.org/spec/DMN/20191111/MODEL/";
@@ -309,9 +307,9 @@ pub enum DrgElement {
 
 #[derive(Debug, Clone)]
 pub enum Requirement {
-  Information(Arc<InformationRequirement>),
-  Knowledge(Arc<KnowledgeRequirement>),
-  Authority(Arc<AuthorityRequirement>),
+  Information(InformationRequirement),
+  Knowledge(KnowledgeRequirement),
+  Authority(AuthorityRequirement),
 }
 
 /// [Definitions] element is the outermost containing object
@@ -363,8 +361,6 @@ pub struct Definitions {
   imports: Vec<Import>,
   /// Optional Diagram Interchange information contained within this [Definitions].
   dmndi: Option<Dmndi>,
-  /// Collection of requirements contained in this [Definitions] indexed by identifiers.
-  requirements_by_id: HashMap<String, Requirement>,
 }
 
 impl Definitions {
@@ -417,9 +413,63 @@ impl Definitions {
   pub fn drg_elements(&self) -> Iter<DrgElement> {
     self.drg_elements.iter()
   }
-  /// Returns reference to [Requirements](Requirement) indexed by identifiers.
-  pub fn requirements_by_id(&self) -> &HashMap<String, Requirement> {
-    &self.requirements_by_id
+  /// Returns a requirement with specified identifier.
+  pub fn requirement(&self, id: &str) -> Option<Requirement> {
+    for drg_element in &self.drg_elements {
+      match drg_element {
+        DrgElement::Decision(decision) => {
+          for r in &decision.knowledge_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Knowledge(r.clone()));
+              }
+            }
+          }
+          for r in &decision.information_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Information(r.clone()));
+              }
+            }
+          }
+          for r in &decision.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+        DrgElement::InputData(_) => {}
+        DrgElement::BusinessKnowledgeModel(business_knowledge_model) => {
+          for r in &business_knowledge_model.knowledge_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Knowledge(r.clone()));
+              }
+            }
+          }
+          for r in &business_knowledge_model.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+        DrgElement::DecisionService(_) => {}
+        DrgElement::KnowledgeSource(knowledge_source) => {
+          for r in &knowledge_source.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+      }
+    }
+    None
   }
 }
 
@@ -856,11 +906,11 @@ pub struct Decision {
   /// The instance of the [Expression] for the [Decision].
   decision_logic: Option<ExpressionInstance>,
   /// Collection of the instances of [InformationRequirement] that compose this [Decision].
-  information_requirements: Vec<Arc<InformationRequirement>>,
+  information_requirements: Vec<InformationRequirement>,
   /// Collection of the instances of [KnowledgeRequirement] that compose this [Decision].
-  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
   //TODO add the following:
   // supported_objectives
   // impacted_performance_indicator
@@ -888,15 +938,15 @@ impl Decision {
     &self.decision_logic
   }
   /// Returns a reference to collection of [InformationRequirement].
-  pub fn information_requirements(&self) -> &Vec<Arc<InformationRequirement>> {
+  pub fn information_requirements(&self) -> &Vec<InformationRequirement> {
     &self.information_requirements
   }
   /// Returns a reference to collection of [KnowledgeRequirement].
-  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
     &self.knowledge_requirements
   }
   /// Returns a reference to collection of [AuthorityRequirement].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
@@ -1122,12 +1172,12 @@ pub struct KnowledgeSource {
   /// `FEEL` name of this [KnowledgeSource].
   feel_name: Name,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
 }
 
 impl KnowledgeSource {
   /// Returns a reference to collection of [AuthorityRequirement].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
@@ -1197,9 +1247,9 @@ pub struct BusinessKnowledgeModel {
   /// The function that encapsulates the logic encapsulated by this [BusinessKnowledgeModel].
   encapsulated_logic: Option<FunctionDefinition>,
   /// This attribute lists the instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
   /// This attribute lists the instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
 }
 
 impl BusinessKnowledgeModel {
@@ -1208,11 +1258,11 @@ impl BusinessKnowledgeModel {
     &self.encapsulated_logic
   }
   /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
     &self.knowledge_requirements
   }
   /// Returns reference to the collection of instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
