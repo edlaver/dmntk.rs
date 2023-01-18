@@ -103,6 +103,76 @@ impl DefInputData {
 }
 
 #[derive(Debug)]
+pub struct DefItemDefinition {
+  id: String,
+  name: String,
+  feel_name: Name,
+  type_ref: Option<String>,
+  allowed_values: Option<UnaryTests>,
+  item_components: Vec<DefItemDefinition>,
+  function_item: Option<FunctionItem>,
+  is_collection: bool,
+}
+
+impl From<(&Option<Name>, &ItemDefinition)> for DefItemDefinition {
+  ///
+  fn from((opt_import_name, input_data): (&Option<Name>, &ItemDefinition)) -> Self {
+    Self {
+      id: generate_id(input_data.id()),
+      name: input_data.name().to_string(),
+      feel_name: input_data.feel_name().clone(),
+      type_ref: input_data.type_ref().clone(),
+      allowed_values: input_data.allowed_values().clone(),
+      item_components: input_data.item_components().iter().map(|a| (opt_import_name, a).into()).collect(),
+      function_item: input_data.function_item().clone(),
+      is_collection: input_data.is_collection(),
+    }
+  }
+}
+
+impl DefItemDefinition {
+  /// Returns a reference to identifier.
+  pub fn id(&self) -> &str {
+    &self.id
+  }
+
+  /// Returns a reference to name.
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Returns a reference to `FEEL` name.
+  pub fn feel_name(&self) -> &Name {
+    &self.feel_name
+  }
+
+  pub fn type_ref(&self) -> &Option<String> {
+    &self.type_ref
+  }
+
+  /// Returns reference to possible values or ranges of values
+  /// in the base type that are allowed in this [ItemDefinition].
+  pub fn allowed_values(&self) -> &Option<UnaryTests> {
+    &self.allowed_values
+  }
+
+  /// Returns reference to nested [ItemDefinitions](ItemDefinition) that compose this [ItemDefinition].
+  pub fn item_components(&self) -> &Vec<DefItemDefinition> {
+    &self.item_components
+  }
+
+  /// Returns a reference to an optional [FunctionItem] that compose this [ItemDefinition].
+  pub fn function_item(&self) -> &Option<FunctionItem> {
+    &self.function_item
+  }
+
+  /// Returns flag indicating if the actual values are collections of allowed values.
+  pub fn is_collection(&self) -> bool {
+    self.is_collection
+  }
+}
+
+#[derive(Debug)]
 pub struct DefBusinessKnowledgeModel {
   id: String,
   name: String,
@@ -274,7 +344,7 @@ impl DefDecisionService {
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
 pub struct DefDefinitions {
   /// Item definitions.
-  item_definitions: Vec<ItemDefinition>,
+  item_definitions: Vec<DefItemDefinition>,
   /// Map of input data definitions indexed by identifier.
   input_data: HashMap<String, DefInputData>,
   /// Map of business_knowledge models indexed by identifier.
@@ -312,7 +382,7 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for DefDefinitions {
     let mut knowledge_sources = HashMap::new();
     for (opt_import_name, definitions) in defs {
       let namespace = if opt_import_name.is_some() { Some(definitions.namespace()) } else { None };
-      item_definitions.append(&mut definitions.item_definitions().clone());
+      item_definitions.append(&mut definitions.item_definitions().iter().map(|a| (opt_import_name, a).into()).collect());
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
@@ -348,7 +418,7 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for DefDefinitions {
 
 impl DefDefinitions {
   /// Returns item definitions.
-  pub fn item_definitions(&self) -> &Vec<ItemDefinition> {
+  pub fn item_definitions(&self) -> &Vec<DefItemDefinition> {
     &self.item_definitions
   }
 

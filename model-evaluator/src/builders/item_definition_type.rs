@@ -36,8 +36,8 @@ use crate::builders::information_item_type;
 use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
-use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::DefDefinitions;
+use dmntk_model::model::ItemDefinitionType;
+use dmntk_model::{DefDefinitions, DefItemDefinition};
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of function that evaluates the item definition type.
@@ -71,7 +71,7 @@ impl ItemDefinitionTypeEvaluator {
 }
 
 ///
-pub fn build_item_definition_type_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+pub fn build_item_definition_type_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
   match super::item_definition_type(item_definition)? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type(feel_type),
     ItemDefinitionType::ReferencedType(ref_type) => referenced_type(ref_type),
@@ -104,7 +104,7 @@ fn referenced_type(ref_type: String) -> Result<ItemDefinitionTypeEvaluatorFn> {
 }
 
 ///
-fn component_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+fn component_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
   let mut type_evaluators: Vec<(Name, ItemDefinitionTypeEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     type_evaluators.push((
@@ -146,7 +146,7 @@ fn collection_of_referenced_type(type_ref: String) -> Result<ItemDefinitionTypeE
 }
 
 ///
-fn collection_of_component_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+fn collection_of_component_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
   let mut type_evaluators: Vec<(Name, ItemDefinitionTypeEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     type_evaluators.push((
@@ -166,7 +166,7 @@ fn collection_of_component_type(item_definition: &ItemDefinition) -> Result<Item
 }
 
 ///
-fn function_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
+fn function_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
   let mut output_type_ref = FEEL_TYPE_NAME_ANY.to_string();
   let mut parameters_type_ref = vec![];
   if let Some(function_item) = item_definition.function_item() {

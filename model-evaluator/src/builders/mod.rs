@@ -55,7 +55,7 @@ use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody};
 use dmntk_feel_parser::ClosureBuilder;
 use dmntk_model::model::*;
-use dmntk_model::DefDefinitions;
+use dmntk_model::{DefDefinitions, DefItemDefinition};
 pub use input_data::InputDataEvaluator;
 pub use input_data_context::InputDataContextEvaluator;
 pub use item_definition::ItemDefinitionEvaluator;
@@ -83,7 +83,7 @@ pub fn information_item_type(type_ref: &str, evaluator: &ItemDefinitionTypeEvalu
 }
 
 ///
-fn item_definition_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionType> {
+fn item_definition_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionType> {
   let feel_type = if let Some(type_ref) = item_definition.type_ref() {
     type_ref_to_feel_type(type_ref)
   } else {

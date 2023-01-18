@@ -37,8 +37,8 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{FeelType, Name};
-use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::DefDefinitions;
+use dmntk_model::model::ItemDefinitionType;
+use dmntk_model::{DefDefinitions, DefItemDefinition};
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of closure that evaluates the item definition context.
@@ -71,7 +71,7 @@ impl ItemDefinitionContextEvaluator {
 }
 
 ///
-fn item_definition_context_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn item_definition_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   match super::item_definition_type(item_definition)? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type_context_evaluator(feel_type),
     ItemDefinitionType::ReferencedType(ref_type) => referenced_type_context_evaluator(ref_type),
@@ -113,7 +113,7 @@ fn referenced_type_context_evaluator(ref_type: String) -> Result<ItemDefinitionC
 }
 
 ///
-fn component_type_context_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn component_type_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   let mut context_evaluators: Vec<(Name, ItemDefinitionContextEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     context_evaluators.push((component_item_definition.feel_name().clone(), item_definition_context_evaluator(component_item_definition)?));
@@ -167,7 +167,7 @@ fn collection_of_referenced_type_context_evaluator(type_ref: String) -> Result<I
 }
 
 ///
-fn collection_of_component_type_context_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn collection_of_component_type_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   let mut context_evaluators: Vec<(Name, ItemDefinitionContextEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     context_evaluators.push((component_item_definition.feel_name().clone(), item_definition_context_evaluator(component_item_definition)?));
@@ -187,7 +187,7 @@ fn collection_of_component_type_context_evaluator(item_definition: &ItemDefiniti
 }
 
 ///
-fn function_type_context_evaluator(_item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn function_type_context_evaluator(_item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   Ok(Box::new(move |_name: &Name, _ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| FeelType::Any))
   //TODO implement function type
 }

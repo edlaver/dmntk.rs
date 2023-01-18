@@ -38,8 +38,8 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
-use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::DefDefinitions;
+use dmntk_model::model::ItemDefinitionType;
+use dmntk_model::{DefDefinitions, DefItemDefinition};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data conformant with item definition.
@@ -72,7 +72,7 @@ impl ItemDefinitionEvaluator {
 }
 
 ///
-pub fn build_item_definition_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
+pub fn build_item_definition_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
   // prepare optional allowed values evaluator
   let av_evaluator = build_allowed_values_evaluator(item_definition)?;
   // build item definition evaluator
@@ -88,7 +88,7 @@ pub fn build_item_definition_evaluator(item_definition: &ItemDefinition) -> Resu
 }
 
 ///
-fn build_allowed_values_evaluator(item_definition: &ItemDefinition) -> Result<Option<Evaluator>> {
+fn build_allowed_values_evaluator(item_definition: &DefItemDefinition) -> Result<Option<Evaluator>> {
   let mut av_evaluator = None;
   if let Some(unary_tests) = item_definition.allowed_values() {
     if let Some(text) = unary_tests.text() {
@@ -219,7 +219,7 @@ fn build_referenced_type_evaluator(ref_type: String) -> Result<ItemDefinitionEva
 }
 
 ///
-fn build_component_type_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
+fn build_component_type_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
   let mut component_evaluators: Vec<(Name, ItemDefinitionEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     component_evaluators.push((component_item_definition.feel_name().clone(), build_item_definition_evaluator(component_item_definition)?));
@@ -422,7 +422,7 @@ fn build_collection_of_referenced_type_evaluator(type_ref: String, av_evaluator:
 }
 
 ///
-fn build_collection_of_component_type_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
+fn build_collection_of_component_type_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
   let mut component_evaluators: Vec<(Name, ItemDefinitionEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     component_evaluators.push((component_item_definition.feel_name().clone(), build_item_definition_evaluator(component_item_definition)?));
