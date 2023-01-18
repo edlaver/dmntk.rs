@@ -40,7 +40,6 @@ lazy_static! {
 }
 
 #[test]
-#[ignore]
 fn _0001() {
   let ctx = context(r#"{A Person: {age: 21,name: "John Doe"}}"#);
   assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#""Hello John Doe!""#);

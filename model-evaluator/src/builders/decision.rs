@@ -38,7 +38,7 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelScope, Name, QualifiedName};
+use dmntk_feel::{value_null, FeelScope, QualifiedName};
 use dmntk_model::DefDecision;
 use std::collections::HashMap;
 

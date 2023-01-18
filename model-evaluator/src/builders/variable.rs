@@ -33,7 +33,7 @@
 use crate::builders::{information_item_type, ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelType, Name, QualifiedName};
+use dmntk_feel::{value_null, FeelType, QualifiedName};
 use dmntk_model::DefInformationItem;
 
 /// Type of closure that evaluates values from variable definition.

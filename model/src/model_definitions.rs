@@ -40,7 +40,6 @@ use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct DefInformationItem {
-  feel_name: Name,
   qname: QualifiedName,
   type_ref: Option<String>,
 }
@@ -49,7 +48,6 @@ impl From<(&Option<Name>, &InformationItem)> for DefInformationItem {
   ///
   fn from((opt_import_name, information_item): (&Option<Name>, &InformationItem)) -> Self {
     Self {
-      feel_name: information_item.feel_name().clone(),
       qname: if let Some(import_name) = opt_import_name {
         QualifiedName::new(&[import_name, information_item.feel_name()])
       } else {

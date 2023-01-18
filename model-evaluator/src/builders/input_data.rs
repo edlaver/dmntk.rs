@@ -36,7 +36,7 @@ use crate::builders::item_definition::ItemDefinitionEvaluator;
 use crate::builders::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
-use dmntk_feel::{Name, QualifiedName};
+use dmntk_feel::QualifiedName;
 use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
