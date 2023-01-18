@@ -251,10 +251,8 @@
             </contextEntry>
         </context>
     </decision>
+
     <decision name="decision B 1" id="_EL7rQPQJEeecaNY7kk20yA">
-        <extensionElements>
-            <layout:container type="DMN_Expression" name="" id="_3WFvUPQKEeecaNY7kk20yA" href="#_EL7rQPQJEeecaNY7kk20yA"/>
-        </extensionElements>
         <variable typeRef="TypeDecisionB1" name="decision B 1" id="_Lnbz4fRTEeeUEfOdtC13fQ"/>
         <informationRequirement id="_1e067b7c-ddac-492a-87de-0af3ccd5c483">
             <requiredInput href="#_9z0SoPQIEeecaNY7kk20yA"/>
@@ -277,10 +275,8 @@
             </contextEntry>
         </context>
     </decision>
+
     <decision name="decision A 2.1" id="_HQN7oPQJEeecaNY7kk20yA">
-        <extensionElements>
-            <layout:container type="DMN_Expression" name="" id="_eyKtkPQKEeecaNY7kk20yA" href="#_HQN7oPQJEeecaNY7kk20yA"/>
-        </extensionElements>
         <variable typeRef="TypeDecisionA2.x" name="decision A 2.1" id="_2VW6MfROEeeUEfOdtC13fQ"/>
         <informationRequirement id="feeaed9a-edd9-43b3-8ea1-61a0f13ca15c">
             <requiredDecision href="#_DMwGMPQJEeecaNY7kk20yA"/>
@@ -294,10 +290,8 @@
             </contextEntry>
         </context>
     </decision>
+
     <decision name="decision A 2.2" id="_HrMAYPQJEeecaNY7kk20yA">
-        <extensionElements>
-            <layout:container type="DMN_Expression" name="" id="_nOMesPQKEeecaNY7kk20yA" href="#_HrMAYPQJEeecaNY7kk20yA"/>
-        </extensionElements>
         <variable typeRef="TypeDecisionA2.x" name="decision A 2.2" id="_r7oJcfRSEeeUEfOdtC13fQ"/>
         <informationRequirement id="_98e226f9-8a1a-4661-9fe0-3b1be710edf8">
             <requiredDecision href="#_DMwGMPQJEeecaNY7kk20yA"/>

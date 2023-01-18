@@ -371,12 +371,12 @@ fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowl
     let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
     let required_knowledge_id: &str = href.into();
     if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
-      let output_variable_name = business_knowledge_model.variable().feel_name().clone();
-      ctx.set_null(output_variable_name);
+      let output_variable_name = business_knowledge_model.variable().qname();
+      ctx.create_entry(output_variable_name, value_null!());
       bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
     } else if let Some(decision_service) = definitions.decision_service_by_id(required_knowledge_id) {
-      let output_variable_name = decision_service.variable().feel_name().clone();
-      ctx.set_null(output_variable_name);
+      let output_variable_name = decision_service.variable().qname();
+      ctx.create_entry(output_variable_name, value_null!());
     } else {
       return Err(err_business_knowledge_model_with_reference_not_found(required_knowledge_id));
     }
