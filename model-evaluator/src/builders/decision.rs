@@ -118,7 +118,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
         } else {
           "Any".to_string()
         };
-        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, required_decision.variable().feel_name(), &mut knowledge_requirements_ctx);
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut knowledge_requirements_ctx);
         knowledge_requirements_ctx.create_entry(variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;

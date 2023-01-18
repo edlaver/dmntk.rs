@@ -75,6 +75,13 @@ impl From<Name> for QualifiedName {
   }
 }
 
+impl From<&Name> for QualifiedName {
+  /// Converts a reference to name into qualified name.
+  fn from(name: &Name) -> Self {
+    Self(vec![name.clone()])
+  }
+}
+
 impl From<Vec<Name>> for QualifiedName {
   /// Converts a vector of names into qualified name.
   fn from(value: Vec<Name>) -> Self {
