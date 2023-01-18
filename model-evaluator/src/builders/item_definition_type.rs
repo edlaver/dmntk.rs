@@ -34,9 +34,10 @@
 
 use crate::builders::information_item_type;
 use crate::errors::*;
+use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
-use dmntk_model::model::{Definitions, ItemDefinition, ItemDefinitionType, NamedElement};
+use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of function that evaluates the item definition type.
@@ -51,7 +52,7 @@ pub struct ItemDefinitionTypeEvaluator {
 
 impl ItemDefinitionTypeEvaluator {
   /// Creates item definition type evaluators.
-  pub fn build(&mut self, definitions: &Definitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_type_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
@@ -195,7 +196,7 @@ mod tests {
   /// Utility function for building item definition type evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionTypeEvaluator {
     let mut evaluator = ItemDefinitionTypeEvaluator::default();
-    evaluator.build(&dmntk_model::parse(xml).unwrap()).unwrap();
+    evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
     evaluator
   }
 

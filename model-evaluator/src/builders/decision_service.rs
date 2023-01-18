@@ -34,13 +34,14 @@
 
 use crate::builders::variable::Variable;
 use crate::errors::*;
+use crate::model_definitions::ModelDefinitions;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
-use dmntk_model::model::{DecisionService, Definitions, DmnElement, NamedElement, RequiredVariable};
+use dmntk_model::model::{DecisionService, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -59,7 +60,7 @@ pub struct DecisionServiceEvaluator {
 
 impl DecisionServiceEvaluator {
   /// Creates a new decision service evaluator.
-  pub fn build(&mut self, definitions: &Definitions, model_evaluator: Arc<ModelEvaluator>) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions, model_evaluator: Arc<ModelEvaluator>) -> Result<()> {
     for decision_service in definitions.decision_services() {
       let decision_service_id = decision_service.id().as_ref().ok_or_else(err_empty_identifier)?;
       let decision_service_name = &decision_service.name().to_string();

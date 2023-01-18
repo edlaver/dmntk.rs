@@ -35,10 +35,11 @@
 use crate::builders::item_definition::ItemDefinitionEvaluator;
 use crate::builders::variable::{Variable, VariableEvaluatorFn};
 use crate::errors::err_empty_identifier;
+use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
-use dmntk_model::model::{Definitions, DmnElement, RequiredVariable};
+use dmntk_model::model::{DmnElement, RequiredVariable};
 use std::collections::HashMap;
 
 ///
@@ -52,7 +53,7 @@ pub struct InputDataEvaluator {
 
 impl InputDataEvaluator {
   /// Builds a new input data evaluator.
-  pub fn build(&mut self, definitions: &Definitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
       let variable = Variable::try_from(input_data.variable())?;
@@ -75,6 +76,7 @@ impl InputDataEvaluator {
 mod tests {
   use crate::builders::item_definition::ItemDefinitionEvaluator;
   use crate::builders::InputDataEvaluator;
+  use crate::model_definitions::ModelDefinitions;
   use dmntk_examples::input_data::*;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_number, FeelNumber, Name};
@@ -82,11 +84,11 @@ mod tests {
   /// Utility function for building input data evaluator from definitions,
   /// and item definition evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataEvaluator, ItemDefinitionEvaluator) {
-    let definitions = &dmntk_model::parse(xml).unwrap();
+    let definitions: ModelDefinitions = dmntk_model::parse(xml).unwrap().into();
     let mut input_data_evaluator = InputDataEvaluator::default();
-    input_data_evaluator.build(definitions).unwrap();
+    input_data_evaluator.build(&definitions).unwrap();
     let mut item_definitions_evaluator = ItemDefinitionEvaluator::default();
-    item_definitions_evaluator.build(definitions).unwrap();
+    item_definitions_evaluator.build(&definitions).unwrap();
     (input_data_evaluator, item_definitions_evaluator)
   }
 

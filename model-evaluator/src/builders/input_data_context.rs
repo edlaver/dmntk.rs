@@ -34,11 +34,12 @@
 
 use crate::builders::{type_ref_to_feel_type, ItemDefinitionContextEvaluator};
 use crate::errors::{err_empty_feel_name, err_empty_identifier, err_input_data_without_type_reference, err_unsupported_feel_type};
+use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
-use dmntk_model::model::{Definitions, DmnElement, InputData, NamedElement, RequiredVariable};
+use dmntk_model::model::{DmnElement, InputData, NamedElement, RequiredVariable};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
@@ -52,7 +53,7 @@ pub struct InputDataContextEvaluator {
 
 impl InputDataContextEvaluator {
   /// Creates a new input data context evaluator.
-  pub fn build(&mut self, definitions: &Definitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
       let evaluator = input_data_context_evaluator(input_data)?;
@@ -109,6 +110,7 @@ pub fn input_data_context_evaluator(input_data: &InputData) -> Result<InputDataC
 mod tests {
   use crate::builders::input_data_context::InputDataContextEvaluator;
   use crate::builders::ItemDefinitionContextEvaluator;
+  use crate::model_definitions::ModelDefinitions;
   use dmntk_examples::input_data::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::FeelType;
@@ -116,11 +118,11 @@ mod tests {
   /// Utility function for building input data context evaluator from definitions,
   /// and item definition context evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataContextEvaluator, ItemDefinitionContextEvaluator) {
-    let definitions = &dmntk_model::parse(xml).unwrap();
+    let definitions: ModelDefinitions = dmntk_model::parse(xml).unwrap().into();
     let mut input_data_context_evaluator = InputDataContextEvaluator::default();
-    input_data_context_evaluator.build(definitions).unwrap();
+    input_data_context_evaluator.build(&definitions).unwrap();
     let mut item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
-    item_definition_context_evaluator.build(definitions).unwrap();
+    item_definition_context_evaluator.build(&definitions).unwrap();
     (input_data_context_evaluator, item_definition_context_evaluator)
   }
 

@@ -34,6 +34,7 @@
 
 use crate::builders::*;
 use crate::errors::*;
+use crate::model_definitions::ModelDefinitions;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
@@ -56,7 +57,7 @@ pub struct BusinessKnowledgeModelEvaluator {
 
 impl BusinessKnowledgeModelEvaluator {
   /// Creates a new business knowledge model evaluator.
-  pub fn build(&mut self, definitions: &Definitions, model_evaluator: &ModelEvaluator) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions, model_evaluator: &ModelEvaluator) -> Result<()> {
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
       let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_evaluator)?;
@@ -80,7 +81,7 @@ impl BusinessKnowledgeModelEvaluator {
 
 ///
 fn build_bkm_evaluator(
-  definitions: &Definitions,
+  definitions: &ModelDefinitions,
   business_knowledge_model: &BusinessKnowledgeModel,
   function_definition: &FunctionDefinition,
   model_evaluator: &ModelEvaluator,

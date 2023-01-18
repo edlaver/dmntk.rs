@@ -33,12 +33,13 @@
 //! Builder for item definition evaluators.
 
 use crate::errors::{err_empty_feel_name, err_unsupported_feel_type};
+use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
-use dmntk_model::model::{Definitions, ItemDefinition, ItemDefinitionType, NamedElement};
+use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data conformant with item definition.
@@ -52,7 +53,7 @@ pub struct ItemDefinitionEvaluator {
 
 impl ItemDefinitionEvaluator {
   /// Creates new item definition evaluator.
-  pub fn build(&mut self, definitions: &Definitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
@@ -477,7 +478,7 @@ mod tests {
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
     let mut evaluator = ItemDefinitionEvaluator::default();
-    evaluator.build(&dmntk_model::parse(xml).unwrap()).unwrap();
+    evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
     evaluator
   }
 

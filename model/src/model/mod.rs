@@ -45,6 +45,7 @@ use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt;
+use std::slice::Iter;
 use std::sync::Arc;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
@@ -629,6 +630,12 @@ impl Definitions {
   pub fn drg_elements_mut(&mut self) -> &mut Vec<Arc<DrgElement>> {
     &mut self.drg_elements
   }
+
+  /// Returns reference to [DrgElements](DrgElement) container.
+  pub fn drg_elements(&self) -> Iter<Arc<DrgElement>> {
+    self.drg_elements.iter()
+  }
+
   /// Returns reference to [DrgElements](DrgElement) indexed by identifiers.
   pub fn drg_elements_by_id(&self) -> &HashMap<String, Arc<DrgElement>> {
     &self.drg_elements_by_id

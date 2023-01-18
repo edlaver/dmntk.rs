@@ -32,6 +32,7 @@
 
 use crate::builders::*;
 use crate::errors::*;
+use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -73,19 +74,24 @@ pub struct ModelEvaluator {
 impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator].
   pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
+    let model_definitions: ModelDefinitions = definitions.into();
     let model_evaluator = Arc::new(ModelEvaluator::default());
-    model_evaluator.input_data_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator.input_data_context_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator.item_definition_context_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator.item_definition_type_evaluator.write().unwrap().build(definitions)?;
-    model_evaluator.business_knowledge_model_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
-    model_evaluator.decision_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
+    model_evaluator.input_data_evaluator.write().unwrap().build(&model_definitions)?;
+    model_evaluator.input_data_context_evaluator.write().unwrap().build(&model_definitions)?;
+    model_evaluator.item_definition_evaluator.write().unwrap().build(&model_definitions)?;
+    model_evaluator.item_definition_context_evaluator.write().unwrap().build(&model_definitions)?;
+    model_evaluator.item_definition_type_evaluator.write().unwrap().build(&model_definitions)?;
+    model_evaluator
+      .business_knowledge_model_evaluator
+      .write()
+      .unwrap()
+      .build(&model_definitions, &model_evaluator)?;
+    model_evaluator.decision_evaluator.write().unwrap().build(&model_definitions, &model_evaluator)?;
     model_evaluator
       .decision_service_evaluator
       .write()
       .unwrap()
-      .build(definitions, Arc::clone(&model_evaluator))?;
+      .build(&model_definitions, Arc::clone(&model_evaluator))?;
     model_evaluator.decision_service_evaluator.write().unwrap().build_function_definitions(&model_evaluator);
     Ok(model_evaluator)
   }
@@ -94,18 +100,23 @@ impl ModelEvaluator {
   pub fn new_1(defs: &[(Option<Name>, &Definitions)]) -> Result<Arc<Self>> {
     let model_evaluator = Arc::new(ModelEvaluator::default());
     for (_opt_import_name, definitions) in defs {
-      model_evaluator.input_data_evaluator.write().unwrap().build(definitions)?;
-      model_evaluator.input_data_context_evaluator.write().unwrap().build(definitions)?;
-      model_evaluator.item_definition_evaluator.write().unwrap().build(definitions)?;
-      model_evaluator.item_definition_context_evaluator.write().unwrap().build(definitions)?;
-      model_evaluator.item_definition_type_evaluator.write().unwrap().build(definitions)?;
-      model_evaluator.business_knowledge_model_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
-      model_evaluator.decision_evaluator.write().unwrap().build(definitions, &model_evaluator)?;
+      let model_definitions: ModelDefinitions = (*definitions).into();
+      model_evaluator.input_data_evaluator.write().unwrap().build(&model_definitions)?;
+      model_evaluator.input_data_context_evaluator.write().unwrap().build(&model_definitions)?;
+      model_evaluator.item_definition_evaluator.write().unwrap().build(&model_definitions)?;
+      model_evaluator.item_definition_context_evaluator.write().unwrap().build(&model_definitions)?;
+      model_evaluator.item_definition_type_evaluator.write().unwrap().build(&model_definitions)?;
+      model_evaluator
+        .business_knowledge_model_evaluator
+        .write()
+        .unwrap()
+        .build(&model_definitions, &model_evaluator)?;
+      model_evaluator.decision_evaluator.write().unwrap().build(&model_definitions, &model_evaluator)?;
       model_evaluator
         .decision_service_evaluator
         .write()
         .unwrap()
-        .build(definitions, Arc::clone(&model_evaluator))?;
+        .build(&model_definitions, Arc::clone(&model_evaluator))?;
       model_evaluator.decision_service_evaluator.write().unwrap().build_function_definitions(&model_evaluator);
     }
     Ok(model_evaluator)

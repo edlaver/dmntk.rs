@@ -40,7 +40,7 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelScope, Name};
-use dmntk_model::model::{Decision, Definitions, DmnElement, NamedElement, RequiredVariable};
+use dmntk_model::model::{Decision, DmnElement, NamedElement, RequiredVariable};
 use std::collections::HashMap;
 
 /// Type alias for closures that evaluate decisions.
@@ -58,7 +58,7 @@ pub struct DecisionEvaluator {
 
 impl DecisionEvaluator {
   /// Creates a new decision evaluator.
-  pub fn build(&mut self, definitions: &Definitions, model_evaluator: &ModelEvaluator) -> Result<()> {
+  pub fn build(&mut self, definitions: &ModelDefinitions, model_evaluator: &ModelEvaluator) -> Result<()> {
     for decision in definitions.decisions() {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_evaluator)?;
       let decision_id = decision.id().as_ref().ok_or_else(err_empty_identifier)?;
@@ -82,7 +82,7 @@ impl DecisionEvaluator {
 }
 
 ///
-fn build_decision_evaluator(definitions: &Definitions, decision: &Decision, model_evaluator: &ModelEvaluator) -> Result<DecisionEvaluatorEntry> {
+fn build_decision_evaluator(definitions: &ModelDefinitions, decision: &Decision, model_evaluator: &ModelEvaluator) -> Result<DecisionEvaluatorEntry> {
   // acquire all needed evaluators
   let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
   let item_definition_context_evaluator = model_evaluator.item_definition_context_evaluator()?;
