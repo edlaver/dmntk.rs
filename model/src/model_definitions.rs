@@ -57,7 +57,7 @@ impl From<&Definitions> for ModelDefinitions {
     let mut drg_elements = HashMap::new();
     for drg_element in definitions.drg_elements() {
       if let Some(id) = drg_element.get_id() {
-        let element = drg_element.as_ref().clone();
+        let element = drg_element.clone();
         drg_elements.insert(id, element);
       }
     }

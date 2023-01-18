@@ -250,7 +250,7 @@ impl ModelParser {
     }
   }
 
-  fn parse_drg_elements(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_drg_elements(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     drg_elements.append(&mut self.parse_input_data(node)?);
     drg_elements.append(&mut self.parse_decisions(node)?);
@@ -260,7 +260,7 @@ impl ModelParser {
     Ok(drg_elements)
   }
 
-  fn parse_input_data(&self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_input_data(&self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut input_data_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_INPUT_DATA) {
       let input_data = InputData {
@@ -273,12 +273,12 @@ impl ModelParser {
         feel_name: optional_feel_name(node)?,
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
       };
-      input_data_items.push(Arc::new(DrgElement::InputData(input_data)));
+      input_data_items.push(DrgElement::InputData(input_data));
     }
     Ok(input_data_items)
   }
 
-  fn parse_decisions(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_decisions(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut decision_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION) {
       let decision = Decision {
@@ -297,12 +297,12 @@ impl ModelParser {
         knowledge_requirements: self.parse_knowledge_requirements(child_node, NODE_KNOWLEDGE_REQUIREMENT)?,
         authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      decision_items.push(Arc::new(DrgElement::Decision(decision)));
+      decision_items.push(DrgElement::Decision(decision));
     }
     Ok(decision_items)
   }
 
-  fn parse_business_knowledge_models(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_business_knowledge_models(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut parsed_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_BUSINESS_KNOWLEDGE_MODEL) {
       let business_knowledge_model = BusinessKnowledgeModel {
@@ -318,12 +318,12 @@ impl ModelParser {
         knowledge_requirements: self.parse_knowledge_requirements(child_node, NODE_KNOWLEDGE_REQUIREMENT)?,
         authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      parsed_items.push(Arc::new(DrgElement::BusinessKnowledgeModel(business_knowledge_model)));
+      parsed_items.push(DrgElement::BusinessKnowledgeModel(business_knowledge_model));
     }
     Ok(parsed_items)
   }
 
-  fn parse_decision_services(&self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_decision_services(&self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION_SERVICE) {
       let decision_service = DecisionService {
@@ -340,12 +340,12 @@ impl ModelParser {
         input_decisions: self.required_hrefs_in_child_nodes(child_node, NODE_INPUT_DECISION)?,
         input_data: self.required_hrefs_in_child_nodes(child_node, NODE_INPUT_DATA)?,
       };
-      drg_elements.push(Arc::new(DrgElement::DecisionService(decision_service)));
+      drg_elements.push(DrgElement::DecisionService(decision_service));
     }
     Ok(drg_elements)
   }
 
-  fn parse_knowledge_sources(&mut self, node: &Node) -> Result<Vec<Arc<DrgElement>>> {
+  fn parse_knowledge_sources(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_KNOWLEDGE_SOURCE) {
       let knowledge_source = KnowledgeSource {
@@ -358,7 +358,7 @@ impl ModelParser {
         feel_name: optional_feel_name(child_node)?,
         authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
-      drg_elements.push(Arc::new(DrgElement::KnowledgeSource(knowledge_source)));
+      drg_elements.push(DrgElement::KnowledgeSource(knowledge_source));
     }
     Ok(drg_elements)
   }

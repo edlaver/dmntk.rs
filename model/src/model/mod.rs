@@ -416,7 +416,7 @@ pub struct Definitions {
   /// Container for the instances of [ItemDefinition] that are contained in this [Definitions].
   item_definitions: Vec<ItemDefinition>,
   /// Container for the instances of [DrgElement] that are contained in this [Definitions].
-  drg_elements: Vec<Arc<DrgElement>>,
+  drg_elements: Vec<DrgElement>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   business_context_elements: Vec<BusinessContextElementInstance>,
   /// Container used to import externally defined elements and make them available for use by elements in this [Definitions].
@@ -474,11 +474,7 @@ impl Definitions {
     &self.dmndi
   }
   /// Returns reference to [DrgElements](DrgElement) container.
-  pub fn drg_elements_mut(&mut self) -> &mut Vec<Arc<DrgElement>> {
-    &mut self.drg_elements
-  }
-  /// Returns reference to [DrgElements](DrgElement) container.
-  pub fn drg_elements(&self) -> Iter<Arc<DrgElement>> {
+  pub fn drg_elements(&self) -> Iter<DrgElement> {
     self.drg_elements.iter()
   }
   /// Returns reference to [Requirements](Requirement) indexed by identifiers.
