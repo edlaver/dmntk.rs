@@ -44,7 +44,7 @@ mod errors;
 pub mod model;
 mod model_definitions;
 
-pub use model_definitions::ModelDefinitions;
+pub use model_definitions::*;
 
 /// Parses the XML document containing [Definitions] serialized to interchange format.
 pub fn parse(xml: &str) -> Result<Definitions> {

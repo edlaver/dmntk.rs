@@ -34,6 +34,7 @@
 
 use crate::{NL, WS};
 use dmntk_model::model::*;
+use dmntk_model::*;
 use std::fmt::Write as _;
 
 const AMPLITUDE: f64 = 20.0;
@@ -53,7 +54,7 @@ pub fn svg_end(indent: usize) -> String {
 }
 
 /// Prepares decision shape.
-pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &Decision) -> String {
+pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &ModelDecision) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let text = get_label_text(shape, decision.name());
@@ -76,7 +77,7 @@ pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &Decision) ->
 }
 
 /// Prepares business knowledge model shape.
-pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &BusinessKnowledgeModel) -> String {
+pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &ModelBusinessKnowledgeModel) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let text = get_label_text(shape, business_knowledge.name());

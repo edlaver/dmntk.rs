@@ -52,9 +52,7 @@ fn _2_0001() {
   assert!(model_definitions.decision_by_id("_75b3add2-4d36-4a19-a76c-268b49b2f436").is_some());
   // <decision>
   let decision = model_definitions.decision_by_id("_75b3add2-4d36-4a19-a76c-268b49b2f436").unwrap();
-  assert_eq!("_75b3add2-4d36-4a19-a76c-268b49b2f436", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("_75b3add2-4d36-4a19-a76c-268b49b2f436", decision.id());
   assert_eq!("Greeting Message", decision.name());
   // <decision>.<variable>
   let decision_variable = decision.variable();
@@ -129,9 +127,7 @@ fn _2_0003() {
   assert!(allowed_values.expression_language().is_none());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("d_EmploymentStatusStatement").unwrap();
-  assert_eq!("d_EmploymentStatusStatement", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("d_EmploymentStatusStatement", decision.id());
   assert_eq!("Employment Status Statement", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
@@ -185,9 +181,7 @@ fn _2_0004() {
   assert_eq!(4, definitions.drg_elements.len());
   // checking node: <definitions>.<decision>
   let decision = model_definitions.decision_by_id("_3b2953a3-745f-4d2e-b55d-75c8c5ae653c").unwrap();
-  assert_eq!("_3b2953a3-745f-4d2e-b55d-75c8c5ae653c", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("_3b2953a3-745f-4d2e-b55d-75c8c5ae653c", decision.id());
   assert_eq!("Approval Status", decision.name());
   // checking node: <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
@@ -239,9 +233,7 @@ fn _2_0009() {
   assert_eq!(4, definitions.drg_elements.len());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("d_MonthlyPayment").unwrap();
-  assert_eq!("d_MonthlyPayment", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("d_MonthlyPayment", decision.id());
   assert_eq!("MonthlyPayment", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
@@ -264,9 +256,7 @@ fn _2_0009() {
   assert_eq!("b_PMT", required_knowledge);
   // <definitions>.<businessKnowledgeModel>
   let bkm = model_definitions.business_knowledge_model_by_id("b_PMT").unwrap();
-  assert_eq!("b_PMT", bkm.id().as_ref().unwrap().as_str());
-  assert!(bkm.description().is_none());
-  assert!(bkm.label().is_none());
+  assert_eq!("b_PMT", bkm.id());
   assert_eq!("PMT", bkm.name());
   // <definitions>.<businessKnowledgeModel>.<variable>
   let bkm_variable = bkm.variable();
@@ -316,9 +306,7 @@ fn _3_0002() {
   assert_eq!("_536af77f-8f8b-4339-b00d-28116bb0c3f8", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("_de5529b1-ed4c-4b39-9e36-e0e056aec20c").unwrap();
-  assert_eq!("_de5529b1-ed4c-4b39-9e36-e0e056aec20c", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("_de5529b1-ed4c-4b39-9e36-e0e056aec20c", decision.id());
   assert_eq!("Basic", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
@@ -379,9 +367,7 @@ fn _3_0016() {
   assert_eq!("_51b7609d-c550-4660-b4c1-6ee5b4f1e8fe", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("_a471e76a-64b1-44af-9ede-623f6c15b72e").unwrap();
-  assert_eq!("_a471e76a-64b1-44af-9ede-623f6c15b72e", decision.id().as_ref().unwrap().as_str());
-  assert!(decision.description().is_none());
-  assert!(decision.label().is_none());
+  assert_eq!("_a471e76a-64b1-44af-9ede-623f6c15b72e", decision.id());
   assert_eq!("priceTable1", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();

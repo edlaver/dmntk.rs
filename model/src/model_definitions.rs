@@ -37,6 +37,111 @@ use dmntk_feel::Name;
 use std::collections::HashMap;
 use uuid::Uuid;
 
+#[derive(Debug)]
+pub struct ModelBusinessKnowledgeModel {
+  id: String,
+  name: String,
+  variable: InformationItem,
+  encapsulated_logic: Option<FunctionDefinition>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
+}
+
+impl From<&BusinessKnowledgeModel> for ModelBusinessKnowledgeModel {
+  ///
+  fn from(value: &BusinessKnowledgeModel) -> Self {
+    Self {
+      id: generate_id(value.id()),
+      name: value.name().to_string(),
+      variable: value.variable().clone(),
+      encapsulated_logic: value.encapsulated_logic().clone(),
+      knowledge_requirements: value.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+    }
+  }
+}
+
+impl ModelBusinessKnowledgeModel {
+  /// Returns a reference to identifier.
+  pub fn id(&self) -> &str {
+    &self.id
+  }
+
+  /// Returns a reference to name.
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Returns reference to a variable.
+  pub fn variable(&self) -> &InformationItem {
+    &self.variable
+  }
+
+  /// Returns reference to a variable for this [BusinessKnowledgeModel].
+  pub fn encapsulated_logic(&self) -> &Option<FunctionDefinition> {
+    &self.encapsulated_logic
+  }
+
+  /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+    &self.knowledge_requirements
+  }
+}
+
+#[derive(Debug)]
+pub struct ModelDecision {
+  id: String,
+  name: String,
+  variable: InformationItem,
+  decision_logic: Option<ExpressionInstance>,
+  information_requirements: Vec<InformationRequirement>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
+}
+
+impl From<&Decision> for ModelDecision {
+  ///
+  fn from(value: &Decision) -> Self {
+    Self {
+      id: generate_id(value.id()),
+      name: value.name().to_string(),
+      variable: value.variable().clone(),
+      decision_logic: value.decision_logic().clone(),
+      information_requirements: value.information_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      knowledge_requirements: value.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+    }
+  }
+}
+
+impl ModelDecision {
+  /// Returns a reference to identifier.
+  pub fn id(&self) -> &str {
+    &self.id
+  }
+
+  /// Returns a reference to name.
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Returns reference to a variable.
+  pub fn variable(&self) -> &InformationItem {
+    &self.variable
+  }
+
+  /// Returns a reference to optional [Expression].
+  pub fn decision_logic(&self) -> &Option<ExpressionInstance> {
+    &self.decision_logic
+  }
+
+  /// Returns a reference to collection of [InformationRequirement].
+  pub fn information_requirements(&self) -> &Vec<InformationRequirement> {
+    &self.information_requirements
+  }
+
+  /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+    &self.knowledge_requirements
+  }
+}
+
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
 pub struct ModelDefinitions {
   /// Item definitions.
@@ -44,9 +149,9 @@ pub struct ModelDefinitions {
   /// Map of input data definitions indexed by identifier.
   input_data: HashMap<String, InputData>,
   /// Map of business_knowledge models indexed by identifier.
-  business_knowledge_models: HashMap<String, BusinessKnowledgeModel>,
+  business_knowledge_models: HashMap<String, ModelBusinessKnowledgeModel>,
   /// Map of decisions indexed by identifier.
-  decisions: HashMap<String, Decision>,
+  decisions: HashMap<String, ModelDecision>,
   /// Map of decision services indexed by identifier.
   decision_services: HashMap<String, DecisionService>,
   /// Map of knowledge sources indexed by identifier.
@@ -77,7 +182,6 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
     let mut decision_services = HashMap::new();
     let mut knowledge_sources = HashMap::new();
     for (opt_import_name, definitions) in defs {
-      println!("DDD: {}", definitions.name());
       let namespace = if opt_import_name.is_some() { Some(definitions.namespace()) } else { None };
       item_definitions.append(&mut definitions.item_definitions().clone());
       for drg_element in definitions.drg_elements() {
@@ -86,12 +190,10 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
             input_data.insert(prepare_id(namespace, inner.id()), inner.clone());
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(prepare_id(namespace, inner.id()), inner.clone());
+            business_knowledge_models.insert(prepare_id(namespace, inner.id()), inner.into());
           }
           DrgElement::Decision(inner) => {
-            if let Some(id) = inner.id() {
-              decisions.insert(id.clone(), inner.clone());
-            }
+            decisions.insert(prepare_id(namespace, inner.id()), inner.into());
           }
           DrgElement::DecisionService(inner) => {
             if let Some(id) = inner.id() {
@@ -106,7 +208,6 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
         }
       }
     }
-    println!("DDD: bkm(s) = {business_knowledge_models:?}");
     Self {
       item_definitions,
       input_data,
@@ -125,24 +226,24 @@ impl ModelDefinitions {
   }
 
   /// Returns references to decisions contained in the model.
-  pub fn decisions(&self) -> Vec<&Decision> {
+  pub fn decisions(&self) -> Vec<&ModelDecision> {
     self.decisions.values().collect()
   }
 
   /// Returns an optional reference to [Decision] with specified identifier
   /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_id(&self, id: &str) -> Option<&Decision> {
+  pub fn decision_by_id(&self, id: &str) -> Option<&ModelDecision> {
     self.decisions.get(id)
   }
 
   /// Returns references to business knowledge models contained in the model.
-  pub fn business_knowledge_models(&self) -> Vec<&BusinessKnowledgeModel> {
+  pub fn business_knowledge_models(&self) -> Vec<&ModelBusinessKnowledgeModel> {
     self.business_knowledge_models.values().collect()
   }
 
   /// Returns an optional reference to [BusinessKnowledgeModel] with specified identifier
   /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&BusinessKnowledgeModel> {
+  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&ModelBusinessKnowledgeModel> {
     self.business_knowledge_models.get(id)
   }
 
@@ -174,6 +275,11 @@ impl ModelDefinitions {
   pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
     self.knowledge_sources.get(id)
   }
+}
+
+/// Generates a new identifier when not provided..
+fn generate_id(opt_id: &Option<String>) -> String {
+  opt_id.as_ref().unwrap_or(&Uuid::new_v4().to_string()).clone()
 }
 
 /// Prepares UUID based on provided optional namespace and optional identifier.

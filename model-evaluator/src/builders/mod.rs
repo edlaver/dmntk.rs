@@ -366,7 +366,7 @@ fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_evalua
 }
 
 ///
-fn bring_knowledge_requirements_into_context(definitions: &ModelDefinitions, knowledge_requirements: &[Arc<KnowledgeRequirement>], ctx: &mut FeelContext) -> Result<()> {
+fn bring_knowledge_requirements_into_context(definitions: &ModelDefinitions, knowledge_requirements: &[KnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
   for knowledge_requirement in knowledge_requirements {
     let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
     let required_knowledge_id: &str = href.into();
