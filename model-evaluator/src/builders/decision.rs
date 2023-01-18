@@ -38,13 +38,13 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelScope, Name};
+use dmntk_feel::{value_null, FeelScope, Name, QualifiedName};
 use dmntk_model::DefDecision;
 use std::collections::HashMap;
 
 /// Type alias for closures that evaluate decisions.
 /// Fn(input data, model evaluator, output data)
-type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
+type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> QualifiedName + Send + Sync>;
 
 ///
 type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
@@ -68,7 +68,7 @@ impl DecisionEvaluator {
     Ok(())
   }
   /// Evaluates a decision with specified identifier.
-  pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
+  pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<QualifiedName> {
     self
       .evaluators
       .get(decision_id)
@@ -193,7 +193,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
               let input_data = Value::Context(input_data_ctx.clone());
               required_input_data_references.iter().for_each(|input_data_id| {
                 if let Some((name, value)) = input_data_evaluator.evaluate(input_data_id, &input_data, &item_definition_evaluator) {
-                  required_input_ctx.set_entry(&name, value);
+                  required_input_ctx.create_entry(&name, value);
                 }
               });
               required_input_ctx.zip(&required_knowledge_ctx);
@@ -201,7 +201,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
               let scope: FeelScope = required_input_ctx.into();
               let decision_result = evaluator(&scope) as Value;
               let coerced_decision_result = output_variable_type.coerced(&decision_result);
-              output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
+              output_data_ctx.create_entry(&output_variable_name, coerced_decision_result);
             }
           }
         }

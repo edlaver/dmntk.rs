@@ -36,7 +36,7 @@ use crate::builders::item_definition::ItemDefinitionEvaluator;
 use crate::builders::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
-use dmntk_feel::Name;
+use dmntk_feel::{Name, QualifiedName};
 use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
@@ -61,7 +61,7 @@ impl InputDataEvaluator {
     Ok(())
   }
   /// Evaluates input data with specified identifier.
-  pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
+  pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(QualifiedName, Value)> {
     self.evaluators.get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
   /// Returns the name and type of the input variable of input data definition with specified identifier.
@@ -96,13 +96,13 @@ mod tests {
     let context_str = r#"{Full Name: "John"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Full", "Name"]), Value::String("John".to_string()))),
+      Some((Name::new(&["Full", "Name"]).into(), Value::String("John".to_string()))),
       input_data_evaluator.evaluate("_cba86e4d-e91c-46a2-9176-e9adf88e15db", &Value::Context(context), &item_definitions_evaluator)
     );
     let context_str = r#"{Full Name: "Phillip"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Full", "Name"]), Value::String("Phillip".to_string()))),
+      Some((Name::new(&["Full", "Name"]).into(), Value::String("Phillip".to_string()))),
       input_data_evaluator.evaluate("_cba86e4d-e91c-46a2-9176-e9adf88e15db", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -113,7 +113,7 @@ mod tests {
     let context_str = r#"{Full Name: 50.0}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Full", "Name"]), Value::Null(Some("after coercion".to_string())))),
+      Some((Name::new(&["Full", "Name"]).into(), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_cba86e4d-e91c-46a2-9176-e9adf88e15db", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -124,13 +124,13 @@ mod tests {
     let context_str = r#"{Monthly Salary: 12000.00}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Monthly", "Salary"]), value_number!(12000))),
+      Some((Name::new(&["Monthly", "Salary"]).into(), value_number!(12000))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
     let context_str = r#"{Monthly Salary: 8135.35}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Monthly", "Salary"]), value_number!(813535, 2))),
+      Some((Name::new(&["Monthly", "Salary"]).into(), value_number!(813535, 2))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -141,7 +141,7 @@ mod tests {
     let context_str = r#"{Monthly Salary: "12000.00"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Monthly", "Salary"]), Value::Null(Some("after coercion".to_string())))),
+      Some((Name::new(&["Monthly", "Salary"]).into(), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -152,13 +152,13 @@ mod tests {
     let context_str = r#"{Is Affordable: true}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Is", "Affordable"]), Value::Boolean(true))),
+      Some((Name::new(&["Is", "Affordable"]).into(), Value::Boolean(true))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
     let context_str = r#"{Is Affordable: false}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Is", "Affordable"]), Value::Boolean(false))),
+      Some((Name::new(&["Is", "Affordable"]).into(), Value::Boolean(false))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -169,7 +169,7 @@ mod tests {
     let context_str = r#"{Is Affordable: "no"}"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     assert_eq!(
-      Some((Name::new(&["Is", "Affordable"]), Value::Null(Some("after coercion".to_string())))),
+      Some((Name::new(&["Is", "Affordable"]).into(), Value::Null(Some("after coercion".to_string())))),
       input_data_evaluator.evaluate("_b7a53bad-7a5b-4033-841d-5db6b25834ad", &Value::Context(context), &item_definitions_evaluator)
     );
   }
@@ -181,7 +181,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let name = Name::new(&["Employment", "Status"]);
     assert_eq!(
-      Some((name, Value::String("EMPLOYED".to_string()))),
+      Some((name.into(), Value::String("EMPLOYED".to_string()))),
       input_data_evaluator.evaluate("_acfd4e1d-da0a-4842-aa35-ea50dd36fb01", &Value::Context(context), &item_definitions_evaluator)
     );
   }

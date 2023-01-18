@@ -82,6 +82,13 @@ impl From<&Name> for QualifiedName {
   }
 }
 
+impl From<QualifiedName> for Name {
+  ///
+  fn from(qname: QualifiedName) -> Name {
+    qname.0.first().unwrap_or(&"".into()).clone()
+  }
+}
+
 impl From<Vec<Name>> for QualifiedName {
   /// Converts a vector of names into qualified name.
   fn from(value: Vec<Name>) -> Self {

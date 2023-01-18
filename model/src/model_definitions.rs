@@ -62,9 +62,9 @@ impl From<(&Option<Name>, &InformationItem)> for DefInformationItem {
 
 impl DefInformationItem {
   /// Returns a reference to `FEEL` name.
-  pub fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
+  // pub fn feel_name(&self) -> &Name {
+  //   &self.feel_name
+  // }
 
   /// Returns a qualified name.
   pub fn qname(&self) -> &QualifiedName {

@@ -235,7 +235,7 @@ impl ModelEvaluator {
     if let Ok(decision_evaluator) = self.decision_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       if let Some(output_variable_name) = decision_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
-        if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
+        if let Some(output_value) = evaluated_ctx.search_entry(&output_variable_name) {
           output_value.clone()
         } else {
           value_null!()
@@ -253,7 +253,7 @@ impl ModelEvaluator {
     if let Ok(decision_service_evaluator) = self.decision_service_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       if let Some(output_variable_name) = decision_service_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
-        if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
+        if let Some(output_value) = evaluated_ctx.search_entry(&output_variable_name) {
           output_value.clone()
         } else {
           value_null!()
