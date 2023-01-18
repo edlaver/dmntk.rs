@@ -307,66 +307,6 @@ pub enum DrgElement {
   KnowledgeSource(KnowledgeSource),
 }
 
-impl DrgElement {
-  /// Checks if this [DrgElement] has and optional identifier.
-  /// If the element with specified identifier exists and
-  /// this identifier has a value equal to value specified
-  /// in parameter `id` then returns [true].
-  /// Otherwise returns [false].
-  pub fn has_id(&self, id: &str) -> bool {
-    match self {
-      DrgElement::Decision(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::InputData(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::DecisionService(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::KnowledgeSource(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-    }
-  }
-  pub fn get_id(&self) -> Option<String> {
-    match self {
-      DrgElement::Decision(inner) => inner.id().as_ref().cloned(),
-      DrgElement::InputData(inner) => inner.id().as_ref().cloned(),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.id().as_ref().cloned(),
-      DrgElement::DecisionService(inner) => inner.id().as_ref().cloned(),
-      DrgElement::KnowledgeSource(inner) => inner.id().as_ref().cloned(),
-    }
-  }
-  /// Checks if this [DrgElement] has a specified name.
-  /// If the element with specified name exists and
-  /// this name has a value equal to value specified
-  /// in parameter `name` then returns [true].
-  /// Otherwise returns [false].
-  pub fn has_name(&self, name: &str) -> bool {
-    match self {
-      DrgElement::Decision(inner) => inner.name().eq(name),
-      DrgElement::InputData(inner) => inner.name().eq(name),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.name().eq(name),
-      DrgElement::DecisionService(inner) => inner.name().eq(name),
-      DrgElement::KnowledgeSource(inner) => inner.name().eq(name),
-    }
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [Decision].
-  pub fn is_decision(&self) -> bool {
-    matches!(self, DrgElement::Decision(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [InputData].
-  pub fn is_input_data(&self) -> bool {
-    matches!(self, DrgElement::InputData(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [BusinessKnowledgeModel].
-  pub fn is_business_knowledge_model(&self) -> bool {
-    matches!(self, DrgElement::BusinessKnowledgeModel(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [DecisionService].
-  pub fn is_decision_service(&self) -> bool {
-    matches!(self, DrgElement::DecisionService(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [KnowledgeSource].
-  pub fn is_knowledge_source(&self) -> bool {
-    matches!(self, DrgElement::KnowledgeSource(_))
-  }
-}
-
 #[derive(Debug, Clone)]
 pub enum Requirement {
   Information(Arc<InformationRequirement>),
