@@ -54,7 +54,7 @@ pub fn svg_end(indent: usize) -> String {
 }
 
 /// Prepares decision shape.
-pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &ModelDecision) -> String {
+pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &DefDecision) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let text = get_label_text(shape, decision.name());
@@ -77,7 +77,7 @@ pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &ModelDecisio
 }
 
 /// Prepares business knowledge model shape.
-pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &ModelBusinessKnowledgeModel) -> String {
+pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &DefBusinessKnowledgeModel) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let text = get_label_text(shape, business_knowledge.name());

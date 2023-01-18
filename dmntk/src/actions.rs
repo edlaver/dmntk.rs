@@ -39,7 +39,7 @@ use dmntk_common::{ascii256, ascii_none, Jsonify};
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 
 /// Available command-line actions.
 enum Action {
@@ -596,7 +596,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match &dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
-        let model_definitions: ModelDefinitions = definitions.into();
+        let model_definitions: DefDefinitions = definitions.into();
         println!("\n{color_a}Model{color_r}");
         println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
         println!("{color_a} ├─ namespace: {}{color_b}{color_r}", definitions.namespace());

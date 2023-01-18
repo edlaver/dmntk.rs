@@ -39,7 +39,7 @@ use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
 use dmntk_model::model::{DmnElement, RequiredVariable};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
 ///
@@ -53,7 +53,7 @@ pub struct InputDataEvaluator {
 
 impl InputDataEvaluator {
   /// Builds a new input data evaluator.
-  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
       let variable = Variable::try_from(input_data.variable())?;
@@ -79,12 +79,12 @@ mod tests {
   use dmntk_examples::input_data::*;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_number, FeelNumber, Name};
-  use dmntk_model::ModelDefinitions;
+  use dmntk_model::DefDefinitions;
 
   /// Utility function for building input data evaluator from definitions,
   /// and item definition evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataEvaluator, ItemDefinitionEvaluator) {
-    let definitions: ModelDefinitions = dmntk_model::parse(xml).unwrap().into();
+    let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
     let mut input_data_evaluator = InputDataEvaluator::default();
     input_data_evaluator.build(&definitions).unwrap();
     let mut item_definitions_evaluator = ItemDefinitionEvaluator::default();

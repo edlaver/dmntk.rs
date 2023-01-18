@@ -37,7 +37,7 @@ use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
 use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of function that evaluates the item definition type.
@@ -52,7 +52,7 @@ pub struct ItemDefinitionTypeEvaluator {
 
 impl ItemDefinitionTypeEvaluator {
   /// Creates item definition type evaluators.
-  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_type_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();

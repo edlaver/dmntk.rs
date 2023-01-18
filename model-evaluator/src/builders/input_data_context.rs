@@ -39,7 +39,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
 use dmntk_model::model::{DmnElement, InputData, NamedElement, RequiredVariable};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
@@ -53,7 +53,7 @@ pub struct InputDataContextEvaluator {
 
 impl InputDataContextEvaluator {
   /// Creates a new input data context evaluator.
-  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
       let evaluator = input_data_context_evaluator(input_data)?;
@@ -113,12 +113,12 @@ mod tests {
   use dmntk_examples::input_data::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::FeelType;
-  use dmntk_model::ModelDefinitions;
+  use dmntk_model::DefDefinitions;
 
   /// Utility function for building input data context evaluator from definitions,
   /// and item definition context evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataContextEvaluator, ItemDefinitionContextEvaluator) {
-    let definitions: ModelDefinitions = dmntk_model::parse(xml).unwrap().into();
+    let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
     let mut input_data_context_evaluator = InputDataContextEvaluator::default();
     input_data_context_evaluator.build(&definitions).unwrap();
     let mut item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();

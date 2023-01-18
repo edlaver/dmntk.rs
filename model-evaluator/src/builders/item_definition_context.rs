@@ -38,7 +38,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{FeelType, Name};
 use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of closure that evaluates the item definition context.
@@ -52,7 +52,7 @@ pub struct ItemDefinitionContextEvaluator {
 
 impl ItemDefinitionContextEvaluator {
   /// Creates item definition type evaluators.
-  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = item_definition_context_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();

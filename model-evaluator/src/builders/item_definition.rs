@@ -39,7 +39,7 @@ use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data conformant with item definition.
@@ -53,7 +53,7 @@ pub struct ItemDefinitionEvaluator {
 
 impl ItemDefinitionEvaluator {
   /// Creates new item definition evaluator.
-  pub fn build(&mut self, definitions: &ModelDefinitions) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();

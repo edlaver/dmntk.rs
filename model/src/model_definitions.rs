@@ -38,7 +38,7 @@ use std::collections::HashMap;
 use uuid::Uuid;
 
 #[derive(Debug)]
-pub struct ModelBusinessKnowledgeModel {
+pub struct DefBusinessKnowledgeModel {
   id: String,
   name: String,
   variable: InformationItem,
@@ -46,20 +46,21 @@ pub struct ModelBusinessKnowledgeModel {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<&BusinessKnowledgeModel> for ModelBusinessKnowledgeModel {
+impl From<(&Option<Name>, &BusinessKnowledgeModel)> for DefBusinessKnowledgeModel {
   ///
-  fn from(value: &BusinessKnowledgeModel) -> Self {
+  fn from(value: (&Option<Name>, &BusinessKnowledgeModel)) -> Self {
+    let bkm = value.1;
     Self {
-      id: generate_id(value.id()),
-      name: value.name().to_string(),
-      variable: value.variable().clone(),
-      encapsulated_logic: value.encapsulated_logic().clone(),
-      knowledge_requirements: value.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      id: generate_id(bkm.id()),
+      name: bkm.name().to_string(),
+      variable: bkm.variable().clone(),
+      encapsulated_logic: bkm.encapsulated_logic().clone(),
+      knowledge_requirements: bkm.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
     }
   }
 }
 
-impl ModelBusinessKnowledgeModel {
+impl DefBusinessKnowledgeModel {
   /// Returns a reference to identifier.
   pub fn id(&self) -> &str {
     &self.id
@@ -87,7 +88,7 @@ impl ModelBusinessKnowledgeModel {
 }
 
 #[derive(Debug)]
-pub struct ModelDecision {
+pub struct DefDecision {
   id: String,
   name: String,
   variable: InformationItem,
@@ -96,7 +97,7 @@ pub struct ModelDecision {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<&Decision> for ModelDecision {
+impl From<&Decision> for DefDecision {
   ///
   fn from(value: &Decision) -> Self {
     Self {
@@ -110,7 +111,7 @@ impl From<&Decision> for ModelDecision {
   }
 }
 
-impl ModelDecision {
+impl DefDecision {
   /// Returns a reference to identifier.
   pub fn id(&self) -> &str {
     &self.id
@@ -143,36 +144,36 @@ impl ModelDecision {
 }
 
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
-pub struct ModelDefinitions {
+pub struct DefDefinitions {
   /// Item definitions.
   item_definitions: Vec<ItemDefinition>,
   /// Map of input data definitions indexed by identifier.
   input_data: HashMap<String, InputData>,
   /// Map of business_knowledge models indexed by identifier.
-  business_knowledge_models: HashMap<String, ModelBusinessKnowledgeModel>,
+  business_knowledge_models: HashMap<String, DefBusinessKnowledgeModel>,
   /// Map of decisions indexed by identifier.
-  decisions: HashMap<String, ModelDecision>,
+  decisions: HashMap<String, DefDecision>,
   /// Map of decision services indexed by identifier.
   decision_services: HashMap<String, DecisionService>,
   /// Map of knowledge sources indexed by identifier.
   knowledge_sources: HashMap<String, KnowledgeSource>,
 }
 
-impl From<Definitions> for ModelDefinitions {
+impl From<Definitions> for DefDefinitions {
   ///
   fn from(definitions: Definitions) -> Self {
     Self::from(&definitions)
   }
 }
 
-impl From<&Definitions> for ModelDefinitions {
+impl From<&Definitions> for DefDefinitions {
   ///
   fn from(definitions: &Definitions) -> Self {
     Self::from(&vec![(None, definitions)])
   }
 }
 
-impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
+impl From<&Vec<(Option<Name>, &Definitions)>> for DefDefinitions {
   ///
   fn from(defs: &Vec<(Option<Name>, &Definitions)>) -> Self {
     let mut item_definitions = vec![];
@@ -190,7 +191,7 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
             input_data.insert(prepare_id(namespace, inner.id()), inner.clone());
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(prepare_id(namespace, inner.id()), inner.into());
+            business_knowledge_models.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
           }
           DrgElement::Decision(inner) => {
             decisions.insert(prepare_id(namespace, inner.id()), inner.into());
@@ -219,31 +220,31 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
   }
 }
 
-impl ModelDefinitions {
+impl DefDefinitions {
   /// Returns item definitions.
   pub fn item_definitions(&self) -> &Vec<ItemDefinition> {
     &self.item_definitions
   }
 
   /// Returns references to decisions contained in the model.
-  pub fn decisions(&self) -> Vec<&ModelDecision> {
+  pub fn decisions(&self) -> Vec<&DefDecision> {
     self.decisions.values().collect()
   }
 
   /// Returns an optional reference to [Decision] with specified identifier
   /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_id(&self, id: &str) -> Option<&ModelDecision> {
+  pub fn decision_by_id(&self, id: &str) -> Option<&DefDecision> {
     self.decisions.get(id)
   }
 
   /// Returns references to business knowledge models contained in the model.
-  pub fn business_knowledge_models(&self) -> Vec<&ModelBusinessKnowledgeModel> {
+  pub fn business_knowledge_models(&self) -> Vec<&DefBusinessKnowledgeModel> {
     self.business_knowledge_models.values().collect()
   }
 
   /// Returns an optional reference to [BusinessKnowledgeModel] with specified identifier
   /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&ModelBusinessKnowledgeModel> {
+  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&DefBusinessKnowledgeModel> {
     self.business_knowledge_models.get(id)
   }
 

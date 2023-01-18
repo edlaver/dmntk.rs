@@ -41,7 +41,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
-use dmntk_model::{ModelBusinessKnowledgeModel, ModelDefinitions};
+use dmntk_model::{DefBusinessKnowledgeModel, DefDefinitions};
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -57,7 +57,7 @@ pub struct BusinessKnowledgeModelEvaluator {
 
 impl BusinessKnowledgeModelEvaluator {
   /// Creates a new business knowledge model evaluator.
-  pub fn build(&mut self, definitions: &ModelDefinitions, model_evaluator: &ModelEvaluator) -> Result<()> {
+  pub fn build(&mut self, definitions: &DefDefinitions, model_evaluator: &ModelEvaluator) -> Result<()> {
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
       let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_evaluator)?;
@@ -81,8 +81,8 @@ impl BusinessKnowledgeModelEvaluator {
 
 ///
 fn build_bkm_evaluator(
-  definitions: &ModelDefinitions,
-  business_knowledge_model: &ModelBusinessKnowledgeModel,
+  definitions: &DefDefinitions,
+  business_knowledge_model: &DefBusinessKnowledgeModel,
   function_definition: &FunctionDefinition,
   model_evaluator: &ModelEvaluator,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {

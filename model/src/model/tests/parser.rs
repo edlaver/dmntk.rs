@@ -31,14 +31,14 @@
  */
 
 use crate::model::*;
-use crate::ModelDefinitions;
+use crate::DefDefinitions;
 
 const DMNTK_NAMESPACE: &str = "https://dmntk.io";
 
 #[test]
 fn _2_0001() {
   let definitions = &crate::parse(dmntk_examples::DMN_2_0001).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_c910c9ba-c584-4ac9-a773-1e6de185cd85", definitions.id().as_ref().unwrap().as_str());
   assert_eq!("Compliance level 2. Test 0001.", definitions.description().as_ref().unwrap().as_str());
   assert!(definitions.label().is_none());
@@ -104,7 +104,7 @@ fn _2_0002() {
 #[test]
 fn _2_0003() {
   let definitions = &crate::parse(dmntk_examples::DMN_2_0003).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_ce8a8d19-38c0-4289-8a46-ff72f881e71f", definitions.id().as_ref().unwrap().as_str());
   assert_eq!("Compliance level 2. Test 0003.", definitions.description().as_ref().unwrap().as_str());
   assert!(definitions.label().is_none());
@@ -172,7 +172,7 @@ fn _2_0003() {
 #[test]
 fn _2_0004() {
   let definitions = &crate::parse(dmntk_examples::DMN_2_0004).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_edbd2d8e-a5a8-4660-9bb9-adaa792d900c", definitions.id().as_ref().unwrap().as_str());
   assert!(definitions.description().is_none());
   assert!(definitions.label().is_none());
@@ -224,7 +224,7 @@ fn _2_0008() {
 #[test]
 fn _2_0009() {
   let definitions = &crate::parse(dmntk_examples::DMN_2_0009).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_0ffc2622-d6db-4650-aac3-46df54e9d5c2", definitions.id().as_ref().unwrap().as_str());
   assert!(definitions.description().is_none());
   assert!(definitions.label().is_none());
@@ -302,7 +302,7 @@ fn _3_0001() {
 #[test]
 fn _3_0002() {
   let definitions = &crate::parse(dmntk_examples::DMN_3_0002).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_536af77f-8f8b-4339-b00d-28116bb0c3f8", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("_de5529b1-ed4c-4b39-9e36-e0e056aec20c").unwrap();
@@ -363,7 +363,7 @@ fn _3_0014() {
 #[test]
 fn _3_0016() {
   let definitions = &crate::parse(dmntk_examples::DMN_3_0016).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_51b7609d-c550-4660-b4c1-6ee5b4f1e8fe", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
   let decision = model_definitions.decision_by_id("_a471e76a-64b1-44af-9ede-623f6c15b72e").unwrap();
@@ -437,7 +437,7 @@ fn _3_0086_import() {
 #[test]
 fn _3_0087() {
   let definitions = &crate::parse(dmntk_examples::DMN_3_0087).unwrap();
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   assert_eq!("_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<knowledgeSource>
   let knowledge_source = model_definitions.knowledge_source_by_id("_989d137f-86ff-4249-813f-af67c08a2762").unwrap();

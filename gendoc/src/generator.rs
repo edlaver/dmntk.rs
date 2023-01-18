@@ -36,7 +36,7 @@ use dmntk_model::model::*;
 
 use crate::decision_table::generate_decision_table;
 use crate::svg::*;
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::fmt::Write as _;
 
 const DMN_MODEL_TEMPLATE: &str = include_str!("templates/dmn-model.html");
@@ -46,12 +46,12 @@ const PI_2: f64 = std::f64::consts::PI * 2.0;
 
 /// Generates HTML documentation for DMN model.
 pub fn definitions_to_html(definitions: &Definitions) -> String {
-  let model_definitions: ModelDefinitions = definitions.into();
+  let model_definitions: DefDefinitions = definitions.into();
   let html = add_svg_content(DMN_MODEL_TEMPLATE, definitions, &model_definitions);
   add_html_content(&html, definitions, &model_definitions)
 }
 
-fn add_svg_content(html: &str, definitions: &Definitions, model_definitions: &ModelDefinitions) -> String {
+fn add_svg_content(html: &str, definitions: &Definitions, model_definitions: &DefDefinitions) -> String {
   let mut diagrams_content = String::new();
   let indent = 0_usize;
   if let Some(dmndi) = definitions.dmndi() {
@@ -239,7 +239,7 @@ fn get_angle(start: &DcPoint, end: &DcPoint) -> f64 {
   }
 }
 
-fn add_html_content(html: &str, definitions: &Definitions, model_definitions: &ModelDefinitions) -> String {
+fn add_html_content(html: &str, definitions: &Definitions, model_definitions: &DefDefinitions) -> String {
   let mut html_content = String::new();
   if let Some(dmndi) = definitions.dmndi() {
     for diagram in &dmndi.diagrams {

@@ -37,7 +37,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
 use dmntk_model::model::Definitions;
-use dmntk_model::ModelDefinitions;
+use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock, RwLockReadGuard};
 
@@ -74,7 +74,7 @@ pub struct ModelEvaluator {
 impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator].
   pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
-    let model_definitions: ModelDefinitions = definitions.into();
+    let model_definitions: DefDefinitions = definitions.into();
     let model_evaluator = Arc::new(ModelEvaluator::default());
     model_evaluator.input_data_evaluator.write().unwrap().build(&model_definitions)?;
     model_evaluator.input_data_context_evaluator.write().unwrap().build(&model_definitions)?;
@@ -99,7 +99,7 @@ impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator] from multiple definitions.
   pub fn new_1(defs: &Vec<(Option<Name>, &Definitions)>) -> Result<Arc<Self>> {
     let model_evaluator = Arc::new(ModelEvaluator::default());
-    let model_definitions: ModelDefinitions = defs.into();
+    let model_definitions: DefDefinitions = defs.into();
     model_evaluator.input_data_evaluator.write().unwrap().build(&model_definitions)?;
     model_evaluator.input_data_context_evaluator.write().unwrap().build(&model_definitions)?;
     model_evaluator.item_definition_evaluator.write().unwrap().build(&model_definitions)?;
