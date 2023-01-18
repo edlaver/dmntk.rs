@@ -32,7 +32,7 @@
 
 //! Builder for item definition evaluators.
 
-use crate::errors::{err_empty_feel_name, err_unsupported_feel_type};
+use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
@@ -222,10 +222,7 @@ fn build_referenced_type_evaluator(ref_type: String) -> Result<ItemDefinitionEva
 fn build_component_type_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
   let mut component_evaluators: Vec<(Name, ItemDefinitionEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
-    component_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
-      build_item_definition_evaluator(component_item_definition)?,
-    ));
+    component_evaluators.push((component_item_definition.feel_name().clone(), build_item_definition_evaluator(component_item_definition)?));
   }
   let av_evaluator = build_allowed_values_evaluator(item_definition)?;
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
@@ -428,10 +425,7 @@ fn build_collection_of_referenced_type_evaluator(type_ref: String, av_evaluator:
 fn build_collection_of_component_type_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionEvaluatorFn> {
   let mut component_evaluators: Vec<(Name, ItemDefinitionEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
-    component_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
-      build_item_definition_evaluator(component_item_definition)?,
-    ));
+    component_evaluators.push((component_item_definition.feel_name().clone(), build_item_definition_evaluator(component_item_definition)?));
   }
   let av_evaluator = build_allowed_values_evaluator(item_definition)?;
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {

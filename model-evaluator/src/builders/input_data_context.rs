@@ -33,7 +33,7 @@
 //! Builder for input data context evaluators.
 
 use crate::builders::{type_ref_to_feel_type, ItemDefinitionContextEvaluator};
-use crate::errors::{err_empty_feel_name, err_empty_identifier, err_input_data_without_type_reference, err_unsupported_feel_type};
+use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -79,7 +79,7 @@ pub fn input_data_context_evaluator(input_data: &InputData) -> Result<InputDataC
     .as_ref()
     .ok_or_else(|| err_input_data_without_type_reference(input_data.name()))?
     .clone();
-  let name = input_data.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+  let name = input_data.variable().feel_name().clone();
   if let Some(feel_type) = type_ref_to_feel_type(&type_ref) {
     if matches!(
       feel_type,

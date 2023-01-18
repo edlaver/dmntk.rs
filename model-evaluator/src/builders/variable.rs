@@ -31,7 +31,6 @@
  */
 
 use crate::builders::{information_item_type, ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
-use crate::errors::err_empty_feel_name;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
@@ -52,7 +51,7 @@ impl TryFrom<&InformationItem> for Variable {
   type Error = DmntkError;
   ///
   fn try_from(value: &InformationItem) -> Result<Self, Self::Error> {
-    let name = value.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+    let name = value.feel_name().clone();
     let type_ref = value.type_ref().clone();
     Ok(Self {
       name,

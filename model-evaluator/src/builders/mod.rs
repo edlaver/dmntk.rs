@@ -142,7 +142,7 @@ fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evaluator
   scope.push(FeelContext::default());
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
-      let variable_name = variable.feel_name().as_ref().ok_or_else(err_empty_feel_name)?;
+      let variable_name = variable.feel_name();
       let variable_type = if let Some(type_ref) = variable.type_ref() {
         if type_ref == "Any" {
           FeelType::Any
@@ -193,7 +193,7 @@ fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &
   let mut parameters = vec![];
   let mut parameters_ctx = FeelContext::default();
   for parameter in function_definition.formal_parameters() {
-    let parameter_name = parameter.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+    let parameter_name = parameter.feel_name().clone();
     let parameter_type = if let Some(type_ref) = parameter.type_ref() {
       information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
     } else {
@@ -298,7 +298,7 @@ fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_
   let (function_evaluator, _) = build_expression_instance_evaluator(scope, invocation.called_function(), model_evaluator)?;
   for binding in invocation.bindings() {
     if let Some(binding_formula) = binding.binding_formula() {
-      let param_name = binding.parameter().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+      let param_name = binding.parameter().feel_name().clone();
       let param_type = if let Some(type_ref) = binding.parameter().type_ref() {
         information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
       } else {
@@ -344,7 +344,7 @@ fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_evalua
     let mut evaluators = vec![];
     for (i, element) in row.elements().iter().enumerate() {
       if let Some(column) = relation.columns().get(i) {
-        let name = column.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+        let name = column.feel_name().clone();
         let (evaluator, _) = build_expression_instance_evaluator(scope, element, model_evaluator)?;
         evaluators.push((name, evaluator));
       }
@@ -371,11 +371,11 @@ fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowl
     let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
     let required_knowledge_id: &str = href.into();
     if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
-      let output_variable_name = business_knowledge_model.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+      let output_variable_name = business_knowledge_model.variable().feel_name().clone();
       ctx.set_null(output_variable_name);
       bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
     } else if let Some(decision_service) = definitions.decision_service_by_id(required_knowledge_id) {
-      let output_variable_name = decision_service.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+      let output_variable_name = decision_service.variable().feel_name().clone();
       ctx.set_null(output_variable_name);
     } else {
       return Err(err_business_knowledge_model_with_reference_not_found(required_knowledge_id));

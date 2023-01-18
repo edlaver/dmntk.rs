@@ -34,7 +34,6 @@
 
 use crate::builders::variable::Variable;
 use crate::builders::*;
-use crate::errors::*;
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
@@ -113,7 +112,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
-        let variable_name = required_decision.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+        let variable_name = required_decision.variable().feel_name();
         //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
         let variable_type_ref = if required_decision.variable().type_ref().is_some() {
           required_decision.variable().type_ref().as_ref().unwrap().clone()
@@ -129,7 +128,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_input() {
       // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
-        let variable_name = required_input.variable().feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone();
+        let variable_name = required_input.variable().feel_name();
         let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, &item_definition_context_evaluator);
         input_requirements_ctx.set_entry(&variable_name, Value::FeelType(variable_type));
       }

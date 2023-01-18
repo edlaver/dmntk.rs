@@ -108,7 +108,7 @@ fn component_type(item_definition: &ItemDefinition) -> Result<ItemDefinitionType
   let mut type_evaluators: Vec<(Name, ItemDefinitionTypeEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     type_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
+      component_item_definition.feel_name().clone(),
       build_item_definition_type_evaluator(component_item_definition)?,
     ));
   }
@@ -150,7 +150,7 @@ fn collection_of_component_type(item_definition: &ItemDefinition) -> Result<Item
   let mut type_evaluators: Vec<(Name, ItemDefinitionTypeEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
     type_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
+      component_item_definition.feel_name().clone(),
       build_item_definition_type_evaluator(component_item_definition)?,
     ));
   }

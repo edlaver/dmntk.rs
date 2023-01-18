@@ -74,8 +74,8 @@ pub trait DmnElement {
 pub trait NamedElement: DmnElement {
   /// Returns the name of this [NamedElement].
   fn name(&self) -> &str;
-  /// Returns the optional `FEEL` name for this element.
-  fn feel_name(&self) -> &Option<Name>;
+  /// Returns the `FEEL` name for this element.
+  fn feel_name(&self) -> &Name;
 }
 
 /// [Expression] is an abstract class that describes the logic
@@ -166,8 +166,8 @@ pub struct PerformanceIndicator {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [PerformanceIndicator].
   name: String,
-  /// Optional `FEEL` name of this [PerformanceIndicator].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [PerformanceIndicator].
+  feel_name: Name,
   /// The URI of this [PerformanceIndicator].
   uri: Option<String>,
   /// Collection of [Decision] that impact this [Perform`anceIndicator].
@@ -203,8 +203,8 @@ impl NamedElement for PerformanceIndicator {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -236,8 +236,8 @@ pub struct OrganizationUnit {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [OrganizationUnit].
   name: String,
-  /// Optional `FEEL` name of this [OrganizationUnit].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [OrganizationUnit].
+  feel_name: Name,
   /// The URI of this [OrganizationUnit].
   uri: Option<String>,
   /// Collection of [Decision] that are made by this [OrganizationUnit].
@@ -274,8 +274,8 @@ impl NamedElement for OrganizationUnit {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -332,8 +332,8 @@ pub struct Definitions {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [Definitions] derived from [NamedElement].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Identifies the namespace associated with this [Definitions]
   /// and follows the convention established by XML Schema.
   namespace: String,
@@ -451,8 +451,8 @@ impl NamedElement for Definitions {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -471,8 +471,8 @@ pub struct InformationItem {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InformationItem].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Optional qualified name of the type of this [InformationItem].
   type_ref: Option<String>,
   /// Optional `FEEL` type of this [InformationItem].
@@ -514,8 +514,8 @@ impl NamedElement for InformationItem {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -547,8 +547,8 @@ pub struct InputData {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InputData].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// The instance of [InformationItem] that stores the result of this [InputData].
   variable: InformationItem,
 }
@@ -588,8 +588,8 @@ impl NamedElement for InputData {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -615,7 +615,7 @@ pub struct Import {
   /// and expressions referencing imported [InformationItems](InformationItem).
   name: String,
   /// Optional `FEEL` name of this [Import].
-  feel_name: Option<Name>,
+  feel_name: Name,
   /// Specifies the style of import associated with this [Import].
   import_type: String,
   /// Identifies the location of the imported element.
@@ -652,8 +652,8 @@ impl NamedElement for Import {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this [Import].
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this [Import].
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -843,8 +843,8 @@ pub struct Decision {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of the [Decision].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// A natural language question that characterizes the [Decision],
   /// such that the output of the [Decision] is an answer to the question.
   question: Option<String>,
@@ -929,8 +929,8 @@ impl NamedElement for Decision {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1119,8 +1119,8 @@ pub struct KnowledgeSource {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [KnowledgeSource].
   name: String,
-  /// Optional `FEEL` name of this [KnowledgeSource].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [KnowledgeSource].
+  feel_name: Name,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
   authority_requirements: Vec<Arc<AuthorityRequirement>>,
 }
@@ -1160,8 +1160,8 @@ impl NamedElement for KnowledgeSource {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this [KnowledgeSource].
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this [KnowledgeSource].
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1190,8 +1190,8 @@ pub struct BusinessKnowledgeModel {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [BusinessKnowledgeModel].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Variable that is bound to the function defined by the [FunctionDefinition] for this [BusinessKnowledgeModel].
   variable: InformationItem,
   /// The function that encapsulates the logic encapsulated by this [BusinessKnowledgeModel].
@@ -1245,8 +1245,8 @@ impl NamedElement for BusinessKnowledgeModel {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1274,8 +1274,8 @@ pub struct DecisionService {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [DecisionService].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Variable for this [DecisionService].
   variable: InformationItem,
   /// Collection of references to the instances of [Decision] required to be output by this [DecisionService].
@@ -1335,8 +1335,8 @@ impl NamedElement for DecisionService {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1376,8 +1376,8 @@ pub struct ItemDefinition {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [ItemDefinition].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Optional base type of this [ItemDefinition] identified by namespace-prefixed name.
   type_ref: Option<String>,
   /// This attribute identifies the type language used to specify the base
@@ -1464,8 +1464,8 @@ impl NamedElement for ItemDefinition {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }

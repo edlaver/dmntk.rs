@@ -428,7 +428,7 @@ fn _3_0086_import() {
   assert_eq!(None, import.extension_elements().as_ref());
   assert_eq!(0, import.extension_attributes().len());
   assert_eq!("myimport", import.name());
-  assert_eq!("myimport", import.feel_name().as_ref().unwrap().to_string());
+  assert_eq!("myimport", import.feel_name().to_string());
   assert_eq!(URI_MODEL, import.import_type());
   assert_eq!(None, import.location_uri().as_ref());
   assert_eq!("https://dmntk.io/3_0086/imported", import.namespace());
@@ -443,8 +443,8 @@ fn _3_0087() {
   let knowledge_source = model_definitions.knowledge_source_by_id("_989d137f-86ff-4249-813f-af67c08a2762").unwrap();
   assert_eq!("_989d137f-86ff-4249-813f-af67c08a2762", knowledge_source.id().as_ref().unwrap().as_str());
   assert_eq!("Credit officer", knowledge_source.name());
-  assert_eq!("Credit officer", knowledge_source.feel_name().as_ref().unwrap().to_string());
-  assert_eq!(r#"Name("Credit officer")"#, format!("{:?}", knowledge_source.feel_name().as_ref().unwrap()));
+  assert_eq!("Credit officer", knowledge_source.feel_name().to_string());
+  assert_eq!(r#"Name("Credit officer")"#, format!("{:?}", knowledge_source.feel_name()));
 }
 
 #[test]

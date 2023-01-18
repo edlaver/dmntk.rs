@@ -116,10 +116,7 @@ fn referenced_type_context_evaluator(ref_type: String) -> Result<ItemDefinitionC
 fn component_type_context_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   let mut context_evaluators: Vec<(Name, ItemDefinitionContextEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
-    context_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
-      item_definition_context_evaluator(component_item_definition)?,
-    ));
+    context_evaluators.push((component_item_definition.feel_name().clone(), item_definition_context_evaluator(component_item_definition)?));
   }
   Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
     let mut entries = BTreeMap::new();
@@ -173,10 +170,7 @@ fn collection_of_referenced_type_context_evaluator(type_ref: String) -> Result<I
 fn collection_of_component_type_context_evaluator(item_definition: &ItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   let mut context_evaluators: Vec<(Name, ItemDefinitionContextEvaluatorFn)> = vec![];
   for component_item_definition in item_definition.item_components() {
-    context_evaluators.push((
-      component_item_definition.feel_name().as_ref().ok_or_else(err_empty_feel_name)?.clone(),
-      item_definition_context_evaluator(component_item_definition)?,
-    ));
+    context_evaluators.push((component_item_definition.feel_name().clone(), item_definition_context_evaluator(component_item_definition)?));
   }
   Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
     let mut entries = BTreeMap::new();

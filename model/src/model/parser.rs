@@ -171,7 +171,7 @@ impl ModelParser {
     let drg_elements = self.parse_drg_elements(node)?;
     let mut definitions = Definitions {
       name: required_name(node)?,
-      feel_name: optional_feel_name(node)?,
+      feel_name: required_feel_name(node)?,
       id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
@@ -208,7 +208,7 @@ impl ModelParser {
       let item_components_definitions = self.parse_item_definitions(child_node, NODE_ITEM_COMPONENT)?;
       let item_definition = ItemDefinition {
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
@@ -270,7 +270,7 @@ impl ModelParser {
         extension_elements: self.parse_extension_elements(child_node),
         extension_attributes: self.parse_extension_attributes(child_node),
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(node)?,
+        feel_name: required_feel_name(node)?,
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
       };
       input_data_items.push(DrgElement::InputData(input_data));
@@ -283,7 +283,7 @@ impl ModelParser {
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION) {
       let decision = Decision {
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
@@ -307,7 +307,7 @@ impl ModelParser {
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_BUSINESS_KNOWLEDGE_MODEL) {
       let business_knowledge_model = BusinessKnowledgeModel {
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
@@ -328,7 +328,7 @@ impl ModelParser {
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION_SERVICE) {
       let decision_service = DecisionService {
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
@@ -355,7 +355,7 @@ impl ModelParser {
         extension_elements: self.parse_extension_elements(child_node),
         extension_attributes: self.parse_extension_attributes(child_node),
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         authority_requirements: self.parse_authority_requirements(child_node, NODE_AUTHORITY_REQUIREMENT)?,
       };
       drg_elements.push(DrgElement::KnowledgeSource(knowledge_source));
@@ -431,7 +431,7 @@ impl ModelParser {
         extension_elements: self.parse_extension_elements(child_node),
         extension_attributes: self.parse_extension_attributes(child_node),
         name: required_name(child_node)?,
-        feel_name: optional_feel_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
         import_type: required_attribute(child_node, ATTR_IMPORT_TYPE)?,
         location_uri: optional_attribute(child_node, ATTR_LOCATION_URI),
         namespace: required_attribute(child_node, ATTR_NAMESPACE)?,
@@ -476,7 +476,7 @@ impl ModelParser {
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
       name: required_name(node)?,
-      feel_name: optional_feel_name(node)?,
+      feel_name: required_feel_name(node)?,
       type_ref: optional_attribute(node, ATTR_TYPE_REF),
       feel_type: None,
     })
@@ -1098,14 +1098,10 @@ mod xml_utils {
     required_attribute(node, ATTR_NAME)
   }
 
-  // /// Returns required `FEEL` name for specified node.
-  // pub fn required_feel_name(node: &Node) -> Result<Name> {
-  //   dmntk_feel_parser::parse_longest_name(&required_name(node)?)
-  // }
-
-  /// Returns optional `FEEL` name for specified node.
-  pub fn optional_feel_name(node: &Node) -> Result<Option<Name>> {
-    Ok(dmntk_feel_parser::parse_longest_name(&required_name(node)?).ok())
+  /// Returns `FEEL` name for specified node.
+  pub fn required_feel_name(node: &Node) -> Result<Name> {
+    let name = required_name(node)?;
+    Ok(dmntk_feel_parser::parse_longest_name(&name).unwrap_or(name.into()))
   }
 
   /// Returns the value of the mandatory color attribute.
