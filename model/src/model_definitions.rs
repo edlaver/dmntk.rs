@@ -32,7 +32,7 @@
 
 //! ???
 
-use dmntk_model::model::*;
+use crate::model::*;
 use std::collections::HashMap;
 
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
@@ -174,6 +174,19 @@ impl ModelDefinitions {
     self.drg_elements.iter().find_map(|(_, v)| {
       if v.is_input_data() && v.has_id(id) {
         if let DrgElement::InputData(inner) = &v {
+          return Some(inner);
+        }
+      }
+      None
+    })
+  }
+
+  /// Returns an optional reference to [KnowledgeSource] with specified identifier
+  /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
+  pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
+    self.drg_elements.iter().find_map(|(_, v)| {
+      if v.is_knowledge_source() && v.has_id(id) {
+        if let DrgElement::KnowledgeSource(inner) = &v {
           return Some(inner);
         }
       }

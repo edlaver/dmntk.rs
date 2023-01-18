@@ -41,6 +41,9 @@ use dmntk_common::Result;
 
 mod errors;
 pub mod model;
+mod model_definitions;
+
+pub use model_definitions::ModelDefinitions;
 
 /// Parses the XML document containing [Definitions] serialized to interchange format.
 pub fn parse(xml: &str) -> Result<Definitions> {

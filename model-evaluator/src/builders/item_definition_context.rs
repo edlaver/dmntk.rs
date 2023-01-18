@@ -33,12 +33,12 @@
 //! Builder for item definition context evaluators.
 
 use crate::errors::*;
-use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{FeelType, Name};
 use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
+use dmntk_model::ModelDefinitions;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of closure that evaluates the item definition context.

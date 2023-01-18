@@ -34,10 +34,10 @@
 
 use crate::builders::information_item_type;
 use crate::errors::*;
-use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
 use dmntk_model::model::{ItemDefinition, ItemDefinitionType, NamedElement};
+use dmntk_model::ModelDefinitions;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of function that evaluates the item definition type.

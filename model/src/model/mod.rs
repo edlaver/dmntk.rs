@@ -41,7 +41,6 @@ mod tests;
 use crate::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
-use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt;
@@ -418,8 +417,6 @@ pub struct Definitions {
   item_definitions: Vec<ItemDefinition>,
   /// Container for the instances of [DrgElement] that are contained in this [Definitions].
   drg_elements: Vec<Arc<DrgElement>>,
-  /// Container for the instances of [DrgElement] indexed by its unique identifier.
-  drg_elements_by_id: HashMap<String, Arc<DrgElement>>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   business_context_elements: Vec<BusinessContextElementInstance>,
   /// Container used to import externally defined elements and make them available for use by elements in this [Definitions].
@@ -464,156 +461,6 @@ impl Definitions {
   pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {
     self.item_definitions.iter().find(|v| v.name() == name)
   }
-  /// Returns a vector of references to decisions.
-  pub fn decisions(&self) -> Vec<&Decision> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_decision() {
-          if let DrgElement::Decision(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [Decision] with specified identifier
-  /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_id(&self, id: &str) -> Option<&Decision> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision() && v.has_id(id) {
-        if let DrgElement::Decision(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [Decision] with specified name
-  /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_name(&self, name: &str) -> Option<&Decision> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision() && v.has_name(name) {
-        if let DrgElement::Decision(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns a vector of references to business knowledge models.
-  pub fn business_knowledge_models(&self) -> Vec<&BusinessKnowledgeModel> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_business_knowledge_model() {
-          if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [BusinessKnowledgeModel] with specified identifier
-  /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&BusinessKnowledgeModel> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_business_knowledge_model() && v.has_id(id) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [BusinessKnowledgeModel] with specified name
-  /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_name(&self, name: &str) -> Option<&BusinessKnowledgeModel> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_business_knowledge_model() && v.has_name(name) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns a vector of references to decision services.
-  pub fn decision_services(&self) -> Vec<&DecisionService> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_decision_service() {
-          if let DrgElement::DecisionService(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [DecisionService] with specified identifier
-  /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_id(&self, id: &str) -> Option<&DecisionService> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision_service() && v.has_id(id) {
-        if let DrgElement::DecisionService(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [DecisionService] with specified name
-  /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_name(&self, name: &str) -> Option<&DecisionService> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision_service() && v.has_name(name) {
-        if let DrgElement::DecisionService(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [InputData] with specified identifier
-  /// or [None] when such [InputData] was not found among
-  /// instances of [DrgElement]).
-  pub fn input_data_by_id(&self, id: &str) -> Option<&InputData> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_input_data() && v.has_id(id) {
-        if let DrgElement::InputData(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  ///
-  pub fn input_data(&self) -> Vec<&InputData> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| if let DrgElement::InputData(input_data) = v.borrow() { Some(input_data) } else { None })
-      .collect::<Vec<&InputData>>()
-  }
-  /// Returns an optional reference to [KnowledgeSource] with specified identifier
-  /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
-  pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_knowledge_source() && v.has_id(id) {
-        if let DrgElement::KnowledgeSource(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
   /// Returns reference to the container of instances of [BusinessContextElement] contained in this [Definitions].
   pub fn business_context_elements(&self) -> &Vec<BusinessContextElementInstance> {
     &self.business_context_elements
@@ -630,15 +477,9 @@ impl Definitions {
   pub fn drg_elements_mut(&mut self) -> &mut Vec<Arc<DrgElement>> {
     &mut self.drg_elements
   }
-
   /// Returns reference to [DrgElements](DrgElement) container.
   pub fn drg_elements(&self) -> Iter<Arc<DrgElement>> {
     self.drg_elements.iter()
-  }
-
-  /// Returns reference to [DrgElements](DrgElement) indexed by identifiers.
-  pub fn drg_elements_by_id(&self) -> &HashMap<String, Arc<DrgElement>> {
-    &self.drg_elements_by_id
   }
   /// Returns reference to [Requirements](Requirement) indexed by identifiers.
   pub fn requirements_by_id(&self) -> &HashMap<String, Requirement> {

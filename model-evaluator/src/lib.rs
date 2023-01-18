@@ -44,7 +44,6 @@ extern crate lazy_static;
 mod b;
 mod builders;
 mod errors;
-mod model_definitions;
 mod model_evaluator;
 
 #[cfg(test)]

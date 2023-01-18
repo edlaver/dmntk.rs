@@ -36,6 +36,7 @@ use dmntk_model::model::*;
 
 use crate::decision_table::generate_decision_table;
 use crate::svg::*;
+use dmntk_model::ModelDefinitions;
 use std::fmt::Write as _;
 
 const DMN_MODEL_TEMPLATE: &str = include_str!("templates/dmn-model.html");
@@ -45,11 +46,12 @@ const PI_2: f64 = std::f64::consts::PI * 2.0;
 
 /// Generates HTML documentation for DMN model.
 pub fn definitions_to_html(definitions: &Definitions) -> String {
-  let html = add_svg_content(DMN_MODEL_TEMPLATE, definitions);
-  add_html_content(&html, definitions)
+  let model_definitions: ModelDefinitions = definitions.into();
+  let html = add_svg_content(DMN_MODEL_TEMPLATE, definitions, &model_definitions);
+  add_html_content(&html, definitions, &model_definitions)
 }
 
-fn add_svg_content(html: &str, definitions: &Definitions) -> String {
+fn add_svg_content(html: &str, definitions: &Definitions, model_definitions: &ModelDefinitions) -> String {
   let mut diagrams_content = String::new();
   let indent = 0_usize;
   if let Some(dmndi) = definitions.dmndi() {
@@ -66,13 +68,13 @@ fn add_svg_content(html: &str, definitions: &Definitions) -> String {
         match diagram_element {
           DmnDiagramElement::DmnShape(shape) => {
             if let Some(dmn_element_ref) = &shape.dmn_element_ref {
-              if let Some(decision) = definitions.decision_by_id(dmn_element_ref.as_str()) {
+              if let Some(decision) = model_definitions.decision_by_id(dmn_element_ref.as_str()) {
                 svg_content.push_str(&svg_decision(indent, shape, decision));
-              } else if let Some(input_data) = definitions.input_data_by_id(dmn_element_ref.as_str()) {
+              } else if let Some(input_data) = model_definitions.input_data_by_id(dmn_element_ref.as_str()) {
                 svg_content.push_str(&svg_input_data(indent, shape, input_data));
-              } else if let Some(business_knowledge) = definitions.business_knowledge_model_by_id(dmn_element_ref.as_str()) {
+              } else if let Some(business_knowledge) = model_definitions.business_knowledge_model_by_id(dmn_element_ref.as_str()) {
                 svg_content.push_str(&svg_business_knowledge_model(indent, shape, business_knowledge));
-              } else if let Some(knowledge_source) = definitions.knowledge_source_by_id(dmn_element_ref.as_str()) {
+              } else if let Some(knowledge_source) = model_definitions.knowledge_source_by_id(dmn_element_ref.as_str()) {
                 svg_content.push_str(&svg_knowledge_source(indent, shape, knowledge_source));
               }
             }
@@ -237,14 +239,14 @@ fn get_angle(start: &DcPoint, end: &DcPoint) -> f64 {
   }
 }
 
-fn add_html_content(html: &str, definitions: &Definitions) -> String {
+fn add_html_content(html: &str, definitions: &Definitions, model_definitions: &ModelDefinitions) -> String {
   let mut html_content = String::new();
   if let Some(dmndi) = definitions.dmndi() {
     for diagram in &dmndi.diagrams {
       for diagram_element in &diagram.diagram_elements {
         if let DmnDiagramElement::DmnShape(shape) = diagram_element {
           if let Some(dmn_element_ref) = &shape.dmn_element_ref {
-            if let Some(decision) = definitions.decision_by_id(dmn_element_ref.as_str()) {
+            if let Some(decision) = model_definitions.decision_by_id(dmn_element_ref.as_str()) {
               if let Some(decision_logic) = decision.decision_logic() {
                 match decision_logic {
                   ExpressionInstance::Context(_) => {}

@@ -39,6 +39,7 @@ use dmntk_common::{ascii256, ascii_none, Jsonify};
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
+use dmntk_model::ModelDefinitions;
 
 /// Available command-line actions.
 enum Action {
@@ -593,19 +594,20 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   let color_r = if use_color { ASCII_RESET } else { "" };
   let none = "(none)".to_string();
   match std::fs::read_to_string(dmn_file_name) {
-    Ok(dmn_file_content) => match dmntk_model::parse(&dmn_file_content) {
+    Ok(dmn_file_content) => match &dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
+        let model_definitions: ModelDefinitions = definitions.into();
         println!("\n{color_a}Model{color_r}");
         println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
         println!("{color_a} ├─ namespace: {}{color_b}{color_r}", definitions.namespace());
         println!("{color_a} └─ id:{color_b} {}{color_r}", definitions.id().as_ref().unwrap_or(&none));
         // definitions
-        if definitions.decisions().is_empty() {
+        if model_definitions.decisions().is_empty() {
           println!("\n{color_a}Decisions{color_c} {none}{color_r}");
         } else {
           println!("\n{color_a}Decisions{color_r}");
-          let decision_count = definitions.decisions().len();
-          for (i, decision) in definitions.decisions().iter().enumerate() {
+          let decision_count = model_definitions.decisions().len();
+          for (i, decision) in model_definitions.decisions().iter().enumerate() {
             if i < decision_count - 1 {
               print!(" {color_a}├─{color_r}");
             } else {
@@ -615,12 +617,12 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
           }
         }
         // item data
-        if definitions.input_data().is_empty() {
+        if model_definitions.input_data().is_empty() {
           println!("\n{color_a}Input data{color_c} {none}{color_r}");
         } else {
           println!("\n{color_a}Input data{color_r}");
-          let input_data_count = definitions.input_data().len();
-          for (i, input_data) in definitions.input_data().iter().enumerate() {
+          let input_data_count = model_definitions.input_data().len();
+          for (i, input_data) in model_definitions.input_data().iter().enumerate() {
             if i < input_data_count - 1 {
               print!(" {color_a}├─{color_r}");
             } else {

@@ -35,11 +35,11 @@
 use crate::builders::item_definition::ItemDefinitionEvaluator;
 use crate::builders::variable::{Variable, VariableEvaluatorFn};
 use crate::errors::err_empty_identifier;
-use crate::model_definitions::ModelDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
 use dmntk_model::model::{DmnElement, RequiredVariable};
+use dmntk_model::ModelDefinitions;
 use std::collections::HashMap;
 
 ///
@@ -76,10 +76,10 @@ impl InputDataEvaluator {
 mod tests {
   use crate::builders::item_definition::ItemDefinitionEvaluator;
   use crate::builders::InputDataEvaluator;
-  use crate::model_definitions::ModelDefinitions;
   use dmntk_examples::input_data::*;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_number, FeelNumber, Name};
+  use dmntk_model::ModelDefinitions;
 
   /// Utility function for building input data evaluator from definitions,
   /// and item definition evaluator from definitions.

@@ -169,12 +169,6 @@ impl ModelParser {
   /// Parses [Definitions].
   fn parse_definitions(&mut self, node: &Node) -> Result<Definitions> {
     let drg_elements = self.parse_drg_elements(node)?;
-    let mut drg_elements_by_id = HashMap::new();
-    for drg_element in &drg_elements {
-      if let Some(id) = drg_element.get_id() {
-        drg_elements_by_id.insert(id, Arc::clone(drg_element));
-      }
-    }
     let mut definitions = Definitions {
       name: required_name(node)?,
       feel_name: optional_feel_name(node)?,
@@ -190,7 +184,6 @@ impl ModelParser {
       exporter_version: optional_attribute(node, ATTR_EXPORTER_VERSION),
       item_definitions: self.parse_item_definitions(node, NODE_ITEM_DEFINITION)?,
       drg_elements,
-      drg_elements_by_id,
       business_context_elements: self.parse_business_context_elements(node)?,
       imports: self.parse_imports(node)?,
       dmndi: None, // diagram (if present) is parsed below

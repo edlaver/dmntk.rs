@@ -31,6 +31,7 @@
  */
 
 use crate::model::*;
+use crate::ModelDefinitions;
 
 const DMNTK_NAMESPACE: &str = "https://dmntk.io";
 
@@ -226,6 +227,7 @@ fn _2_0008() {
 #[test]
 fn _2_0009() {
   let definitions = crate::parse(dmntk_examples::DMN_2_0009).unwrap();
+  let model_definitions: ModelDefinitions = definitions.into();
   assert_eq!("_0ffc2622-d6db-4650-aac3-46df54e9d5c2", definitions.id().as_ref().unwrap().as_str());
   assert!(definitions.description().is_none());
   assert!(definitions.label().is_none());
@@ -246,10 +248,10 @@ fn _2_0009() {
   assert_eq!("MonthlyPayment", decision_variable.name());
   assert_eq!("number", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <definitions>.<decision>.<informationRequirement>
-  let information_requirement_items = decision.information_requirements();
+  let information_requirement_items = definitions.information_requirements();
   assert_eq!(2, information_requirement_items.len());
   // <definitions>.<decision>.<knowledgeRequirement>
-  let knowledge_requirement_items = decision.knowledge_requirements();
+  let knowledge_requirement_items = definitions.knowledge_requirements();
   assert_eq!(1, knowledge_requirement_items.len());
   let knowledge_requirement = &knowledge_requirement_items[0];
   assert_eq!("_1684f08c-413b-4ecd-8caf-d922500940bd", knowledge_requirement.id().as_ref().unwrap().as_str());
@@ -258,7 +260,7 @@ fn _2_0009() {
   let required_knowledge: &str = knowledge_requirement.required_knowledge().as_ref().unwrap().into();
   assert_eq!("b_PMT", required_knowledge);
   // <definitions>.<businessKnowledgeModel>
-  let bkm = definitions.business_knowledge_model_by_id("b_PMT").unwrap();
+  let bkm = model_definitions.business_knowledge_model_by_id("b_PMT").unwrap();
   assert_eq!("b_PMT", bkm.id().as_ref().unwrap().as_str());
   assert!(bkm.description().is_none());
   assert!(bkm.label().is_none());
@@ -307,9 +309,10 @@ fn _3_0001() {
 #[test]
 fn _3_0002() {
   let definitions = crate::parse(dmntk_examples::DMN_3_0002).unwrap();
+  let model_definitions: ModelDefinitions = definitions.into();
   assert_eq!("_536af77f-8f8b-4339-b00d-28116bb0c3f8", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
-  let decision = definitions.decision_by_id("_de5529b1-ed4c-4b39-9e36-e0e056aec20c").unwrap();
+  let decision = model_definitions.decision_by_id("_de5529b1-ed4c-4b39-9e36-e0e056aec20c").unwrap();
   assert_eq!("_de5529b1-ed4c-4b39-9e36-e0e056aec20c", decision.id().as_ref().unwrap().as_str());
   assert!(decision.description().is_none());
   assert!(decision.label().is_none());
@@ -369,9 +372,10 @@ fn _3_0014() {
 #[test]
 fn _3_0016() {
   let definitions = crate::parse(dmntk_examples::DMN_3_0016).unwrap();
+  let model_definitions: ModelDefinitions = definitions.into();
   assert_eq!("_51b7609d-c550-4660-b4c1-6ee5b4f1e8fe", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<decision>
-  let decision = definitions.decision_by_id("_a471e76a-64b1-44af-9ede-623f6c15b72e").unwrap();
+  let decision = model_definitions.decision_by_id("_a471e76a-64b1-44af-9ede-623f6c15b72e").unwrap();
   assert_eq!("_a471e76a-64b1-44af-9ede-623f6c15b72e", decision.id().as_ref().unwrap().as_str());
   assert!(decision.description().is_none());
   assert!(decision.label().is_none());
@@ -444,9 +448,10 @@ fn _3_0086_import() {
 #[test]
 fn _3_0087() {
   let definitions = crate::parse(dmntk_examples::DMN_3_0087).unwrap();
+  let model_definitions: ModelDefinitions = definitions.into();
   assert_eq!("_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<knowledgeSource>
-  let knowledge_source = definitions.knowledge_source_by_id("_989d137f-86ff-4249-813f-af67c08a2762").unwrap();
+  let knowledge_source = model_definitions.knowledge_source_by_id("_989d137f-86ff-4249-813f-af67c08a2762").unwrap();
   assert_eq!("_989d137f-86ff-4249-813f-af67c08a2762", knowledge_source.id().as_ref().unwrap().as_str());
   assert_eq!("Credit officer", knowledge_source.name());
   assert_eq!("Credit officer", knowledge_source.feel_name().as_ref().unwrap().to_string());
