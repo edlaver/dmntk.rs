@@ -33,7 +33,9 @@
 //! ???
 
 use crate::model::*;
+use dmntk_feel::Name;
 use std::collections::HashMap;
+use uuid::Uuid;
 
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
 pub struct ModelDefinitions {
@@ -61,41 +63,50 @@ impl From<Definitions> for ModelDefinitions {
 impl From<&Definitions> for ModelDefinitions {
   ///
   fn from(definitions: &Definitions) -> Self {
-    let item_definitions = definitions.item_definitions().clone();
+    Self::from(&vec![(None, definitions)])
+  }
+}
+
+impl From<&Vec<(Option<Name>, &Definitions)>> for ModelDefinitions {
+  ///
+  fn from(defs: &Vec<(Option<Name>, &Definitions)>) -> Self {
+    let mut item_definitions = vec![];
     let mut input_data = HashMap::new();
     let mut business_knowledge_models = HashMap::new();
     let mut decisions = HashMap::new();
     let mut decision_services = HashMap::new();
     let mut knowledge_sources = HashMap::new();
-    for drg_element in definitions.drg_elements() {
-      match drg_element {
-        DrgElement::InputData(inner) => {
-          if let Some(id) = inner.id() {
-            input_data.insert(id.clone(), inner.clone());
+    for (opt_import_name, definitions) in defs {
+      println!("DDD: {}", definitions.name());
+      let namespace = if opt_import_name.is_some() { Some(definitions.namespace()) } else { None };
+      item_definitions.append(&mut definitions.item_definitions().clone());
+      for drg_element in definitions.drg_elements() {
+        match drg_element {
+          DrgElement::InputData(inner) => {
+            input_data.insert(prepare_id(namespace, inner.id()), inner.clone());
           }
-        }
-        DrgElement::BusinessKnowledgeModel(inner) => {
-          if let Some(id) = inner.id() {
-            business_knowledge_models.insert(id.clone(), inner.clone());
+          DrgElement::BusinessKnowledgeModel(inner) => {
+            business_knowledge_models.insert(prepare_id(namespace, inner.id()), inner.clone());
           }
-        }
-        DrgElement::Decision(inner) => {
-          if let Some(id) = inner.id() {
-            decisions.insert(id.clone(), inner.clone());
+          DrgElement::Decision(inner) => {
+            if let Some(id) = inner.id() {
+              decisions.insert(id.clone(), inner.clone());
+            }
           }
-        }
-        DrgElement::DecisionService(inner) => {
-          if let Some(id) = inner.id() {
-            decision_services.insert(id.clone(), inner.clone());
+          DrgElement::DecisionService(inner) => {
+            if let Some(id) = inner.id() {
+              decision_services.insert(id.clone(), inner.clone());
+            }
           }
-        }
-        DrgElement::KnowledgeSource(inner) => {
-          if let Some(id) = inner.id() {
-            knowledge_sources.insert(id.clone(), inner.clone());
+          DrgElement::KnowledgeSource(inner) => {
+            if let Some(id) = inner.id() {
+              knowledge_sources.insert(id.clone(), inner.clone());
+            }
           }
         }
       }
     }
+    println!("DDD: bkm(s) = {business_knowledge_models:?}");
     Self {
       item_definitions,
       input_data,
@@ -162,5 +173,15 @@ impl ModelDefinitions {
   /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
   pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
     self.knowledge_sources.get(id)
+  }
+}
+
+///
+fn prepare_id(opt_namespace: Option<&str>, opt_id: &Option<String>) -> String {
+  let id = opt_id.as_ref().unwrap_or(&Uuid::new_v4().to_string()).clone();
+  if let Some(namespace) = opt_namespace {
+    format!("{namespace}#{id}")
+  } else {
+    id
   }
 }

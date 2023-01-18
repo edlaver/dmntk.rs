@@ -28,6 +28,7 @@ edition = "2021"
 [workspace.dependencies]
 actix-web = "4.2.1"
 base64 = "0.21.0"
+uuid = { version = "1.2.2", features = ["v4"] }
 dmntk-common = { path = "common" }
 dmntk-evaluator = { path = "evaluator" }
 dmntk-examples = { path = "examples" }

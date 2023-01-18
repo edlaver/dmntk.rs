@@ -35,6 +35,7 @@ extern crate dmntk_examples;
 extern crate dmntk_feel;
 extern crate dmntk_feel_parser;
 extern crate roxmltree;
+extern crate uuid;
 
 use crate::model::Definitions;
 use dmntk_common::Result;
