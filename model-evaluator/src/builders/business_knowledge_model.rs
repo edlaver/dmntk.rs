@@ -39,7 +39,7 @@ use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
+use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name, QualifiedName};
 use dmntk_model::model::*;
 use dmntk_model::{DefBusinessKnowledgeModel, DefDefinitions};
 use std::collections::HashMap;
@@ -63,7 +63,7 @@ impl BusinessKnowledgeModelEvaluator {
       let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_evaluator)?;
       let business_knowledge_model_id = business_knowledge_model.id();
       let business_knowledge_model_name = &business_knowledge_model.name().to_string();
-      let output_variable_name = business_knowledge_model.variable().feel_name();
+      let output_variable_name = business_knowledge_model.variable().qname();
       self.evaluators.insert(business_knowledge_model_id.to_owned(), evaluator);
       model_evaluator.add_invocable_business_knowledge_model(business_knowledge_model_name, business_knowledge_model_id, output_variable_name.to_owned());
     }
@@ -99,8 +99,7 @@ fn build_bkm_evaluator(
     formal_parameters.push((feel_name.clone(), feel_type.clone()));
     local_context.set_entry(feel_name, Value::FeelType(feel_type));
   }
-  let output_variable_name = business_knowledge_model.variable().feel_name().clone();
-  // output variable type
+  let output_variable_name = business_knowledge_model.variable().qname().clone();
   let output_variable_type = if let Some(output_variable_type_ref) = business_knowledge_model.variable().type_ref().as_ref() {
     information_item_type(output_variable_type_ref, &item_definition_type_evaluator).unwrap_or(FeelType::Any)
   } else {
@@ -135,7 +134,7 @@ fn build_bkm_expression_instance_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   expression_instance: &ExpressionInstance,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
@@ -219,7 +218,7 @@ fn build_bkm_context_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   context: &Context,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
@@ -243,7 +242,7 @@ fn build_bkm_decision_table_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   decision_table: &DecisionTable,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
@@ -266,7 +265,7 @@ fn build_bkm_function_definition_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   function_definition: &FunctionDefinition,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
@@ -290,7 +289,7 @@ fn build_bkm_invocation_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   invocation: &Invocation,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
@@ -314,7 +313,7 @@ fn build_bkm_literal_expression_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   literal_expression: &LiteralExpression,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
@@ -337,7 +336,7 @@ fn build_bkm_relation_evaluator(
   scope: &FeelScope,
   formal_parameters: Vec<(Name, FeelType)>,
   relation: &Relation,
-  output_variable_name: Name,
+  output_variable_name: QualifiedName,
   output_variable_type: FeelType,
   knowledge_requirements: Vec<String>,
   model_evaluator: &ModelEvaluator,
@@ -357,7 +356,11 @@ fn build_bkm_relation_evaluator(
 }
 
 ///
-fn build_bkm_evaluator_from_function_definition(name: Name, function_definition: Value, knowledge_requirements: Vec<String>) -> Result<BusinessKnowledgeModelEvaluatorFn> {
+fn build_bkm_evaluator_from_function_definition(
+  qname: QualifiedName,
+  function_definition: Value,
+  knowledge_requirements: Vec<String>,
+) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   Ok(Box::new(
     move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
       // acquire all evaluators needed
@@ -368,7 +371,7 @@ fn build_bkm_evaluator_from_function_definition(name: Name, function_definition:
             business_knowledge_model_evaluator.evaluate(id, input_data, model_evaluator, output_data);
             decision_service_evaluator.evaluate(id, input_data, model_evaluator, output_data);
           });
-          output_data.set_entry(&name, function_definition.clone())
+          output_data.create_entry(&qname, function_definition.clone())
         }
       }
     },

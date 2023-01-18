@@ -111,15 +111,15 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
-        let variable_name = required_decision.variable().feel_name();
+        let variable_name = required_decision.variable().qname();
         //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
         let variable_type_ref = if required_decision.variable().type_ref().is_some() {
           required_decision.variable().type_ref().as_ref().unwrap().clone()
         } else {
           "Any".to_string()
         };
-        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut knowledge_requirements_ctx);
-        knowledge_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, required_decision.variable().feel_name(), &mut knowledge_requirements_ctx);
+        knowledge_requirements_ctx.create_entry(variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
       }
@@ -127,9 +127,9 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_input() {
       // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
-        let variable_name = required_input.variable().feel_name();
+        let variable_name = required_input.variable().qname();
         let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, &item_definition_context_evaluator);
-        input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
+        input_requirements_ctx.create_entry(variable_name, Value::FeelType(variable_type));
       }
     }
   }
