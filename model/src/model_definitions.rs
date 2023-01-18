@@ -176,7 +176,7 @@ impl ModelDefinitions {
   }
 }
 
-///
+/// Prepares UUID based on provided optional namespace and optional identifier.
 fn prepare_id(opt_namespace: Option<&str>, opt_id: &Option<String>) -> String {
   let id = opt_id.as_ref().unwrap_or(&Uuid::new_v4().to_string()).clone();
   if let Some(namespace) = opt_namespace {
