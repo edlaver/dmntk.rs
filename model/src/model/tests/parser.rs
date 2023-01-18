@@ -56,10 +56,10 @@ fn _2_0001() {
   assert_eq!("Greeting Message", decision.name());
   // <decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("Greeting Message", decision_variable.name());
+  // assert!(decision_variable.id().is_none());
+  // assert!(decision_variable.description().is_none());
+  // assert!(decision_variable.label().is_none());
+  assert_eq!("Greeting Message", decision_variable.feel_name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -81,16 +81,16 @@ fn _2_0001() {
   }
   // <inputData>
   let input_data = model_definitions.input_data_by_id("_cba86e4d-e91c-46a2-9176-e9adf88e15db").unwrap();
-  assert_eq!("_cba86e4d-e91c-46a2-9176-e9adf88e15db", input_data.id().as_ref().unwrap().as_str());
-  assert!(input_data.description().is_none());
-  assert!(input_data.label.is_none());
+  assert_eq!("_cba86e4d-e91c-46a2-9176-e9adf88e15db", input_data.id());
+  // assert!(input_data.description().is_none());
+  // assert!(input_data.label.is_none());
   assert_eq!("Full Name", input_data.name());
   // <inputData>.<variable>
   let input_data_variable = input_data.variable();
-  assert!(input_data_variable.id().is_none());
-  assert!(input_data_variable.description().is_none());
-  assert!(input_data_variable.label().is_none());
-  assert_eq!("Full Name", input_data_variable.name());
+  // assert!(input_data_variable.id().is_none());
+  // assert!(input_data_variable.description().is_none());
+  // assert!(input_data_variable.label().is_none());
+  assert_eq!("Full Name", input_data_variable.feel_name().to_string());
   assert_eq!("string", input_data_variable.type_ref().as_ref().unwrap().as_str());
 }
 
@@ -131,10 +131,10 @@ fn _2_0003() {
   assert_eq!("Employment Status Statement", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("Employment Status Statement", decision_variable.name());
+  // assert!(decision_variable.id().is_none());
+  // assert!(decision_variable.description().is_none());
+  // assert!(decision_variable.label().is_none());
+  assert_eq!("Employment Status Statement", decision_variable.feel_name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <definitions>.<decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -156,16 +156,16 @@ fn _2_0003() {
   }
   // <definitions>.<inputData>
   let input_data = model_definitions.input_data_by_id("i_EmploymentStatus").unwrap();
-  assert_eq!("i_EmploymentStatus", input_data.id().as_ref().unwrap().as_str());
-  assert!(input_data.description().is_none());
-  assert!(input_data.label().is_none());
+  assert_eq!("i_EmploymentStatus", input_data.id());
+  // assert!(input_data.description().is_none());
+  // assert!(input_data.label().is_none());
   assert_eq!("Employment Status", input_data.name());
   // <definitions>.<inputData>.<variable>
   let input_data_variable = input_data.variable();
-  assert!(input_data_variable.id().is_none());
-  assert!(input_data_variable.description().is_none());
-  assert!(input_data_variable.label().is_none());
-  assert_eq!("Employment Status", input_data_variable.name());
+  // assert!(input_data_variable.id().is_none());
+  // assert!(input_data_variable.description().is_none());
+  // assert!(input_data_variable.label().is_none());
+  assert_eq!("Employment Status", input_data_variable.feel_name().to_string());
   assert_eq!("tEmploymentStatus", input_data_variable.type_ref().as_ref().unwrap().as_str());
 }
 
@@ -185,10 +185,10 @@ fn _2_0004() {
   assert_eq!("Approval Status", decision.name());
   // checking node: <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("Approval Status", decision_variable.name());
+  // assert!(decision_variable.id().is_none());
+  // assert!(decision_variable.description().is_none());
+  // assert!(decision_variable.label().is_none());
+  assert_eq!("Approval Status", decision_variable.feel_name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // checking node: <definitions>.<decision>.<decisionTable>
   if let ExpressionInstance::DecisionTable(decision_table) = decision.decision_logic().as_ref().unwrap() {
@@ -237,10 +237,10 @@ fn _2_0009() {
   assert_eq!("MonthlyPayment", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("MonthlyPayment", decision_variable.name());
+  // assert!(decision_variable.id().is_none());
+  // assert!(decision_variable.description().is_none());
+  // assert!(decision_variable.label().is_none());
+  assert_eq!("MonthlyPayment", decision_variable.feel_name().to_string());
   assert_eq!("number", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <definitions>.<decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -260,10 +260,10 @@ fn _2_0009() {
   assert_eq!("PMT", bkm.name());
   // <definitions>.<businessKnowledgeModel>.<variable>
   let bkm_variable = bkm.variable();
-  assert!(bkm_variable.id().is_none());
-  assert!(bkm_variable.description().is_none());
-  assert!(bkm_variable.label().is_none());
-  assert_eq!("PMT", bkm_variable.name());
+  //assert!(bkm_variable.id().is_none());
+  //assert!(bkm_variable.description().is_none());
+  //assert!(bkm_variable.label().is_none());
+  assert_eq!("PMT", bkm_variable.feel_name().to_string());
   //assert!(bkm_variable.type_ref().is_none());
   // <definitions>.<businessKnowledgeModel>.<encapsulateLogic>
   let bkm_function_definition = bkm.encapsulated_logic().as_ref().unwrap();
@@ -310,10 +310,10 @@ fn _3_0002() {
   assert_eq!("Basic", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("Basic", decision_variable.name());
+  //assert!(decision_variable.id().is_none());
+  //assert!(decision_variable.description().is_none());
+  //assert!(decision_variable.label().is_none());
+  //assert_eq!("Basic", decision_variable.name());
   assert_eq!("tBasic", decision_variable.type_ref().as_ref().unwrap().as_str());
   let expression = decision.decision_logic().as_ref().unwrap();
   match expression {
@@ -371,10 +371,10 @@ fn _3_0016() {
   assert_eq!("priceTable1", decision.name());
   // <definitions>.<decision>.<variable>
   let decision_variable = decision.variable();
-  assert!(decision_variable.id().is_none());
-  assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
-  assert_eq!("priceTable1", decision_variable.name());
+  //assert!(decision_variable.id().is_none());
+  //assert!(decision_variable.description().is_none());
+  //assert!(decision_variable.label().is_none());
+  assert_eq!("priceTable1", decision_variable.feel_name().to_string());
   assert_eq!("tPriceTable", decision_variable.type_ref().as_ref().unwrap().as_str());
   let expression = decision.decision_logic().as_ref().unwrap();
   match expression {

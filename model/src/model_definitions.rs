@@ -33,15 +33,80 @@
 //! ???
 
 use crate::model::*;
+use dmntk_common::HRef;
 use dmntk_feel::Name;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 #[derive(Debug)]
+pub struct DefInformationItem {
+  feel_name: Name,
+  type_ref: Option<String>,
+}
+
+impl From<(&Option<Name>, &InformationItem)> for DefInformationItem {
+  ///
+  fn from(value: (&Option<Name>, &InformationItem)) -> Self {
+    let information_item = value.1;
+    Self {
+      feel_name: information_item.feel_name().clone(),
+      type_ref: information_item.type_ref().clone(),
+    }
+  }
+}
+
+impl DefInformationItem {
+  /// Returns a reference to `FEEL` name.
+  pub fn feel_name(&self) -> &Name {
+    &self.feel_name
+  }
+
+  /// Returns a reference to optional type reference.
+  pub fn type_ref(&self) -> &Option<String> {
+    &self.type_ref
+  }
+}
+
+#[derive(Debug)]
+pub struct DefInputData {
+  id: String,
+  name: String,
+  variable: DefInformationItem,
+}
+
+impl From<(&Option<Name>, &InputData)> for DefInputData {
+  ///
+  fn from((opt_import_name, input_data): (&Option<Name>, &InputData)) -> Self {
+    Self {
+      id: generate_id(input_data.id()),
+      name: input_data.name().to_string(),
+      variable: (opt_import_name, input_data.variable()).into(),
+    }
+  }
+}
+
+impl DefInputData {
+  /// Returns a reference to identifier.
+  pub fn id(&self) -> &str {
+    &self.id
+  }
+
+  /// Returns a reference to name.
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Returns reference to a variable.
+  pub fn variable(&self) -> &DefInformationItem {
+    &self.variable
+  }
+}
+
+#[derive(Debug)]
 pub struct DefBusinessKnowledgeModel {
   id: String,
   name: String,
-  variable: InformationItem,
+  variable: DefInformationItem,
   encapsulated_logic: Option<FunctionDefinition>,
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
@@ -49,13 +114,14 @@ pub struct DefBusinessKnowledgeModel {
 impl From<(&Option<Name>, &BusinessKnowledgeModel)> for DefBusinessKnowledgeModel {
   ///
   fn from(value: (&Option<Name>, &BusinessKnowledgeModel)) -> Self {
-    let bkm = value.1;
+    let opt_import_name = value.0;
+    let business_knowledge_model = value.1;
     Self {
-      id: generate_id(bkm.id()),
-      name: bkm.name().to_string(),
-      variable: bkm.variable().clone(),
-      encapsulated_logic: bkm.encapsulated_logic().clone(),
-      knowledge_requirements: bkm.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      id: generate_id(business_knowledge_model.id()),
+      name: business_knowledge_model.name().to_string(),
+      variable: (opt_import_name, business_knowledge_model.variable()).into(),
+      encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
+      knowledge_requirements: business_knowledge_model.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
     }
   }
 }
@@ -72,7 +138,7 @@ impl DefBusinessKnowledgeModel {
   }
 
   /// Returns reference to a variable.
-  pub fn variable(&self) -> &InformationItem {
+  pub fn variable(&self) -> &DefInformationItem {
     &self.variable
   }
 
@@ -91,22 +157,22 @@ impl DefBusinessKnowledgeModel {
 pub struct DefDecision {
   id: String,
   name: String,
-  variable: InformationItem,
+  variable: DefInformationItem,
   decision_logic: Option<ExpressionInstance>,
   information_requirements: Vec<InformationRequirement>,
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<&Decision> for DefDecision {
+impl From<(&Option<Name>, &Decision)> for DefDecision {
   ///
-  fn from(value: &Decision) -> Self {
+  fn from((opt_import_name, decision): (&Option<Name>, &Decision)) -> Self {
     Self {
-      id: generate_id(value.id()),
-      name: value.name().to_string(),
-      variable: value.variable().clone(),
-      decision_logic: value.decision_logic().clone(),
-      information_requirements: value.information_requirements().iter().map(|a| a.as_ref().clone()).collect(),
-      knowledge_requirements: value.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      id: generate_id(decision.id()),
+      name: decision.name().to_string(),
+      variable: (opt_import_name, decision.variable()).into(),
+      decision_logic: decision.decision_logic().clone(),
+      information_requirements: decision.information_requirements().iter().map(|a| a.as_ref().clone()).collect(),
+      knowledge_requirements: decision.knowledge_requirements().iter().map(|a| a.as_ref().clone()).collect(),
     }
   }
 }
@@ -123,7 +189,7 @@ impl DefDecision {
   }
 
   /// Returns reference to a variable.
-  pub fn variable(&self) -> &InformationItem {
+  pub fn variable(&self) -> &DefInformationItem {
     &self.variable
   }
 
@@ -143,18 +209,80 @@ impl DefDecision {
   }
 }
 
+#[derive(Debug)]
+pub struct DefDecisionService {
+  id: String,
+  name: String,
+  variable: DefInformationItem,
+  input_decisions: Vec<HRef>,
+  output_decisions: Vec<HRef>,
+  encapsulated_decisions: Vec<HRef>,
+  input_data: Vec<HRef>,
+}
+
+impl From<(&Option<Name>, &DecisionService)> for DefDecisionService {
+  ///
+  fn from((opt_import_name, decision_service): (&Option<Name>, &DecisionService)) -> Self {
+    Self {
+      id: generate_id(decision_service.id()),
+      name: decision_service.name().to_string(),
+      variable: (opt_import_name, decision_service.variable()).into(),
+      input_decisions: decision_service.input_decisions().clone(),
+      output_decisions: decision_service.output_decisions().clone(),
+      encapsulated_decisions: decision_service.encapsulated_decisions().clone(),
+      input_data: decision_service.input_data().clone(),
+    }
+  }
+}
+
+impl DefDecisionService {
+  /// Returns a reference to identifier.
+  pub fn id(&self) -> &str {
+    &self.id
+  }
+
+  /// Returns a reference to name.
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Returns reference to a variable.
+  pub fn variable(&self) -> &DefInformationItem {
+    &self.variable
+  }
+
+  /// Returns a reference to collection of references to input [Decision]s for this [DecisionService].
+  pub fn input_decisions(&self) -> &Vec<HRef> {
+    &self.input_decisions
+  }
+
+  /// Returns a reference to collection of references to encapsulated [Decision]s for this [DecisionService].
+  pub fn encapsulated_decisions(&self) -> &Vec<HRef> {
+    &self.encapsulated_decisions
+  }
+  /// Returns a reference to collection of references to output [Decision]s for this [DecisionService].
+  pub fn output_decisions(&self) -> &Vec<HRef> {
+    &self.output_decisions
+  }
+
+  /// Returns a reference to collection of references to [InputData] for this [DecisionService].
+  pub fn input_data(&self) -> &Vec<HRef> {
+    &self.input_data
+  }
+}
+
 /// All definitions needed to build complete model evaluator from DMN models (with imports).
 pub struct DefDefinitions {
   /// Item definitions.
   item_definitions: Vec<ItemDefinition>,
   /// Map of input data definitions indexed by identifier.
-  input_data: HashMap<String, InputData>,
+  input_data: HashMap<String, DefInputData>,
   /// Map of business_knowledge models indexed by identifier.
   business_knowledge_models: HashMap<String, DefBusinessKnowledgeModel>,
   /// Map of decisions indexed by identifier.
   decisions: HashMap<String, DefDecision>,
   /// Map of decision services indexed by identifier.
-  decision_services: HashMap<String, DecisionService>,
+  decision_services: HashMap<String, DefDecisionService>,
   /// Map of knowledge sources indexed by identifier.
   knowledge_sources: HashMap<String, KnowledgeSource>,
 }
@@ -188,18 +316,16 @@ impl From<&Vec<(Option<Name>, &Definitions)>> for DefDefinitions {
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
-            input_data.insert(prepare_id(namespace, inner.id()), inner.clone());
+            input_data.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
             business_knowledge_models.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
           }
           DrgElement::Decision(inner) => {
-            decisions.insert(prepare_id(namespace, inner.id()), inner.into());
+            decisions.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
           }
           DrgElement::DecisionService(inner) => {
-            if let Some(id) = inner.id() {
-              decision_services.insert(id.clone(), inner.clone());
-            }
+            decision_services.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
           }
           DrgElement::KnowledgeSource(inner) => {
             if let Some(id) = inner.id() {
@@ -249,25 +375,25 @@ impl DefDefinitions {
   }
 
   /// Returns a vector of references to decision services.
-  pub fn decision_services(&self) -> Vec<&DecisionService> {
+  pub fn decision_services(&self) -> Vec<&DefDecisionService> {
     self.decision_services.values().collect()
   }
 
   /// Returns an optional reference to [DecisionService] with specified identifier
   /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_id(&self, id: &str) -> Option<&DecisionService> {
+  pub fn decision_service_by_id(&self, id: &str) -> Option<&DefDecisionService> {
     self.decision_services.get(id)
   }
 
   ///
-  pub fn input_data(&self) -> Vec<&InputData> {
+  pub fn input_data(&self) -> Vec<&DefInputData> {
     self.input_data.values().collect()
   }
 
   /// Returns an optional reference to [InputData] with specified identifier
   /// or [None] when such [InputData] was not found among
   /// instances of [DrgElement]).
-  pub fn input_data_by_id(&self, id: &str) -> Option<&InputData> {
+  pub fn input_data_by_id(&self, id: &str) -> Option<&DefInputData> {
     self.input_data.get(id)
   }
 

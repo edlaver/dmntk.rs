@@ -50,10 +50,6 @@ pub fn err_input_data_without_type_reference(s: &str) -> DmntkError {
   ModelEvaluatorError(format!("input data with identifier '{s}' has no type reference definition")).into()
 }
 
-pub fn err_empty_identifier() -> DmntkError {
-  ModelEvaluatorError("empty identifier".into()).into()
-}
-
 pub fn err_empty_literal_expression() -> DmntkError {
   ModelEvaluatorError("empty literal expression".into()).into()
 }

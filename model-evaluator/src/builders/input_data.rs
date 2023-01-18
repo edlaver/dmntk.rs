@@ -34,11 +34,9 @@
 
 use crate::builders::item_definition::ItemDefinitionEvaluator;
 use crate::builders::variable::{Variable, VariableEvaluatorFn};
-use crate::errors::err_empty_identifier;
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
-use dmntk_model::model::{DmnElement, RequiredVariable};
 use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 
@@ -55,7 +53,7 @@ impl InputDataEvaluator {
   /// Builds a new input data evaluator.
   pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
-      let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
+      let input_data_id = input_data.id();
       let variable = Variable::try_from(input_data.variable())?;
       let evaluator = variable.build_evaluator()?;
       self.evaluators.insert(input_data_id.to_owned(), (variable, evaluator));

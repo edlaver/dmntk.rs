@@ -38,7 +38,7 @@ use dmntk_common::ascii_ctrl::*;
 use dmntk_common::{ascii256, ascii_none, Jsonify};
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
-use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
+use dmntk_model::model::{DmnElement, NamedElement};
 use dmntk_model::DefDefinitions;
 
 /// Available command-line actions.

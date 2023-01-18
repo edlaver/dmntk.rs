@@ -34,7 +34,7 @@ use crate::builders::{information_item_type, ItemDefinitionEvaluator, ItemDefini
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
-use dmntk_model::model::{InformationItem, NamedElement};
+use dmntk_model::DefInformationItem;
 
 /// Type of closure that evaluates values from variable definition.
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
@@ -47,10 +47,10 @@ pub struct Variable {
   feel_type: FeelType,
 }
 
-impl TryFrom<&InformationItem> for Variable {
+impl TryFrom<&DefInformationItem> for Variable {
   type Error = DmntkError;
   ///
-  fn try_from(value: &InformationItem) -> Result<Self, Self::Error> {
+  fn try_from(value: &DefInformationItem) -> Result<Self, Self::Error> {
     let name = value.feel_name().clone();
     let type_ref = value.type_ref().clone();
     Ok(Self {

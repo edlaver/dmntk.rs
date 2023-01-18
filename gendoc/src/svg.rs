@@ -155,7 +155,7 @@ fn get_path_to_knowledge_source(bounds: &DcBounds) -> String {
 }
 
 /// Prepares input data shape.
-pub fn svg_input_data(mut indent: usize, shape: &DmnShape, input_data: &InputData) -> String {
+pub fn svg_input_data(mut indent: usize, shape: &DmnShape, input_data: &DefInputData) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let radius = shape.bounds.height / 2.0;

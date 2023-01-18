@@ -38,8 +38,7 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
-use dmntk_model::model::{DmnElement, InputData, NamedElement, RequiredVariable};
-use dmntk_model::DefDefinitions;
+use dmntk_model::{DefDefinitions, DefInputData};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
@@ -55,7 +54,7 @@ impl InputDataContextEvaluator {
   /// Creates a new input data context evaluator.
   pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
-      let input_data_id = input_data.id().as_ref().ok_or_else(err_empty_identifier)?;
+      let input_data_id = input_data.id();
       let evaluator = input_data_context_evaluator(input_data)?;
       self.evaluators.insert(input_data_id.to_owned(), evaluator);
     }
@@ -72,7 +71,7 @@ impl InputDataContextEvaluator {
 }
 
 ///
-pub fn input_data_context_evaluator(input_data: &InputData) -> Result<InputDataContextEvaluatorFn> {
+pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDataContextEvaluatorFn> {
   let type_ref = input_data
     .variable()
     .type_ref()
