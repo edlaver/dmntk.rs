@@ -41,15 +41,14 @@ extern crate dmntk_recognizer;
 #[macro_use]
 extern crate lazy_static;
 
-mod b;
 mod builders;
 mod errors;
+mod evaluators;
 mod model_evaluator;
 
-pub mod model_definitions;
 #[cfg(test)]
 mod tests;
 
-pub use b::model_builder::ModelBuilder;
-pub use builders::decision_table::build_decision_table_evaluator;
+pub use builders::model_builder::ModelBuilder;
+pub use evaluators::decision_table::build_decision_table_evaluator;
 pub use model_evaluator::ModelEvaluator;

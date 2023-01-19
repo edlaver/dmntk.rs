@@ -32,8 +32,8 @@
 
 //! ???
 
-use crate::builders::type_ref_to_feel_type;
 use crate::errors::err_invalid_item_definition_type;
+use crate::evaluators::type_ref_to_feel_type;
 use dmntk_common::Result;
 use dmntk_common::{gen_id, HRef};
 use dmntk_feel::Name;

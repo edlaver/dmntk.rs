@@ -30,9 +30,9 @@
  * limitations under the License.
  */
 
-use crate::builders::*;
+use crate::builders::model_definitions::DefDefinitions;
 use crate::errors::*;
-use crate::model_definitions::DefDefinitions;
+use crate::evaluators::*;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;

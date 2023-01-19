@@ -30,8 +30,8 @@
  * limitations under the License.
  */
 
-use crate::builders::{ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
-use crate::model_definitions::DefInformationItem;
+use crate::builders::model_definitions::DefInformationItem;
+use crate::evaluators::{ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
