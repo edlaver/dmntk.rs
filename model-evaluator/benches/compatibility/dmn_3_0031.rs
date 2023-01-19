@@ -32,37 +32,48 @@
 
 use super::build_model_evaluator;
 use crate::compatibility::{assert_decision, context};
+use dmntk_feel::context::FeelContext;
 use dmntk_model_evaluator::ModelEvaluator;
 use std::sync::Arc;
 use test::Bencher;
 
 lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0031);
+  static ref CTX: FeelContext = context(r#"{inputA: 10, inputB: 5}"#);
 }
 
 #[bench]
-#[ignore]
 fn _0001(b: &mut Bencher) {
-  let ctx = context(r#"{}"#);
   let invocable_name = "fn invocation positional parameters";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &CTX,
+    r#"{divisionResultPositional: 2, multiplicationResultPositional: 50, sumResult: 15}"#,
+  );
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
-#[ignore]
 fn _0002(b: &mut Bencher) {
-  let ctx = context(r#"{}"#);
   let invocable_name = "fn invocation named parameters";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &CTX,
+    r#"{divisionResultNamed: 2, multiplicationResultNamed: 50, subResult: 5, subResultMixed: -5}"#,
+  );
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
-#[ignore]
 fn _0003(b: &mut Bencher) {
-  let ctx = context(r#"{}"#);
   let invocable_name = "fn invocation complex parameters";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &CTX,
+    r#"{circumference: 94.24776, functionInvocationInParameter: 200, functionInvocationLiteralExpressionInParameter: 500}"#,
+  );
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }

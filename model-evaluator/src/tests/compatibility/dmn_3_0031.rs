@@ -36,25 +36,35 @@ use std::sync::Arc;
 
 lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0031);
+  static ref CTX: FeelContext = context(r#"{inputA: 10, inputB: 5}"#);
 }
 
 #[test]
-#[ignore]
 fn _0001() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "fn invocation positional parameters", &ctx, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "fn invocation positional parameters",
+    &CTX,
+    r#"{divisionResultPositional: 2, multiplicationResultPositional: 50, sumResult: 15}"#,
+  );
 }
 
 #[test]
-#[ignore]
 fn _0002() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "fn invocation named parameters", &ctx, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "fn invocation named parameters",
+    &CTX,
+    r#"{divisionResultNamed: 2, multiplicationResultNamed: 50, subResult: 5, subResultMixed: -5}"#,
+  );
 }
 
 #[test]
-#[ignore]
 fn _0003() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "fn invocation complex parameters", &ctx, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "fn invocation complex parameters",
+    &CTX,
+    r#"{circumference: 94.24776, functionInvocationInParameter: 200, functionInvocationLiteralExpressionInParameter: 500}"#,
+  );
 }
