@@ -41,11 +41,15 @@ lazy_static! {
 }
 
 #[bench]
-#[ignore]
 fn _0001(b: &mut Bencher) {
   let input_data = r#"{Grade: "A",Student's name: "John Doe",Teacher's Evaluation: "A very motivated, hard-working student!"}"#;
   let ctx = context(input_data);
   let invocable_name = "Evaluation DS";
-  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null"#);
+  assert_decision_service(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    input_data,
+    r#""John Doe is Graduated with merit with grade: A and evaluation: A very motivated, hard-working student!""#,
+  );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

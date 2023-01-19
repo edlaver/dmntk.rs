@@ -265,29 +265,41 @@ fn _0028(b: &mut Bencher) {
 }
 
 #[bench]
-#[ignore]
 fn _0029(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "ds_invoke_002_with_number";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(feel-evaluator: expected built-in function name or function definition, actual value is null(context has no value for key '["decisionService_002"]'))"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(after coercion)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
 #[bench]
-#[ignore]
 fn _0030(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "ds_invoke_002_with_singleton_list";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &ctx,
-    r#"null(feel-evaluator: expected built-in function name or function definition, actual value is null(context has no value for key '["decisionService_002"]'))"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""foo""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+}
+
+#[bench]
+fn _0031(b: &mut Bencher) {
+  let ctx = context(r#"{}"#);
+  let invocable_name = "decisionService_001";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(after coercion)"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+}
+
+#[bench]
+fn _0032(b: &mut Bencher) {
+  let ctx = context(r#"{decisionService_002_input_1: 10}"#);
+  let invocable_name = "decisionService_002";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(after coercion)"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+}
+
+#[bench]
+fn _0033(b: &mut Bencher) {
+  let ctx = context(r#"{decisionService_002_input_1: ["foo"]}"#);
+  let invocable_name = "decision_ds_002";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""foo""#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

@@ -41,7 +41,6 @@ lazy_static! {
 }
 
 #[bench]
-#[ignore]
 fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "nested_list_001";
@@ -58,7 +57,6 @@ fn _0002(b: &mut Bencher) {
 }
 
 #[bench]
-#[ignore]
 fn _0003(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "nested_list_003";
