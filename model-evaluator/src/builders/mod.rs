@@ -30,5 +30,6 @@
  * limitations under the License.
  */
 
+mod item_definition_type;
 pub(crate) mod model_builder;
 pub mod model_definitions;

@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+use crate::builders::item_definition_type::ItemDefinitionTypeEvaluatorBuilder;
+use crate::builders::model_definitions::DefDefinitions;
 use dmntk_common::Result;
 use dmntk_model::model::Definitions;
 
@@ -44,8 +46,8 @@ pub struct ModelBuilder {
   // item_definition_evaluator_builder: ItemDefinitionEvaluatorBuilder,
   // /// Item definition context evaluator builder.
   // item_definition_context_evaluator_builder: ItemDefinitionContextEvaluatorBuilder,
-  // /// Item definition type evaluator builder.
-  // item_definition_type_evaluator_builder: ItemDefinitionTypeEvaluatorBuilder,
+  /// Item definition type evaluator builder.
+  item_definition_type_evaluator_builder: ItemDefinitionTypeEvaluatorBuilder,
   // /// Business knowledge model evaluator builder.
   // business_knowledge_model_evaluator_builder: BusinessKnowledgeModelEvaluatorBuilder,
   // /// Decision evaluator builder
@@ -58,15 +60,14 @@ pub struct ModelBuilder {
 
 impl ModelBuilder {
   ///
-  pub fn new(defs: &[&Definitions]) -> Result<Self> {
-    let model_builder = ModelBuilder::default();
-    for _definitions in defs.iter() {
-      // model_builder.input_data_evaluator_builder.build(definitions)?;
-      // model_builder.input_data_context_evaluator_builder.build(definitions)?;
-      // model_builder.item_definition_evaluator_builder.build(definitions)?;
-      // model_builder.item_definition_context_evaluator_builder.build(definitions)?;
-      // model_builder.item_definition_type_evaluator_builder.build(definitions)?;
-    }
+  pub fn new(defs: &Definitions) -> Result<Self> {
+    let definitions: DefDefinitions = defs.into();
+    let mut model_builder = ModelBuilder::default();
+    // model_builder.input_data_evaluator_builder.build(definitions)?;
+    // model_builder.input_data_context_evaluator_builder.build(definitions)?;
+    // model_builder.item_definition_evaluator_builder.build(definitions)?;
+    // model_builder.item_definition_context_evaluator_builder.build(definitions)?;
+    model_builder.item_definition_type_evaluator_builder.build(&definitions)?;
     Ok(model_builder)
   }
   /*
