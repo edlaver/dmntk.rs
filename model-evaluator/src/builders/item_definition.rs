@@ -33,13 +33,13 @@
 //! Builder for item definition evaluators.
 
 use crate::errors::*;
+use crate::model_definitions::{DefDefinitions, DefItemDefinition};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::ItemDefinitionType;
-use dmntk_model::{DefDefinitions, DefItemDefinition};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data conformant with item definition.

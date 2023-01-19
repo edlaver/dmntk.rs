@@ -32,11 +32,10 @@
 
 //! ???
 
-use crate::model::*;
-use dmntk_common::HRef;
+use dmntk_common::{gen_id, HRef};
 use dmntk_feel::Name;
+use dmntk_model::model::*;
 use std::collections::HashMap;
-use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct DefInformationItem {
@@ -500,12 +499,12 @@ impl DefDefinitions {
 
 /// Generates a new identifier when not provided..
 fn generate_id(opt_id: &Option<String>) -> String {
-  opt_id.as_ref().unwrap_or(&Uuid::new_v4().to_string()).clone()
+  opt_id.as_ref().unwrap_or(&gen_id()).clone()
 }
 
 /// Prepares UUID based on provided optional namespace and optional identifier.
 fn prepare_id(opt_namespace: Option<&str>, opt_id: &Option<String>) -> String {
-  let id = opt_id.as_ref().unwrap_or(&Uuid::new_v4().to_string()).clone();
+  let id = opt_id.as_ref().unwrap_or(&gen_id()).clone();
   if let Some(namespace) = opt_namespace {
     format!("{namespace}#{id}")
   } else {

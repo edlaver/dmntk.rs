@@ -31,10 +31,10 @@
  */
 
 use crate::builders::{ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
+use crate::model_definitions::DefInformationItem;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
-use dmntk_model::DefInformationItem;
 
 /// Type of closure that evaluates values from variable definition.
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;

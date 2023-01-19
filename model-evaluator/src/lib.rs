@@ -46,6 +46,7 @@ mod builders;
 mod errors;
 mod model_evaluator;
 
+pub mod model_definitions;
 #[cfg(test)]
 mod tests;
 

@@ -567,6 +567,7 @@ version = "0.1.0-dev"
 dependencies = [
  "serde",
  "uriparse",
+ "uuid",
 ]
 
 [[package]]
@@ -666,7 +667,6 @@ dependencies = [
  "dmntk-feel",
  "dmntk-feel-parser",
  "roxmltree",
- "uuid",
 ]
 
 [[package]]

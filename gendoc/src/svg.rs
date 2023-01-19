@@ -34,7 +34,6 @@
 
 use crate::{NL, WS};
 use dmntk_model::model::*;
-use dmntk_model::*;
 use std::fmt::Write as _;
 
 const AMPLITUDE: f64 = 20.0;
@@ -54,7 +53,7 @@ pub fn svg_end(indent: usize) -> String {
 }
 
 /// Prepares decision shape.
-pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &DefDecision) -> String {
+pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &Decision) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let text = get_label_text(shape, decision.name());
@@ -77,10 +76,10 @@ pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &DefDecision)
 }
 
 /// Prepares business knowledge model shape.
-pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &DefBusinessKnowledgeModel) -> String {
+pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, bkm: &BusinessKnowledgeModel) -> String {
   indent += 4;
   let mut svg_content = String::new();
-  let text = get_label_text(shape, business_knowledge.name());
+  let text = get_label_text(shape, bkm.name());
   let shape_class = get_shape_shared_style_id(shape);
   let label_class = get_shape_label_shared_style_id(shape);
   let (x, y, w, h) = (shape.bounds.x, shape.bounds.y, shape.bounds.width, shape.bounds.height);
@@ -155,7 +154,7 @@ fn get_path_to_knowledge_source(bounds: &DcBounds) -> String {
 }
 
 /// Prepares input data shape.
-pub fn svg_input_data(mut indent: usize, shape: &DmnShape, input_data: &DefInputData) -> String {
+pub fn svg_input_data(mut indent: usize, shape: &DmnShape, input_data: &InputData) -> String {
   indent += 4;
   let mut svg_content = String::new();
   let radius = shape.bounds.height / 2.0;

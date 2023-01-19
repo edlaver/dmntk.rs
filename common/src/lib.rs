@@ -34,12 +34,15 @@
 
 extern crate serde;
 extern crate uriparse;
+extern crate uuid;
 
 pub mod ascii_ctrl;
 mod errors;
 mod href;
+mod idents;
 mod jsonify;
 
 pub use errors::{DmntkError, Result};
 pub use href::{HRef, OptHRef};
+pub use idents::gen_id;
 pub use jsonify::Jsonify;

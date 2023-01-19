@@ -34,11 +34,11 @@
 
 use crate::builders::{type_ref_to_feel_type, ItemDefinitionContextEvaluator};
 use crate::errors::*;
+use crate::model_definitions::{DefDefinitions, DefInputData};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
-use dmntk_model::{DefDefinitions, DefInputData};
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
@@ -109,10 +109,10 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
 mod tests {
   use crate::builders::input_data_context::InputDataContextEvaluator;
   use crate::builders::ItemDefinitionContextEvaluator;
+  use crate::model_definitions::DefDefinitions;
   use dmntk_examples::input_data::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::FeelType;
-  use dmntk_model::DefDefinitions;
 
   /// Utility function for building input data context evaluator from definitions,
   /// and item definition context evaluator from definitions.

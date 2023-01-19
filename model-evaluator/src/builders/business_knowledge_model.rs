@@ -34,6 +34,7 @@
 
 use crate::builders::*;
 use crate::errors::*;
+use crate::model_definitions::{DefBusinessKnowledgeModel, DefDefinitions};
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
@@ -41,7 +42,6 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
-use dmntk_model::{DefBusinessKnowledgeModel, DefDefinitions};
 use std::collections::HashMap;
 use std::sync::Arc;
 

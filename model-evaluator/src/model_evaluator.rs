@@ -32,12 +32,12 @@
 
 use crate::builders::*;
 use crate::errors::*;
+use crate::model_definitions::DefDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
 use dmntk_model::model::Definitions;
-use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock, RwLockReadGuard};
 

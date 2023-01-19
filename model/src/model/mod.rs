@@ -368,53 +368,151 @@ impl Definitions {
   pub fn namespace(&self) -> &str {
     &self.namespace
   }
+
   /// Returns the reference to optional expression language used within the scope of this [Definitions].
   pub fn expression_language(&self) -> &Option<String> {
     &self.expression_language
   }
+
   /// Returns reference to the type language used within the scope of this [Definitions].
   pub fn type_language(&self) -> &Option<String> {
     &self.type_language
   }
+
   /// Returns reference to the name of the tool used to export the XML serialization.
   pub fn exporter(&self) -> &Option<String> {
     &self.exporter
   }
+
   /// Returns reference to the version of the tool used to export the XML serialization.
   pub fn exporter_version(&self) -> &Option<String> {
     &self.exporter_version
   }
+
   /// Returns reference to the container of instances of [ItemDefinition] contained in this [Definitions].
   pub fn item_definitions(&self) -> &Vec<ItemDefinition> {
     &self.item_definitions
   }
+
   /// Returns mutable reference to the container of instances of [ItemDefinition] contained in this [Definitions].
   pub fn item_definitions_mut(&mut self) -> &mut Vec<ItemDefinition> {
     &mut self.item_definitions
   }
+
   /// Returns an optional reference to [ItemDefinition] with specified name
   /// or [None] when such [ItemDefinition] was not found in this [Definitions].
   pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {
     self.item_definitions.iter().find(|v| v.name() == name)
   }
+
   /// Returns reference to the container of instances of [BusinessContextElement] contained in this [Definitions].
   pub fn business_context_elements(&self) -> &Vec<BusinessContextElementInstance> {
     &self.business_context_elements
   }
+
   /// Returns reference to the container of instances of [Import] contained in this [Definitions].
   pub fn imports(&self) -> &Vec<Import> {
     &self.imports
   }
+
   /// Returns reference to optional [Dmndi] container.
   pub fn dmndi(&self) -> &Option<Dmndi> {
     &self.dmndi
   }
+
   /// Returns reference to [DrgElements](DrgElement) container.
   pub fn drg_elements(&self) -> Iter<DrgElement> {
     self.drg_elements.iter()
   }
+
+  /// Returns all decision definitions.
+  pub fn decisions(&self) -> Vec<Decision> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::Decision(decision) = drg_element {
+          Some(decision.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Returns all input data definitions.
+  pub fn input_data(&self) -> Vec<InputData> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::InputData(input_data) = drg_element {
+          Some(input_data.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Returns decision with specified identifier.
+  pub fn get_decision(&self, id: &str) -> Option<Decision> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::Decision(decision) = drg_element {
+        if let Some(decision_id) = decision.id() {
+          if decision_id == id {
+            return Some(decision.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns input data with specified identifier.
+  pub fn get_input_data(&self, id: &str) -> Option<InputData> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::InputData(input_data) = drg_element {
+        if let Some(decision_id) = input_data.id() {
+          if decision_id == id {
+            return Some(input_data.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns business knowledge model with specified identifier.
+  pub fn get_business_knowledge_model(&self, id: &str) -> Option<BusinessKnowledgeModel> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::BusinessKnowledgeModel(business_knowledge_model) = drg_element {
+        if let Some(decision_id) = business_knowledge_model.id() {
+          if decision_id == id {
+            return Some(business_knowledge_model.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns knowledge source with specified identifier.
+  pub fn get_knowledge_source(&self, id: &str) -> Option<KnowledgeSource> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
+        if let Some(decision_id) = knowledge_source.id() {
+          if decision_id == id {
+            return Some(knowledge_source.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
   /// Returns a requirement with specified identifier.
-  pub fn requirement(&self, id: &str) -> Option<Requirement> {
+  pub fn get_requirement(&self, id: &str) -> Option<Requirement> {
     for drg_element in &self.drg_elements {
       match drg_element {
         DrgElement::Decision(decision) => {

@@ -29,6 +29,7 @@ edition = "2021"
 actix-web = "4.2.1"
 base64 = "0.21.0"
 uuid = { version = "1.2.2", features = ["v4"] }
+uriparse = "0.6.4"
 dmntk-common = { path = "common" }
 dmntk-evaluator = { path = "evaluator" }
 dmntk-examples = { path = "examples" }

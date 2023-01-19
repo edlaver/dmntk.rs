@@ -44,6 +44,7 @@ mod item_definition_type;
 mod variable;
 
 use crate::errors::*;
+use crate::model_definitions::{DefDefinitions, DefItemDefinition};
 use crate::ModelEvaluator;
 pub use business_knowledge_model::BusinessKnowledgeModelEvaluator;
 pub use decision::DecisionEvaluator;
@@ -55,7 +56,6 @@ use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody};
 use dmntk_feel_parser::ClosureBuilder;
 use dmntk_model::model::*;
-use dmntk_model::{DefDefinitions, DefItemDefinition};
 pub use input_data::InputDataEvaluator;
 pub use input_data_context::InputDataContextEvaluator;
 pub use item_definition::ItemDefinitionEvaluator;

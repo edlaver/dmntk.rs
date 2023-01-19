@@ -10,4 +10,5 @@ edition.workspace = true
 
 [dependencies]
 serde.workspace = true
-uriparse = "0.6.4"
+uuid.workspace = true
+uriparse.workspace = true
