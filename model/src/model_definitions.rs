@@ -34,34 +34,30 @@
 
 use crate::model::*;
 use dmntk_common::HRef;
-use dmntk_feel::{Name, QualifiedName};
+use dmntk_feel::Name;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct DefInformationItem {
-  qname: QualifiedName,
+  name: Name,
   type_ref: Option<String>,
 }
 
 impl From<(&Option<Name>, &InformationItem)> for DefInformationItem {
   ///
-  fn from((opt_import_name, information_item): (&Option<Name>, &InformationItem)) -> Self {
+  fn from((_, information_item): (&Option<Name>, &InformationItem)) -> Self {
     Self {
-      qname: if let Some(import_name) = opt_import_name {
-        QualifiedName::new(&[import_name, information_item.feel_name()])
-      } else {
-        QualifiedName::new(&[information_item.feel_name()])
-      },
+      name: information_item.feel_name().clone(),
       type_ref: information_item.type_ref().clone(),
     }
   }
 }
 
 impl DefInformationItem {
-  /// Returns a qualified name.
-  pub fn qname(&self) -> &QualifiedName {
-    &self.qname
+  /// Returns information item's name.
+  pub fn name(&self) -> &Name {
+    &self.name
   }
 
   /// Returns a reference to optional type reference.

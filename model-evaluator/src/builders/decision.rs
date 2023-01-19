@@ -38,13 +38,13 @@ use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelScope, QualifiedName};
+use dmntk_feel::{value_null, FeelScope, Name};
 use dmntk_model::DefDecision;
 use std::collections::HashMap;
 
 /// Type alias for closures that evaluate decisions.
 /// Fn(input data, model evaluator, output data)
-type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> QualifiedName + Send + Sync>;
+type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 ///
 type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
@@ -68,7 +68,7 @@ impl DecisionEvaluator {
     Ok(())
   }
   /// Evaluates a decision with specified identifier.
-  pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<QualifiedName> {
+  pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
       .get(decision_id)
@@ -92,7 +92,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   output_variable.update_feel_type(&item_definition_type_evaluator);
 
   // prepare output variable name for this decision
-  let output_variable_name = output_variable.name.clone();
+  let output_variable_name = output_variable.name().clone();
 
   // prepare output variable type for this decision
   let output_variable_type = output_variable.feel_type().clone();
@@ -111,7 +111,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
-        let variable_name = required_decision.variable().qname();
+        let variable_name = required_decision.variable().name();
         //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
         let variable_type_ref = if required_decision.variable().type_ref().is_some() {
           required_decision.variable().type_ref().as_ref().unwrap().clone()
@@ -119,7 +119,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
           "Any".to_string()
         };
         let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut knowledge_requirements_ctx);
-        knowledge_requirements_ctx.create_entry(variable_name, Value::FeelType(variable_type));
+        knowledge_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
         // bring into context the variables from this required decision's knowledge requirements
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
       }
@@ -127,9 +127,9 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_input() {
       // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
-        let variable_name = required_input.variable().qname();
+        let variable_name = required_input.variable().name();
         let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, &item_definition_context_evaluator);
-        input_requirements_ctx.create_entry(variable_name, Value::FeelType(variable_type));
+        input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }
   }
@@ -193,7 +193,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
               let input_data = Value::Context(input_data_ctx.clone());
               required_input_data_references.iter().for_each(|input_data_id| {
                 if let Some((name, value)) = input_data_evaluator.evaluate(input_data_id, &input_data, &item_definition_evaluator) {
-                  required_input_ctx.create_entry(&name, value);
+                  required_input_ctx.set_entry(&name, value);
                 }
               });
               required_input_ctx.zip(&required_knowledge_ctx);
@@ -201,7 +201,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
               let scope: FeelScope = required_input_ctx.into();
               let decision_result = evaluator(&scope) as Value;
               let coerced_decision_result = output_variable_type.coerced(&decision_result);
-              output_data_ctx.create_entry(&output_variable_name, coerced_decision_result);
+              output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
             }
           }
         }

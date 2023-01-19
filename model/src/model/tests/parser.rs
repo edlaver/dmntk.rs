@@ -59,7 +59,7 @@ fn _2_0001() {
   // assert!(decision_variable.id().is_none());
   // assert!(decision_variable.description().is_none());
   // assert!(decision_variable.label().is_none());
-  assert_eq!("Greeting Message", decision_variable.qname().to_string());
+  assert_eq!("Greeting Message", decision_variable.name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -90,7 +90,7 @@ fn _2_0001() {
   // assert!(input_data_variable.id().is_none());
   // assert!(input_data_variable.description().is_none());
   // assert!(input_data_variable.label().is_none());
-  assert_eq!("Full Name", input_data_variable.qname().to_string());
+  assert_eq!("Full Name", input_data_variable.name().to_string());
   assert_eq!("string", input_data_variable.type_ref().as_ref().unwrap().as_str());
 }
 
@@ -134,7 +134,7 @@ fn _2_0003() {
   // assert!(decision_variable.id().is_none());
   // assert!(decision_variable.description().is_none());
   // assert!(decision_variable.label().is_none());
-  assert_eq!("Employment Status Statement", decision_variable.qname().to_string());
+  assert_eq!("Employment Status Statement", decision_variable.name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <definitions>.<decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -165,7 +165,7 @@ fn _2_0003() {
   // assert!(input_data_variable.id().is_none());
   // assert!(input_data_variable.description().is_none());
   // assert!(input_data_variable.label().is_none());
-  assert_eq!("Employment Status", input_data_variable.qname().to_string());
+  assert_eq!("Employment Status", input_data_variable.name().to_string());
   assert_eq!("tEmploymentStatus", input_data_variable.type_ref().as_ref().unwrap().as_str());
 }
 
@@ -188,7 +188,7 @@ fn _2_0004() {
   // assert!(decision_variable.id().is_none());
   // assert!(decision_variable.description().is_none());
   // assert!(decision_variable.label().is_none());
-  assert_eq!("Approval Status", decision_variable.qname().to_string());
+  assert_eq!("Approval Status", decision_variable.name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // checking node: <definitions>.<decision>.<decisionTable>
   if let ExpressionInstance::DecisionTable(decision_table) = decision.decision_logic().as_ref().unwrap() {
@@ -240,7 +240,7 @@ fn _2_0009() {
   // assert!(decision_variable.id().is_none());
   // assert!(decision_variable.description().is_none());
   // assert!(decision_variable.label().is_none());
-  assert_eq!("MonthlyPayment", decision_variable.qname().to_string());
+  assert_eq!("MonthlyPayment", decision_variable.name().to_string());
   assert_eq!("number", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <definitions>.<decision>.<informationRequirement>
   let information_requirement_items = decision.information_requirements();
@@ -263,7 +263,7 @@ fn _2_0009() {
   //assert!(bkm_variable.id().is_none());
   //assert!(bkm_variable.description().is_none());
   //assert!(bkm_variable.label().is_none());
-  assert_eq!("PMT", bkm_variable.qname().to_string());
+  assert_eq!("PMT", bkm_variable.name().to_string());
   //assert!(bkm_variable.type_ref().is_none());
   // <definitions>.<businessKnowledgeModel>.<encapsulateLogic>
   let bkm_function_definition = bkm.encapsulated_logic().as_ref().unwrap();
@@ -374,7 +374,7 @@ fn _3_0016() {
   //assert!(decision_variable.id().is_none());
   //assert!(decision_variable.description().is_none());
   //assert!(decision_variable.label().is_none());
-  assert_eq!("priceTable1", decision_variable.qname().to_string());
+  assert_eq!("priceTable1", decision_variable.name().to_string());
   assert_eq!("tPriceTable", decision_variable.type_ref().as_ref().unwrap().as_str());
   let expression = decision.decision_logic().as_ref().unwrap();
   match expression {

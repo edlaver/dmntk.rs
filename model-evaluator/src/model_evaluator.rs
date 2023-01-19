@@ -35,7 +35,7 @@ use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Name, QualifiedName};
+use dmntk_feel::{value_null, Name};
 use dmntk_model::model::Definitions;
 use dmntk_model::DefDefinitions;
 use std::collections::HashMap;
@@ -44,7 +44,7 @@ use std::sync::{Arc, RwLock, RwLockReadGuard};
 /// Types of invocable artefacts.
 pub enum InvocableType {
   Decision(String),
-  BusinessKnowledgeModel(String, QualifiedName),
+  BusinessKnowledgeModel(String, Name),
   DecisionService(String),
 }
 
@@ -192,7 +192,7 @@ impl ModelEvaluator {
   }
 
   ///
-  pub fn add_invocable_business_knowledge_model(&self, name: &str, id: &str, output_variable_name: QualifiedName) {
+  pub fn add_invocable_business_knowledge_model(&self, name: &str, id: &str, output_variable_name: Name) {
     if let Ok(mut invocable_by_name) = self.invocable_by_name.write() {
       invocable_by_name.insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
     }
@@ -206,11 +206,11 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a business knowledge model.
-  pub fn evaluate_business_knowledge_model(&self, id: &str, input_data: &FeelContext, output_variable_name: &QualifiedName) -> Value {
+  pub fn evaluate_business_knowledge_model(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     if let Ok(business_knowledge_model_evaluator) = self.business_knowledge_model_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
-      if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.search_entry(output_variable_name) {
+      if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
         //TODO handle external
         let mut parameters_ctx = FeelContext::default();
         parameters_ctx.zip(closure_ctx);
@@ -235,7 +235,7 @@ impl ModelEvaluator {
     if let Ok(decision_evaluator) = self.decision_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       if let Some(output_variable_name) = decision_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
-        if let Some(output_value) = evaluated_ctx.search_entry(&output_variable_name) {
+        if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
           output_value.clone()
         } else {
           value_null!()
@@ -253,7 +253,7 @@ impl ModelEvaluator {
     if let Ok(decision_service_evaluator) = self.decision_service_evaluator() {
       let mut evaluated_ctx = FeelContext::default();
       if let Some(output_variable_name) = decision_service_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
-        if let Some(output_value) = evaluated_ctx.search_entry(&output_variable_name) {
+        if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
           output_value.clone()
         } else {
           value_null!()

@@ -78,7 +78,7 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
     .as_ref()
     .ok_or_else(|| err_input_data_without_type_reference(input_data.name()))?
     .clone();
-  let name = input_data.variable().qname().clone();
+  let name = input_data.variable().name().clone();
   if let Some(feel_type) = type_ref_to_feel_type(&type_ref) {
     if matches!(
       feel_type,
@@ -92,7 +92,7 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
         | FeelType::YearsAndMonthsDuration
     ) {
       Ok(Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
-        ctx.create_entry(&name, Value::FeelType(feel_type.clone()));
+        ctx.set_entry(&name, Value::FeelType(feel_type.clone()));
         feel_type.clone()
       }))
     } else {
