@@ -44,11 +44,10 @@ extern crate lazy_static;
 mod builders;
 mod errors;
 mod evaluators;
-mod model_evaluator;
 
 #[cfg(test)]
 mod tests;
 
 pub use builders::model_builder::ModelBuilder;
 pub use evaluators::decision_table::build_decision_table_evaluator;
-pub use model_evaluator::ModelEvaluator;
+pub use evaluators::model_evaluator::ModelEvaluator;

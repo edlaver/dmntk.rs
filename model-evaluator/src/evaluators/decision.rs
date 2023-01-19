@@ -34,8 +34,8 @@
 
 use crate::builders::model_definitions::{DefDecision, DefDefinitions};
 use crate::evaluators::boxed_expressions::*;
+use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
-use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;

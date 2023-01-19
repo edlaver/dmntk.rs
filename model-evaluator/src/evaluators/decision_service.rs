@@ -33,8 +33,8 @@
 //! Builder for decision service evaluators.
 
 use crate::builders::model_definitions::{DefDecisionService, DefDefinitions};
+use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
-use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;

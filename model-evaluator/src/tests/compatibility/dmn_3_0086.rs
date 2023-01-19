@@ -31,7 +31,7 @@
  */
 
 use super::super::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::ModelEvaluator;
 use dmntk_examples::*;
 use std::sync::Arc;
 

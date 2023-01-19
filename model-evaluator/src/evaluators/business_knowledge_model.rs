@@ -35,7 +35,7 @@
 use crate::builders::model_definitions::{DefBusinessKnowledgeModel, DefDefinitions};
 use crate::errors::*;
 use crate::evaluators::boxed_expressions::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::evaluators::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
