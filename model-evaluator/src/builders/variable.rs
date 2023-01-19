@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use crate::builders::{information_item_type, ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
+use crate::builders::{ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
@@ -70,7 +70,7 @@ impl Variable {
   /// Resolves the FEEL type of the variable.
   pub fn resolve_feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
     if let Some(type_ref) = &self.type_ref {
-      information_item_type(type_ref, item_definition_type_evaluator).unwrap_or(FeelType::Any)
+      item_definition_type_evaluator.information_item_type(type_ref).unwrap_or(FeelType::Any)
     } else {
       FeelType::Any
     }
@@ -79,7 +79,7 @@ impl Variable {
   /// Updates the FEEL type of the variable.
   pub fn update_feel_type(&mut self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) {
     self.feel_type = if let Some(type_ref) = &self.type_ref {
-      information_item_type(type_ref, item_definition_type_evaluator).unwrap_or(FeelType::Any)
+      item_definition_type_evaluator.information_item_type(type_ref).unwrap_or(FeelType::Any)
     } else {
       FeelType::Any
     }

@@ -64,25 +64,6 @@ pub use item_definition_type::ItemDefinitionTypeEvaluator;
 use std::sync::Arc;
 
 ///
-pub fn information_item_type(type_ref: &str, evaluator: &ItemDefinitionTypeEvaluator) -> Option<FeelType> {
-  if let Some(feel_type) = type_ref_to_feel_type(type_ref) {
-    match feel_type {
-      FeelType::String => Some(FeelType::String),
-      FeelType::Number => Some(FeelType::Number),
-      FeelType::Boolean => Some(FeelType::Boolean),
-      FeelType::Date => Some(FeelType::Date),
-      FeelType::Time => Some(FeelType::Time),
-      FeelType::DateTime => Some(FeelType::DateTime),
-      FeelType::DaysAndTimeDuration => Some(FeelType::DaysAndTimeDuration),
-      FeelType::YearsAndMonthsDuration => Some(FeelType::YearsAndMonthsDuration),
-      _ => None,
-    }
-  } else {
-    evaluator.eval(type_ref)
-  }
-}
-
-///
 fn item_definition_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionType> {
   let feel_type = if let Some(type_ref) = item_definition.type_ref() {
     type_ref_to_feel_type(type_ref)
@@ -109,7 +90,7 @@ fn item_definition_type(item_definition: &DefItemDefinition) -> Result<ItemDefin
 }
 
 ///
-fn type_ref_to_feel_type(type_ref: &str) -> Option<FeelType> {
+pub fn type_ref_to_feel_type(type_ref: &str) -> Option<FeelType> {
   match type_ref.trim() {
     "string" => Some(FeelType::String),
     "number" => Some(FeelType::Number),
@@ -147,7 +128,7 @@ fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evaluator
         if type_ref == "Any" {
           FeelType::Any
         } else {
-          information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+          item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
         }
       } else {
         FeelType::Any
@@ -195,7 +176,7 @@ fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &
   for parameter in function_definition.formal_parameters() {
     let parameter_name = parameter.feel_name().clone();
     let parameter_type = if let Some(type_ref) = parameter.type_ref() {
-      information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+      item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
     } else {
       FeelType::Any
     };
@@ -204,7 +185,7 @@ fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &
   }
   // resolve function definition's result type
   let result_type = if let Some(type_ref) = function_definition.type_ref() {
-    information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+    item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
   } else {
     FeelType::Any
   };
@@ -300,7 +281,7 @@ fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_
     if let Some(binding_formula) = binding.binding_formula() {
       let param_name = binding.parameter().feel_name().clone();
       let param_type = if let Some(type_ref) = binding.parameter().type_ref() {
-        information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+        item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
       } else {
         FeelType::Any
       };

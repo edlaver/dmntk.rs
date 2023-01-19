@@ -91,7 +91,7 @@ fn build_bkm_evaluator(
   let mut formal_parameters = vec![];
   for information_item in function_definition.formal_parameters() {
     let feel_type = if let Some(type_ref) = information_item.type_ref() {
-      information_item_type(type_ref, &item_definition_type_evaluator).ok_or_else(err_empty_feel_type)?
+      item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
     } else {
       FeelType::Any
     };
@@ -101,7 +101,7 @@ fn build_bkm_evaluator(
   }
   let output_variable_name = business_knowledge_model.variable().name().clone();
   let output_variable_type = if let Some(output_variable_type_ref) = business_knowledge_model.variable().type_ref().as_ref() {
-    information_item_type(output_variable_type_ref, &item_definition_type_evaluator).unwrap_or(FeelType::Any)
+    item_definition_type_evaluator.information_item_type(output_variable_type_ref).unwrap_or(FeelType::Any)
   } else {
     FeelType::Any
   };

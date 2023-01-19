@@ -32,7 +32,7 @@
 
 //! Builder for item definition type evaluators.
 
-use crate::builders::information_item_type;
+use crate::builders::type_ref_to_feel_type;
 use crate::errors::*;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
@@ -60,12 +60,32 @@ impl ItemDefinitionTypeEvaluator {
     }
     Ok(())
   }
+
   /// Evaluates a type of item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str) -> Option<FeelType> {
     if let Some(evaluator) = self.evaluators.get(type_ref) {
       evaluator(self)
     } else {
       None
+    }
+  }
+
+  /// Returns FEEL type for specified type reference.
+  pub fn information_item_type(&self, type_ref: &str) -> Option<FeelType> {
+    if let Some(feel_type) = type_ref_to_feel_type(type_ref) {
+      match feel_type {
+        FeelType::String => Some(FeelType::String),
+        FeelType::Number => Some(FeelType::Number),
+        FeelType::Boolean => Some(FeelType::Boolean),
+        FeelType::Date => Some(FeelType::Date),
+        FeelType::Time => Some(FeelType::Time),
+        FeelType::DateTime => Some(FeelType::DateTime),
+        FeelType::DaysAndTimeDuration => Some(FeelType::DaysAndTimeDuration),
+        FeelType::YearsAndMonthsDuration => Some(FeelType::YearsAndMonthsDuration),
+        _ => None,
+      }
+    } else {
+      self.eval(type_ref)
     }
   }
 }
@@ -178,10 +198,10 @@ fn function_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTy
     }
   }
   Ok(Box::new(move |evaluator: &ItemDefinitionTypeEvaluator| {
-    let output_type = information_item_type(&output_type_ref, evaluator).unwrap_or(FeelType::Any);
+    let output_type = evaluator.information_item_type(&output_type_ref).unwrap_or(FeelType::Any);
     let parameter_types = parameters_type_ref
       .iter()
-      .map(|parameter_type_ref| information_item_type(parameter_type_ref, evaluator).unwrap_or(FeelType::Any))
+      .map(|parameter_type_ref| evaluator.information_item_type(parameter_type_ref).unwrap_or(FeelType::Any))
       .collect::<Vec<FeelType>>();
     Some(FeelType::function(&parameter_types, &output_type))
   }))
