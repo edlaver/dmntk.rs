@@ -229,9 +229,9 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
             let coerced_complex_result = output_variable_type.coerced(&complex_result);
             output_data.set_entry(&output_variable_name, coerced_complex_result);
           }
-        } // decision_evaluator was not acquired for reading
-      } // input_data_evaluator was not acquired for reading
-    } // item_definition_evaluator was not acquired for reading
+        }
+      }
+    }
     output_variable_name.clone()
   });
   Ok((output_variable, formal_parameters, decision_service_evaluator, None))
