@@ -32,6 +32,9 @@
 
 //! ???
 
+use crate::builders::type_ref_to_feel_type;
+use crate::errors::err_invalid_item_definition_type;
+use dmntk_common::Result;
 use dmntk_common::{gen_id, HRef};
 use dmntk_feel::Name;
 use dmntk_model::model::*;
@@ -169,8 +172,7 @@ impl DefItemDefinition {
     self.is_collection
   }
 
-  /*
-  /// Returns item definition type.
+  /// Returns the item definition type.
   pub fn item_definition_type(&self) -> Result<ItemDefinitionType> {
     let feel_type = if let Some(type_ref) = self.type_ref() { type_ref_to_feel_type(type_ref) } else { None };
     let condition = (
@@ -191,8 +193,6 @@ impl DefItemDefinition {
       _ => Err(err_invalid_item_definition_type(self.name())),
     }
   }
-
-   */
 }
 
 #[derive(Debug)]

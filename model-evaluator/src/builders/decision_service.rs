@@ -143,6 +143,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
 
   // prepare a container for formal parameters accepted by this decision service
   let mut formal_parameters: Vec<(Name, FeelType)> = vec![];
+
   // fills the list of formal parameters based on required input data
   // these parameters are placed before input parameters defined by input decisions
   for input_data_id in &input_data_references {
@@ -166,6 +167,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
       input_decision_results_evaluators.push(evaluator);
     }
   }
+
   // build decision service evaluator closure
   let decision_service_evaluator = Box::new(move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
     // acquire all evaluators needed

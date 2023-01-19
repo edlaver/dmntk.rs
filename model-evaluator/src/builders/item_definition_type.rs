@@ -92,7 +92,7 @@ impl ItemDefinitionTypeEvaluator {
 
 ///
 pub fn build_item_definition_type_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTypeEvaluatorFn> {
-  match super::item_definition_type(item_definition)? {
+  match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type(feel_type),
     ItemDefinitionType::ReferencedType(ref_type) => referenced_type(ref_type),
     ItemDefinitionType::ComponentType => component_type(item_definition),

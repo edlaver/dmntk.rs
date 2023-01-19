@@ -47,7 +47,7 @@ pub use names::Name;
 pub use qualified_names::QualifiedName;
 pub use scope::FeelScope;
 pub use strings::ToFeelString;
-pub use types::{is_built_in_type_name, FeelType, FEEL_TYPE_NAME_ANY};
+pub use types::*;
 
 pub mod bif;
 pub mod closure;
@@ -58,7 +58,8 @@ mod names;
 mod qualified_names;
 mod scope;
 mod strings;
-#[cfg(test)]
-mod tests;
 mod types;
 pub mod values;
+
+#[cfg(test)]
+mod tests;

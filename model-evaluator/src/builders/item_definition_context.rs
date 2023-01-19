@@ -72,7 +72,7 @@ impl ItemDefinitionContextEvaluator {
 
 ///
 fn item_definition_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
-  match super::item_definition_type(item_definition)? {
+  match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type_context_evaluator(feel_type),
     ItemDefinitionType::ReferencedType(ref_type) => referenced_type_context_evaluator(ref_type),
     ItemDefinitionType::ComponentType => component_type_context_evaluator(item_definition),

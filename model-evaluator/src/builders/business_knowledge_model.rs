@@ -32,7 +32,7 @@
 
 //! Builder for business knowledge model evaluators.
 
-use crate::builders::*;
+use crate::builders::boxed_expressions::*;
 use crate::errors::*;
 use crate::model_definitions::{DefBusinessKnowledgeModel, DefDefinitions};
 use crate::model_evaluator::ModelEvaluator;

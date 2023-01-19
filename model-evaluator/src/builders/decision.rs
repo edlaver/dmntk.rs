@@ -32,8 +32,8 @@
 
 //! Builder for decision evaluators.
 
+use crate::builders::boxed_expressions::*;
 use crate::builders::variable::Variable;
-use crate::builders::*;
 use crate::model_definitions::{DefDecision, DefDefinitions};
 use crate::model_evaluator::ModelEvaluator;
 use dmntk_common::Result;

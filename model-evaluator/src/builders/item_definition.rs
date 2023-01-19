@@ -76,7 +76,7 @@ pub fn build_item_definition_evaluator(item_definition: &DefItemDefinition) -> R
   // prepare optional allowed values evaluator
   let av_evaluator = build_allowed_values_evaluator(item_definition)?;
   // build item definition evaluator
-  match super::item_definition_type(item_definition)? {
+  match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => build_simple_type_evaluator(feel_type, av_evaluator),
     ItemDefinitionType::ReferencedType(ref_type) => build_referenced_type_evaluator(ref_type),
     ItemDefinitionType::ComponentType => build_component_type_evaluator(item_definition),
