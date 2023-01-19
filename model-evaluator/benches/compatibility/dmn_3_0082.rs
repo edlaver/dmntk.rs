@@ -169,7 +169,6 @@ fn _0016(b: &mut Bencher) {
 }
 
 #[bench]
-#[ignore]
 fn _0017(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "invoke_001";
