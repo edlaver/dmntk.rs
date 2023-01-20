@@ -39,100 +39,114 @@ use dmntk_model::model::Definitions;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
+pub type EvaluatorBuilders = (
+  InputDataEvaluator,
+  ItemDefinitionEvaluator,
+  BusinessKnowledgeModelEvaluator,
+  DecisionEvaluator,
+  DecisionServiceEvaluator,
+  Invocables,
+);
+
+pub type Invocables = HashMap<String, InvocableType>;
+
 /// Model builder.
 #[derive(Default)]
 pub struct ModelBuilder {
   /// Input data evaluator builder.
-  input_data_evaluator_builder: InputDataEvaluator,
+  input_data_evaluator: InputDataEvaluator,
   /// Input data context evaluator builder.
-  input_data_context_evaluator_builder: InputDataContextEvaluator,
+  input_data_context_evaluator: InputDataContextEvaluator,
   /// Item definition evaluator builder.
-  item_definition_evaluator_builder: ItemDefinitionEvaluator,
+  item_definition_evaluator: ItemDefinitionEvaluator,
   /// Item definition context evaluator builder.
-  item_definition_context_evaluator_builder: ItemDefinitionContextEvaluator,
+  item_definition_context_evaluator: ItemDefinitionContextEvaluator,
   /// Item definition type evaluator builder.
-  item_definition_type_evaluator_builder: ItemDefinitionTypeEvaluator,
+  item_definition_type_evaluator: ItemDefinitionTypeEvaluator,
   /// Business knowledge model evaluator builder.
-  business_knowledge_model_evaluator_builder: BusinessKnowledgeModelEvaluator,
+  business_knowledge_model_evaluator: BusinessKnowledgeModelEvaluator,
   /// Decision evaluator builder
-  decision_evaluator_builder: DecisionEvaluator,
+  decision_evaluator: DecisionEvaluator,
   /// Decision service evaluator builder.
-  decision_service_evaluator_builder: DecisionServiceEvaluator,
+  decision_service_evaluator: DecisionServiceEvaluator,
   /// Map of invocables indexed by invocable name.
-  invocable_by_name: RefCell<HashMap<String, InvocableType>>,
+  invocables: RefCell<Invocables>,
 }
 
 impl ModelBuilder {
   ///
-  pub fn new(defs: &Definitions) -> Result<Self> {
-    let definitions: DefDefinitions = defs.into();
+  pub fn new(definitions: &Definitions) -> Result<Self> {
+    let definitions: DefDefinitions = definitions.into();
     let model_builder = ModelBuilder::default();
-    model_builder.input_data_evaluator_builder.build(&definitions)?;
-    model_builder.input_data_context_evaluator_builder.build(&definitions)?;
-    model_builder.item_definition_evaluator_builder.build(&definitions)?;
-    model_builder.item_definition_context_evaluator_builder.build(&definitions)?;
-    model_builder.item_definition_type_evaluator_builder.build(&definitions)?;
-    model_builder.business_knowledge_model_evaluator_builder.build(&definitions, &model_builder)?;
-    model_builder.decision_evaluator_builder.build(&definitions, &model_builder)?;
-    model_builder.decision_service_evaluator_builder.build(&definitions, &model_builder)?;
+    model_builder.input_data_evaluator.build(&definitions)?;
+    model_builder.input_data_context_evaluator.build(&definitions)?;
+    model_builder.item_definition_evaluator.build(&definitions)?;
+    model_builder.item_definition_context_evaluator.build(&definitions)?;
+    model_builder.item_definition_type_evaluator.build(&definitions)?;
+    model_builder.business_knowledge_model_evaluator.build(&definitions, &model_builder)?;
+    model_builder.decision_evaluator.build(&definitions, &model_builder)?;
+    model_builder.decision_service_evaluator.build(&definitions, &model_builder)?;
     Ok(model_builder)
   }
 
   ///
   pub fn input_data_evaluator(&self) -> &InputDataEvaluator {
-    &self.input_data_evaluator_builder
+    &self.input_data_evaluator
   }
 
   ///
   pub fn input_data_context_evaluator(&self) -> &InputDataContextEvaluator {
-    &self.input_data_context_evaluator_builder
+    &self.input_data_context_evaluator
   }
 
   ///
   pub fn item_definition_context_evaluator(&self) -> &ItemDefinitionContextEvaluator {
-    &self.item_definition_context_evaluator_builder
+    &self.item_definition_context_evaluator
   }
 
   ///
   pub fn item_definition_evaluator(&self) -> &ItemDefinitionEvaluator {
-    &self.item_definition_evaluator_builder
+    &self.item_definition_evaluator
   }
 
   ///
   pub fn item_definition_type_evaluator(&self) -> &ItemDefinitionTypeEvaluator {
-    &self.item_definition_type_evaluator_builder
-  }
-
-  ///
-  pub fn business_knowledge_model_evaluator(&self) -> &BusinessKnowledgeModelEvaluator {
-    &self.business_knowledge_model_evaluator_builder
+    &self.item_definition_type_evaluator
   }
 
   ///
   pub fn decision_evaluator(&self) -> &DecisionEvaluator {
-    &self.decision_evaluator_builder
-  }
-
-  ///
-  pub fn decision_service_evaluator(&self) -> &DecisionServiceEvaluator {
-    &self.decision_service_evaluator_builder
+    &self.decision_evaluator
   }
 
   ///
   pub fn add_invocable_decision(&self, name: &str, id: &str) {
-    self.invocable_by_name.borrow_mut().insert(name.to_string(), InvocableType::Decision(id.to_string()));
+    self.invocables.borrow_mut().insert(name.to_string(), InvocableType::Decision(id.to_string()));
   }
 
   ///
   pub fn add_invocable_business_knowledge_model(&self, name: &str, id: &str, output_variable_name: Name) {
     self
-      .invocable_by_name
+      .invocables
       .borrow_mut()
       .insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
   }
 
   ///
   pub fn add_invocable_decision_service(&self, name: &str, id: &str) {
-    self.invocable_by_name.borrow_mut().insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
+    self.invocables.borrow_mut().insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
+  }
+}
+
+impl From<ModelBuilder> for EvaluatorBuilders {
+  fn from(value: ModelBuilder) -> Self {
+    (
+      value.input_data_evaluator,
+      value.item_definition_evaluator,
+      value.business_knowledge_model_evaluator,
+      value.decision_evaluator,
+      value.decision_service_evaluator,
+      value.invocables.into_inner(),
+    )
   }
 }

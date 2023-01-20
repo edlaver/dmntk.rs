@@ -33,21 +33,22 @@
 //! Builder for input data evaluators.
 
 use crate::builders::model_definitions::DefDefinitions;
+use crate::errors::*;
 use crate::evaluators::item_definition::ItemDefinitionEvaluator;
 use crate::evaluators::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
-use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::RwLock;
 
 ///
-type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
+pub type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
 
 /// Input data evaluator.
 #[derive(Default)]
 pub struct InputDataEvaluator {
-  evaluators: RefCell<HashMap<String, InputDataEvaluatorEntry>>,
+  evaluators: RwLock<HashMap<String, InputDataEvaluatorEntry>>,
 }
 
 impl InputDataEvaluator {
@@ -57,17 +58,26 @@ impl InputDataEvaluator {
       let input_data_id = input_data.id();
       let variable = Variable::try_from(input_data.variable())?;
       let evaluator = variable.build_evaluator()?;
-      self.evaluators.borrow_mut().insert(input_data_id.to_owned(), (variable, evaluator));
+      self
+        .evaluators
+        .write()
+        .map_err(err_write_lock_failed)?
+        .insert(input_data_id.to_owned(), (variable, evaluator));
     }
     Ok(())
   }
   /// Evaluates input data with specified identifier.
   pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
-    self.evaluators.borrow().get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
+    self
+      .evaluators
+      .read()
+      .ok()?
+      .get(input_data_id)
+      .map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
   /// Returns the name and type of the input variable of input data definition with specified identifier.
   pub fn get_input_variable(&self, input_data_id: &str) -> Option<Variable> {
-    self.evaluators.borrow().get(input_data_id).map(|entry| (entry.0).clone())
+    self.evaluators.read().ok()?.get(input_data_id).map(|entry| (entry.0).clone())
   }
 }
 

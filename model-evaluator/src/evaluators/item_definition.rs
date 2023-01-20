@@ -40,16 +40,16 @@ use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::ItemDefinitionType;
-use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::RwLock;
 
 /// Type of closure that evaluates input data conformant with item definition.
-type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> Value + Send + Sync>;
+pub type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> Value + Send + Sync>;
 
 /// Item definition evaluator.
 #[derive(Default)]
 pub struct ItemDefinitionEvaluator {
-  evaluators: RefCell<HashMap<String, ItemDefinitionEvaluatorFn>>,
+  evaluators: RwLock<HashMap<String, ItemDefinitionEvaluatorFn>>,
 }
 
 impl ItemDefinitionEvaluator {
@@ -58,13 +58,13 @@ impl ItemDefinitionEvaluator {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
-      self.evaluators.borrow_mut().insert(type_ref, evaluator);
+      self.evaluators.write().map_err(err_write_lock_failed)?.insert(type_ref, evaluator);
     }
     Ok(())
   }
   /// Evaluates item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str, value: &Value) -> Option<Value> {
-    self.evaluators.borrow().get(type_ref).map(|evaluator| evaluator(value, self))
+    self.evaluators.read().ok()?.get(type_ref).map(|evaluator| evaluator(value, self))
   }
 }
 

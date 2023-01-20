@@ -33,6 +33,7 @@
 //! Builder for decision evaluators.
 
 use crate::builders::model_definitions::{DefDecision, DefDefinitions};
+use crate::errors::err_write_lock_failed;
 use crate::evaluators::boxed_expressions::*;
 use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
@@ -41,8 +42,8 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelScope, Name};
-use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::RwLock;
 
 /// Type alias for closures that evaluate decisions.
 /// Fn(input data, model evaluator, output data)
@@ -54,7 +55,7 @@ type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 ///
 #[derive(Default)]
 pub struct DecisionEvaluator {
-  evaluators: RefCell<HashMap<String, DecisionEvaluatorEntry>>,
+  evaluators: RwLock<HashMap<String, DecisionEvaluatorEntry>>,
 }
 
 impl DecisionEvaluator {
@@ -64,22 +65,25 @@ impl DecisionEvaluator {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
       let decision_id = decision.id();
       let decision_name = &decision.name().to_string();
-      self.evaluators.borrow_mut().insert(decision_id.to_owned(), evaluator_entry);
+      self.evaluators.write().map_err(err_write_lock_failed)?.insert(decision_id.to_owned(), evaluator_entry);
       model_builder.add_invocable_decision(decision_name, decision_id);
     }
     Ok(())
   }
+
   /// Evaluates a decision with specified identifier.
   pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
-      .borrow()
+      .read()
+      .ok()?
       .get(decision_id)
       .map(|evaluator_entry| evaluator_entry.1(input_data, model_evaluator, evaluated_ctx))
   }
+
   /// Returns the name and type of the output variable of a decision with specified identifier.
   pub fn get_output_variable(&self, decision_id: &str) -> Option<Variable> {
-    self.evaluators.borrow().get(decision_id).map(|entry| entry.0.clone())
+    self.evaluators.read().ok()?.get(decision_id).map(|entry| entry.0.clone())
   }
 }
 
@@ -169,47 +173,49 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
 
   // build decision evaluator closure
   let decision_evaluator = Box::new(move |input_data_ctx: &FeelContext, model_evaluator: &ModelEvaluator, output_data_ctx: &mut FeelContext| {
-    // acquire all evaluators needed
-    if let Ok(business_knowledge_model_evaluator) = model_evaluator.business_knowledge_model_evaluator() {
-      if let Ok(decision_service_evaluator) = model_evaluator.decision_service_evaluator() {
-        if let Ok(decision_evaluator) = model_evaluator.decision_evaluator() {
-          if let Ok(input_data_evaluator) = model_evaluator.input_data_evaluator() {
-            if let Ok(item_definition_evaluator) = model_evaluator.item_definition_evaluator() {
-              // prepare context containing values from required knowledge and required decisions
-              let mut required_knowledge_ctx: FeelContext = Default::default();
-              required_knowledge_references.iter().for_each(|id| {
-                // evaluate required knowledge as values from business knowledge models
-                business_knowledge_model_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx)
-              });
-              required_knowledge_references.iter().for_each(|id| {
-                // evaluate required knowledge as decision service function definitions
-                decision_service_evaluator.evaluate_fd(id, input_data_ctx, &mut required_knowledge_ctx)
-              });
-              required_decision_references.iter().for_each(|id| {
-                // evaluate required decisions as values from decisions
-                decision_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx);
-              });
-              // values from required knowledge may be overridden by input data
-              required_knowledge_ctx.overwrite(input_data_ctx);
-              // prepare context containing values from required input data
-              let mut required_input_ctx: FeelContext = Default::default();
-              let input_data = Value::Context(input_data_ctx.clone());
-              required_input_data_references.iter().for_each(|input_data_id| {
-                if let Some((name, value)) = input_data_evaluator.evaluate(input_data_id, &input_data, &item_definition_evaluator) {
-                  required_input_ctx.set_entry(&name, value);
-                }
-              });
-              required_input_ctx.zip(&required_knowledge_ctx);
-              // place the result under the name of the output variable
-              let scope: FeelScope = required_input_ctx.into();
-              let decision_result = evaluator(&scope) as Value;
-              let coerced_decision_result = output_variable_type.coerced(&decision_result);
-              output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
-            }
-          }
-        }
+    let business_knowledge_model_evaluator = model_evaluator.business_knowledge_model_evaluator();
+    let decision_service_evaluator = model_evaluator.decision_service_evaluator();
+    let decision_evaluator = model_evaluator.decision_evaluator();
+    let input_data_evaluator = model_evaluator.input_data_evaluator();
+    let item_definition_evaluator = model_evaluator.item_definition_evaluator();
+
+    // prepare context containing values from required knowledge and required decisions
+    let mut required_knowledge_ctx: FeelContext = Default::default();
+
+    required_knowledge_references.iter().for_each(|id| {
+      // evaluate required knowledge as values from business knowledge models
+      business_knowledge_model_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx)
+    });
+
+    required_knowledge_references.iter().for_each(|id| {
+      // evaluate required knowledge as decision service function definitions
+      decision_service_evaluator.evaluate_fd(id, input_data_ctx, &mut required_knowledge_ctx)
+    });
+
+    required_decision_references.iter().for_each(|id| {
+      // evaluate required decisions as values from decisions
+      decision_evaluator.evaluate(id, input_data_ctx, model_evaluator, &mut required_knowledge_ctx);
+    });
+
+    // values from required knowledge may be overridden by input data
+    required_knowledge_ctx.overwrite(input_data_ctx);
+
+    // prepare context containing values from required input data
+    let mut required_input_ctx: FeelContext = Default::default();
+    let input_data = Value::Context(input_data_ctx.clone());
+    required_input_data_references.iter().for_each(|input_data_id| {
+      if let Some((name, value)) = input_data_evaluator.evaluate(input_data_id, &input_data, item_definition_evaluator) {
+        required_input_ctx.set_entry(&name, value);
       }
-    }
+    });
+    required_input_ctx.zip(&required_knowledge_ctx);
+
+    // place the result under the name of the output variable
+    let scope: FeelScope = required_input_ctx.into();
+    let decision_result = evaluator(&scope) as Value;
+    let coerced_decision_result = output_variable_type.coerced(&decision_result);
+    output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
+
     // return the name of the output variable
     output_variable_name.clone()
   });

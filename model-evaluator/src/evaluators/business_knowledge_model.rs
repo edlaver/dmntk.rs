@@ -43,9 +43,8 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
-use std::cell::RefCell;
 use std::collections::HashMap;
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 
 /// Type of closure that evaluates business knowledge model.
 /// Fn(input data, model evaluator, output data)
@@ -54,7 +53,7 @@ type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluato
 /// Business knowledge model evaluator.
 #[derive(Default)]
 pub struct BusinessKnowledgeModelEvaluator {
-  evaluators: RefCell<HashMap<String, BusinessKnowledgeModelEvaluatorFn>>,
+  evaluators: RwLock<HashMap<String, BusinessKnowledgeModelEvaluatorFn>>,
 }
 
 impl BusinessKnowledgeModelEvaluator {
@@ -66,7 +65,11 @@ impl BusinessKnowledgeModelEvaluator {
       let business_knowledge_model_id = business_knowledge_model.id();
       let business_knowledge_model_name = &business_knowledge_model.name().to_string();
       let output_variable_name = business_knowledge_model.variable().name();
-      self.evaluators.borrow_mut().insert(business_knowledge_model_id.to_owned(), evaluator);
+      self
+        .evaluators
+        .write()
+        .map_err(err_write_lock_failed)?
+        .insert(business_knowledge_model_id.to_owned(), evaluator);
       model_builder.add_invocable_business_knowledge_model(business_knowledge_model_name, business_knowledge_model_id, output_variable_name.to_owned());
     }
     Ok(())
@@ -75,8 +78,10 @@ impl BusinessKnowledgeModelEvaluator {
   /// When a required business knowledge model is found, then its evaluator
   /// is executed, and the result is stored in `evaluated_ctx`.
   pub fn evaluate(&self, business_knowledge_model_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
-    if let Some(evaluator) = self.evaluators.borrow().get(business_knowledge_model_id) {
-      evaluator(input_data, model_evaluator, output_data);
+    if let Ok(evaluators) = self.evaluators.read() {
+      if let Some(evaluator) = evaluators.get(business_knowledge_model_id) {
+        evaluator(input_data, model_evaluator, output_data);
+      }
     }
   }
 }
@@ -365,17 +370,14 @@ fn build_bkm_evaluator_from_function_definition(
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   Ok(Box::new(
     move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
-      // acquire all evaluators needed
-      if let Ok(business_knowledge_model_evaluator) = model_evaluator.business_knowledge_model_evaluator() {
-        if let Ok(decision_service_evaluator) = model_evaluator.decision_service_evaluator() {
-          knowledge_requirements.iter().for_each(|id| {
-            // TODO refactor: call either business knowledge model or decision service, but not both!
-            business_knowledge_model_evaluator.evaluate(id, input_data, model_evaluator, output_data);
-            decision_service_evaluator.evaluate(id, input_data, model_evaluator, output_data);
-          });
-          output_data.set_entry(&output_variable_name, function_definition.clone())
-        }
-      }
+      let business_knowledge_model_evaluator = model_evaluator.business_knowledge_model_evaluator();
+      let decision_service_evaluator = model_evaluator.decision_service_evaluator();
+      knowledge_requirements.iter().for_each(|id| {
+        // TODO refactor: call either business knowledge model or decision service, but not both!
+        business_knowledge_model_evaluator.evaluate(id, input_data, model_evaluator, output_data);
+        decision_service_evaluator.evaluate(id, input_data, model_evaluator, output_data);
+      });
+      output_data.set_entry(&output_variable_name, function_definition.clone())
     },
   ))
 }
