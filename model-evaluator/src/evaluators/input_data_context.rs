@@ -32,8 +32,8 @@
 
 //! Builder for input data context evaluators.
 
-use crate::builders::model_definitions::{DefDefinitions, DefInputData};
 use crate::errors::*;
+use crate::evaluators::model_definitions::{DefDefinitions, DefInputData};
 use crate::evaluators::{type_ref_to_feel_type, ItemDefinitionContextEvaluator};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
@@ -108,8 +108,8 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
 
 #[cfg(test)]
 mod tests {
-  use crate::builders::model_definitions::DefDefinitions;
   use crate::evaluators::input_data_context::InputDataContextEvaluator;
+  use crate::evaluators::model_definitions::DefDefinitions;
   use crate::evaluators::ItemDefinitionContextEvaluator;
   use dmntk_examples::input_data::*;
   use dmntk_feel::context::FeelContext;

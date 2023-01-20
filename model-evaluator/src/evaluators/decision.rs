@@ -32,12 +32,12 @@
 
 //! Builder for decision evaluators.
 
-use crate::builders::model_definitions::{DefDecision, DefDefinitions};
 use crate::errors::err_write_lock_failed;
 use crate::evaluators::boxed_expressions::*;
+use crate::evaluators::model_builder::ModelBuilder;
+use crate::evaluators::model_definitions::{DefDecision, DefDefinitions};
 use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
-use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;

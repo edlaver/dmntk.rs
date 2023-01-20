@@ -32,8 +32,8 @@
 
 //! Builder for item definition type evaluators.
 
-use crate::builders::model_definitions::{DefDefinitions, DefItemDefinition};
 use crate::errors::*;
+use crate::evaluators::model_definitions::{DefDefinitions, DefItemDefinition};
 use crate::evaluators::type_ref_to_feel_type;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};

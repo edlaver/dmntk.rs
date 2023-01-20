@@ -32,11 +32,11 @@
 
 //! Builder for business knowledge model evaluators.
 
-use crate::builders::model_definitions::{DefBusinessKnowledgeModel, DefDefinitions};
 use crate::errors::*;
 use crate::evaluators::boxed_expressions::*;
+use crate::evaluators::model_builder::ModelBuilder;
+use crate::evaluators::model_definitions::{DefBusinessKnowledgeModel, DefDefinitions};
 use crate::evaluators::model_evaluator::ModelEvaluator;
-use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;

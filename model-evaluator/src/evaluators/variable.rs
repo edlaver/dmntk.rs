@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use crate::builders::model_definitions::DefInformationItem;
+use crate::evaluators::model_definitions::DefInformationItem;
 use crate::evaluators::{ItemDefinitionEvaluator, ItemDefinitionTypeEvaluator};
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;

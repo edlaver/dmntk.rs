@@ -32,11 +32,11 @@
 
 //! Builder for decision service evaluators.
 
-use crate::builders::model_definitions::{DefDecisionService, DefDefinitions};
 use crate::errors::err_write_lock_failed;
+use crate::evaluators::model_builder::ModelBuilder;
+use crate::evaluators::model_definitions::{DefDecisionService, DefDefinitions};
 use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
-use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;

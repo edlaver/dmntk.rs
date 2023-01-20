@@ -32,9 +32,9 @@
 
 //! Builder for input data evaluators.
 
-use crate::builders::model_definitions::DefDefinitions;
 use crate::errors::*;
 use crate::evaluators::item_definition::ItemDefinitionEvaluator;
+use crate::evaluators::model_definitions::DefDefinitions;
 use crate::evaluators::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
@@ -83,8 +83,8 @@ impl InputDataEvaluator {
 
 #[cfg(test)]
 mod tests {
-  use crate::builders::model_definitions::DefDefinitions;
   use crate::evaluators::item_definition::ItemDefinitionEvaluator;
+  use crate::evaluators::model_definitions::DefDefinitions;
   use crate::evaluators::InputDataEvaluator;
   use dmntk_examples::input_data::*;
   use dmntk_feel::values::Value;

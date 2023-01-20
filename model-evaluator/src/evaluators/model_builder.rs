@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use crate::builders::model_definitions::DefDefinitions;
+use crate::evaluators::model_definitions::DefDefinitions;
 use crate::evaluators::model_evaluator::InvocableType;
 use crate::evaluators::*;
 use dmntk_common::Result;

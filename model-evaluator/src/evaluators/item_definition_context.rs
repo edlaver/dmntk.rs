@@ -32,8 +32,8 @@
 
 //! Builder for item definition context evaluators.
 
-use crate::builders::model_definitions::{DefDefinitions, DefItemDefinition};
 use crate::errors::*;
+use crate::evaluators::model_definitions::{DefDefinitions, DefItemDefinition};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};

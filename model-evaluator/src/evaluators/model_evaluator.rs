@@ -30,9 +30,8 @@
  * limitations under the License.
  */
 
-use crate::builders::model_builder::Invocables;
+use crate::evaluators::model_builder::{Invocables, ModelBuilder};
 use crate::evaluators::*;
-use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;

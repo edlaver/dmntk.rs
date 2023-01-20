@@ -42,6 +42,8 @@ mod input_data_context;
 mod item_definition;
 mod item_definition_context;
 mod item_definition_type;
+pub(crate) mod model_builder;
+pub mod model_definitions;
 pub mod model_evaluator;
 mod variable;
 
