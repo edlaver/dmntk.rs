@@ -76,10 +76,10 @@ pub fn svg_decision(mut indent: usize, shape: &DmnShape, decision: &Decision) ->
 }
 
 /// Prepares business knowledge model shape.
-pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, business_knowledge: &BusinessKnowledgeModel) -> String {
+pub fn svg_business_knowledge_model(mut indent: usize, shape: &DmnShape, bkm: &BusinessKnowledgeModel) -> String {
   indent += 4;
   let mut svg_content = String::new();
-  let text = get_label_text(shape, business_knowledge.name());
+  let text = get_label_text(shape, bkm.name());
   let shape_class = get_shape_shared_style_id(shape);
   let label_class = get_shape_label_shared_style_id(shape);
   let (x, y, w, h) = (shape.bounds.x, shape.bounds.y, shape.bounds.width, shape.bounds.height);

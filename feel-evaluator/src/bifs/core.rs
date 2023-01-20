@@ -36,7 +36,7 @@ use crate::evaluate_equals;
 use crate::macros::invalid_argument_type;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
-use dmntk_feel::{value_null, value_number, value_string, FeelNumber, Name, Scope, ToFeelString};
+use dmntk_feel::{value_null, value_number, value_string, FeelNumber, FeelScope, Name, ToFeelString};
 use dmntk_feel_temporal::{DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear};
 use regex::Regex;
 use std::borrow::Borrow;
@@ -218,14 +218,17 @@ pub fn any(values: &[Value]) -> Value {
 
 /// Returns new list with items appended.
 pub fn append(list: &Value, values: &[Value]) -> Value {
-  if let Value::List(items) = list {
-    let mut appended = items.clone();
-    for value in values {
-      appended.add(value.clone());
+  match list {
+    Value::List(items) => {
+      let mut appended = items.clone();
+      for value in values {
+        appended.add(value.clone());
+      }
+      Value::List(appended)
     }
-    return Value::List(appended);
+    v @ Value::Null(_) => v.clone(),
+    other => invalid_argument_type!("append", "list", other.type_of()),
   }
-  invalid_argument_type!("append", "list", list.type_of())
 }
 
 /// TBD
@@ -472,7 +475,7 @@ pub fn count(list: &Value) -> Value {
   if let Value::List(items) = list {
     Value::Number(items.as_vec().len().into())
   } else {
-    invalid_argument_type!("count", "list", list.type_of())
+    Value::Number(1.into())
   }
 }
 
@@ -1858,14 +1861,14 @@ pub fn reverse(list: &Value) -> Value {
 ///
 pub fn sort(list: &Value, ordering_function: &Value) -> Value {
   if let Value::List(items) = list.clone() {
-    if let Value::FunctionDefinition(parameters, body, _, _) = ordering_function {
+    if let Value::FunctionDefinition(parameters, body, false, _, closure_ctx, _) = ordering_function {
       if parameters.len() == 2 {
         let mut elements = items.as_vec().clone();
         elements.sort_by(|x, y| {
-          let mut ctx = FeelContext::default();
+          let mut ctx = closure_ctx.clone();
           ctx.set_entry(&parameters[0].0, x.clone());
           ctx.set_entry(&parameters[1].0, y.clone());
-          let scope: Scope = ctx.into();
+          let scope: FeelScope = ctx.into();
           if let Value::Boolean(result) = body.evaluate(&scope) {
             if result {
               Ordering::Less

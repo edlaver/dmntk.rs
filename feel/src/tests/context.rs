@@ -1,17 +1,15 @@
 use crate::context::FeelContext;
 use crate::names::Name;
 use crate::qualified_names::QualifiedName;
-use crate::values::{Value, Values};
-use crate::{value_number, FeelType, ToFeelString};
+use crate::values::Value;
+use crate::{value_number, ToFeelString};
 use dmntk_common::Jsonify;
-use std::collections::BTreeMap;
 
 #[test]
 fn test_context_default() {
   let ctx: FeelContext = Default::default();
   assert_eq!("{}", ctx.to_string());
   assert_eq!("FeelContext({})", format!("{ctx:?}"));
-  assert!(ctx.flatten_keys().is_empty());
   assert_eq!(None, ctx.get_first());
   assert_eq!(0, ctx.len());
   assert!(ctx.is_empty());
@@ -92,7 +90,6 @@ fn test_context_one_level() {
   assert!(!ctx_a.contains_entries(&qname_a_b));
   assert!(!ctx_a.contains_entry(&name_a_b_c));
   assert!(!ctx_a.contains_entries(&qname_a_b_c));
-  assert!(ctx_a.flatten_keys().contains("a"));
   assert_eq!("10", ctx_a.get_entry(&name_a).unwrap().to_string().as_str());
 }
 
@@ -124,9 +121,6 @@ fn test_context_two_levels() {
   assert!(ctx_a.contains_entries(&qname_b));
   assert!(ctx_a.contains_entries(&qname_b_married));
   assert!(!ctx_a.contains_entries(&qname_b_married_age));
-  assert!(ctx_a.flatten_keys().contains("age"));
-  assert!(ctx_a.flatten_keys().contains("b"));
-  assert!(ctx_a.flatten_keys().contains("b . married"));
   assert_eq!("49", ctx_a.get_entry(&name_age).unwrap().to_string().as_str());
   assert_eq!("{married: true}", ctx_a.get_entry(&name_b).unwrap().to_string().as_str());
 }
@@ -154,11 +148,6 @@ fn test_context_three_levels() {
   assert_eq!(r#"{age: 49, b: {c: {car: "opel"}, married: true}}"#, ctx_a.to_string());
   assert!(ctx_a.contains_entry(&name_age));
   assert!(ctx_a.contains_entry(&name_b));
-  assert!(ctx_a.flatten_keys().contains("age"));
-  assert!(ctx_a.flatten_keys().contains("b"));
-  assert!(ctx_a.flatten_keys().contains("b . c"));
-  assert!(ctx_a.flatten_keys().contains("b . married"));
-  assert!(ctx_a.flatten_keys().contains("b . c . car"));
 }
 
 #[test]
@@ -256,161 +245,6 @@ fn test_context_create_entry() {
   ctx.create_entry(&qn_a_c, Value::String("c".to_string()));
   ctx.create_entry(&qn_a_d, Value::String("d".to_string()));
   assert_eq!(r#"{a: {b: "b", c: "c", d: "d"}}"#, ctx.to_string().as_str());
-}
-
-#[test]
-fn test_context_flatten_keys_one_level() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let mut ctx: FeelContext = Default::default();
-  ctx.set_entry(&name_a, value_number!(1));
-  ctx.set_entry(&name_b, value_number!(2));
-  assert_eq!(r#"{a: 1, b: 2}"#, ctx.to_string());
-  let keys = ctx.flatten_keys();
-  assert_eq!(2, keys.len());
-  assert!(keys.contains("a"));
-  assert!(keys.contains("b"));
-}
-
-#[test]
-fn test_flatten_two_levels() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let name_c = Name::from("c");
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&name_a, value_number!(10));
-  ctx_b.set_entry(&name_b, value_number!(20));
-  ctx_b.set_entry(&name_c, value_number!(30));
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, value_number!(1));
-  ctx_a.set_entry(&name_b, value_number!(2));
-  ctx_a.set_entry(&name_c, ctx_b.into());
-  let keys = ctx_a.flatten_keys();
-  assert_eq!(6, keys.len());
-  assert!(keys.contains("a"));
-  assert!(keys.contains("b"));
-  assert!(keys.contains("c"));
-  assert!(keys.contains("c . a"));
-  assert!(keys.contains("c . b"));
-  assert!(keys.contains("c . c"));
-}
-
-#[test]
-fn test_flatten_three_levels() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let name_c = Name::from("c");
-  let name_d = Name::from("d");
-  let mut ctx_c: FeelContext = Default::default();
-  ctx_c.set_entry(&name_a, value_number!(100));
-  ctx_c.set_entry(&name_b, value_number!(200));
-  ctx_c.set_entry(&name_c, value_number!(300));
-  ctx_c.set_entry(&name_d, value_number!(400));
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&name_a, value_number!(10));
-  ctx_b.set_entry(&name_b, value_number!(20));
-  ctx_b.set_entry(&name_c, value_number!(30));
-  ctx_b.set_entry(&name_d, ctx_c.into());
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, value_number!(1));
-  ctx_a.set_entry(&name_b, value_number!(2));
-  ctx_a.set_entry(&name_c, ctx_b.into());
-  let keys = ctx_a.flatten_keys();
-  assert_eq!(16, keys.len());
-  assert!(keys.contains("a"));
-  assert!(keys.contains("b"));
-  assert!(keys.contains("c"));
-  assert!(keys.contains("d"));
-  assert!(keys.contains("c . a"));
-  assert!(keys.contains("c . b"));
-  assert!(keys.contains("c . c"));
-  assert!(keys.contains("c . d"));
-  assert!(keys.contains("c . d . a"));
-  assert!(keys.contains("c . d . b"));
-  assert!(keys.contains("c . d . c"));
-  assert!(keys.contains("c . d . d"));
-  assert!(keys.contains("d . a"));
-  assert!(keys.contains("d . b"));
-  assert!(keys.contains("d . c"));
-  assert!(keys.contains("d . d"));
-}
-
-#[test]
-fn test_flatten_list_values() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let name_c = Name::from("c");
-  let name_d = Name::from("d");
-  let mut ctx_c: FeelContext = Default::default();
-  ctx_c.set_entry(&name_a, value_number!(1));
-  ctx_c.set_entry(&name_b, value_number!(2));
-  ctx_c.set_entry(&name_c, value_number!(3));
-  ctx_c.set_entry(&name_d, value_number!(4));
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&name_a, value_number!(10));
-  ctx_b.set_entry(&name_b, value_number!(20));
-  ctx_b.set_entry(&name_c, value_number!(30));
-  ctx_b.set_entry(&name_d, ctx_c.into());
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, Value::List(Values::new(vec![Value::Context(ctx_b)])));
-  let keys = ctx_a.flatten_keys();
-  assert_eq!(16, keys.len());
-  assert!(keys.contains("a"));
-  assert!(keys.contains("b"));
-  assert!(keys.contains("c"));
-  assert!(keys.contains("d"));
-  assert!(keys.contains("a . a"));
-  assert!(keys.contains("a . b"));
-  assert!(keys.contains("a . c"));
-  assert!(keys.contains("a . d"));
-  assert!(keys.contains("d . a"));
-  assert!(keys.contains("d . b"));
-  assert!(keys.contains("d . c"));
-  assert!(keys.contains("d . d"));
-  assert!(keys.contains("a . d . a"));
-  assert!(keys.contains("a . d . b"));
-  assert!(keys.contains("a . d . c"));
-  assert!(keys.contains("a . d . d"));
-}
-
-#[test]
-fn test_flatten_type_context() {
-  let name_a = Name::from("a");
-  let name_b = Name::from("b");
-  let name_c = Name::from("c");
-  let mut types: BTreeMap<Name, FeelType> = BTreeMap::new();
-  types.insert(name_b, FeelType::Number);
-  types.insert(name_c, FeelType::Boolean);
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, Value::FeelType(FeelType::Context(types)));
-  let keys = ctx_a.flatten_keys();
-  assert_eq!(5, keys.len());
-  assert!(keys.contains("a"));
-  assert!(keys.contains("b"));
-  assert!(keys.contains("c"));
-  assert!(keys.contains("a . b"));
-  assert!(keys.contains("a . c"));
-}
-
-#[test]
-fn test_flatten_names_with_additional_characters() {
-  let name_a = Name::new(&["lorem", "ipsum", "dolor", "sit", "amet"]);
-  let name_b = Name::new(&["b"]);
-  let name_c = Name::new(&["now", "let", "'", "s", "go", "to", "the", "next", "paragraph"]);
-  let name_d = Name::new(&["Curabitur", "rhoncus", "+", "sodales", "odio", "in", "fringilla"]);
-  let mut ctx_b: FeelContext = Default::default();
-  ctx_b.set_entry(&name_d, Value::Boolean(false));
-  let mut ctx_a: FeelContext = Default::default();
-  ctx_a.set_entry(&name_a, value_number!(1));
-  ctx_a.set_entry(&name_b, value_number!(2));
-  ctx_a.set_entry(&name_c, ctx_b.into());
-  let keys = ctx_a.flatten_keys();
-  assert_eq!(5, keys.len());
-  assert!(keys.contains("b"));
-  assert!(keys.contains("lorem ipsum dolor sit amet"));
-  assert!(keys.contains("now let's go to the next paragraph"));
-  assert!(keys.contains("now let's go to the next paragraph . Curabitur rhoncus+sodales odio in fringilla"));
-  assert!(keys.contains("Curabitur rhoncus+sodales odio in fringilla"));
 }
 
 #[test]

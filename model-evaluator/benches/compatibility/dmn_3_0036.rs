@@ -32,213 +32,188 @@
 
 use super::build_model_evaluator;
 use crate::compatibility::{assert_decision, context};
+use dmntk_feel::context::FeelContext;
 use dmntk_model_evaluator::ModelEvaluator;
 use std::sync::Arc;
 use test::Bencher;
 
 lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0036);
-}
-
-#[bench]
-#[ignore]
-fn _0001(b: &mut Bencher) {
-  let ctx = context(
-    r#"
-      {
-        "Another Date":  @"2018-07-31",
-        "Another Date and Time":  @"2018-07-31T17: 13: 00Z",
-        "Another Days and Time Duration":  @"PT12H",
-        "Another String":  "Hello",
-        "Another Time":  @"17: 13: 00",
-        "Another Years and Months Duration":  @"P8M",
-        "Another boolean":  false,
-        "Another number":  15,
-        Complex:  {
-          aBoolean:  true,
-          aDate:  @"2018-07-30",
-          aDateTime:  @"2018-07-30T16: 12: 00Z",
-          aDaysAndTimeDuration:  @"PT10H",
-          aNumber:  10,
-          aString:  "Hi",
-          aTime:  @"16: 11: 00",
-          aYearsAndMonthsDuration:  @"P5M"
-        }
-      }
-    "#,
+  static ref CTX1: FeelContext = context(
+    r#"{"Another Date": @"2018-07-31", "Another Date and Time": @"2018-07-31T17:13:00Z", "Another Days and Time Duration": @"PT12H", "Another String": "Hello", "Another Time": @"17:13:00", "Another Years and Months Duration": @"P8M", "Another boolean": false, "Another number": 15, Complex: { aBoolean: true, aDate: @"2018-07-30", aDateTime: @"2018-07-30T16:12:00Z", aDaysAndTimeDuration: @"PT10H", aNumber: 10, aString: "Hi", aTime: @"16:11:00", aYearsAndMonthsDuration: @"P5M"}}"#
   );
+  static ref CTX2: FeelContext = context(
+    r#"{"Another Date": @"2018-07-29", "Another Date and Time": @"2018-07-29T15:13:00Z", "Another Days and Time Duration": @"PT8H",  "Another String": "Hello", "Another Time": @"15:13:00", "Another Years and Months Duration": @"P3M", "Another boolean": false, "Another number": 5,  Complex: { aBoolean: true, aDate: @"2018-07-30", aDateTime: @"2018-07-30T16:12:00Z", aDaysAndTimeDuration: @"PT10H", aNumber: 10, aString: "Hi", aTime: @"16:11:00", aYearsAndMonthsDuration: @"P5M"}}"#
+  );
+  static ref CTX3: FeelContext = context(
+    r#"{"Another Date": @"2018-07-30", "Another Date and Time": @"2018-07-30T16:12:00Z", "Another Days and Time Duration": @"PT10H", "Another String": "Hi",    "Another Time": @"16:11:00", "Another Years and Months Duration": @"P5M", "Another boolean": true,  "Another number": 10, Complex: { aBoolean: true, aDate: @"2018-07-30", aDateTime: @"2018-07-30T16:12:00Z", aDaysAndTimeDuration: @"PT10H", aNumber: 10, aString: "Hi", aTime: @"16:11:00", aYearsAndMonthsDuration: @"P5M"}}"#
+  );
+}
+
+#[bench]
+fn _0001(b: &mut Bencher) {
+  let invocable_name = "Compare String";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Different String""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0002(b: &mut Bencher) {
+  let invocable_name = "Compare Date";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Future Date""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0003(b: &mut Bencher) {
+  let invocable_name = "Compare Number";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Bigger""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0004(b: &mut Bencher) {
+  let invocable_name = "Compare Date and Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Future date time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0005(b: &mut Bencher) {
+  let invocable_name = "Compare Days and Time Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Longer duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0006(b: &mut Bencher) {
+  let invocable_name = "Compare Years and Months Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Longer duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0007(b: &mut Bencher) {
+  let invocable_name = "Compare Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Future Time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
+}
+
+#[bench]
+fn _0008(b: &mut Bencher) {
   let invocable_name = "Compare Boolean";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""foo""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX1, r#""Not same boolean""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX1));
 }
-
-/*
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Different String""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0009(b: &mut Bencher) {
+  let invocable_name = "Compare String";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Different String""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time:  7: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Future Date""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0010(b: &mut Bencher) {
+  let invocable_name = "Compare Date";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Past Date""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Bigger""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0011(b: &mut Bencher) {
+  let invocable_name = "Compare Number";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Smaller""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Future date time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0012(b: &mut Bencher) {
+  let invocable_name = "Compare Date and Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Past date time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Longer duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0013(b: &mut Bencher) {
+  let invocable_name = "Compare Days and Time Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Shorter duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Longer duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0014(b: &mut Bencher) {
+  let invocable_name = "Compare Years and Months Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Shorter duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Future Time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0015(b: &mut Bencher) {
+  let invocable_name = "Compare Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Past Time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-31,Another Date and Time: 2018-07-31T17: 13: 00Z,Another Days and Time Duration: PT12H,Another String: ""Hello"",Another Time: 17: 13: 00,Another Years and Months Duration: P8M,Another boolean: false,Another number: 15,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#"null(no rules matched, no output value defined)"#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0016(b: &mut Bencher) {
+  let invocable_name = "Compare Boolean";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX2, r#""Not same boolean""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX2));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Different String""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0017(b: &mut Bencher) {
+  let invocable_name = "Compare String";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same String""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Past Date""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0018(b: &mut Bencher) {
+  let invocable_name = "Compare Date";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same Date""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Smaller""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0019(b: &mut Bencher) {
+  let invocable_name = "Compare Number";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Equals""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Past date time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0020(b: &mut Bencher) {
+  let invocable_name = "Compare Date and Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same date time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Shorter duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0021(b: &mut Bencher) {
+  let invocable_name = "Compare Days and Time Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Shorter duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0022(b: &mut Bencher) {
+  let invocable_name = "Compare Years and Months Duration";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same duration""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Past Time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0023(b: &mut Bencher) {
+  let invocable_name = "Compare Time";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same Time""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
 
 #[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-29,Another Date and Time: 2018-07-29T15: 13: 00Z,Another Days and Time Duration: PT8H,Another String: ""Hello"",Another Time: 15: 13: 00,Another Years and Months Duration: P3M,Another boolean: false,Another number: 5,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#"null(no rules matched, no output value defined)"#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+fn _0024(b: &mut Bencher) {
+  let invocable_name = "Compare Boolean";
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX3, r#""Same boolean""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX3));
 }
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare String", &ctx, r#""Same String""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date", &ctx, r#""Same Date""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Number", &ctx, r#""Equals""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Date and Time", &ctx, r#""Same date time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Days and Time Duration", &ctx, r#""Same duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Years and Months Duration", &ctx, r#""Same duration""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Time", &ctx, r#""Same Time""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
-
-#[bench]
-fn _000() {
-let ctx = context(r#"{Another Date: 2018-07-30,Another Date and Time: 2018-07-30T16: 12: 00Z,Another Days and Time Duration: PT10H,Another String: ""Hi"",Another Time: 16: 11: 00,Another Years and Months Duration: P5M,Another boolean: true,Another number: 10,Complex: {aBoolean: true,aDate: 2018-07-30,aDateTime: 2018-07-30T16: 12: 00Z,aDaysAndTimeDuration: PT10H,aNumber: 10,aString: ""Hi"",aTime: 16: 11: 00,aYearsAndMonthsDuration: P5M}}"#);
-   assert_decision(&MODEL_EVALUATOR, "Compare Boolean", &ctx, r#""Same boolean""#); b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
-}
-
- */

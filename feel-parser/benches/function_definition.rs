@@ -34,7 +34,7 @@
 
 extern crate test;
 
-use dmntk_feel::{scope, Scope};
+use dmntk_feel::{scope, FeelScope};
 use dmntk_feel_parser::{parse_context, parse_expression};
 use test::Bencher;
 

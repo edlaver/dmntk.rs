@@ -63,7 +63,7 @@ mkdir ./target/coverage
 # generate coverage info
 grcov . --llvm -s . -t lcov --branch --ignore-not-existing --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" -o ./target/lcov/lcov.info
 # generate coverage report
-genhtml -t "DMNTK v0.0.54" -q -o ./target/coverage ./target/lcov/lcov.info
+genhtml -t "DMNTK v0.1.0" -q -o ./target/coverage ./target/lcov/lcov.info
 # display final message
 echo ""
 echo "Open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html"

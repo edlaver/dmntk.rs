@@ -30,10 +30,12 @@
  * limitations under the License.
  */
 
-use crate::ModelEvaluator;
+use crate::model_builder::ModelBuilder;
+use crate::model_evaluator::ModelEvaluator;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::{FeelScope, Name};
+use dmntk_model::model::Definitions;
 use std::sync::Arc;
 
 #[cfg(test)]
@@ -44,7 +46,7 @@ mod model;
 
 /// Utility function that creates a `FEEL` context from specified input expression.
 pub fn context(input: &str) -> FeelContext {
-  let scope = Scope::default();
+  let scope = FeelScope::default();
   match dmntk_feel_parser::parse_context(&scope, input, false) {
     Ok(node) => match dmntk_feel_evaluator::prepare(&node) {
       Ok(evaluator) => match evaluator(&scope) {
@@ -60,6 +62,20 @@ pub fn context(input: &str) -> FeelContext {
 /// Utility function that builds a model evaluator from XML model definitions.
 fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
   ModelEvaluator::new(&dmntk_model::parse(model_content).unwrap()).unwrap()
+}
+
+/// Utility function that builds a model evaluator from XML model definitions.
+fn build_model_evaluators(model_content: &[(Option<Name>, &str)]) -> Arc<ModelEvaluator> {
+  let mut definitions = vec![];
+  for (opt_name, content) in model_content {
+    definitions.push((opt_name.clone(), dmntk_model::parse(content).unwrap()));
+  }
+  let defs = definitions
+    .iter()
+    .map(|(opt_name, definitions)| (opt_name.clone(), definitions))
+    .collect::<Vec<(Option<Name>, &Definitions)>>();
+  let _ = ModelBuilder::new(defs[0].1);
+  ModelEvaluator::new(defs[0].1).unwrap()
 }
 
 /// Utility function that evaluates a `Decision` specified by name and compares the result.

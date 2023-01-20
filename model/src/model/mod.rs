@@ -41,11 +41,9 @@ mod tests;
 use crate::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
-use std::borrow::Borrow;
-use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt;
-use std::sync::Arc;
+use std::slice::Iter;
 
 pub const URI_FEEL: &str = "https://www.omg.org/spec/DMN/20191111/FEEL/";
 pub const URI_MODEL: &str = "https://www.omg.org/spec/DMN/20191111/MODEL/";
@@ -74,8 +72,8 @@ pub trait DmnElement {
 pub trait NamedElement: DmnElement {
   /// Returns the name of this [NamedElement].
   fn name(&self) -> &str;
-  /// Returns the optional `FEEL` name for this element.
-  fn feel_name(&self) -> &Option<Name>;
+  /// Returns the `FEEL` name for this element.
+  fn feel_name(&self) -> &Name;
 }
 
 /// [Expression] is an abstract class that describes the logic
@@ -166,8 +164,8 @@ pub struct PerformanceIndicator {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [PerformanceIndicator].
   name: String,
-  /// Optional `FEEL` name of this [PerformanceIndicator].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [PerformanceIndicator].
+  feel_name: Name,
   /// The URI of this [PerformanceIndicator].
   uri: Option<String>,
   /// Collection of [Decision] that impact this [Perform`anceIndicator].
@@ -203,8 +201,8 @@ impl NamedElement for PerformanceIndicator {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -236,8 +234,8 @@ pub struct OrganizationUnit {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [OrganizationUnit].
   name: String,
-  /// Optional `FEEL` name of this [OrganizationUnit].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [OrganizationUnit].
+  feel_name: Name,
   /// The URI of this [OrganizationUnit].
   uri: Option<String>,
   /// Collection of [Decision] that are made by this [OrganizationUnit].
@@ -274,8 +272,8 @@ impl NamedElement for OrganizationUnit {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -307,71 +305,11 @@ pub enum DrgElement {
   KnowledgeSource(KnowledgeSource),
 }
 
-impl DrgElement {
-  /// Checks if this [DrgElement] has and optional identifier.
-  /// If the element with specified identifier exists and
-  /// this identifier has a value equal to value specified
-  /// in parameter `id` then returns [true].
-  /// Otherwise returns [false].
-  pub fn has_id(&self, id: &str) -> bool {
-    match self {
-      DrgElement::Decision(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::InputData(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::DecisionService(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-      DrgElement::KnowledgeSource(inner) => inner.id().as_ref().map_or(false, |v| v == id),
-    }
-  }
-  pub fn get_id(&self) -> Option<String> {
-    match self {
-      DrgElement::Decision(inner) => inner.id().as_ref().cloned(),
-      DrgElement::InputData(inner) => inner.id().as_ref().cloned(),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.id().as_ref().cloned(),
-      DrgElement::DecisionService(inner) => inner.id().as_ref().cloned(),
-      DrgElement::KnowledgeSource(inner) => inner.id().as_ref().cloned(),
-    }
-  }
-  /// Checks if this [DrgElement] has a specified name.
-  /// If the element with specified name exists and
-  /// this name has a value equal to value specified
-  /// in parameter `name` then returns [true].
-  /// Otherwise returns [false].
-  pub fn has_name(&self, name: &str) -> bool {
-    match self {
-      DrgElement::Decision(inner) => inner.name().eq(name),
-      DrgElement::InputData(inner) => inner.name().eq(name),
-      DrgElement::BusinessKnowledgeModel(inner) => inner.name().eq(name),
-      DrgElement::DecisionService(inner) => inner.name().eq(name),
-      DrgElement::KnowledgeSource(inner) => inner.name().eq(name),
-    }
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [Decision].
-  pub fn is_decision(&self) -> bool {
-    matches!(self, DrgElement::Decision(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [InputData].
-  pub fn is_input_data(&self) -> bool {
-    matches!(self, DrgElement::InputData(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [BusinessKnowledgeModel].
-  pub fn is_business_knowledge_model(&self) -> bool {
-    matches!(self, DrgElement::BusinessKnowledgeModel(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [DecisionService].
-  pub fn is_decision_service(&self) -> bool {
-    matches!(self, DrgElement::DecisionService(_))
-  }
-  /// Returns `true` when this [DrgElement] is an instance of [KnowledgeSource].
-  pub fn is_knowledge_source(&self) -> bool {
-    matches!(self, DrgElement::KnowledgeSource(_))
-  }
-}
-
 #[derive(Debug, Clone)]
 pub enum Requirement {
-  Information(Arc<InformationRequirement>),
-  Knowledge(Arc<KnowledgeRequirement>),
-  Authority(Arc<AuthorityRequirement>),
+  Information(InformationRequirement),
+  Knowledge(KnowledgeRequirement),
+  Authority(AuthorityRequirement),
 }
 
 /// [Definitions] element is the outermost containing object
@@ -392,8 +330,8 @@ pub struct Definitions {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [Definitions] derived from [NamedElement].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Identifies the namespace associated with this [Definitions]
   /// and follows the convention established by XML Schema.
   namespace: String,
@@ -416,18 +354,13 @@ pub struct Definitions {
   /// Container for the instances of [ItemDefinition] that are contained in this [Definitions].
   item_definitions: Vec<ItemDefinition>,
   /// Container for the instances of [DrgElement] that are contained in this [Definitions].
-  drg_elements: Vec<Arc<DrgElement>>,
-  /// Container for the instances of [DrgElement] indexed by its unique identifier.
-  drg_elements_by_id: HashMap<String, Arc<DrgElement>>,
+  drg_elements: Vec<DrgElement>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   business_context_elements: Vec<BusinessContextElementInstance>,
-  /// Container used to import externally defined elements and make them available
-  /// for use by elements in this [Definitions].
+  /// Container used to import externally defined elements and make them available for use by elements in this [Definitions].
   imports: Vec<Import>,
   /// Optional Diagram Interchange information contained within this [Definitions].
   dmndi: Option<Dmndi>,
-  /// Collection of requirements contained in this [Definitions] indexed by identifiers.
-  requirements_by_id: HashMap<String, Requirement>,
 }
 
 impl Definitions {
@@ -435,208 +368,206 @@ impl Definitions {
   pub fn namespace(&self) -> &str {
     &self.namespace
   }
+
   /// Returns the reference to optional expression language used within the scope of this [Definitions].
   pub fn expression_language(&self) -> &Option<String> {
     &self.expression_language
   }
+
   /// Returns reference to the type language used within the scope of this [Definitions].
   pub fn type_language(&self) -> &Option<String> {
     &self.type_language
   }
+
   /// Returns reference to the name of the tool used to export the XML serialization.
   pub fn exporter(&self) -> &Option<String> {
     &self.exporter
   }
+
   /// Returns reference to the version of the tool used to export the XML serialization.
   pub fn exporter_version(&self) -> &Option<String> {
     &self.exporter_version
   }
+
   /// Returns reference to the container of instances of [ItemDefinition] contained in this [Definitions].
   pub fn item_definitions(&self) -> &Vec<ItemDefinition> {
     &self.item_definitions
   }
+
   /// Returns mutable reference to the container of instances of [ItemDefinition] contained in this [Definitions].
   pub fn item_definitions_mut(&mut self) -> &mut Vec<ItemDefinition> {
     &mut self.item_definitions
   }
+
   /// Returns an optional reference to [ItemDefinition] with specified name
   /// or [None] when such [ItemDefinition] was not found in this [Definitions].
   pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {
     self.item_definitions.iter().find(|v| v.name() == name)
   }
-  /// Returns a vector of references to decisions.
-  pub fn decisions(&self) -> Vec<&Decision> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_decision() {
-          if let DrgElement::Decision(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [Decision] with specified identifier
-  /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_id(&self, id: &str) -> Option<&Decision> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision() && v.has_id(id) {
-        if let DrgElement::Decision(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [Decision] with specified name
-  /// or [None] when such [Decision] was not found among instances of [DrgElement].
-  pub fn decision_by_name(&self, name: &str) -> Option<&Decision> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision() && v.has_name(name) {
-        if let DrgElement::Decision(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns a vector of references to business knowledge models.
-  pub fn business_knowledge_models(&self) -> Vec<&BusinessKnowledgeModel> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_business_knowledge_model() {
-          if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [BusinessKnowledgeModel] with specified identifier
-  /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&BusinessKnowledgeModel> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_business_knowledge_model() && v.has_id(id) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [BusinessKnowledgeModel] with specified name
-  /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_name(&self, name: &str) -> Option<&BusinessKnowledgeModel> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_business_knowledge_model() && v.has_name(name) {
-        if let DrgElement::BusinessKnowledgeModel(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns a vector of references to decision services.
-  pub fn decision_services(&self) -> Vec<&DecisionService> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| {
-        if v.is_decision_service() {
-          if let DrgElement::DecisionService(inner) = v.borrow() {
-            return Some(inner);
-          }
-        }
-        None
-      })
-      .collect()
-  }
-  /// Returns an optional reference to [DecisionService] with specified identifier
-  /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_id(&self, id: &str) -> Option<&DecisionService> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision_service() && v.has_id(id) {
-        if let DrgElement::DecisionService(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [DecisionService] with specified name
-  /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_name(&self, name: &str) -> Option<&DecisionService> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_decision_service() && v.has_name(name) {
-        if let DrgElement::DecisionService(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  /// Returns an optional reference to [InputData] with specified identifier
-  /// or [None] when such [InputData] was not found among
-  /// instances of [DrgElement]).
-  pub fn input_data_by_id(&self, id: &str) -> Option<&InputData> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_input_data() && v.has_id(id) {
-        if let DrgElement::InputData(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
-  ///
-  pub fn input_data(&self) -> Vec<&InputData> {
-    self
-      .drg_elements
-      .iter()
-      .filter_map(|v| if let DrgElement::InputData(input_data) = v.borrow() { Some(input_data) } else { None })
-      .collect::<Vec<&InputData>>()
-  }
-  /// Returns an optional reference to [KnowledgeSource] with specified identifier
-  /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
-  pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
-    self.drg_elements.iter().find_map(|v| {
-      if v.is_knowledge_source() && v.has_id(id) {
-        if let DrgElement::KnowledgeSource(inner) = v.borrow() {
-          return Some(inner);
-        }
-      }
-      None
-    })
-  }
+
   /// Returns reference to the container of instances of [BusinessContextElement] contained in this [Definitions].
   pub fn business_context_elements(&self) -> &Vec<BusinessContextElementInstance> {
     &self.business_context_elements
   }
+
   /// Returns reference to the container of instances of [Import] contained in this [Definitions].
   pub fn imports(&self) -> &Vec<Import> {
     &self.imports
   }
+
   /// Returns reference to optional [Dmndi] container.
   pub fn dmndi(&self) -> &Option<Dmndi> {
     &self.dmndi
   }
+
   /// Returns reference to [DrgElements](DrgElement) container.
-  pub fn drg_elements_mut(&mut self) -> &mut Vec<Arc<DrgElement>> {
-    &mut self.drg_elements
+  pub fn drg_elements(&self) -> Iter<DrgElement> {
+    self.drg_elements.iter()
   }
-  /// Returns reference to [DrgElements](DrgElement) indexed by identifiers.
-  pub fn drg_elements_by_id(&self) -> &HashMap<String, Arc<DrgElement>> {
-    &self.drg_elements_by_id
+
+  /// Returns all decision definitions.
+  pub fn decisions(&self) -> Vec<Decision> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::Decision(decision) = drg_element {
+          Some(decision.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
   }
-  /// Returns reference to [Requirements](Requirement) indexed by identifiers.
-  pub fn requirements_by_id(&self) -> &HashMap<String, Requirement> {
-    &self.requirements_by_id
+
+  /// Returns all input data definitions.
+  pub fn input_data(&self) -> Vec<InputData> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::InputData(input_data) = drg_element {
+          Some(input_data.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Returns decision with specified identifier.
+  pub fn get_decision(&self, id: &str) -> Option<Decision> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::Decision(decision) = drg_element {
+        if let Some(decision_id) = decision.id() {
+          if decision_id == id {
+            return Some(decision.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns input data with specified identifier.
+  pub fn get_input_data(&self, id: &str) -> Option<InputData> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::InputData(input_data) = drg_element {
+        if let Some(decision_id) = input_data.id() {
+          if decision_id == id {
+            return Some(input_data.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns business knowledge model with specified identifier.
+  pub fn get_business_knowledge_model(&self, id: &str) -> Option<BusinessKnowledgeModel> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::BusinessKnowledgeModel(business_knowledge_model) = drg_element {
+        if let Some(decision_id) = business_knowledge_model.id() {
+          if decision_id == id {
+            return Some(business_knowledge_model.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns knowledge source with specified identifier.
+  pub fn get_knowledge_source(&self, id: &str) -> Option<KnowledgeSource> {
+    for drg_element in &self.drg_elements {
+      if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
+        if let Some(decision_id) = knowledge_source.id() {
+          if decision_id == id {
+            return Some(knowledge_source.clone());
+          }
+        }
+      }
+    }
+    None
+  }
+
+  /// Returns a requirement with specified identifier.
+  pub fn get_requirement(&self, id: &str) -> Option<Requirement> {
+    for drg_element in &self.drg_elements {
+      match drg_element {
+        DrgElement::Decision(decision) => {
+          for r in &decision.knowledge_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Knowledge(r.clone()));
+              }
+            }
+          }
+          for r in &decision.information_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Information(r.clone()));
+              }
+            }
+          }
+          for r in &decision.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+        DrgElement::InputData(_) => {}
+        DrgElement::BusinessKnowledgeModel(business_knowledge_model) => {
+          for r in &business_knowledge_model.knowledge_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Knowledge(r.clone()));
+              }
+            }
+          }
+          for r in &business_knowledge_model.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+        DrgElement::DecisionService(_) => {}
+        DrgElement::KnowledgeSource(knowledge_source) => {
+          for r in &knowledge_source.authority_requirements {
+            if let Some(r_id) = r.id() {
+              if r_id == id {
+                return Some(Requirement::Authority(r.clone()));
+              }
+            }
+          }
+        }
+      }
+    }
+    None
   }
 }
 
@@ -668,8 +599,8 @@ impl NamedElement for Definitions {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -688,8 +619,8 @@ pub struct InformationItem {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InformationItem].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Optional qualified name of the type of this [InformationItem].
   type_ref: Option<String>,
   /// Optional `FEEL` type of this [InformationItem].
@@ -731,8 +662,8 @@ impl NamedElement for InformationItem {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -764,8 +695,8 @@ pub struct InputData {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InputData].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// The instance of [InformationItem] that stores the result of this [InputData].
   variable: InformationItem,
 }
@@ -805,8 +736,8 @@ impl NamedElement for InputData {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -832,7 +763,7 @@ pub struct Import {
   /// and expressions referencing imported [InformationItems](InformationItem).
   name: String,
   /// Optional `FEEL` name of this [Import].
-  feel_name: Option<Name>,
+  feel_name: Name,
   /// Specifies the style of import associated with this [Import].
   import_type: String,
   /// Identifies the location of the imported element.
@@ -869,8 +800,8 @@ impl NamedElement for Import {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this [Import].
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this [Import].
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1060,8 +991,8 @@ pub struct Decision {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of the [Decision].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// A natural language question that characterizes the [Decision],
   /// such that the output of the [Decision] is an answer to the question.
   question: Option<String>,
@@ -1073,11 +1004,11 @@ pub struct Decision {
   /// The instance of the [Expression] for the [Decision].
   decision_logic: Option<ExpressionInstance>,
   /// Collection of the instances of [InformationRequirement] that compose this [Decision].
-  information_requirements: Vec<Arc<InformationRequirement>>,
+  information_requirements: Vec<InformationRequirement>,
   /// Collection of the instances of [KnowledgeRequirement] that compose this [Decision].
-  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
   //TODO add the following:
   // supported_objectives
   // impacted_performance_indicator
@@ -1105,15 +1036,15 @@ impl Decision {
     &self.decision_logic
   }
   /// Returns a reference to collection of [InformationRequirement].
-  pub fn information_requirements(&self) -> &Vec<Arc<InformationRequirement>> {
+  pub fn information_requirements(&self) -> &Vec<InformationRequirement> {
     &self.information_requirements
   }
   /// Returns a reference to collection of [KnowledgeRequirement].
-  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
     &self.knowledge_requirements
   }
   /// Returns a reference to collection of [AuthorityRequirement].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
@@ -1146,8 +1077,8 @@ impl NamedElement for Decision {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1336,15 +1267,15 @@ pub struct KnowledgeSource {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [KnowledgeSource].
   name: String,
-  /// Optional `FEEL` name of this [KnowledgeSource].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [KnowledgeSource].
+  feel_name: Name,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
 }
 
 impl KnowledgeSource {
   /// Returns a reference to collection of [AuthorityRequirement].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
@@ -1377,8 +1308,8 @@ impl NamedElement for KnowledgeSource {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this [KnowledgeSource].
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this [KnowledgeSource].
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1407,16 +1338,16 @@ pub struct BusinessKnowledgeModel {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [BusinessKnowledgeModel].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Variable that is bound to the function defined by the [FunctionDefinition] for this [BusinessKnowledgeModel].
   variable: InformationItem,
   /// The function that encapsulates the logic encapsulated by this [BusinessKnowledgeModel].
   encapsulated_logic: Option<FunctionDefinition>,
   /// This attribute lists the instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  knowledge_requirements: Vec<Arc<KnowledgeRequirement>>,
+  knowledge_requirements: Vec<KnowledgeRequirement>,
   /// This attribute lists the instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  authority_requirements: Vec<Arc<AuthorityRequirement>>,
+  authority_requirements: Vec<AuthorityRequirement>,
 }
 
 impl BusinessKnowledgeModel {
@@ -1425,11 +1356,11 @@ impl BusinessKnowledgeModel {
     &self.encapsulated_logic
   }
   /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn knowledge_requirements(&self) -> &Vec<Arc<KnowledgeRequirement>> {
+  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
     &self.knowledge_requirements
   }
   /// Returns reference to the collection of instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn authority_requirements(&self) -> &Vec<Arc<AuthorityRequirement>> {
+  pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
   }
 }
@@ -1462,8 +1393,8 @@ impl NamedElement for BusinessKnowledgeModel {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1491,8 +1422,8 @@ pub struct DecisionService {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [DecisionService].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Variable for this [DecisionService].
   variable: InformationItem,
   /// Collection of references to the instances of [Decision] required to be output by this [DecisionService].
@@ -1552,8 +1483,8 @@ impl NamedElement for DecisionService {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1593,8 +1524,8 @@ pub struct ItemDefinition {
   extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [ItemDefinition].
   name: String,
-  /// Optional `FEEL` name of this [ItemDefinition].
-  feel_name: Option<Name>,
+  /// `FEEL` name of this [ItemDefinition].
+  feel_name: Name,
   /// Optional base type of this [ItemDefinition] identified by namespace-prefixed name.
   type_ref: Option<String>,
   /// This attribute identifies the type language used to specify the base
@@ -1681,8 +1612,8 @@ impl NamedElement for ItemDefinition {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to optional `FEEL` name of this element.
-  fn feel_name(&self) -> &Option<Name> {
+  /// Returns a reference to `FEEL` name of this element.
+  fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 }
@@ -1964,7 +1895,7 @@ pub struct DecisionTable {
   pub output_label: Option<String>,
 }
 
-/// Implementation of [Display] for [DecisionTable].
+/// Implementation of [Display](fmt::Display) for [DecisionTable].
 impl fmt::Display for DecisionTable {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
@@ -2004,7 +1935,7 @@ pub enum DecisionTableOrientation {
   CrossTable,
 }
 
-/// Implementation of [Display] for [DecisionTableOrientation].
+/// Implementation of [Display](fmt::Display) for [DecisionTableOrientation].
 impl fmt::Display for DecisionTableOrientation {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
@@ -2054,7 +1985,7 @@ pub enum HitPolicy {
   RuleOrder,
 }
 
-/// Implementation of [Display] for HitPolicy.
+/// Implementation of [Display](fmt::Display) for HitPolicy.
 impl fmt::Display for HitPolicy {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
@@ -2105,7 +2036,7 @@ pub enum BuiltinAggregator {
   Max,
 }
 
-/// Implementation of [Display] for [BuiltinAggregator].
+/// Implementation of [Display](fmt::Display) for [BuiltinAggregator].
 impl fmt::Display for BuiltinAggregator {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(

@@ -30,114 +30,129 @@
  * limitations under the License.
  */
 
-//! `FEEL` scope.
+//! Implementation of the `FEEL` scope.
 
 use crate::context::FeelContext;
 use crate::values::Value;
-use crate::Name;
+use crate::{Name, QualifiedName};
 use dmntk_common::Jsonify;
 use std::cell::RefCell;
-use std::collections::HashSet;
+use std::fmt;
 
-/// Creates a scope.
+/// This macro creates a default scope.
 #[macro_export]
 macro_rules! scope {
   () => {{
-    Scope::default()
+    FeelScope::default()
   }};
 }
 
 /// The `FEEL` scope.
-#[derive(Debug)]
-pub struct Scope {
+pub struct FeelScope {
   /// The stack of contexts.
-  contexts: RefCell<Vec<FeelContext>>,
+  stack: RefCell<Vec<FeelContext>>,
 }
 
-impl Default for Scope {
-  /// Creates a default [Scope] containing single default [FeelContext].
+impl Default for FeelScope {
+  /// Creates a default [FeelScope] containing single default [FeelContext].
   fn default() -> Self {
     Self {
-      contexts: RefCell::new(vec![FeelContext::default()]),
+      stack: RefCell::new(vec![FeelContext::default()]),
     }
   }
 }
 
-impl From<FeelContext> for Scope {
-  /// Creates a [Scope] from [FeelContext].
-  fn from(context: FeelContext) -> Self {
-    Self {
-      contexts: RefCell::new(vec![context]),
-    }
+impl From<FeelContext> for FeelScope {
+  /// Creates a [FeelScope] from [FeelContext].
+  fn from(ctx: FeelContext) -> Self {
+    Self { stack: RefCell::new(vec![ctx]) }
   }
 }
 
-impl std::fmt::Display for Scope {
-  /// Converts this [Scope] to its textual representation.
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "[{}]", self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
+impl fmt::Display for FeelScope {
+  /// Converts [FeelScope] to text.
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "[{}]", self.stack.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
   }
 }
 
-impl Jsonify for Scope {
-  /// Converts this [Scope] to its `JSON` representation.
+impl Jsonify for FeelScope {
+  /// Converts this [FeelScope] to JSON text.
   fn jsonify(&self) -> String {
-    format!("[{}]", self.contexts.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
+    format!("[{}]", self.stack.borrow_mut().iter().map(|ctx| ctx.to_string()).collect::<Vec<String>>().join(", "))
   }
 }
 
-impl Scope {
-  /// Creates a new and empty [Scope].
-  pub fn new() -> Self {
-    Self { contexts: RefCell::new(vec![]) }
+impl FeelScope {
+  /// Temporary - remove
+  pub fn contexts(&self) -> Vec<FeelContext> {
+    self.stack.borrow().clone()
   }
+
+  /// Creates a new and empty [FeelScope].
+  pub fn new() -> Self {
+    Self { stack: RefCell::new(vec![]) }
+  }
+
   /// Pushes a context on the top of the scope stack.
   pub fn push(&self, ctx: FeelContext) {
-    self.contexts.borrow_mut().push(ctx)
+    self.stack.borrow_mut().push(ctx)
   }
+
   /// Takes and returns a context from the top of the stack.
   pub fn pop(&self) -> Option<FeelContext> {
-    self.contexts.borrow_mut().pop()
+    self.stack.borrow_mut().pop()
   }
-  /// Peeks a to context from the top of the stack.
+
+  /// Peeks a context from the top of the stack.
   /// If the stack is empty, the default context is returned.
-  pub fn peek(&self) -> FeelContext {
-    //TODO maybe returning a reference is enough???
-    self.contexts.borrow().last().map_or(FeelContext::default(), |ctx| ctx.clone())
+  pub fn peek(&self) -> Option<FeelContext> {
+    self.stack.borrow().last().cloned()
   }
-  /// Returns a vector of flattened keys in all contexts in scope.
-  pub fn flatten_keys(&self) -> HashSet<String> {
-    self.contexts.borrow().iter().flat_map(|ctx| ctx.flatten_keys()).collect::<HashSet<String>>()
-  }
-  /// Returns a value for an entry specified by name.
-  /// Entries are searched from the last to the first context
-  /// (from top to bottom of scope stack).
-  pub fn get_entry(&self, name: &Name) -> Option<Value> {
-    for context in self.contexts.borrow().iter().rev() {
+
+  /// Returns a value of an entry with specified name.
+  /// Entries are searched from the last to the first context,
+  /// (from top to bottom of the stack).
+  pub fn get_value(&self, name: &Name) -> Option<Value> {
+    for context in self.stack.borrow().iter().rev() {
       if let Some(value) = context.get_entry(name) {
         return Some(value.clone());
       }
     }
     None
   }
-  ///
-  pub fn search_deep(&self, names: &[Name]) -> Option<Value> {
-    for context in self.contexts.borrow().iter().rev() {
+
+  /// Searches for a value under so called `qualified` name build from
+  /// multiple names passed as an argument.
+  pub fn search(&self, names: &[Name]) -> Option<Value> {
+    for context in self.stack.borrow().iter().rev() {
       if let Some(value) = context.search_deep(names) {
         return Some(value.clone());
       }
     }
     None
   }
-  /// Sets a specified value for entry name in [FeelContext] placed on the top of the scope stack (last context).
-  pub fn set_entry(&self, name: &Name, value: Value) {
-    if let Some(context) = self.contexts.borrow_mut().last_mut() {
+
+  /// Searches for a value of an entry pointed by specified qualified name.
+  pub fn search_entry(&self, qname: &QualifiedName) -> Option<Value> {
+    for context in self.stack.borrow().iter().rev() {
+      if let Some(value) = context.search_entry(qname) {
+        return Some(value.clone());
+      }
+    }
+    None
+  }
+
+  /// Sets a specified value for entry name in [FeelContext] placed on the top of the scope stack.
+  pub fn set_value(&self, name: &Name, value: Value) {
+    if let Some(context) = self.stack.borrow_mut().last_mut() {
       context.set_entry(name, value);
     }
   }
-  /// Sets a null value for entry name in [FeelContext] placed on the top of the scope stack (last context).
-  pub fn insert_null(&self, name: Name) {
-    if let Some(context) = self.contexts.borrow_mut().last_mut() {
+
+  /// Sets a null value for entry name in [FeelContext] placed on the top of the scope stack.
+  pub fn set_name(&self, name: Name) {
+    if let Some(context) = self.stack.borrow_mut().last_mut() {
       context.set_null(name);
     }
   }

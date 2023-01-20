@@ -85,12 +85,14 @@ impl Workspace {
     // workspace is ready to use
     workspace
   }
+
   /// Deletes all definitions and model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn clear(&mut self) {
     self.clear_definitions();
     self.clear_model_evaluators();
   }
+
   /// Adds a definition to workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn add(&mut self, definitions: Definitions) -> Result<()> {
@@ -109,6 +111,7 @@ impl Workspace {
     self.clear_model_evaluators();
     Ok(())
   }
+
   /// Removes a definition from workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn remove(&mut self, namespace: &str, name: &str) {
@@ -117,12 +120,14 @@ impl Workspace {
     self.definitions.retain(|d| d.namespace() != namespace && d.name() != name);
     self.clear_model_evaluators();
   }
+
   /// Replaces a definition in workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn replace(&mut self, definitions: Definitions) -> Result<()> {
     self.remove(definitions.namespace(), definitions.name());
     self.add(definitions)
   }
+
   /// Creates model evaluators for all definitions in workspace,
   /// switches a workspace to state `DEPLOYED`.
   pub fn deploy(&mut self) -> Result<()> {
@@ -141,6 +146,7 @@ impl Workspace {
     }
     Ok(())
   }
+
   /// Evaluates invocable (decision, business knowledge model or decision service) deployed in workspace.
   pub fn evaluate_invocable(&self, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
     if let Some(model_evaluator) = self.model_evaluators_by_name.get(model_name) {
@@ -149,16 +155,19 @@ impl Workspace {
       Err(err_model_evaluator_is_not_deployed(model_name))
     }
   }
+
   /// Utility function that deletes all definitions in workspace.
   fn clear_definitions(&mut self) {
     self.definitions_by_name.clear();
     self.definitions_by_namespace.clear();
     self.definitions.clear();
   }
+
   /// Utility function that deletes all model evaluators in workspace.
   fn clear_model_evaluators(&mut self) {
     self.model_evaluators_by_name.clear();
   }
+
   /// Utility function that loads and deploys DMN models from specified directory.
   fn load_and_deploy_models(&mut self, dir: &Path) -> usize {
     for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
@@ -203,7 +212,7 @@ impl Workspace {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use dmntk_feel::Scope;
+  use dmntk_feel::FeelScope;
 
   fn assert_state(workspace: &Workspace, state: (usize, usize, usize, usize)) {
     assert_eq!(state.0, workspace.definitions.len());
@@ -272,7 +281,7 @@ mod tests {
     assert_state(&workspace, (1, 1, 1, 1));
 
     // evaluate existing model and invocable
-    let input_data = dmntk_feel_evaluator::evaluate_context(&Scope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
+    let input_data = dmntk_feel_evaluator::evaluate_context(&FeelScope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
     let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Greeting Message", &input_data).unwrap();
     assert_eq!(r#""Hello John Doe""#, value.to_string());
 

@@ -31,135 +31,100 @@
  */
 
 use super::super::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {
   static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0076);
+  static ref CTX: FeelContext = context(r#"{}"#);
 }
 
 #[test]
-#[ignore]
 fn _0001() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "boxed_001", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "boxed_001", &CTX, r#"456"#);
 }
 
 #[test]
-#[ignore]
 fn _0002() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "incorrect_001", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "incorrect_001", &CTX, r#"null"#);
 }
 
 #[test]
-#[ignore]
 fn _0003() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "incorrect_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "incorrect_002", &CTX, r#"null"#);
 }
 
 #[test]
-#[ignore]
 fn _0004() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "incorrect_003", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "incorrect_003", &CTX, r#"null"#);
 }
 
 #[test]
-#[ignore]
 fn _0005() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_001", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_001", &CTX, r#"-0.88796890"#);
 }
 
 #[test]
-#[ignore]
 fn _0006() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_002", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_002", &CTX, r#"456.78"#);
 }
 
 #[test]
-#[ignore]
 fn _0007() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_003", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_003", &CTX, r#"456"#);
 }
 
 #[test]
-#[ignore]
 fn _0008() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_004", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_004", &CTX, r#"456"#);
 }
 
 #[test]
-#[ignore]
 fn _0009() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_005", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_005", &CTX, r#"123"#);
 }
 
 #[test]
-#[ignore]
 fn _0010() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_006", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_006", &CTX, r#"3"#);
 }
 
 #[test]
-#[ignore]
 fn _0011() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_007", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_007", &CTX, r#""a""#);
 }
 
 #[test]
-#[ignore]
 fn _0012() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_007_a", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_007_a", &CTX, r#"null"#);
 }
 
 #[test]
-#[ignore]
 fn _0013() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_008", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_008", &CTX, r#"456"#);
 }
 
 #[test]
-#[ignore]
 fn _0014() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_009", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_009", &CTX, r#"456.78"#);
 }
 
 #[test]
-#[ignore]
 fn _0015() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_010", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_010", &CTX, r#"123"#);
 }
 
 #[test]
-#[ignore]
 fn _0016() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_011", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_011", &CTX, r#"1234.56"#);
 }
 
 #[test]
-#[ignore]
 fn _0017() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "literal_012", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "literal_012", &CTX, r#"1234.56"#);
 }
 
 #[test]
-#[ignore]
 fn _0018() {
-  let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "varargs_001", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "varargs_001", &CTX, r#""foo bar""#);
 }

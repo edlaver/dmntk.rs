@@ -32,12 +32,11 @@
 
 //! Implementation of the lexer for `FEEL` grammar.
 
-use self::errors::*;
+use crate::errors::*;
 use crate::lalr::TokenType;
+use crate::scope::ParsingScope;
 use dmntk_common::Result;
-use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Name, Scope};
+use dmntk_feel::Name;
 
 /// Definition of a single space character.
 const WS: char = ' ';
@@ -117,7 +116,7 @@ pub enum TokenValue {
 /// FEEL lexer.
 pub struct Lexer<'lexer> {
   /// Parsing scope.
-  scope: &'lexer Scope,
+  scope: &'lexer ParsingScope,
   /// Starting token type, returned before the first token.
   start_token_type: Option<TokenType>,
   /// Input characters.
@@ -145,7 +144,7 @@ pub struct Lexer<'lexer> {
 /// FEEL lexer implementation.
 impl<'lexer> Lexer<'lexer> {
   /// Creates a new lexer for specified input text.
-  pub fn new(scope: &'lexer Scope, start_token_type: TokenType, input: &str) -> Self {
+  pub fn new(scope: &'lexer ParsingScope, start_token_type: TokenType, input: &str) -> Self {
     Self {
       scope,
       start_token_type: Some(start_token_type),
@@ -158,32 +157,39 @@ impl<'lexer> Lexer<'lexer> {
     }
   }
 
+  ///
   pub fn set_unary_tests(&mut self) {
     self.unary_tests = true;
   }
 
+  ///
   pub fn set_between(&mut self) {
     self.between = true;
   }
 
+  ///
   pub fn set_type_name(&mut self) {
     self.type_name = true;
   }
 
+  ///
   pub fn set_till_in(&mut self) {
     self.till_in = true;
   }
 
+  ///
   pub fn push_to_scope(&mut self) {
-    self.scope.push(FeelContext::default());
+    self.scope.push_default();
   }
 
+  ///
   pub fn pop_from_scope(&mut self) {
     self.scope.pop();
   }
 
+  ///
   pub fn add_name_to_scope(&mut self, name: &Name) {
-    self.scope.set_entry(name, value_null!());
+    self.scope.set_name(name.to_owned());
   }
 
   /// Returns the next token from input.
@@ -653,18 +659,19 @@ impl<'lexer> Lexer<'lexer> {
 
     // begin with with the longest name containing all parts
     let mut part_count = parts.len();
-    let flattened_keys = self.scope.flatten_keys();
+    let flattened_keys = self.scope.flattened_keys();
     while part_count > 0 {
       // take a sublist of the original part list until the list is empty
       let part_sublist = &parts[..part_count];
-      // flatten the name parts to compare it with built-in names and keys in current context
+      // flatten the name parts to compare it with built-in names and keys in current scope
       let name = flatten_name_parts(part_sublist);
       // check if the flattened name exists as a key in the current context
       if flattened_keys.contains(&name) {
         // return to the input all characters that do not belong to the name that was found
         self.position = consumed_positions[part_count - 1] + 1;
+        let part_vector = part_sublist.to_vec();
         // return the name that exists in the current context
-        return Ok((TokenType::Name, TokenValue::Name(part_sublist.to_vec().into())));
+        return Ok((TokenType::Name, TokenValue::Name(part_vector.into())));
       }
       part_count -= 1;
     }
@@ -687,8 +694,8 @@ impl<'lexer> Lexer<'lexer> {
 
     // ------------------------------------------------------------------------
     // tweak with "date and time" and "duration" literals
-    // when these names are encountered then treat them as names of
-    // temporal functions
+    // when these names are encountered then treat them
+    // as the names of temporal functions
     // ------------------------------------------------------------------------
     let name_str = name.to_string();
     if matches!(name_str.as_str(), "date and time" | "duration") {
@@ -999,36 +1006,6 @@ fn flatten_name_parts(parts: &[String]) -> String {
     .replace(" ' ", "'")
     .replace(" + ", "+")
     .replace(" * ", "*")
-}
-
-/// Definitions of errors raised by the lexer.
-pub mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Lexer errors.
-  struct LexerError(String);
-
-  impl From<LexerError> for DmntkError {
-    fn from(e: LexerError) -> Self {
-      DmntkError::new("LexerError", &e.0)
-    }
-  }
-
-  pub fn err_unexpected_eof() -> DmntkError {
-    LexerError("unexpected end of file".to_string()).into()
-  }
-
-  pub fn err_expected_hex_digit(ch: char) -> DmntkError {
-    LexerError(format!("expected hex digit but encountered '{ch}'")).into()
-  }
-
-  pub fn err_unicode_value_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("value is out of allowed Unicode range 0x0000..0x10FFFF : {value:X}")).into()
-  }
-
-  pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
-    LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {value:X}")).into()
-  }
 }
 
 #[cfg(test)]

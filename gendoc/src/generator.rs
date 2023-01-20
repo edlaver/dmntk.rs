@@ -66,20 +66,20 @@ fn add_svg_content(html: &str, definitions: &Definitions) -> String {
         match diagram_element {
           DmnDiagramElement::DmnShape(shape) => {
             if let Some(dmn_element_ref) = &shape.dmn_element_ref {
-              if let Some(decision) = definitions.decision_by_id(dmn_element_ref.as_str()) {
-                svg_content.push_str(&svg_decision(indent, shape, decision));
-              } else if let Some(input_data) = definitions.input_data_by_id(dmn_element_ref.as_str()) {
-                svg_content.push_str(&svg_input_data(indent, shape, input_data));
-              } else if let Some(business_knowledge) = definitions.business_knowledge_model_by_id(dmn_element_ref.as_str()) {
-                svg_content.push_str(&svg_business_knowledge_model(indent, shape, business_knowledge));
-              } else if let Some(knowledge_source) = definitions.knowledge_source_by_id(dmn_element_ref.as_str()) {
-                svg_content.push_str(&svg_knowledge_source(indent, shape, knowledge_source));
+              if let Some(decision) = definitions.get_decision(dmn_element_ref.as_str()) {
+                svg_content.push_str(&svg_decision(indent, shape, &decision));
+              } else if let Some(input_data) = definitions.get_input_data(dmn_element_ref.as_str()) {
+                svg_content.push_str(&svg_input_data(indent, shape, &input_data));
+              } else if let Some(business_knowledge_model) = definitions.get_business_knowledge_model(dmn_element_ref.as_str()) {
+                svg_content.push_str(&svg_business_knowledge_model(indent, shape, &business_knowledge_model));
+              } else if let Some(knowledge_source) = definitions.get_knowledge_source(dmn_element_ref.as_str()) {
+                svg_content.push_str(&svg_knowledge_source(indent, shape, &knowledge_source));
               }
             }
           }
           DmnDiagramElement::DmnEdge(edge) => {
             if let Some(id) = &edge.dmn_element_ref {
-              if let Some(requirement) = definitions.requirements_by_id().get(id) {
+              if let Some(requirement) = definitions.get_requirement(id) {
                 match requirement {
                   Requirement::Information(_) => {
                     // information requirement is depicted as solid line with dark-filled arrow
@@ -244,7 +244,7 @@ fn add_html_content(html: &str, definitions: &Definitions) -> String {
       for diagram_element in &diagram.diagram_elements {
         if let DmnDiagramElement::DmnShape(shape) = diagram_element {
           if let Some(dmn_element_ref) = &shape.dmn_element_ref {
-            if let Some(decision) = definitions.decision_by_id(dmn_element_ref.as_str()) {
+            if let Some(decision) = definitions.get_decision(dmn_element_ref.as_str()) {
               if let Some(decision_logic) = decision.decision_logic() {
                 match decision_logic {
                   ExpressionInstance::Context(_) => {}

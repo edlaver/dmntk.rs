@@ -6,11 +6,17 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- Importing models.
+- Code and lines coverage over 90%.
+
+## [v0.1.0 (1st beta)] - 2023-01-20
+
 - Implemented lambdas.
 - Fixed non-conformant functionality tested by flight rebooking test suite.
 - Refactored **dmntk-feel-parser** component.
 - Improved code coverage.
-- Implemented more compatibility tests (99,5% passes). 
+- Implemented more compatibility tests (99,9% passes).
+- Implemented external Java functions invocation with mocked tests.
 
 ## [v0.0.54 (3rd alpha)] - 2023-01-10
 

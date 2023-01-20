@@ -1,8 +1,9 @@
 use crate::bif::Bif;
+use crate::closure::Closure;
 use crate::context::FeelContext;
 use crate::function::FunctionBody;
 use crate::values::{Value, Values};
-use crate::{value_number, FeelNumber, FeelType, Name, Scope, ToFeelString};
+use crate::{value_null, value_number, FeelNumber, FeelScope, FeelType, Name, ToFeelString};
 use dmntk_common::Jsonify;
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 use std::collections::BTreeMap;
@@ -35,10 +36,12 @@ fn test_debug() {
   let v_date = FeelDate::new(2022, 9, 27);
   let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
-  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
+  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
+  let v_external = false;
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
-  let v_closure = FeelContext::default();
+  let v_closure = Closure::default();
+  let v_closure_ctx = FeelContext::default();
   eq_dbg!(r#"Boolean(false)"#, Value::Boolean(false));
   eq_dbg!(r#"BuiltInFunction(Time)"#, Value::BuiltInFunction(Bif::Time));
   eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
@@ -61,12 +64,12 @@ fn test_debug() {
   eq_dbg!(r#"FormalParameter(Name("a"), Number)"#, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_dbg!(r#"FormalParameters([])"#, Value::FormalParameters(vec![]));
   eq_dbg!(
-    r#"FunctionBody(FunctionBodyLiteralExpression, FeelContext({}))"#,
-    Value::FunctionBody(v_function_body.clone(), v_closure.clone())
+    r#"FunctionBody(FunctionBodyLiteralExpression, false)"#,
+    Value::FunctionBody(v_function_body.clone(), v_external)
   );
   eq_dbg!(
-    r#"FunctionDefinition([(Name("a"), Number)], FunctionBodyLiteralExpression, FeelContext({}), Number)"#,
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number)
+    r#"FunctionDefinition([(Name("a"), Number)], FunctionBodyLiteralExpression, false, Closure({}), FeelContext({}), Number)"#,
+    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_external, v_closure, v_closure_ctx, t_number)
   );
   eq_dbg!(r#"IntervalEnd(Number(+1E+0), false)"#, Value::IntervalEnd(b_number.clone(), false));
   eq_dbg!(r#"IntervalStart(Number(+1E+0), false)"#, Value::IntervalStart(b_number.clone(), false));
@@ -109,10 +112,12 @@ fn test_display() {
   let v_date = FeelDate::new(2022, 9, 27);
   let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
-  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
+  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
+  let v_external = false;
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
-  let v_closure = FeelContext::default();
+  let v_closure = Closure::default();
+  let v_closure_ctx = FeelContext::default();
   eq_dsp!(r#"false"#, Value::Boolean(false));
   eq_dsp!(r#"BuiltInFunction"#, Value::BuiltInFunction(Bif::Time));
   eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
@@ -128,10 +133,10 @@ fn test_display() {
   eq_dsp!(r#"type(number)"#, Value::FeelType(t_number.clone()));
   eq_dsp!(r#"FormalParameter"#, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_dsp!(r#"FormalParameters"#, Value::FormalParameters(vec![]));
-  eq_dsp!(r#"FunctionBody"#, Value::FunctionBody(v_function_body.clone(), v_closure.clone()));
+  eq_dsp!(r#"FunctionBody"#, Value::FunctionBody(v_function_body.clone(), v_external));
   eq_dsp!(
-    r#"FunctionDefinition"#,
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number)
+    r#"FunctionDefinition([(Name("a"), Number)],_,false,[],{},number)"#,
+    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_external, v_closure, v_closure_ctx, t_number)
   );
   eq_dsp!(r#"IntervalEnd"#, Value::IntervalEnd(b_number.clone(), false));
   eq_dsp!(r#"IntervalStart"#, Value::IntervalStart(b_number.clone(), false));
@@ -167,10 +172,12 @@ fn test_type_of() {
   let v_date = FeelDate::new(2022, 9, 27);
   let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
-  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(2))));
+  let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
+  let v_external = false;
   let v_days_and_time_duration = FeelDaysAndTimeDuration::from_s(100);
   let v_years_and_months_duration = FeelYearsAndMonthsDuration::from_ym(3, 2);
-  let v_closure = FeelContext::default();
+  let v_closure = Closure::default();
+  let v_closure_ctx = FeelContext::default();
   eq_typ!(FeelType::Boolean, Value::Boolean(false));
   eq_typ!(FeelType::Any, Value::BuiltInFunction(Bif::Time));
   eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
@@ -186,10 +193,17 @@ fn test_type_of() {
   eq_typ!(FeelType::Number, Value::FeelType(t_number.clone()));
   eq_typ!(FeelType::Number, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_typ!(FeelType::Any, Value::FormalParameters(vec![]));
-  eq_typ!(FeelType::Any, Value::FunctionBody(v_function_body.clone(), v_closure.clone()));
+  eq_typ!(FeelType::Any, Value::FunctionBody(v_function_body.clone(), v_external));
   eq_typ!(
     FeelType::Function(vec![FeelType::Number], Box::new(FeelType::Number)),
-    Value::FunctionDefinition(vec![(name.clone(), t_number.clone())], v_function_body, v_closure, t_number.clone())
+    Value::FunctionDefinition(
+      vec![(name.clone(), t_number.clone())],
+      v_function_body,
+      v_external,
+      v_closure,
+      v_closure_ctx,
+      t_number.clone()
+    )
   );
   eq_typ!(FeelType::Number, Value::IntervalEnd(b_number.clone(), false));
   eq_typ!(FeelType::Number, Value::IntervalStart(b_number.clone(), false));
@@ -215,6 +229,30 @@ fn test_type_of() {
   eq_typ!(FeelType::Boolean, Value::UnaryLess(b_number.clone()));
   eq_typ!(FeelType::Boolean, Value::UnaryLessOrEqual(b_number));
   eq_typ!(FeelType::YearsAndMonthsDuration, Value::YearsAndMonthsDuration(v_years_and_months_duration));
+}
+
+#[test]
+fn test_type_of_list_with_context() {
+  let mut ctx_a = FeelContext::default();
+  ctx_a.set_entry(&"a".into(), Value::String("alfa".to_string()));
+  ctx_a.set_entry(&"b".into(), Value::String("beta".to_string()));
+  let mut ctx_b = FeelContext::default();
+  ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
+  ctx_b.set_entry(&"b".into(), Value::String("gamma".to_string()));
+  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
+}
+
+#[test]
+fn test_type_of_list_with_context_and_nulls() {
+  let mut ctx_a = FeelContext::default();
+  ctx_a.set_entry(&"a".into(), Value::String("alfa".to_string()));
+  ctx_a.set_entry(&"b".into(), Value::String("beta".to_string()));
+  let mut ctx_b = FeelContext::default();
+  ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
+  ctx_b.set_entry(&"b".into(), value_null!());
+  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
 }
 
 #[test]
@@ -252,14 +290,14 @@ fn test_comparison() {
   assert_ne!(Value::Boolean(true), Value::Boolean(false));
   assert_ne!(Value::Boolean(false), Value::Boolean(true));
   assert_eq!(Value::Context(FeelContext::default()), Value::Context(FeelContext::default()));
-  let fun_body_a = FunctionBody::Context(Arc::new(Box::new(|_: &Scope| value_number!(1))));
-  let fun_body_b = FunctionBody::Context(Arc::new(Box::new(|_: &Scope| value_number!(2))));
-  let fun_body_c = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(3))));
-  let fun_body_d = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &Scope| value_number!(4))));
-  let fun_body_e = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &Scope| value_number!(4))));
-  let fun_body_f = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &Scope| value_number!(5))));
-  let fun_body_g = FunctionBody::External(Arc::new(Box::new(|_: &Scope| value_number!(6))));
-  let fun_body_h = FunctionBody::External(Arc::new(Box::new(|_: &Scope| value_number!(7))));
+  let fun_body_a = FunctionBody::Context(Arc::new(Box::new(|_: &FeelScope| value_number!(1))));
+  let fun_body_b = FunctionBody::Context(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
+  let fun_body_c = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(3))));
+  let fun_body_d = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(4))));
+  let fun_body_e = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &FeelScope| value_number!(4))));
+  let fun_body_f = FunctionBody::DecisionTable(Arc::new(Box::new(|_: &FeelScope| value_number!(5))));
+  let fun_body_g = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(6))));
+  let fun_body_h = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(7))));
   assert_eq!(fun_body_a, fun_body_b);
   assert_ne!(fun_body_a, fun_body_c);
   assert_ne!(fun_body_a, fun_body_e);

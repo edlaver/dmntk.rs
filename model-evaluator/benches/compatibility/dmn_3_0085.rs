@@ -103,11 +103,28 @@ fn _0004(b: &mut Bencher) {
 }
 
 #[bench]
-#[ignore]
 fn _0005(b: &mut Bencher) {
   let input_data = r#"{}"#;
   let ctx = context(input_data);
   let invocable_name = "decisionService_005";
-  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null"#);
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#""foo""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+}
+
+#[bench]
+fn _0006(b: &mut Bencher) {
+  let input_data = r#"{}"#;
+  let ctx = context(input_data);
+  let invocable_name = "decision_005_1";
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(invalid number of arguments)"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+}
+
+#[bench]
+fn _0007(b: &mut Bencher) {
+  let input_data = r#"{}"#;
+  let ctx = context(input_data);
+  let invocable_name = "decision_005_2";
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#""foo""#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

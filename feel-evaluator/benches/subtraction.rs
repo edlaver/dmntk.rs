@@ -35,7 +35,7 @@
 extern crate test;
 
 use dmntk_feel::values::Value;
-use dmntk_feel::{scope, value_null, value_number, Scope};
+use dmntk_feel::{scope, value_null, value_number, FeelScope};
 use dmntk_feel_evaluator::prepare;
 use test::Bencher;
 
@@ -62,13 +62,13 @@ fn feel_evaluator_subtraction_0002(b: &mut Bencher) {
 #[bench]
 fn feel_evaluator_subtraction_0003(b: &mut Bencher) {
   let scope = scope!();
-  scope.set_entry(&"a".into(), value_null!());
-  scope.set_entry(&"b".into(), value_null!());
+  scope.set_value(&"a".into(), value_null!());
+  scope.set_value(&"b".into(), value_null!());
   let input = r#"a-b"#;
   let node = dmntk_feel_parser::parse_textual_expression(&scope, input, false).unwrap();
   let evaluator = prepare(&node).unwrap();
-  scope.set_entry(&"a".into(), value_number!(18));
-  scope.set_entry(&"b".into(), value_number!(3));
+  scope.set_value(&"a".into(), value_number!(18));
+  scope.set_value(&"b".into(), value_number!(3));
   assert_eq!(value_number!(15), evaluator(&scope));
   b.iter(|| evaluator(&scope));
 }

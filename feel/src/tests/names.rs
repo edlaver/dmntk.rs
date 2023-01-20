@@ -91,21 +91,21 @@ fn additional_symbols() {
 
 #[test]
 fn test_name_as_hash_map_key() {
-  let name_alpha: Name = "alpha".into();
-  let name_beta: Name = "beta".into();
-  let name_gamma: Name = "gamma".into();
+  let name_a: Name = "a".into();
+  let name_b: Name = "b".into();
+  let name_c: Name = "c".into();
   let mut map = HashMap::new();
-  map.insert(name_alpha.clone(), "ALPHA".to_string());
-  map.insert(name_beta.clone(), "BETA".to_string());
-  map.insert(name_gamma.clone(), "GAMMA".to_string());
+  map.insert(name_a.clone(), "A".to_string());
+  map.insert(name_b.clone(), "B".to_string());
+  map.insert(name_c.clone(), "C".to_string());
   assert_eq!(3, map.len());
-  assert!(map.contains_key(&name_alpha));
-  assert_eq!("ALPHA", map.get(&name_alpha).unwrap());
-  assert!(map.contains_key(&name_beta));
-  assert_eq!("BETA", map.get(&name_beta).unwrap());
-  assert!(map.contains_key(&name_gamma));
-  assert_eq!("GAMMA", map.get(&name_gamma).unwrap());
-  assert!(!map.contains_key(&"delta".into()));
+  assert!(map.contains_key(&name_a));
+  assert_eq!("A", map.get(&name_a).unwrap());
+  assert!(map.contains_key(&name_b));
+  assert_eq!("B", map.get(&name_b).unwrap());
+  assert!(map.contains_key(&name_c));
+  assert_eq!("C", map.get(&name_c).unwrap());
+  assert!(!map.contains_key(&"d".into()));
 }
 
 #[test]

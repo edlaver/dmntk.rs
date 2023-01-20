@@ -31,7 +31,7 @@
  */
 
 use super::super::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {
@@ -471,14 +471,12 @@ fn _0072() {
 }
 
 #[test]
-#[ignore]
 fn _0073() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "datetime_012", &ctx, r#"true"#);
 }
 
 #[test]
-#[ignore]
 fn _0074() {
   let ctx = context(r#"{}"#);
   assert_decision(&MODEL_EVALUATOR, "datetime_013", &ctx, r#"true"#);

@@ -31,7 +31,7 @@
  */
 
 use super::super::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {

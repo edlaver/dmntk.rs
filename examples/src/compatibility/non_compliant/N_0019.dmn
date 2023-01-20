@@ -78,18 +78,18 @@
             <contextEntry>
                 <variable name="Cancelled Flights" typeRef="tFlightNumberList"/>
                 <literalExpression>
-                    <text>Flight List[ Status = "cancelled" ].Flight Number</text>
+                    <text>Flight List[Status = "cancelled"].Flight Number</text>
                 </literalExpression>
             </contextEntry>
             <contextEntry>
                 <variable name="Waiting List" typeRef="tPassengerTable"/>
                 <literalExpression>
-                    <text>Passenger List[ list contains( Cancelled Flights, Flight Number ) ]</text>
+                    <text>Passenger List[list contains(Cancelled Flights, Flight Number)]</text>
                 </literalExpression>
             </contextEntry>
             <contextEntry>
                 <literalExpression>
-                    <text>sort( Waiting List, passenger priority )</text>
+                    <text>sort(Waiting List, passenger priority)</text>
                 </literalExpression>
             </contextEntry>
         </context>
@@ -256,7 +256,7 @@
                 <contextEntry>
                     <variable name="Original Flight" typeRef="tFlight"/>
                     <literalExpression>
-                        <text>Flights[ Flight Number = Next Passenger.Flight Number ][1]</text>
+                        <text>Flights[Flight Number = Next Passenger.Flight Number][1]</text>
                     </literalExpression>
                 </contextEntry>
                 <contextEntry>
@@ -264,9 +264,16 @@
                     <literalExpression>
                         <text>
                             Flights[
-                                     Status = "scheduled" and
-                                     has capacity(item, Reassigned Passengers List)
-                                   ][1]
+                              From = Original Flight.From
+                                and
+                              To = Original Flight.To
+                                and
+                              Departure > Original Flight.Departure
+                                and
+                              Status = "scheduled"
+                                and
+                              has capacity(item, Reassigned Passengers List)
+                            ][1]
                         </text>
                     </literalExpression>
                 </contextEntry>
@@ -313,13 +320,11 @@
                 </contextEntry>
                 <contextEntry>
                     <literalExpression>
-                        <text>if count( Remaining Waiting List ) > 0
-                            then
-                            reassign next passenger( Remaining Waiting List,
-                            Updated Reassigned Passengers List,
-                            Flights )
+                        <text>
+                            if count(Remaining Waiting List) > 0 then
+                              reassign next passenger(Remaining Waiting List, Updated Reassigned Passengers List, Flights)
                             else
-                            Updated Reassigned Passengers List
+                              Updated Reassigned Passengers List
                         </text>
                     </literalExpression>
                 </contextEntry>
@@ -336,7 +341,7 @@
             <formalParameter name="flight" typeRef="tFlight"/>
             <formalParameter name="rebooked list" typeRef="tPassengerTable"/>
             <literalExpression>
-                <text>flight.Capacity > count( rebooked list[ Flight Number = flight.Flight Number ] )</text>
+                <text>flight.Capacity > count(rebooked list[Flight Number = flight.Flight Number])</text>
             </literalExpression>
         </encapsulatedLogic>
     </businessKnowledgeModel>

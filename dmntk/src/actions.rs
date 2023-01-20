@@ -37,7 +37,7 @@ use difference::Changeset;
 use dmntk_common::ascii_ctrl::*;
 use dmntk_common::{ascii256, ascii_none, Jsonify};
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::FeelScope;
 use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
 
 /// Available command-line actions.
@@ -374,7 +374,7 @@ fn get_cli_action() -> Action {
 fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
   match std::fs::read_to_string(feel_file_name) {
     Ok(feel_expression) => match std::fs::read_to_string(ctx_file_name) {
-      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&Scope::default(), &context_definition) {
+      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.into(), &feel_expression, false) {
           Ok(ast_root_node) => {
             println!("    AST:{}", ast_root_node.to_string().trim_end());
@@ -393,7 +393,7 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
 fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
   match std::fs::read_to_string(feel_file_name) {
     Ok(textual_expression) => match std::fs::read_to_string(ctx_file_name) {
-      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&Scope::default(), &context_definition) {
+      Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.clone().into(), &textual_expression, false) {
           Ok(ast_root_node) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
             Ok(result) => {
@@ -473,7 +473,7 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
       return;
     }
   };
-  let input_data = match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
+  let input_data = match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
     Ok(input_data) => input_data,
     Err(reason) => {
       eprintln!("evaluating input data failed with reason: {reason}");
@@ -593,19 +593,23 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   let color_r = if use_color { ASCII_RESET } else { "" };
   let none = "(none)".to_string();
   match std::fs::read_to_string(dmn_file_name) {
-    Ok(dmn_file_content) => match dmntk_model::parse(&dmn_file_content) {
+    Ok(dmn_file_content) => match &dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
         println!("\n{color_a}Model{color_r}");
         println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
         println!("{color_a} ├─ namespace: {}{color_b}{color_r}", definitions.namespace());
         println!("{color_a} └─ id:{color_b} {}{color_r}", definitions.id().as_ref().unwrap_or(&none));
-        // definitions
-        if definitions.decisions().is_empty() {
+        //------------------------------------------------------------------------------------------
+        // print definitions
+        //------------------------------------------------------------------------------------------
+        // ** decisions **
+        let decisions = definitions.decisions();
+        if decisions.is_empty() {
           println!("\n{color_a}Decisions{color_c} {none}{color_r}");
         } else {
           println!("\n{color_a}Decisions{color_r}");
-          let decision_count = definitions.decisions().len();
-          for (i, decision) in definitions.decisions().iter().enumerate() {
+          let decision_count = decisions.len();
+          for (i, decision) in decisions.iter().enumerate() {
             if i < decision_count - 1 {
               print!(" {color_a}├─{color_r}");
             } else {
@@ -614,13 +618,14 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
             println!(" {color_c}{}{color_r}", decision.name());
           }
         }
-        // item data
-        if definitions.input_data().is_empty() {
+        // ** input data **
+        let input_data = definitions.input_data();
+        if input_data.is_empty() {
           println!("\n{color_a}Input data{color_c} {none}{color_r}");
         } else {
           println!("\n{color_a}Input data{color_r}");
-          let input_data_count = definitions.input_data().len();
-          for (i, input_data) in definitions.input_data().iter().enumerate() {
+          let input_data_count = input_data.len();
+          for (i, input_data) in input_data.iter().enumerate() {
             if i < input_data_count - 1 {
               print!(" {color_a}├─{color_r}");
             } else {
@@ -648,7 +653,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
 fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name: &str) {
   match std::fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match std::fs::read_to_string(input_file_name) {
-      Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&Scope::default(), &input_file_content) {
+      Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
         Ok(input_data) => match dmntk_model::parse(&dmn_file_content) {
           Ok(definitions) => match dmntk_evaluator::ModelEvaluator::new(&definitions) {
             Ok(model_evaluator) => {

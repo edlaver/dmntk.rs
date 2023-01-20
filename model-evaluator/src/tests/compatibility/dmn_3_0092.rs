@@ -31,7 +31,7 @@
  */
 
 use super::super::*;
-use crate::model_evaluator::ModelEvaluator;
+use crate::ModelEvaluator;
 use std::sync::Arc;
 
 lazy_static! {
@@ -86,13 +86,11 @@ fn _0009() {
 }
 
 #[test]
-#[ignore]
 fn _0010() {
   assert_decision(&MODEL_EVALUATOR, "decision_010_1", &CTX, r#"120"#);
 }
 
 #[test]
-#[ignore]
 fn _0011() {
   assert_decision(&MODEL_EVALUATOR, "decision_010_1_a", &CTX, r#"120"#);
 }
@@ -129,7 +127,6 @@ fn _0017() {
 }
 
 #[test]
-#[ignore]
 fn _0018() {
   let ctx = context(r#"{input_017_1: "a"}"#);
   assert_decision(&MODEL_EVALUATOR, "decision_017_1", &ctx, r#"["a", "a", "z", "z"]"#);

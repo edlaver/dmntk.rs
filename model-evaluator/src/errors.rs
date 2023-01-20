@@ -50,14 +50,6 @@ pub fn err_input_data_without_type_reference(s: &str) -> DmntkError {
   ModelEvaluatorError(format!("input data with identifier '{s}' has no type reference definition")).into()
 }
 
-pub fn err_empty_feel_name() -> DmntkError {
-  ModelEvaluatorError("empty FEEL name".into()).into()
-}
-
-pub fn err_empty_identifier() -> DmntkError {
-  ModelEvaluatorError("empty identifier".into()).into()
-}
-
 pub fn err_empty_literal_expression() -> DmntkError {
   ModelEvaluatorError("empty literal expression".into()).into()
 }
@@ -86,6 +78,6 @@ pub fn err_empty_function_body() -> DmntkError {
   ModelEvaluatorError("empty function definition body".into()).into()
 }
 
-pub fn err_read_lock_failed(reason: impl ToString) -> DmntkError {
-  ModelEvaluatorError(format!("read lock failed with reason '{}'", reason.to_string())).into()
+pub fn err_write_lock_failed(reason: impl ToString) -> DmntkError {
+  ModelEvaluatorError(format!("write lock failed with reason '{}'", reason.to_string())).into()
 }

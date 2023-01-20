@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
-             id="_10435dcd-8774-4575-a338-49dd554a0928" name="Model C"
-             namespace="http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928"
-             exporter="DMN Modeler" exporterVersion="6.2.4.2">
+<definitions name="Model C"
+             id="_10435dcd-8774-4575-a338-49dd554a0928"
+             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             namespace="http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928">
     <import namespace="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c"
             name="Model B"
             importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>

@@ -37,7 +37,7 @@ use std::fmt;
 use std::ops::Deref;
 
 /// FEEL `QualifiedName`.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct QualifiedName(Vec<Name>);
 
 impl QualifiedName {
@@ -48,7 +48,7 @@ impl QualifiedName {
 }
 
 impl fmt::Display for QualifiedName {
-  /// Implements [Display](std::fmt::Display) trait for [QualifiedName].
+  /// Implements [Display](fmt::Display) trait for [QualifiedName].
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}", self.0.iter().map(|v| v.to_string()).collect::<Vec<String>>().join("."))
   }
@@ -69,8 +69,27 @@ impl QualifiedName {
 }
 
 impl From<Name> for QualifiedName {
-  /// Converts a [Name] into [QualifiedName].
-  fn from(name: Name) -> Self {
-    Self(name.to_string().split('.').map(Name::from).collect())
+  /// Converts a name into qualified name.
+  fn from(value: Name) -> Self {
+    Self(value.to_string().split('.').map(Name::from).collect())
+  }
+}
+
+impl From<QualifiedName> for Name {
+  ///
+  fn from(qname: QualifiedName) -> Name {
+    qname.0.first().unwrap_or(&"".into()).clone()
+  }
+}
+
+impl From<Vec<Name>> for QualifiedName {
+  /// Converts a vector of names into qualified name.
+  fn from(value: Vec<Name>) -> Self {
+    let mut names = vec![];
+    for name in value {
+      let mut sub_names = name.to_string().split('.').map(Name::from).collect::<Vec<Name>>();
+      names.append(&mut sub_names);
+    }
+    Self(names)
   }
 }

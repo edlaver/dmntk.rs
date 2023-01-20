@@ -34,10 +34,12 @@ use crate::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
 use crate::errors::*;
 use actix_web::web::Json;
 use actix_web::{error, get, post, web, App, HttpResponse, HttpServer};
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
 use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::Scope;
+use dmntk_feel::FeelScope;
 use dmntk_model::model::NamedElement;
 use dmntk_workspace::Workspace;
 use std::env;
@@ -409,7 +411,7 @@ fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 ///
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
-    if let Ok(bytes) = base64::decode(content) {
+    if let Ok(bytes) = STANDARD.decode(content) {
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
@@ -434,7 +436,7 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
 ///
 fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<StatusResult> {
   if let Some(content) = &params.content {
-    if let Ok(bytes) = base64::decode(content) {
+    if let Ok(bytes) = STANDARD.decode(content) {
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
@@ -508,7 +510,7 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
 fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
   if let Some(model_name) = &params.model_name {
     if let Some(invocable_name) = &params.invocable_name {
-      let input_data = dmntk_evaluator::evaluate_context(&Scope::default(), input)?;
+      let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
       let value = workspace.evaluate_invocable(model_name, invocable_name, &input_data)?;
       Ok(value)
     } else {
