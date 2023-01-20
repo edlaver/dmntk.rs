@@ -1895,7 +1895,7 @@ pub struct DecisionTable {
   pub output_label: Option<String>,
 }
 
-/// Implementation of [Display] for [DecisionTable].
+/// Implementation of [Display](fmt::Display) for [DecisionTable].
 impl fmt::Display for DecisionTable {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
@@ -1935,7 +1935,7 @@ pub enum DecisionTableOrientation {
   CrossTable,
 }
 
-/// Implementation of [Display] for [DecisionTableOrientation].
+/// Implementation of [Display](fmt::Display) for [DecisionTableOrientation].
 impl fmt::Display for DecisionTableOrientation {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
@@ -1985,7 +1985,7 @@ pub enum HitPolicy {
   RuleOrder,
 }
 
-/// Implementation of [Display] for HitPolicy.
+/// Implementation of [Display](fmt::Display) for HitPolicy.
 impl fmt::Display for HitPolicy {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
@@ -2036,7 +2036,7 @@ pub enum BuiltinAggregator {
   Max,
 }
 
-/// Implementation of [Display] for [BuiltinAggregator].
+/// Implementation of [Display](fmt::Display) for [BuiltinAggregator].
 impl fmt::Display for BuiltinAggregator {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(

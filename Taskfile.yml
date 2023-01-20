@@ -72,22 +72,22 @@ tasks:
   doc:
     desc: Generates documentation
     cmds:
-      - cmd: cargo doc --no-deps
+      - cmd: cargo +stable doc --no-deps
 
   doc-open:
     desc: Generates documentation and opens it in browser
     cmds:
-      - cmd: cargo doc --no-deps --open
+      - cmd: cargo +stable doc --no-deps --open
 
   doc-priv:
     desc: Generates documentation with private items
     cmds:
-      - cmd: cargo doc --no-deps --document-private-items
+      - cmd: cargo +stable doc --no-deps --document-private-items
 
   doc-priv-open:
     desc: Generates documentation with private items and opens it in browser
     cmds:
-      - cmd: cargo doc --no-deps --open --document-private-items
+      - cmd: cargo +stable doc --no-deps --open --document-private-items
 
   fmt:
     desc: Runs code formatter
@@ -101,7 +101,7 @@ tasks:
         ignore_error: true
       - cmd: rm ~/.cargo/bin/dmntk > /dev/null 2>&1
         ignore_error: true
-      - cmd: cargo build --release
+      - cmd: cargo +stable build --release
       - cmd: cp ./target/release/dmntk ~/.cargo/bin/
 
   musl:

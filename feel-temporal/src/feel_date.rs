@@ -126,7 +126,7 @@ impl PartialOrd for FeelDate {
 
 impl Sub<&FeelDate> for &FeelDate {
   type Output = FeelYearsAndMonthsDuration;
-  /// Subtracts two [FeelDates], the result is [FeelYearsAndMonthsDuration].
+  /// Subtracts two [FeelDates](FeelDate), the result is [FeelYearsAndMonthsDuration].
   fn sub(self, other: &FeelDate) -> Self::Output {
     let mut months;
     if self.0 < other.0 {

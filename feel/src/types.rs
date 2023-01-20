@@ -196,7 +196,7 @@ impl FeelType {
   ///
   /// - from singleton list:
   ///
-  ///      When the type of the value is List<T>, and the value is a singleton list
+  ///      When the type of the value is `List<T>`, and the value is a singleton list
   ///      and the target type is T, the value is converted by unwrapping the first element.
   ///
   /// - conforms to:
