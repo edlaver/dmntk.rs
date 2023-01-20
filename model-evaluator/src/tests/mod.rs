@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use crate::ModelEvaluator;
+use crate::{ModelBuilder, ModelEvaluator};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, Name};
@@ -73,9 +73,8 @@ fn build_model_evaluators(model_content: &[(Option<Name>, &str)]) -> Arc<ModelEv
     .iter()
     .map(|(opt_name, definitions)| (opt_name.clone(), definitions))
     .collect::<Vec<(Option<Name>, &Definitions)>>();
-  //let _ = ModelBuilder::new(&defs);
-  //ModelEvaluator::new(&dmntk_model::parse(model_content[0]).unwrap()).unwrap()
-  ModelEvaluator::new_1(&defs).unwrap()
+  let _ = ModelBuilder::new(defs[0].1);
+  ModelEvaluator::new(defs[0].1).unwrap()
 }
 
 /// Utility function that evaluates a `Decision` specified by name and compares the result.

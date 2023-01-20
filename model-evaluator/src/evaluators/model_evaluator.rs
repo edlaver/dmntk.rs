@@ -96,30 +96,6 @@ impl ModelEvaluator {
     Ok(model_evaluator)
   }
 
-  /// Creates an instance of [ModelEvaluator] from multiple definitions.
-  pub fn new_1(defs: &Vec<(Option<Name>, &Definitions)>) -> Result<Arc<Self>> {
-    let model_evaluator = Arc::new(ModelEvaluator::default());
-    let model_definitions: DefDefinitions = defs.into();
-    model_evaluator.input_data_evaluator.write().unwrap().build(&model_definitions)?;
-    model_evaluator.input_data_context_evaluator.write().unwrap().build(&model_definitions)?;
-    model_evaluator.item_definition_evaluator.write().unwrap().build(&model_definitions)?;
-    model_evaluator.item_definition_context_evaluator.write().unwrap().build(&model_definitions)?;
-    model_evaluator.item_definition_type_evaluator.write().unwrap().build(&model_definitions)?;
-    model_evaluator
-      .business_knowledge_model_evaluator
-      .write()
-      .unwrap()
-      .build(&model_definitions, &model_evaluator)?;
-    model_evaluator.decision_evaluator.write().unwrap().build(&model_definitions, &model_evaluator)?;
-    model_evaluator
-      .decision_service_evaluator
-      .write()
-      .unwrap()
-      .build(&model_definitions, Arc::clone(&model_evaluator))?;
-    model_evaluator.decision_service_evaluator.write().unwrap().build_function_definitions(&model_evaluator);
-    Ok(model_evaluator)
-  }
-
   ///
   pub fn input_data_evaluator(&self) -> Result<RwLockReadGuard<InputDataEvaluator>> {
     self.input_data_evaluator.read().map_err(err_read_lock_failed)

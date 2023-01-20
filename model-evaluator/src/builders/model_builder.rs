@@ -30,32 +30,35 @@
  * limitations under the License.
  */
 
-use crate::builders::item_definition_type::ItemDefinitionTypeEvaluatorBuilder;
 use crate::builders::model_definitions::DefDefinitions;
+use crate::evaluators::model_evaluator::InvocableType;
+use crate::evaluators::*;
 use dmntk_common::Result;
+use dmntk_feel::Name;
 use dmntk_model::model::Definitions;
+use std::collections::HashMap;
 
 /// Model builder.
 #[derive(Default)]
 pub struct ModelBuilder {
-  // /// Input data evaluator builder.
-  // input_data_evaluator_builder: InputDataEvaluatorBuilder,
-  // /// Input data context evaluator builder.
-  // input_data_context_evaluator_builder: InputDataContextEvaluatorBuilder,
-  // /// Item definition evaluator builder.
-  // item_definition_evaluator_builder: ItemDefinitionEvaluatorBuilder,
-  // /// Item definition context evaluator builder.
-  // item_definition_context_evaluator_builder: ItemDefinitionContextEvaluatorBuilder,
+  /// Input data evaluator builder.
+  input_data_evaluator_builder: InputDataEvaluator,
+  /// Input data context evaluator builder.
+  input_data_context_evaluator_builder: InputDataContextEvaluator,
+  /// Item definition evaluator builder.
+  item_definition_evaluator_builder: ItemDefinitionEvaluator,
+  /// Item definition context evaluator builder.
+  item_definition_context_evaluator_builder: ItemDefinitionContextEvaluator,
   /// Item definition type evaluator builder.
-  item_definition_type_evaluator_builder: ItemDefinitionTypeEvaluatorBuilder,
-  // /// Business knowledge model evaluator builder.
-  // business_knowledge_model_evaluator_builder: BusinessKnowledgeModelEvaluatorBuilder,
-  // /// Decision evaluator builder
-  // decision_evaluator_builder: DecisionEvaluatorBuilder,
-  // /// Decision service evaluator builder.
-  // decision_service_evaluator_builder: DecisionServiceEvaluatorBuilder,
-  // /// Map of [InvocableType] indexed by invocable (decision, business knowledge model or decision service) name.
-  // invocable_by_name: HashMap<String, InvocableType>,
+  item_definition_type_evaluator_builder: ItemDefinitionTypeEvaluator,
+  /// Business knowledge model evaluator builder.
+  business_knowledge_model_evaluator_builder: BusinessKnowledgeModelEvaluator,
+  /// Decision evaluator builder
+  decision_evaluator_builder: DecisionEvaluator,
+  /// Decision service evaluator builder.
+  decision_service_evaluator_builder: DecisionServiceEvaluator,
+  /// Map of invocables indexed by invocable name.
+  invocable_by_name: HashMap<String, InvocableType>,
 }
 
 impl ModelBuilder {
@@ -63,71 +66,68 @@ impl ModelBuilder {
   pub fn new(defs: &Definitions) -> Result<Self> {
     let definitions: DefDefinitions = defs.into();
     let mut model_builder = ModelBuilder::default();
-    // model_builder.input_data_evaluator_builder.build(definitions)?;
-    // model_builder.input_data_context_evaluator_builder.build(definitions)?;
-    // model_builder.item_definition_evaluator_builder.build(definitions)?;
-    // model_builder.item_definition_context_evaluator_builder.build(definitions)?;
+    model_builder.input_data_evaluator_builder.build(&definitions)?;
+    model_builder.input_data_context_evaluator_builder.build(&definitions)?;
+    model_builder.item_definition_evaluator_builder.build(&definitions)?;
+    model_builder.item_definition_context_evaluator_builder.build(&definitions)?;
     model_builder.item_definition_type_evaluator_builder.build(&definitions)?;
     Ok(model_builder)
   }
-  /*
 
-   ///
-   pub fn input_data_evaluator(&self) -> &InputDataEvaluatorBuilder {
-     &self.input_data_evaluator_builder
-   }
+  ///
+  pub fn input_data_evaluator(&self) -> &InputDataEvaluator {
+    &self.input_data_evaluator_builder
+  }
 
-   ///
-   pub fn input_data_context_evaluator(&self) -> &InputDataContextEvaluatorBuilder {
-     &self.input_data_context_evaluator_builder
-   }
+  ///
+  pub fn input_data_context_evaluator(&self) -> &InputDataContextEvaluator {
+    &self.input_data_context_evaluator_builder
+  }
 
-   ///
-   pub fn item_definition_context_evaluator(&self) -> &ItemDefinitionContextEvaluatorBuilder {
-     &self.item_definition_context_evaluator_builder
-   }
+  ///
+  pub fn item_definition_context_evaluator(&self) -> &ItemDefinitionContextEvaluator {
+    &self.item_definition_context_evaluator_builder
+  }
 
-   ///
-   pub fn item_definition_evaluator(&self) -> &ItemDefinitionEvaluatorBuilder {
-     &self.item_definition_evaluator_builder
-   }
+  ///
+  pub fn item_definition_evaluator(&self) -> &ItemDefinitionEvaluator {
+    &self.item_definition_evaluator_builder
+  }
 
-   ///
-   pub fn item_definition_type_evaluator(&self) -> &ItemDefinitionTypeEvaluatorBuilder {
-     &self.item_definition_type_evaluator_builder
-   }
+  ///
+  pub fn item_definition_type_evaluator(&self) -> &ItemDefinitionTypeEvaluator {
+    &self.item_definition_type_evaluator_builder
+  }
 
-   ///
-   pub fn business_knowledge_model_evaluator(&self) -> &BusinessKnowledgeModelEvaluatorBuilder {
-     &self.business_knowledge_model_evaluator_builder
-   }
+  ///
+  pub fn business_knowledge_model_evaluator(&self) -> &BusinessKnowledgeModelEvaluator {
+    &self.business_knowledge_model_evaluator_builder
+  }
 
-   ///
-   pub fn decision_evaluator(&self) -> &DecisionEvaluatorBuilder {
-     &self.decision_evaluator_builder
-   }
+  ///
+  pub fn decision_evaluator(&self) -> &DecisionEvaluator {
+    &self.decision_evaluator_builder
+  }
 
-   ///
-   pub fn decision_service_evaluator(&self) -> &DecisionServiceEvaluatorBuilder {
-     &self.decision_service_evaluator_builder
-   }
+  ///
+  pub fn decision_service_evaluator(&self) -> &DecisionServiceEvaluator {
+    &self.decision_service_evaluator_builder
+  }
 
-   ///
-   pub fn add_invocable_decision(&mut self, name: &str, id: &str) {
-     self.invocable_by_name.insert(name.to_string(), InvocableType::Decision(id.to_string()));
-   }
+  ///
+  pub fn add_invocable_decision(&mut self, name: &str, id: &str) {
+    self.invocable_by_name.insert(name.to_string(), InvocableType::Decision(id.to_string()));
+  }
 
-   ///
-   pub fn add_invocable_business_knowledge_model(&mut self, name: &str, id: &str, output_variable_name: Name) {
-     self
-       .invocable_by_name
-       .insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
-   }
+  ///
+  pub fn add_invocable_business_knowledge_model(&mut self, name: &str, id: &str, output_variable_name: Name) {
+    self
+      .invocable_by_name
+      .insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
+  }
 
-   ///
-   pub fn add_invocable_decision_service(&mut self, name: &str, id: &str) {
-     self.invocable_by_name.insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
-   }
-
-  */
+  ///
+  pub fn add_invocable_decision_service(&mut self, name: &str, id: &str) {
+    self.invocable_by_name.insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
+  }
 }
