@@ -33,7 +33,7 @@
 //! Builder for item definition evaluators.
 
 use crate::errors::*;
-use crate::evaluators::model_definitions::{DefDefinitions, DefItemDefinition};
+use crate::model_definitions::{DefDefinitions, DefItemDefinition};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
@@ -459,7 +459,7 @@ fn build_function_type_evaluator() -> Result<ItemDefinitionEvaluatorFn> {
 
 #[cfg(test)]
 mod tests {
-  use crate::evaluators::ItemDefinitionEvaluator;
+  use crate::item_definition::ItemDefinitionEvaluator;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::{Value, Values};

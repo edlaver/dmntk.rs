@@ -30,8 +30,8 @@
  * limitations under the License.
  */
 
-use crate::evaluators::model_builder::ModelBuilder;
-use crate::ModelEvaluator;
+use crate::model_builder::ModelBuilder;
+use crate::model_evaluator::ModelEvaluator;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, Name};

@@ -33,7 +33,7 @@
 //! Builder for item definition context evaluators.
 
 use crate::errors::*;
-use crate::evaluators::model_definitions::{DefDefinitions, DefItemDefinition};
+use crate::model_definitions::{DefDefinitions, DefItemDefinition};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
@@ -195,7 +195,7 @@ fn function_type_context_evaluator(_item_definition: &DefItemDefinition) -> Resu
 
 #[cfg(test)]
 mod tests {
-  use crate::evaluators::item_definition_context::ItemDefinitionContextEvaluator;
+  use crate::item_definition_context::ItemDefinitionContextEvaluator;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::{Value, Values};

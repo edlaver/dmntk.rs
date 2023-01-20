@@ -30,8 +30,12 @@
  * limitations under the License.
  */
 
-use crate::evaluators::model_builder::{Invocables, ModelBuilder};
-use crate::evaluators::*;
+use crate::business_knowledge_model::BusinessKnowledgeModelEvaluator;
+use crate::decision::DecisionEvaluator;
+use crate::decision_service::DecisionServiceEvaluator;
+use crate::input_data::InputDataEvaluator;
+use crate::item_definition::ItemDefinitionEvaluator;
+use crate::model_builder::{Invocables, ModelBuilder};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;

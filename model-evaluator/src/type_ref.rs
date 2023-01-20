@@ -30,32 +30,6 @@
  * limitations under the License.
  */
 
-//! ???
-
-mod boxed_expressions;
-mod business_knowledge_model;
-mod decision;
-mod decision_service;
-pub(crate) mod decision_table;
-mod input_data;
-mod input_data_context;
-mod item_definition;
-mod item_definition_context;
-mod item_definition_type;
-pub(crate) mod model_builder;
-pub mod model_definitions;
-pub mod model_evaluator;
-mod variable;
-
-pub use business_knowledge_model::BusinessKnowledgeModelEvaluator;
-pub use decision::DecisionEvaluator;
-pub use decision_service::DecisionServiceEvaluator;
-pub use input_data::InputDataEvaluator;
-pub use input_data_context::InputDataContextEvaluator;
-pub use item_definition::ItemDefinitionEvaluator;
-pub use item_definition_context::ItemDefinitionContextEvaluator;
-pub use item_definition_type::ItemDefinitionTypeEvaluator;
-
 use dmntk_feel::FeelType;
 
 ///

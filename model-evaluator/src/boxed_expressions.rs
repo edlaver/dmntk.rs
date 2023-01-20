@@ -32,10 +32,10 @@
 
 //! ???
 
+use crate::decision_table;
 use crate::errors::*;
-use crate::evaluators::decision_table;
-use crate::evaluators::model_builder::ModelBuilder;
-use crate::evaluators::model_definitions::DefDefinitions;
+use crate::model_builder::ModelBuilder;
+use crate::model_definitions::DefDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;

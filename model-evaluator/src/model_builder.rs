@@ -30,9 +30,16 @@
  * limitations under the License.
  */
 
-use crate::evaluators::model_definitions::DefDefinitions;
-use crate::evaluators::model_evaluator::InvocableType;
-use crate::evaluators::*;
+use crate::business_knowledge_model::BusinessKnowledgeModelEvaluator;
+use crate::decision::DecisionEvaluator;
+use crate::decision_service::DecisionServiceEvaluator;
+use crate::input_data::InputDataEvaluator;
+use crate::input_data_context::InputDataContextEvaluator;
+use crate::item_definition::ItemDefinitionEvaluator;
+use crate::item_definition_context::ItemDefinitionContextEvaluator;
+use crate::item_definition_type::ItemDefinitionTypeEvaluator;
+use crate::model_definitions::DefDefinitions;
+use crate::model_evaluator::InvocableType;
 use dmntk_common::Result;
 use dmntk_feel::Name;
 use dmntk_model::model::Definitions;

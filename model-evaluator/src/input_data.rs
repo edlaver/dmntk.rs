@@ -33,9 +33,9 @@
 //! Builder for input data evaluators.
 
 use crate::errors::*;
-use crate::evaluators::item_definition::ItemDefinitionEvaluator;
-use crate::evaluators::model_definitions::DefDefinitions;
-use crate::evaluators::variable::{Variable, VariableEvaluatorFn};
+use crate::item_definition::ItemDefinitionEvaluator;
+use crate::model_definitions::DefDefinitions;
+use crate::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
@@ -83,9 +83,9 @@ impl InputDataEvaluator {
 
 #[cfg(test)]
 mod tests {
-  use crate::evaluators::item_definition::ItemDefinitionEvaluator;
-  use crate::evaluators::model_definitions::DefDefinitions;
-  use crate::evaluators::InputDataEvaluator;
+  use crate::input_data::InputDataEvaluator;
+  use crate::item_definition::ItemDefinitionEvaluator;
+  use crate::model_definitions::DefDefinitions;
   use dmntk_examples::input_data::*;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_number, FeelNumber, Name};
