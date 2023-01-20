@@ -39,6 +39,7 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
@@ -47,22 +48,22 @@ type InputDataContextEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ItemDefinitionC
 /// Input data context evaluator.
 #[derive(Default)]
 pub struct InputDataContextEvaluator {
-  evaluators: HashMap<String, InputDataContextEvaluatorFn>,
+  evaluators: RefCell<HashMap<String, InputDataContextEvaluatorFn>>,
 }
 
 impl InputDataContextEvaluator {
   /// Creates a new input data context evaluator.
-  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id();
       let evaluator = input_data_context_evaluator(input_data)?;
-      self.evaluators.insert(input_data_id.to_owned(), evaluator);
+      self.evaluators.borrow_mut().insert(input_data_id.to_owned(), evaluator);
     }
     Ok(())
   }
   /// Evaluates input data context with specified identifier.
   pub fn eval(&self, input_data_id: &str, ctx: &mut FeelContext, item_definition_context_evaluator: &ItemDefinitionContextEvaluator) -> FeelType {
-    if let Some(evaluator) = self.evaluators.get(input_data_id) {
+    if let Some(evaluator) = self.evaluators.borrow().get(input_data_id) {
       evaluator(ctx, item_definition_context_evaluator)
     } else {
       FeelType::Any
@@ -118,9 +119,9 @@ mod tests {
   /// and item definition context evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataContextEvaluator, ItemDefinitionContextEvaluator) {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
-    let mut input_data_context_evaluator = InputDataContextEvaluator::default();
+    let input_data_context_evaluator = InputDataContextEvaluator::default();
     input_data_context_evaluator.build(&definitions).unwrap();
-    let mut item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
+    let item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
     item_definition_context_evaluator.build(&definitions).unwrap();
     (input_data_context_evaluator, item_definition_context_evaluator)
   }

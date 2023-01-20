@@ -38,6 +38,7 @@ use crate::evaluators::type_ref_to_feel_type;
 use dmntk_common::Result;
 use dmntk_feel::{FeelType, Name, FEEL_TYPE_NAME_ANY};
 use dmntk_model::model::ItemDefinitionType;
+use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of function that evaluates the item definition type.
@@ -46,24 +47,23 @@ type ItemDefinitionTypeEvaluatorFn = Box<dyn Fn(&ItemDefinitionTypeEvaluator) ->
 /// Item definition type evaluators.
 #[derive(Default)]
 pub struct ItemDefinitionTypeEvaluator {
-  /// Map of item definition type evaluators.
-  evaluators: HashMap<String, ItemDefinitionTypeEvaluatorFn>,
+  evaluators: RefCell<HashMap<String, ItemDefinitionTypeEvaluatorFn>>,
 }
 
 impl ItemDefinitionTypeEvaluator {
   /// Creates item definition type evaluators.
-  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_type_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
-      self.evaluators.insert(type_ref, evaluator);
+      self.evaluators.borrow_mut().insert(type_ref, evaluator);
     }
     Ok(())
   }
 
   /// Evaluates a type of item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str) -> Option<FeelType> {
-    if let Some(evaluator) = self.evaluators.get(type_ref) {
+    if let Some(evaluator) = self.evaluators.borrow().get(type_ref) {
       evaluator(self)
     } else {
       None
@@ -215,9 +215,9 @@ mod tests {
 
   /// Utility function for building item definition type evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionTypeEvaluator {
-    let mut evaluator = ItemDefinitionTypeEvaluator::default();
-    evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
-    evaluator
+    let item_definition_type_evaluator = ItemDefinitionTypeEvaluator::default();
+    item_definition_type_evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
+    item_definition_type_evaluator
   }
 
   #[test]

@@ -36,10 +36,12 @@ use crate::builders::model_definitions::{DefDecision, DefDefinitions};
 use crate::evaluators::boxed_expressions::*;
 use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
+use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelScope, Name};
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 /// Type alias for closures that evaluate decisions.
@@ -52,18 +54,18 @@ type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 ///
 #[derive(Default)]
 pub struct DecisionEvaluator {
-  evaluators: HashMap<String, DecisionEvaluatorEntry>,
+  evaluators: RefCell<HashMap<String, DecisionEvaluatorEntry>>,
 }
 
 impl DecisionEvaluator {
   /// Creates a new decision evaluator.
-  pub fn build(&mut self, definitions: &DefDefinitions, model_evaluator: &ModelEvaluator) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<()> {
     for decision in definitions.decisions() {
-      let evaluator_entry = build_decision_evaluator(definitions, decision, model_evaluator)?;
+      let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
       let decision_id = decision.id();
       let decision_name = &decision.name().to_string();
-      self.evaluators.insert(decision_id.to_owned(), evaluator_entry);
-      model_evaluator.add_invocable_decision(decision_name, decision_id);
+      self.evaluators.borrow_mut().insert(decision_id.to_owned(), evaluator_entry);
+      model_builder.add_invocable_decision(decision_name, decision_id);
     }
     Ok(())
   }
@@ -71,25 +73,26 @@ impl DecisionEvaluator {
   pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
+      .borrow()
       .get(decision_id)
       .map(|evaluator_entry| evaluator_entry.1(input_data, model_evaluator, evaluated_ctx))
   }
   /// Returns the name and type of the output variable of a decision with specified identifier.
-  pub fn get_output_variable(&self, decision_id: &str) -> Option<&Variable> {
-    self.evaluators.get(decision_id).map(|entry| &entry.0)
+  pub fn get_output_variable(&self, decision_id: &str) -> Option<Variable> {
+    self.evaluators.borrow().get(decision_id).map(|entry| entry.0.clone())
   }
 }
 
 ///
-fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision, model_evaluator: &ModelEvaluator) -> Result<DecisionEvaluatorEntry> {
+fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision, model_builder: &ModelBuilder) -> Result<DecisionEvaluatorEntry> {
   // acquire all needed evaluators
-  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
-  let item_definition_context_evaluator = model_evaluator.item_definition_context_evaluator()?;
-  let input_data_context_evaluator = model_evaluator.input_data_context_evaluator()?;
+  let item_definition_type_evaluator = model_builder.item_definition_type_evaluator();
+  let item_definition_context_evaluator = model_builder.item_definition_context_evaluator();
+  let input_data_context_evaluator = model_builder.input_data_context_evaluator();
 
   // get output variable
   let mut output_variable = Variable::try_from(decision.variable())?;
-  output_variable.update_feel_type(&item_definition_type_evaluator);
+  output_variable.update_feel_type(item_definition_type_evaluator);
 
   // prepare output variable name for this decision
   let output_variable_name = output_variable.name().clone();
@@ -128,7 +131,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
       // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
         let variable_name = required_input.variable().name();
-        let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, &item_definition_context_evaluator);
+        let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, item_definition_context_evaluator);
         input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }
@@ -140,7 +143,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
 
   // prepare expression instance for this decision
   let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
-    let (evl, _) = build_expression_instance_evaluator(&scope, expression_instance, model_evaluator)?;
+    let (evl, _) = build_expression_instance_evaluator(&scope, expression_instance, model_builder)?;
     evl
   } else {
     Box::new(move |_: &FeelScope| value_null!("no decision logic defined in decision"))

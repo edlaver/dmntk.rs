@@ -35,13 +35,13 @@
 use crate::builders::model_definitions::{DefDecisionService, DefDefinitions};
 use crate::evaluators::model_evaluator::ModelEvaluator;
 use crate::evaluators::variable::Variable;
+use crate::ModelBuilder;
 use dmntk_common::Result;
-use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
+use dmntk_feel::{Evaluator, FeelType, Name};
+use std::cell::RefCell;
 use std::collections::HashMap;
-use std::sync::Arc;
 
 /// Type of closure that evaluates a decision service.
 /// Fn(input_data, model evaluator, output data)
@@ -53,75 +53,82 @@ type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionS
 ///
 #[derive(Default)]
 pub struct DecisionServiceEvaluator {
-  evaluators: HashMap<String, DecisionServiceEvaluatorEntry>,
+  evaluators: RefCell<HashMap<String, DecisionServiceEvaluatorEntry>>,
 }
 
 impl DecisionServiceEvaluator {
   /// Creates a new decision service evaluator.
-  pub fn build(&mut self, definitions: &DefDefinitions, model_evaluator: Arc<ModelEvaluator>) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<()> {
     for decision_service in definitions.decision_services() {
       let decision_service_id = decision_service.id();
       let decision_service_name = &decision_service.name().to_string();
-      let evaluator = build_decision_service_evaluator(decision_service, Arc::clone(&model_evaluator))?;
-      self.evaluators.insert(decision_service_id.to_owned(), evaluator);
-      model_evaluator.add_invocable_decision_service(decision_service_name, decision_service_id);
+      let evaluator = build_decision_service_evaluator(decision_service, model_builder)?;
+      self.evaluators.borrow_mut().insert(decision_service_id.to_owned(), evaluator);
+      model_builder.add_invocable_decision_service(decision_service_name, decision_service_id);
     }
     Ok(())
   }
 
-  /// Creates function definition evaluators for all decision service evaluators.
-  pub fn build_function_definitions(&mut self, model_evaluator: &Arc<ModelEvaluator>) {
-    let identifiers = self.evaluators.keys().cloned().collect::<Vec<String>>();
-    for decision_service_id in identifiers {
-      let evaluator = Arc::clone(model_evaluator);
-      self.evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
-        let output_variable_type = entry.0.feel_type().clone();
-        let body_evaluator = Box::new(move |scope: &FeelScope| {
-          let input_data = scope.peek().unwrap_or_default();
-          let mut output_data = FeelContext::default();
-          if let Ok(decision_service_evaluator) = evaluator.decision_service_evaluator() {
-            let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &evaluator, &mut output_data);
-            if let Some(out_variable_name) = opt_out_variable_name {
-              if let Some(result_value) = output_data.get_entry(&out_variable_name) {
-                return result_value.clone();
-              }
-            }
-          }
-          value_null!()
-        });
-        let function_body = dmntk_feel::FunctionBody::DecisionService(Arc::new(body_evaluator));
-        let function_definition = Value::FunctionDefinition(entry.1.clone(), function_body, false, Closure::default(), FeelContext::default(), output_variable_type);
-        let decision_service_as_function_definition_evaluator = Box::new(move |_: &FeelScope| function_definition.clone());
-        entry.3 = Some(decision_service_as_function_definition_evaluator);
-      });
-    }
-  }
+  // /// Creates function definition evaluators for all decision service evaluators.
+  // pub fn build_function_definitions(&mut self, model_evaluator: &Arc<ModelEvaluator>) {
+  //   let identifiers = self.evaluators.keys().cloned().collect::<Vec<String>>();
+  //   for decision_service_id in identifiers {
+  //     let evaluator = Arc::clone(model_evaluator);
+  //     self.evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
+  //       let output_variable_type = entry.0.feel_type().clone();
+  //       let body_evaluator = Box::new(move |scope: &FeelScope| {
+  //         let input_data = scope.peek().unwrap_or_default();
+  //         let mut output_data = FeelContext::default();
+  //         if let Ok(decision_service_evaluator) = evaluator.decision_service_evaluator() {
+  //           let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &evaluator, &mut output_data);
+  //           if let Some(out_variable_name) = opt_out_variable_name {
+  //             if let Some(result_value) = output_data.get_entry(&out_variable_name) {
+  //               return result_value.clone();
+  //             }
+  //           }
+  //         }
+  //         value_null!()
+  //       });
+  //       let function_body = dmntk_feel::FunctionBody::DecisionService(Arc::new(body_evaluator));
+  //       let function_definition = Value::FunctionDefinition(entry.1.clone(), function_body, false, Closure::default(), FeelContext::default(), output_variable_type);
+  //       let decision_service_as_function_definition_evaluator = Box::new(move |_: &FeelScope| function_definition.clone());
+  //       entry.3 = Some(decision_service_as_function_definition_evaluator);
+  //     });
+  //   }
+  // }
 
   /// Evaluates a decision service with specified identifier.
   pub fn evaluate(&self, decision_service_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
-    self.evaluators.get(decision_service_id).map(|entry| entry.2(input_data, model_evaluator, output_data))
+    self
+      .evaluators
+      .borrow_mut()
+      .get(decision_service_id)
+      .map(|entry| entry.2(input_data, model_evaluator, output_data))
   }
 
-  /// Returns a decision service as function definition with specified identifier.
-  pub fn evaluate_fd(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
-    if let Some((variable, _, _, Some(evaluator))) = self.evaluators.get(decision_service_id) {
-      let scope: FeelScope = input_data.clone().into();
-      let function_definition = evaluator(&scope) as Value;
-      let output_variable_name = variable.name().clone();
-      output_data.set_entry(&output_variable_name, function_definition);
-    }
+  pub fn evaluate_fd(&self, _decision_service_id: &str, _input_data: &FeelContext, _output_data: &mut FeelContext) {
+    todo!()
   }
+
+  // /// Returns a decision service as function definition with specified identifier.
+  // pub fn evaluate_fd(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
+  //   if let Some((variable, _, _, Some(evaluator))) = self.evaluators.get(decision_service_id) {
+  //     let scope: FeelScope = input_data.clone().into();
+  //     let function_definition = evaluator(&scope) as Value;
+  //     let output_variable_name = variable.name().clone();
+  //     output_data.set_entry(&output_variable_name, function_definition);
+  //   }
+  // }
 }
 
 ///
-fn build_decision_service_evaluator(decision_service: &DefDecisionService, model_evaluator: Arc<ModelEvaluator>) -> Result<DecisionServiceEvaluatorEntry> {
-  // acquire required evaluators
-  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
-  let input_data_evaluator = model_evaluator.input_data_evaluator()?;
-  let decision_evaluator = model_evaluator.decision_evaluator()?;
+fn build_decision_service_evaluator(decision_service: &DefDecisionService, model_builder: &ModelBuilder) -> Result<DecisionServiceEvaluatorEntry> {
+  let item_definition_type_evaluator = model_builder.item_definition_type_evaluator();
+  let input_data_evaluator = model_builder.input_data_evaluator();
+  let decision_evaluator = model_builder.decision_evaluator();
 
   let mut output_variable = Variable::try_from(decision_service.variable())?;
-  output_variable.update_feel_type(&item_definition_type_evaluator);
+  output_variable.update_feel_type(item_definition_type_evaluator);
 
   // prepare output variable name for this decision
   let output_variable_name = output_variable.name().clone();
@@ -149,7 +156,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   for input_data_id in &input_data_references {
     if let Some(input_data_variable) = input_data_evaluator.get_input_variable(input_data_id) {
       let parameter_name = input_data_variable.name().clone();
-      let parameter_type = input_data_variable.resolve_feel_type(&item_definition_type_evaluator);
+      let parameter_type = input_data_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
     }
   }
@@ -161,7 +168,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   for decision_id in &input_decisions {
     if let Some(decision_output_variable) = decision_evaluator.get_output_variable(decision_id) {
       let parameter_name = decision_output_variable.name().clone();
-      let parameter_type = decision_output_variable.resolve_feel_type(&item_definition_type_evaluator);
+      let parameter_type = decision_output_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
       let evaluator = decision_output_variable.build_evaluator()?;
       input_decision_results_evaluators.push(evaluator);

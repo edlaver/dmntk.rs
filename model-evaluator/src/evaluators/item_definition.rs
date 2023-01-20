@@ -40,6 +40,7 @@ use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::ItemDefinitionType;
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data conformant with item definition.
@@ -48,26 +49,22 @@ type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) ->
 /// Item definition evaluator.
 #[derive(Default)]
 pub struct ItemDefinitionEvaluator {
-  evaluators: HashMap<String, ItemDefinitionEvaluatorFn>,
+  evaluators: RefCell<HashMap<String, ItemDefinitionEvaluatorFn>>,
 }
 
 impl ItemDefinitionEvaluator {
   /// Creates new item definition evaluator.
-  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
-      self.evaluators.insert(type_ref, evaluator);
+      self.evaluators.borrow_mut().insert(type_ref, evaluator);
     }
     Ok(())
   }
   /// Evaluates item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str, value: &Value) -> Option<Value> {
-    self.evaluators.get(type_ref).map(|evaluator| evaluator(value, self))
-  }
-  /// Returns a reference to item definition with specified type reference name.
-  pub fn get(&self, type_ref: &str) -> Option<&ItemDefinitionEvaluatorFn> {
-    self.evaluators.get(type_ref)
+    self.evaluators.borrow().get(type_ref).map(|evaluator| evaluator(value, self))
   }
 }
 
@@ -407,14 +404,14 @@ fn build_collection_of_referenced_type_evaluator(type_ref: String, av_evaluator:
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
     if let Value::List(values) = value {
       let mut evaluated_values = Values::default();
-      if let Some(evaluator) = evaluators.get(&type_ref) {
-        for item_value in values.as_vec() {
-          evaluated_values.add(evaluator(item_value, evaluators));
+      for item_value in values.as_vec() {
+        if let Some(evaluated_value) = evaluators.eval(&type_ref, item_value) {
+          evaluated_values.add(evaluated_value);
+        } else {
+          return value_null!("no evaluator defined for type reference '{}'", type_ref);
         }
-        check_allowed_values(Value::List(evaluated_values), av_evaluator.as_ref())
-      } else {
-        value_null!("no evaluator defined for type reference '{}'", type_ref)
       }
+      check_allowed_values(Value::List(evaluated_values), av_evaluator.as_ref())
     } else {
       value_null!("expected list, actual type is '{}' in value '{}'", value.type_of(), value)
     }
@@ -471,9 +468,9 @@ mod tests {
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
-    let mut evaluator = ItemDefinitionEvaluator::default();
-    evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
-    evaluator
+    let item_definition_evaluator = ItemDefinitionEvaluator::default();
+    item_definition_evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
+    item_definition_evaluator
   }
 
   #[test]

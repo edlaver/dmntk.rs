@@ -35,7 +35,7 @@
 use crate::builders::model_definitions::DefDefinitions;
 use crate::errors::*;
 use crate::evaluators::decision_table;
-use crate::evaluators::model_evaluator::ModelEvaluator;
+use crate::ModelBuilder;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
@@ -65,7 +65,7 @@ pub fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, k
 }
 
 ///
-pub fn build_expression_instance_evaluator(scope: &FeelScope, expression_instance: &ExpressionInstance, model_evaluator: &ModelEvaluator) -> Result<(Evaluator, Closure)> {
+pub fn build_expression_instance_evaluator(scope: &FeelScope, expression_instance: &ExpressionInstance, model_evaluator: &ModelBuilder) -> Result<(Evaluator, Closure)> {
   match expression_instance {
     ExpressionInstance::Context(context) => build_context_evaluator(scope, context, model_evaluator),
     ExpressionInstance::DecisionTable(decision_table) => build_decision_table_evaluator(scope, decision_table),
@@ -77,8 +77,8 @@ pub fn build_expression_instance_evaluator(scope: &FeelScope, expression_instanc
 }
 
 ///
-pub fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evaluator: &ModelEvaluator) -> Result<(Evaluator, Closure)> {
-  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
+pub fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evaluator: &ModelBuilder) -> Result<(Evaluator, Closure)> {
+  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator();
   let mut entry_evaluators = vec![];
   scope.push(FeelContext::default());
   for context_entry in context.context_entries() {
@@ -128,8 +128,8 @@ pub fn build_decision_table_evaluator(scope: &FeelScope, decision_table: &Decisi
 }
 
 ///
-pub fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &FunctionDefinition, model_evaluator: &ModelEvaluator) -> Result<(Evaluator, Closure)> {
-  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
+pub fn build_function_definition_evaluator(scope: &FeelScope, function_definition: &FunctionDefinition, model_evaluator: &ModelBuilder) -> Result<(Evaluator, Closure)> {
+  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator();
   // resolve function definition's formal parameters
   let mut parameters = vec![];
   let mut parameters_ctx = FeelContext::default();
@@ -233,8 +233,8 @@ pub fn build_function_definition_evaluator(scope: &FeelScope, function_definitio
 }
 
 ///
-pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_evaluator: &ModelEvaluator) -> Result<(Evaluator, Closure)> {
-  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator()?;
+pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, model_evaluator: &ModelBuilder) -> Result<(Evaluator, Closure)> {
+  let item_definition_type_evaluator = model_evaluator.item_definition_type_evaluator();
   let mut bindings = vec![];
   let (function_evaluator, _) = build_expression_instance_evaluator(scope, invocation.called_function(), model_evaluator)?;
   for binding in invocation.bindings() {
@@ -279,7 +279,7 @@ pub fn build_literal_expression_evaluator(scope: &FeelScope, literal_expression:
 }
 
 ///
-pub fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_evaluator: &ModelEvaluator) -> Result<(Evaluator, Closure)> {
+pub fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_evaluator: &ModelBuilder) -> Result<(Evaluator, Closure)> {
   let mut rows = vec![];
   for row in relation.rows() {
     let mut evaluators = vec![];

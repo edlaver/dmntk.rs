@@ -36,6 +36,7 @@ use crate::evaluators::*;
 use dmntk_common::Result;
 use dmntk_feel::Name;
 use dmntk_model::model::Definitions;
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 /// Model builder.
@@ -58,19 +59,22 @@ pub struct ModelBuilder {
   /// Decision service evaluator builder.
   decision_service_evaluator_builder: DecisionServiceEvaluator,
   /// Map of invocables indexed by invocable name.
-  invocable_by_name: HashMap<String, InvocableType>,
+  invocable_by_name: RefCell<HashMap<String, InvocableType>>,
 }
 
 impl ModelBuilder {
   ///
   pub fn new(defs: &Definitions) -> Result<Self> {
     let definitions: DefDefinitions = defs.into();
-    let mut model_builder = ModelBuilder::default();
+    let model_builder = ModelBuilder::default();
     model_builder.input_data_evaluator_builder.build(&definitions)?;
     model_builder.input_data_context_evaluator_builder.build(&definitions)?;
     model_builder.item_definition_evaluator_builder.build(&definitions)?;
     model_builder.item_definition_context_evaluator_builder.build(&definitions)?;
     model_builder.item_definition_type_evaluator_builder.build(&definitions)?;
+    model_builder.business_knowledge_model_evaluator_builder.build(&definitions, &model_builder)?;
+    model_builder.decision_evaluator_builder.build(&definitions, &model_builder)?;
+    model_builder.decision_service_evaluator_builder.build(&definitions, &model_builder)?;
     Ok(model_builder)
   }
 
@@ -115,19 +119,20 @@ impl ModelBuilder {
   }
 
   ///
-  pub fn add_invocable_decision(&mut self, name: &str, id: &str) {
-    self.invocable_by_name.insert(name.to_string(), InvocableType::Decision(id.to_string()));
+  pub fn add_invocable_decision(&self, name: &str, id: &str) {
+    self.invocable_by_name.borrow_mut().insert(name.to_string(), InvocableType::Decision(id.to_string()));
   }
 
   ///
-  pub fn add_invocable_business_knowledge_model(&mut self, name: &str, id: &str, output_variable_name: Name) {
+  pub fn add_invocable_business_knowledge_model(&self, name: &str, id: &str, output_variable_name: Name) {
     self
       .invocable_by_name
+      .borrow_mut()
       .insert(name.to_string(), InvocableType::BusinessKnowledgeModel(id.to_string(), output_variable_name));
   }
 
   ///
-  pub fn add_invocable_decision_service(&mut self, name: &str, id: &str) {
-    self.invocable_by_name.insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
+  pub fn add_invocable_decision_service(&self, name: &str, id: &str) {
+    self.invocable_by_name.borrow_mut().insert(name.to_string(), InvocableType::DecisionService(id.to_string()));
   }
 }

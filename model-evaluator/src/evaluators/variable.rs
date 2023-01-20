@@ -40,6 +40,7 @@ use dmntk_feel::{value_null, FeelType, Name};
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
 
 ///
+#[derive(Clone)]
 pub struct Variable {
   name: Name,
   pub type_ref: Option<String>,

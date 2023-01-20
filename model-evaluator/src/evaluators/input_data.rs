@@ -38,6 +38,7 @@ use crate::evaluators::variable::{Variable, VariableEvaluatorFn};
 use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
+use std::cell::RefCell;
 use std::collections::HashMap;
 
 ///
@@ -46,27 +47,27 @@ type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
 /// Input data evaluator.
 #[derive(Default)]
 pub struct InputDataEvaluator {
-  evaluators: HashMap<String, InputDataEvaluatorEntry>,
+  evaluators: RefCell<HashMap<String, InputDataEvaluatorEntry>>,
 }
 
 impl InputDataEvaluator {
   /// Builds a new input data evaluator.
-  pub fn build(&mut self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id();
       let variable = Variable::try_from(input_data.variable())?;
       let evaluator = variable.build_evaluator()?;
-      self.evaluators.insert(input_data_id.to_owned(), (variable, evaluator));
+      self.evaluators.borrow_mut().insert(input_data_id.to_owned(), (variable, evaluator));
     }
     Ok(())
   }
   /// Evaluates input data with specified identifier.
   pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
-    self.evaluators.get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
+    self.evaluators.borrow().get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
   /// Returns the name and type of the input variable of input data definition with specified identifier.
-  pub fn get_input_variable(&self, input_data_id: &str) -> Option<&Variable> {
-    self.evaluators.get(input_data_id).map(|entry| &entry.0)
+  pub fn get_input_variable(&self, input_data_id: &str) -> Option<Variable> {
+    self.evaluators.borrow().get(input_data_id).map(|entry| (entry.0).clone())
   }
 }
 
@@ -83,9 +84,9 @@ mod tests {
   /// and item definition evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataEvaluator, ItemDefinitionEvaluator) {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
-    let mut input_data_evaluator = InputDataEvaluator::default();
+    let input_data_evaluator = InputDataEvaluator::default();
     input_data_evaluator.build(&definitions).unwrap();
-    let mut item_definitions_evaluator = ItemDefinitionEvaluator::default();
+    let item_definitions_evaluator = ItemDefinitionEvaluator::default();
     item_definitions_evaluator.build(&definitions).unwrap();
     (input_data_evaluator, item_definitions_evaluator)
   }
