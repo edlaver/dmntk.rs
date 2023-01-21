@@ -2,7 +2,7 @@
 
 # set variables
 NAME=dmntk
-VERSION=0.0.53
+VERSION=0.1.0
 
 # clean before proceeding
 cargo clean
