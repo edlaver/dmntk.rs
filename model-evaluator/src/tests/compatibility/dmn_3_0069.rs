@@ -172,19 +172,34 @@ fn _0021() {
 #[test]
 fn _0022() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision021", &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "decision021",
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
 }
 
 #[test]
 fn _0023() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision022", &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "decision022",
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
 }
 
 #[test]
 fn _0024() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision023", &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "decision023",
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
 }
 
 #[test]

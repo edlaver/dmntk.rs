@@ -716,10 +716,10 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::Number(num) => {
-          if num.is_one() {
+          if num.is_one() || (-num).is_one() {
             v
           } else {
-            value_null!("only filter index with value 1 is accepted")
+            value_null!("for singletons, only filter index with value 1 or -1 is accepted")
           }
         }
         _ => value_null!("only number or boolean indexes are allowed in filters"),
