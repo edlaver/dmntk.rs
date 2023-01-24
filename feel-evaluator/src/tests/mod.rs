@@ -286,7 +286,7 @@ pub fn valid_unary_tests(trace: bool, scope: &FeelScope, text: &str) {
   match dmntk_feel_parser::parse_unary_tests(scope, text, trace) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
-        if let v @ Value::Null(_) = evaluator(scope) {
+        if let v @ Value::Null(_) = evaluator(scope) as Value {
           panic!("evaluating unary tests failed, value: {v}")
         }
       }

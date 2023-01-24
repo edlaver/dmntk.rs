@@ -32,7 +32,7 @@
 
 //! BuiltinAggregator tests.
 
-use dmntk_model::model::BuiltinAggregator;
+use crate::model::BuiltinAggregator;
 
 #[test]
 fn test_display() {

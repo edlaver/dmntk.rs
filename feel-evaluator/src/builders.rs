@@ -1145,10 +1145,7 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::UnaryLessOrEqual(inner) => eval_in_unary_less_or_equal(&lhv, inner.borrow()),
       Value::UnaryGreater(inner) => eval_in_unary_greater(&lhv, inner.borrow()),
       Value::UnaryGreaterOrEqual(inner) => eval_in_unary_greater_or_equal(&lhv, inner.borrow()),
-      Value::Irrelevant => match lhv {
-        Value::Null(_) => VALUE_FALSE,
-        _ => VALUE_TRUE,
-      },
+      Value::Irrelevant => VALUE_TRUE,
       _ => {
         value_null!("eval_in")
       }

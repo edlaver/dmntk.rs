@@ -38,11 +38,8 @@ use dmntk_feel::{FeelScope, Name};
 use dmntk_model::model::Definitions;
 use std::sync::Arc;
 
-#[cfg(test)]
 mod compatibility;
-
-#[cfg(test)]
-mod model;
+mod various;
 
 /// Utility function that creates a `FEEL` context from specified input expression.
 pub fn context(input: &str) -> FeelContext {
