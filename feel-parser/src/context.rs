@@ -125,6 +125,9 @@ impl From<&FeelContext> for ParsingContext {
         Value::Context(ctx) => {
           entries.insert(name.to_owned(), ParsingEntry::Context(ctx.into()));
         }
+        list @ Value::List(_) => {
+          entries.insert(name.to_owned(), list.type_of().into());
+        }
         Value::FeelType(feel_type) => {
           entries.insert(name.to_owned(), feel_type.into());
         }

@@ -59,7 +59,7 @@ fn test_0001() {
   "#,
   );
   let expression = r#"
-      for i in 1..6 return ((log(1 + ((offer[i].rate) / 100) * (offer[i].tenor / 365))) / ((offer[i].tenor) / 365) + (log(1 + ((bid[i].rate) / 100) * ((bid[i].tenor) / 365))) / ((bid[i].tenor) / 365)) / 2
+      for i in 1..6 return ((log(1 + (offer[i].rate / 100) * (offer[i].tenor / 365))) / (offer[i].tenor / 365) + (log(1 + (bid[i].rate / 100) * (bid[i].tenor / 365))) / (bid[i].tenor / 365)) / 2
   "#;
   let expected = r#"[
     0.03728665564658653288015998590256039,
