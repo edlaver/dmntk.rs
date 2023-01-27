@@ -74,6 +74,7 @@ mod range;
 mod some_expression;
 mod subtraction;
 mod unary_tests;
+mod various;
 
 const SECONDS_IN_DAY: i64 = 86_400;
 const SECONDS_IN_HOUR: i64 = 3_600;
