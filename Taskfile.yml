@@ -97,12 +97,7 @@ tasks:
   install:
     desc: Builds and installs release version
     cmds:
-      - cmd: cargo uninstall dmntk > /dev/null 2>&1
-        ignore_error: true
-      - cmd: rm ~/.cargo/bin/dmntk > /dev/null 2>&1
-        ignore_error: true
-      - cmd: cargo +stable build --release
-      - cmd: cp ./target/release/dmntk ~/.cargo/bin/
+      - cmd: cargo +stable install dmntk --path dmntk --force
 
   musl:
     desc: Builds the Linux MUSL target
