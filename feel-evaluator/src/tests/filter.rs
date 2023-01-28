@@ -484,12 +484,42 @@ fn _0056() {
 
 #[test]
 fn _0057() {
+  let scope = &te_scope(
+    r#"{
+      "Flight List": [
+        { "Flight Number": "UA456",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA123",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
+        { "Flight Number": "UA789",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T21:00:00", "Arrival": @"2017-01-01T23:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA1001", "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 0, "Status": "cancelled" },
+        { "Flight Number": "UA1111", "From": "SFO", "To": "LAX", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 2, "Status": "scheduled" }]
+    }"#,
+  );
+  te_be_value(false, scope, r#"Flight List[Status = "cancelled"].Flight Number"#, r#"["UA123", "UA1001"]"#);
+}
+
+#[test]
+fn _0058() {
+  let scope = &te_scope(
+    r#"{
+      "Flight List": [
+        { "Flight Number": { n: "UA456",  tag: "A" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": { n: "UA123",  tag: "B" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
+        { "Flight Number": { n: "UA789",  tag: "C" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T21:00:00", "Arrival": @"2017-01-01T23:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": { n: "UA1001", tag: "D" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 0, "Status": "cancelled" },
+        { "Flight Number": { n: "UA1111", tag: "E" }, "From": "SFO", "To": "LAX", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 2, "Status": "scheduled" }]
+    }"#,
+  );
+  te_be_value(false, scope, r#"Flight List[Status = "cancelled"].Flight Number.tag"#, r#"["B", "D"]"#);
+}
+
+#[test]
+fn _0059() {
   let scope = &te_scope(r#"{ A: 10 }"#);
   te_number(false, scope, "A[1]", 10, 0);
 }
 
 #[test]
-fn _0059() {
+fn _0060() {
   let scope = &te_scope(r#"{ A: 10 }"#);
   te_number(false, scope, "A[-1]", 10, 0);
 }

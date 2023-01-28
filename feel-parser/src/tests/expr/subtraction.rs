@@ -133,21 +133,20 @@ fn _0005() {
 }
 
 #[test]
-#[ignore]
 fn _0006() {
   let scope = scope!();
-  scope.set_name("Date - Time".into());
-  scope.set_name("Date - Time2".into());
+  scope.set_name("Date  -  Time".into());
+  scope.set_name("Date     -   Time2".into());
   accept(
     &scope,
     StartExpression,
-    "Date-Time - Date-Time2",
+    "(Date    -   Time) - (  Date     -      Time2)",
     r#"
        Sub
        ├─ Name
-       │  └─ `Date - Time`
+       │  └─ `Date-Time`
        └─ Name
-          └─ `Date - Time2`
+          └─ `Date-Time2`
     "#,
     false,
   );
