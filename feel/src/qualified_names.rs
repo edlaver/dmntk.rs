@@ -66,6 +66,16 @@ impl QualifiedName {
   pub fn push(&mut self, name: Name) {
     self.0.push(name);
   }
+
+  /// Inserts a given [Name] at specified position in [QualifiedName].
+  pub fn insert(&mut self, index: usize, name: Name) {
+    self.0.insert(index, name);
+  }
+
+  /// Returns last [Name] from [QualifiedName].
+  pub fn pop(&mut self) -> Option<Name> {
+    self.0.pop()
+  }
 }
 
 impl From<Name> for QualifiedName {

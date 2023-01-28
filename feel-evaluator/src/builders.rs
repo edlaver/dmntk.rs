@@ -1616,7 +1616,7 @@ fn build_qualified_name(lhs: &[AstNode]) -> Result<Evaluator> {
     let mut names = vec![];
     for evaluator in &evaluators {
       if let Value::QualifiedNameSegment(name) = evaluator(scope) {
-        names.push(name.clone());
+        names.push(name);
       }
     }
     scope.search(&names).unwrap_or_else(|| value_null!("no value for qualified name"))
@@ -1630,168 +1630,185 @@ fn build_qualified_name_segment(name: &Name) -> Result<Evaluator> {
 }
 
 ///
-fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  if let AstNode::Name(name) = rhs.clone() {
-    let qualified_name: QualifiedName = name.into();
-    let lhe = build_evaluator(lhs)?;
-    Ok(Box::new(move |scope: &FeelScope| {
-      let lhv = lhe(scope) as Value;
-      match lhv {
-        Value::Context(context) => {
-          if let Some(value) = context.search_entry(&qualified_name) {
-            value.clone()
-          } else {
-            value_null!("build_path: no entry {} in context: {}", qualified_name, context)
-          }
+fn get_property_from_value(value: Value, name: &Name) -> Value {
+  let property_name = name.to_string();
+  match value {
+    Value::Date(date) => match property_name.as_str() {
+      "year" => Value::Number(date.year().into()),
+      "month" => Value::Number(date.month().into()),
+      "day" => Value::Number(date.day().into()),
+      "weekday" => {
+        if let Some(day_of_week) = date.day_of_week() {
+          Value::Number(day_of_week.1.into())
+        } else {
+          value_null!("could not retrieve weekday for date")
         }
-        Value::List(items) => {
-          let mut result = vec![];
-          for item in items.as_vec() {
-            if let Value::Context(context) = item {
-              if let Some(value) = context.search_entry(&qualified_name) {
-                result.push(value.clone());
-              }
-            } else {
-              return value_null!("build_path: no context in list");
-            }
-          }
-          Value::List(Values::new(result))
-        }
-        Value::Date(date) => {
-          return match qualified_name.to_string().as_str() {
-            "year" => Value::Number(date.year().into()),
-            "month" => Value::Number(date.month().into()),
-            "day" => Value::Number(date.day().into()),
-            "weekday" => {
-              if let Some(day_of_week) = date.day_of_week() {
-                Value::Number(day_of_week.1.into())
-              } else {
-                value_null!("could not retrieve weekday for date")
-              }
-            }
-            other => value_null!("no such property in date: {}", other),
-          }
-        }
-        Value::DateTime(date_time) => {
-          return match qualified_name.to_string().as_str() {
-            "year" => Value::Number(date_time.year().into()),
-            "month" => Value::Number(date_time.month().into()),
-            "day" => Value::Number(date_time.day().into()),
-            "weekday" => {
-              if let Some(day_of_week) = date_time.day_of_week() {
-                Value::Number(day_of_week.1.into())
-              } else {
-                value_null!("could not retrieve weekday for date and time")
-              }
-            }
-            "hour" => Value::Number(date_time.hour().into()),
-            "minute" => Value::Number(date_time.minute().into()),
-            "second" => Value::Number(date_time.second().into()),
-            "time offset" => {
-              if let Some(offset) = date_time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
-              } else {
-                value_null!("aaaa")
-              }
-            }
-            "timezone" => {
-              if let Some(feel_time_zone) = date_time.feel_time_zone() {
-                return Value::String(feel_time_zone);
-              } else {
-                value_null!("bbb")
-              }
-            }
-            _ => value_null!("no such property in date and time"),
-          }
-        }
-        Value::Time(time) => {
-          return match qualified_name.to_string().as_str() {
-            "hour" => Value::Number(time.hour().into()),
-            "minute" => Value::Number(time.minute().into()),
-            "second" => Value::Number(time.second().into()),
-            "time offset" => {
-              if let Some(offset) = time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
-              } else {
-                value_null!("ccc")
-              }
-            }
-            "timezone" => {
-              if let Some(feel_time_zone) = time.feel_time_zone() {
-                return Value::String(feel_time_zone);
-              } else {
-                value_null!("ddd")
-              }
-            }
-            _ => value_null!("no such property in date and time"),
-          }
-        }
-        Value::DaysAndTimeDuration(dt_duration) => {
-          return match qualified_name.to_string().as_str() {
-            "days" => Value::Number(dt_duration.get_days().into()),
-            "hours" => Value::Number(dt_duration.get_hours().into()),
-            "minutes" => Value::Number(dt_duration.get_minutes().into()),
-            "seconds" => Value::Number(dt_duration.get_seconds().into()),
-            _ => value_null!("no such property in days and time duration"),
-          }
-        }
-        Value::YearsAndMonthsDuration(ym_duration) => {
-          return match qualified_name.to_string().as_str() {
-            "years" => Value::Number(ym_duration.years().into()),
-            "months" => Value::Number(ym_duration.months().into()),
-            _ => value_null!("no such property in years and months duration"),
-          }
-        }
-        Value::Range(rs, cs, re, ce) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *rs,
-            "start included" => Value::Boolean(cs),
-            "end" => *re,
-            "end included" => Value::Boolean(ce),
-            other => value_null!("no such property in range: {}", other),
-          }
-        }
-        Value::UnaryGreater(value) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary greater: {}", other),
-          }
-        }
-        Value::UnaryGreaterOrEqual(value) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *value,
-            "start included" => Value::Boolean(true),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary greater or equal: {}", other),
-          }
-        }
-        Value::UnaryLess(value) => {
-          return match qualified_name.to_string().as_str() {
-            "end" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary less: {}", other),
-          }
-        }
-        Value::UnaryLessOrEqual(value) => {
-          return match qualified_name.to_string().as_str() {
-            "end" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(true),
-            other => value_null!("no such property in unary less or equal: {}", other),
-          }
-        }
-        Value::Null(_) => value_null!(),
-        other => value_null!("build_path: unexpected type :{}, for property: {}", other, qualified_name),
       }
-    }))
-  } else {
-    Ok(Box::new(move |_: &FeelScope| {
-      value_null!("no context (or list of contexts) on the left or no name on the right in path expression")
-    }))
+      other => value_null!("no such property in date: {}", other),
+    },
+    Value::DateTime(date_time) => match property_name.as_str() {
+      "year" => Value::Number(date_time.year().into()),
+      "month" => Value::Number(date_time.month().into()),
+      "day" => Value::Number(date_time.day().into()),
+      "weekday" => {
+        if let Some(day_of_week) = date_time.day_of_week() {
+          Value::Number(day_of_week.1.into())
+        } else {
+          value_null!("could not retrieve weekday for date and time")
+        }
+      }
+      "hour" => Value::Number(date_time.hour().into()),
+      "minute" => Value::Number(date_time.minute().into()),
+      "second" => Value::Number(date_time.second().into()),
+      "time offset" => {
+        if let Some(offset) = date_time.feel_time_offset() {
+          Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
+        } else {
+          value_null!("aaa")
+        }
+      }
+      "timezone" => {
+        if let Some(feel_time_zone) = date_time.feel_time_zone() {
+          Value::String(feel_time_zone)
+        } else {
+          value_null!("bbb")
+        }
+      }
+      _ => value_null!("no such property in date and time"),
+    },
+    Value::Time(time) => match property_name.as_str() {
+      "hour" => Value::Number(time.hour().into()),
+      "minute" => Value::Number(time.minute().into()),
+      "second" => Value::Number(time.second().into()),
+      "time offset" => {
+        if let Some(offset) = time.feel_time_offset() {
+          Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
+        } else {
+          value_null!("ccc")
+        }
+      }
+      "timezone" => {
+        if let Some(feel_time_zone) = time.feel_time_zone() {
+          Value::String(feel_time_zone)
+        } else {
+          value_null!("ddd")
+        }
+      }
+      _ => value_null!("no such property in date and time"),
+    },
+    Value::DaysAndTimeDuration(dt_duration) => match property_name.as_str() {
+      "days" => Value::Number(dt_duration.get_days().into()),
+      "hours" => Value::Number(dt_duration.get_hours().into()),
+      "minutes" => Value::Number(dt_duration.get_minutes().into()),
+      "seconds" => Value::Number(dt_duration.get_seconds().into()),
+      _ => value_null!("no such property in days and time duration"),
+    },
+    Value::YearsAndMonthsDuration(ym_duration) => match property_name.as_str() {
+      "years" => Value::Number(ym_duration.years().into()),
+      "months" => Value::Number(ym_duration.months().into()),
+      _ => value_null!("no such property in years and months duration"),
+    },
+    Value::Range(rs, cs, re, ce) => match property_name.as_str() {
+      "start" => *rs,
+      "start included" => Value::Boolean(cs),
+      "end" => *re,
+      "end included" => Value::Boolean(ce),
+      other => value_null!("no such property in range: {}", other),
+    },
+    Value::UnaryGreater(value) => match property_name.as_str() {
+      "start" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary greater: {}", other),
+    },
+    Value::UnaryGreaterOrEqual(value) => match property_name.as_str() {
+      "start" => *value,
+      "start included" => Value::Boolean(true),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary greater or equal: {}", other),
+    },
+    Value::UnaryLess(value) => match property_name.as_str() {
+      "end" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary less: {}", other),
+    },
+    Value::UnaryLessOrEqual(value) => match property_name.as_str() {
+      "end" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(true),
+      other => value_null!("no such property in unary less or equal: {}", other),
+    },
+    v @ Value::Null(_) => v,
+    other => value_null!("build_path: unexpected type :{}, for property: {}", other, property_name),
   }
+}
+
+///
+fn build_qualified_name_from_path(node: &AstNode) -> Result<QualifiedName> {
+  match node {
+    AstNode::Path(lhs, rhs) => {
+      return if let AstNode::Name(name) = lhs.borrow() {
+        let mut qualified_name = build_qualified_name_from_path(rhs)?;
+        qualified_name.insert(0, name.clone());
+        Ok(qualified_name)
+      } else {
+        Err(err_unexpected_ast_node(&format!("expected Name, found {lhs:?}",)))
+      }
+    }
+    AstNode::Name(name) => return Ok(name.clone().into()),
+    _ => {}
+  }
+  Err(err_unexpected_ast_node(&format!("expected Path or Name, found: {node:?}",)))
+}
+
+///
+fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let qualified_name = build_qualified_name_from_path(rhs)?;
+  let mut property_path = qualified_name.clone();
+  let property_name = property_path.pop().unwrap();
+  let lhe = build_evaluator(lhs)?;
+  Ok(Box::new(move |scope: &FeelScope| {
+    let lhv = lhe(scope) as Value;
+    match lhv {
+      Value::Context(context) => {
+        if let Some(value) = context.search_entry(&qualified_name) {
+          return value.clone();
+        }
+        if let Some(value) = context.search_entry(&property_path) {
+          return get_property_from_value(value.clone(), &property_name);
+        }
+        value_null!("build_path: no entry {} in context: {}", qualified_name, context)
+      }
+      Value::List(items) => {
+        let mut result = vec![];
+        for item in items.as_vec() {
+          if let Value::Context(context) = item {
+            if let Some(value) = context.search_entry(&qualified_name) {
+              result.push(value.clone());
+            } else if let Some(value) = context.search_entry(&property_path) {
+              result.push(get_property_from_value(value.clone(), &property_name));
+            }
+          } else {
+            return value_null!("build_path: no context in list");
+          }
+        }
+        Value::List(Values::new(result))
+      }
+      v @ Value::Date(_)
+      | v @ Value::DateTime(_)
+      | v @ Value::Time(_)
+      | v @ Value::DaysAndTimeDuration(_)
+      | v @ Value::YearsAndMonthsDuration(_)
+      | v @ Value::Range(_, _, _, _)
+      | v @ Value::UnaryGreater(_)
+      | v @ Value::UnaryGreaterOrEqual(_)
+      | v @ Value::UnaryLess(_)
+      | v @ Value::UnaryLessOrEqual(_) => get_property_from_value(v, &property_name),
+      v @ Value::Null(_) => v,
+      other => value_null!("build_path: unexpected type :{}, for property: {}", other, property_name),
+    }
+  }))
 }
 
 ///

@@ -152,3 +152,90 @@ fn _0001() {
     false,
   );
 }
+
+#[test]
+fn _0002() {
+  let scope = scope!();
+  scope.set_name("Days".into());
+  let mut ctx_1 = ParsingContext::default();
+
+  let mut ctx_2 = ParsingContext::default();
+  ctx_2.set_name("Tenor".into());
+  ctx_2.set_name("Rate".into());
+
+  ctx_1.set_context("Min".into(), ctx_2);
+
+  let mut ctx_3 = ParsingContext::default();
+  ctx_3.set_name("Tenor".into());
+  ctx_3.set_name("Rate".into());
+
+  ctx_1.set_context("Max".into(), ctx_3);
+
+  scope.set_context("Bounds".into(), ctx_1);
+
+  let input = r#"(((Bounds.Max.Rate - Bounds.Min.Rate) * (Days - Bounds.Min.Tenor)) / (Bounds.Max.Tenor - Bounds.Min.Tenor)) + Bounds.Min.Rate"#;
+  accept(
+    &scope,
+    StartExpression,
+    input,
+    r#"
+       Add
+       ├─ Div
+       │  ├─ Mul
+       │  │  ├─ Sub
+       │  │  │  ├─ Path
+       │  │  │  │  ├─ Name
+       │  │  │  │  │  └─ `Bounds`
+       │  │  │  │  └─ Path
+       │  │  │  │     ├─ Name
+       │  │  │  │     │  └─ `Max`
+       │  │  │  │     └─ Name
+       │  │  │  │        └─ `Rate`
+       │  │  │  └─ Path
+       │  │  │     ├─ Name
+       │  │  │     │  └─ `Bounds`
+       │  │  │     └─ Path
+       │  │  │        ├─ Name
+       │  │  │        │  └─ `Min`
+       │  │  │        └─ Name
+       │  │  │           └─ `Rate`
+       │  │  └─ Sub
+       │  │     ├─ Name
+       │  │     │  └─ `Days`
+       │  │     └─ Path
+       │  │        ├─ Name
+       │  │        │  └─ `Bounds`
+       │  │        └─ Path
+       │  │           ├─ Name
+       │  │           │  └─ `Min`
+       │  │           └─ Name
+       │  │              └─ `Tenor`
+       │  └─ Sub
+       │     ├─ Path
+       │     │  ├─ Name
+       │     │  │  └─ `Bounds`
+       │     │  └─ Path
+       │     │     ├─ Name
+       │     │     │  └─ `Max`
+       │     │     └─ Name
+       │     │        └─ `Tenor`
+       │     └─ Path
+       │        ├─ Name
+       │        │  └─ `Bounds`
+       │        └─ Path
+       │           ├─ Name
+       │           │  └─ `Min`
+       │           └─ Name
+       │              └─ `Tenor`
+       └─ Path
+          ├─ Name
+          │  └─ `Bounds`
+          └─ Path
+             ├─ Name
+             │  └─ `Min`
+             └─ Name
+                └─ `Rate`
+    "#,
+    false,
+  );
+}

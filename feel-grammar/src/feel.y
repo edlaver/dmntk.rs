@@ -131,7 +131,7 @@ textual_expression:
   | expression EXP expression {/* exponentiation */}
   | MINUS expression %prec PREC_NEG {/* negation */}
   | expression INSTANCE OF {/* type_name */} type {/* instance_of */}
-  | NAME DOT NAME {/* path_names */}
+  | NAME DOT path_segment {/* path_segment */}
   | expression DOT NAME {/* path */}
   | expression LEFT_BRACKET expression RIGHT_BRACKET {/* filter */}
   | expression LEFT_PAREN parameters
@@ -139,6 +139,11 @@ textual_expression:
   | simple_positive_unary_test
   | NAME {/* name */}
   | LEFT_PAREN expression RIGHT_PAREN
+  ;
+
+path_segment:
+    NAME DOT path_segment {/* path_segment */}
+  | NAME {/* path_segment_tail */}
   ;
 
 textual_expressions:

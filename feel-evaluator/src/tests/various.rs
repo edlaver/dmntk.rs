@@ -71,3 +71,20 @@ fn test_0001() {
   ]"#;
   te_be_value(false, scope, expression, expected);
 }
+
+#[test]
+fn test_0002() {
+  let scope = &te_scope(
+    r#"
+        {
+          Bounds: {
+            Min: { Tenor: 7,  Rate: 0.03728665564658653288015998590256039 },
+            Max: { Tenor: 14, Rate: 0.03907069051683237804063421928246624 }
+          },
+          Days: 12
+        }
+    "#,
+  );
+  let expression = r#" ((Bounds.Max.Rate - Bounds.Min.Rate) * (Days - Bounds.Min.Tenor) / (Bounds.Max.Tenor - Bounds.Min.Tenor)) + Bounds.Min.Rate "#;
+  te_be_value(false, scope, expression, r#"0.03856096626819070799478443831677885"#);
+}

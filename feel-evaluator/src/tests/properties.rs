@@ -131,7 +131,7 @@ fn _0016() {
 #[test]
 fn _0017() {
   let scope = &te_scope("{}");
-  te_null(false, scope, r#"date and time("2018-12-10T10:30:00").time offset"#, "aaaa");
+  te_null(false, scope, r#"date and time("2018-12-10T10:30:00").time offset"#, "aaa");
 }
 
 #[test]
