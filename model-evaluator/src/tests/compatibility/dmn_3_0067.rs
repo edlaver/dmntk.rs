@@ -77,17 +77,17 @@ fn _0006() {
 #[test]
 fn _0007() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"null(split: input must be a string)"#);
 }
 
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision008_a", &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision008_a", &ctx, r#"null(split: delimiter must be a string)"#);
 }
 
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision008_b", &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision008_b", &ctx, r#"null(split: input must be a string)"#);
 }

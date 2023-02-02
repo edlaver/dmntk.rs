@@ -1905,10 +1905,15 @@ pub fn split(input_string_value: &Value, delimiter_string_value: &Value) -> Valu
     if let Value::String(delimiter_string) = delimiter_string_value {
       if let Ok(re) = Regex::new(delimiter_string) {
         return Value::List(Values::new(re.split(input_string).map(|s| Value::String(s.to_string())).collect()));
+      } else {
+        value_null!("split: invalid delimiter")
       }
+    } else {
+      value_null!("split: delimiter must be a string")
     }
+  } else {
+    value_null!("split: input must be a string")
   }
-  value_null!("split")
 }
 
 /// Returns the square root of the given [Value].
@@ -1920,13 +1925,13 @@ pub fn sqrt(value: &Value) -> Value {
       if let Some(result) = v.sqrt() {
         Value::Number(result)
       } else {
-        value_null!("?1")
+        value_null!("sqrt: result is not a finite number")
       }
     } else {
-      value_null!("?2")
+      value_null!("sqrt: argument must be positive number or zero")
     }
   } else {
-    value_null!("sqrt")
+    value_null!("sqrt: argument must be a number")
   }
 }
 

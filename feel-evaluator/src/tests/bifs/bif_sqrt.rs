@@ -40,7 +40,7 @@ fn _0001() {
 
 #[test]
 fn _0002() {
-  te_null(false, &scope!(), "sqrt(-1)", "?2");
+  te_null(false, &scope!(), "sqrt(-1)", "sqrt: argument must be positive number or zero");
 }
 
 #[test]
@@ -80,12 +80,12 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  te_null(false, &scope!(), "sqrt(null)", r#"sqrt"#);
+  te_null(false, &scope!(), "sqrt(null)", r#"sqrt: argument must be a number"#);
 }
 
 #[test]
 fn _0011() {
-  te_null(false, &scope!(), r#"sqrt("4")"#, r#"sqrt"#);
+  te_null(false, &scope!(), r#"sqrt("4")"#, r#"sqrt: argument must be a number"#);
 }
 
 #[test]
@@ -114,4 +114,21 @@ fn _0015() {
 fn _0016() {
   let scope = &te_scope("{ Area: 144.0 }");
   te_number(false, scope, "sqrt(number : Area)", 12, 0);
+}
+
+#[test]
+fn _0017() {
+  let scope = &te_scope("{}");
+  te_null(false, scope, "sqrt(null)", r#"sqrt: argument must be a number"#);
+}
+
+#[test]
+fn _0018() {
+  let scope = &te_scope("{}");
+  te_null(
+    false,
+    scope,
+    "sqrt(exp(1000000000000000000000000000000000000000000000))",
+    r#"sqrt: result is not a finite number"#,
+  );
 }
