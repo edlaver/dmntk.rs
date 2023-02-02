@@ -1182,6 +1182,6 @@ mod xml_utils {
 
   /// XML utility function that returns node's name with node's position in the original document.
   pub fn node_name_pos(n: &Node) -> String {
-    format!("`{}` at [{}]", n.tag_name().name(), n.document().text_pos_at(n.range().start))
+    format!("`{}` at [{}]", n.tag_name().name(), n.document().text_pos_at(n.position()))
   }
 }
