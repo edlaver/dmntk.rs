@@ -1471,18 +1471,19 @@ pub fn modulo(dividend_value: &Value, divisor_value: &Value) -> Value {
   }
 }
 
+/// ???
+fn gregorian_month(opt_month_of_year: Option<MonthOfYear>) -> Value {
+  if let Some(month_of_year) = opt_month_of_year {
+    value_string!(month_of_year.0)
+  } else {
+    value_null!("[month of year] no month")
+  }
+}
+
 /// Returns the month of the year according to the Gregorian calendar enumeration:
 /// `January`, `February`, `March`, `April`, `May`, `June`, `July`,
 /// `August`, `September`, `October`, `November`, `December`.
 pub fn month_of_year(value: &Value) -> Value {
-  fn gregorian_month(opt_month_of_year: Option<MonthOfYear>) -> Value {
-    if let Some(month_of_year) = opt_month_of_year {
-      value_string!(month_of_year.0)
-    } else {
-      //TODO this case is uncovered and must be eliminated after refactoring date and time crate
-      value_null!("[month of year] no month")
-    }
-  }
   match value {
     Value::Date(date) => gregorian_month(date.month_of_year()),
     Value::DateTime(date_time) => gregorian_month(date_time.month_of_year()),
@@ -1790,17 +1791,17 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
   value_null!("probably index is out of range")
 }
 
+lazy_static! {
+  // Rust implementation is eager when parsing matching groups, so place numbers in square brackets.
+  static ref RG_REPLACE_NUM: Regex = Regex::new("\\$([1-9][0-9]*)").unwrap();
+}
+
 /// ???
 pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replacement_string_value: &Value, flags_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(pattern_string) = pattern_string_value {
       if let Value::String(replacement_string) = replacement_string_value {
-        // Rust implementation is eager when parsing matching groups, so place numbers in square brackets
-        let repl = if let Ok(rg) = Regex::new("\\$([1-9][0-9]*)") {
-          rg.replace_all(replacement_string.as_str(), "$${${1}}").to_string()
-        } else {
-          replacement_string.clone()
-        };
+        let repl = RG_REPLACE_NUM.replace_all(replacement_string.as_str(), "$${${1}}").to_string();
         // check and use flags
         if let Value::String(flags_string) = flags_string_value {
           let mut flags = "".to_string();
@@ -1841,11 +1842,18 @@ pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replace
         if let Ok(re) = Regex::new(pattern_string) {
           let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
           return Value::String(result);
+        } else {
+          value_null!("replace: invalid pattern")
         }
+      } else {
+        value_null!("replace: replacement must be a string")
       }
+    } else {
+      value_null!("replace: pattern must be a string")
     }
+  } else {
+    value_null!("replace: input must be a string")
   }
-  value_null!("replace")
 }
 
 ///
@@ -2513,12 +2521,12 @@ pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value 
 
 #[cfg(test)]
 mod tests {
-  use crate::bifs::core::substring;
+  use super::*;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_null, value_number};
 
   #[test]
-  fn bif_substring() {
+  fn test_bif_substring() {
     // *** utility functions ***
 
     ///
@@ -2589,5 +2597,10 @@ mod tests {
     eq_substring_len_null("homeless", -1, 0);
     eq_substring_len_null("homeless", -3, 4);
     eq_substring_len_null("homeless", -9, 2);
+  }
+
+  #[test]
+  fn test_gregorian_month_of_year() {
+    assert_eq!("null([month of year] no month)", gregorian_month(None).to_string());
   }
 }

@@ -82,3 +82,8 @@ fn _0008() {
     r#"[named::append] this function has no version with named parameters"#,
   );
 }
+
+#[test]
+fn _0009() {
+  te_null(false, &scope!(), r#"append(null, "A")"#, r#""#);
+}
