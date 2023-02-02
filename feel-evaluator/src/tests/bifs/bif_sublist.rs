@@ -97,3 +97,23 @@ fn _0012() {
 fn _0013() {
   te_null(false, &scope!(), r#"sublist(list:[1,2,3], start position: 1, l: 1)"#, r#"parameter 'length' not found"#);
 }
+
+#[test]
+fn _0014() {
+  te_null(false, &scope!(), r#"sublist(list:[1,2,3], sp: 1)"#, r#"parameter 'start position' not found"#);
+}
+
+#[test]
+fn _0015() {
+  te_null(false, &scope!(), r#"sublist(lista:[1,2,3], start position: 1)"#, r#"parameter 'list' not found"#);
+}
+
+#[test]
+fn _0016() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist(list:[1,2,3], start position: 1, l: 1, k:5)"#,
+    r#"expected 2,3 parameters, actual number of parameters is 4"#,
+  );
+}
