@@ -47,5 +47,10 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#"{Employment Status: "RETIRED"}"#);
-  assert_decision(&MODEL_EVALUATOR, "Employment Status Statement", &ctx, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "Employment Status Statement",
+    &ctx,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }

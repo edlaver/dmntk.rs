@@ -220,19 +220,20 @@ impl Add<FeelDaysAndTimeDuration> for FeelDateTime {
       return self.sub(rhs.abs());
     }
     let zone = self.1.zone().clone();
-    if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
-      date_time += Duration::nanoseconds(rhs.as_nanos());
-      return Some(FeelDateTime(
-        FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-        FeelTime::new_hmsnz_opt(
-          date_time.hour() as u8,
-          date_time.minute() as u8,
-          date_time.second() as u8,
-          date_time.nanosecond() as u64,
-          zone,
-        )
-        .unwrap(),
-      ));
+    if let Ok(fixed_date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
+      if let Some(date_time) = fixed_date_time.checked_add_signed(Duration::nanoseconds(rhs.as_nanos())) {
+        return Some(FeelDateTime(
+          FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
+          FeelTime::new_hmsnz_opt(
+            date_time.hour() as u8,
+            date_time.minute() as u8,
+            date_time.second() as u8,
+            date_time.nanosecond() as u64,
+            zone,
+          )
+          .unwrap(),
+        ));
+      }
     }
     None
   }

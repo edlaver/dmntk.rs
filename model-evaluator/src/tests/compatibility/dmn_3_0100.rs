@@ -5006,62 +5006,122 @@ fn _0620() {
 
 #[test]
 fn _0621() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_number", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_number",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0622() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_boolean", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_boolean",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0623() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_date", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_date",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0624() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_dateAndTime", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_dateAndTime",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0625() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_time", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_time",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0626() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_list", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_list",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0627() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_context", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_context",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0628() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_dtDuration", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_dtDuration",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0629() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_ymDuration", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_ymDuration",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0630() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_range", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_range",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0631() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_function", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_function",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]
 fn _0632() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_string_to_rhs_null", &CTX, r#"null(addition err 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_string_to_rhs_null",
+    &CTX,
+    r#"null(expected string as a second argument in addition)"#,
+  );
 }
 
 #[test]

@@ -180,3 +180,83 @@ fn _0024() {
     r#"[builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean"#,
   );
 }
+
+#[test]
+fn _0025() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03" + @"P99999D" "#,
+    r#"invalid result while adding days and time duration to date"#,
+  );
+}
+
+#[test]
+fn _0026() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03" + @"P100Y" "#,
+    r#"invalid result while adding years and months duration to date"#,
+  );
+}
+
+#[test]
+fn _0027() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03T10:01:02" + @"P99999D" "#,
+    r#"invalid result while adding days and time duration to date and time"#,
+  );
+}
+
+#[test]
+fn _0028() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03T10:01:02" + @"P100Y" "#,
+    r#"invalid result while adding years and months duration to date and time"#,
+  );
+}
+
+#[test]
+fn _0029() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P99999D" + @"262143-02-03" "#,
+    r#"invalid result while adding date to days and time duration"#,
+  );
+}
+
+#[test]
+fn _0030() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P100Y" + @"262143-02-03" "#,
+    r#"invalid result while adding date to years and months duration"#,
+  );
+}
+
+#[test]
+fn _0031() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P99999D" + @"262143-02-03T10:01:02" "#,
+    r#"invalid result while adding date and time to days and time duration"#,
+  );
+}
+
+#[test]
+fn _0032() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P100Y" + @"262143-02-03T10:01:02" "#,
+    r#"invalid result while adding date and time to years and months duration"#,
+  );
+}
