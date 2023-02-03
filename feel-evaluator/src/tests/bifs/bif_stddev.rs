@@ -82,3 +82,33 @@ fn _0008() {
 fn _0009() {
   te_null(false, &scope!(), r#"stddev(l: [2,4,7,5])"#, r#"parameter 'list' not found"#);
 }
+
+#[test]
+fn _0010() {
+  te_null(false, &scope!(), r#"stddev([2])"#, r#"stddev: minimum two input arguments expected"#);
+}
+
+#[test]
+fn _0011() {
+  te_null(
+    false,
+    &scope!(),
+    r#"stddev([2,"a","b"])"#,
+    r#"stddev: expected number, actual type is string with value "a""#,
+  );
+}
+
+#[test]
+fn _0012() {
+  te_null(
+    false,
+    &scope!(),
+    r#"stddev([1,exp(1000000000000000000000000000000000000000000000)])"#,
+    r#"stddev: intermediate result is not a finite number"#,
+  );
+}
+
+#[test]
+fn _0013() {
+  te_null(false, &scope!(), r#"stddev([exp(7075),-exp(7074)])"#, r#"stddev: result is not a finite number"#);
+}

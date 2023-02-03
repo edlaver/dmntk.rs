@@ -92,3 +92,8 @@ fn _0010() {
 fn _0011() {
   te_null(false, &scope!(), r#"string length(s: "engos")"#, r#"parameter 'string' not found"#);
 }
+
+#[test]
+fn _0012() {
+  te_null(false, &scope!(), r#"string length(10)"#, r#"string length: expected string as an argument"#);
+}

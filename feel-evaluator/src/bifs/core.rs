@@ -1841,7 +1841,7 @@ pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replace
         // replace without any flags
         if let Ok(re) = Regex::new(pattern_string) {
           let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
-          return Value::String(result);
+          Value::String(result)
         } else {
           value_null!("replace: invalid pattern")
         }
@@ -2130,7 +2130,7 @@ pub fn starts(value1: &Value, value2: &Value) -> Value {
   invalid_argument_type!("starts", "scalar or range of scalars", value1.type_of())
 }
 
-/// Returns **true** when the input string starts with specified match string.
+/// Returns `true` when the input string starts with specified match string.
 pub fn starts_with(input_string_value: &Value, match_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_string_value {
@@ -2143,10 +2143,10 @@ pub fn starts_with(input_string_value: &Value, match_string_value: &Value) -> Va
   }
 }
 
-///
+/// Returns the sample standard deviation of the list of numbers.
 pub fn stddev(values: &[Value]) -> Value {
   if values.len() < 2 {
-    return value_null!();
+    return value_null!("stddev: minimum two input arguments expected");
   }
   let mut sum = FeelNumber::zero();
   let mut numbers = vec![];
@@ -2155,7 +2155,7 @@ pub fn stddev(values: &[Value]) -> Value {
       sum += x;
       numbers.push(x);
     } else {
-      return value_null!("stddev");
+      return value_null!("stddev: expected number, actual type is {} with value {}", value.type_of(), value);
     }
   }
   let n: FeelNumber = numbers.len().into();
@@ -2165,17 +2165,17 @@ pub fn stddev(values: &[Value]) -> Value {
     if let Some(square) = (number - avg).square() {
       sum2 += square;
     } else {
-      return value_null!("stddev: square error");
+      return value_null!("stddev: intermediate result is not a finite number");
     }
   }
   if let Some(stddev) = (sum2 / (n - FeelNumber::one())).sqrt() {
     Value::Number(stddev)
   } else {
-    value_null!("stddev")
+    value_null!("stddev: result is not a finite number")
   }
 }
 
-/// Converts specified value to [Value::String].
+/// Converts specified value to string.
 pub fn string(value: &Value) -> Value {
   match value {
     Value::Null(_) => value_null!(),
@@ -2189,7 +2189,7 @@ pub fn string_length(input_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     Value::Number(input_string.chars().count().into())
   } else {
-    value_null!("string_length")
+    value_null!("string length: expected string as an argument")
   }
 }
 
@@ -2213,7 +2213,7 @@ pub fn sum(values: &[Value]) -> Value {
   }
 }
 
-/// ???
+/// Returns list of all elements of list, starting with specified position, 1st position is 1, last position is -1.
 pub fn sublist2(list: &Value, position_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(position_number) = position_value {
@@ -2222,23 +2222,35 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
           let index = position - 1;
           if index < items.len() {
             return Value::List(Values::new(items.as_vec()[index..].to_vec()));
+          } else {
+            value_null!("sublist: position is out of range, len = {}, position = {}", items.len(), position)
           }
+        } else {
+          value_null!("sublist: invalid position value: {}", position_value)
         }
-      }
-      if position_number.is_negative() {
+      } else if position_number.is_negative() {
         if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
           let index = position;
           if index <= items.len() {
             return Value::List(Values::new(items.as_vec()[items.len() - index..].to_vec()));
+          } else {
+            value_null!("sublist: position is out of range, len = {}, position = -{}", items.len(), position)
           }
+        } else {
+          value_null!("sublist: invalid position value: {}", position_value)
         }
+      } else {
+        value_null!("sublist: position must not be zero")
       }
+    } else {
+      value_null!("sublist: expected number, actual position value type is {}", position_value.type_of())
     }
+  } else {
+    value_null!("sublist: expected list, actual value type is {}", list.type_of())
   }
-  value_null!("probably index is out of range")
 }
 
-/// ???
+/// Returns list of specified length of elements of list, starting with specified position, 1st position is 1, last position is -1.
 pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(length_number) = length_value {
@@ -2250,23 +2262,39 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
               let last = first + length;
               if first < items.len() && last <= items.len() {
                 return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+              } else {
+                value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
+            } else {
+              value_null!("sublist: invalid position value: {}", position_value)
             }
-          }
-          if position_number.is_negative() {
+          } else if position_number.is_negative() {
             if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
               let first = items.len() - position;
               let last = first + length;
               if first < items.len() && last <= items.len() {
                 return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+              } else {
+                value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
+            } else {
+              value_null!("sublist: invalid position value: {}", position_value)
             }
+          } else {
+            value_null!("sublist: position must not be zero")
           }
+        } else {
+          value_null!("sublist: expected number, actual position value type is {}", position_value.type_of())
         }
+      } else {
+        value_null!("sublist: invalid length value: {}", length_value)
       }
+    } else {
+      value_null!("sublist: expected number, actual length value type is {}", length_value.type_of())
     }
+  } else {
+    value_null!("sublist: expected list, actual value type is {}", list.type_of())
   }
-  value_null!("probably index is out of range")
 }
 
 /// Returns `length` (or all) characters from string, starting at

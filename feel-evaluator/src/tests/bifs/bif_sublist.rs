@@ -117,3 +117,138 @@ fn _0016() {
     r#"expected 2,3 parameters, actual number of parameters is 4"#,
   );
 }
+
+#[test]
+fn _0017() {
+  te_null(false, &scope!(), r#"sublist([1,2,3], 5)"#, r#"sublist: position is out of range, len = 3, position = 5"#);
+}
+
+#[test]
+fn _0018() {
+  te_null(false, &scope!(), r#"sublist([1,2,3], -5)"#, r#"sublist: position is out of range, len = 3, position = -5"#);
+}
+
+#[test]
+fn _0019() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3], 18446744073709551616)"#,
+    r#"sublist: invalid position value: 18446744073709551616"#,
+  );
+}
+
+#[test]
+fn _0020() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3], -18446744073709551616)"#,
+    r#"sublist: invalid position value: -18446744073709551616"#,
+  );
+}
+
+#[test]
+fn _0021() {
+  te_null(false, &scope!(), r#"sublist([1,2,3], 0)"#, r#"sublist: position must not be zero"#);
+}
+
+#[test]
+fn _0022() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3], "a")"#,
+    r#"sublist: expected number, actual position value type is string"#,
+  );
+}
+
+#[test]
+fn _0023() {
+  te_null(false, &scope!(), r#"sublist("[1,2,3]", 2)"#, r#"sublist: expected list, actual value type is string"#);
+}
+
+#[test]
+fn _0024() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3], 2, 5)"#,
+    r#"sublist: invalid range, len = 3, start position = 2, end position = 7"#,
+  );
+}
+
+#[test]
+fn _0025() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3], -2, 5)"#,
+    r#"sublist: invalid range, len = 3, start position = 2, end position = 7"#,
+  );
+}
+
+#[test]
+fn _0026() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3,4,5], 18446744073709551616, 2)"#,
+    r#"sublist: invalid position value: 18446744073709551616"#,
+  );
+}
+
+#[test]
+fn _0027() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3,4,5], -18446744073709551616, 2)"#,
+    r#"sublist: invalid position value: -18446744073709551616"#,
+  );
+}
+
+#[test]
+fn _0028() {
+  te_null(false, &scope!(), r#"sublist([1,2,3,4,5], 0, 2)"#, r#"sublist: position must not be zero"#);
+}
+
+#[test]
+fn _0029() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3,4,5], "0", 2)"#,
+    r#"sublist: expected number, actual position value type is string"#,
+  );
+}
+
+#[test]
+fn _0030() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3,4,5], 1, true)"#,
+    r#"sublist: expected number, actual length value type is boolean"#,
+  );
+}
+
+#[test]
+fn _0031() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist([1,2,3,4,5], 1, 18446744073709551616)"#,
+    r#"sublist: invalid length value: 18446744073709551616"#,
+  );
+}
+
+#[test]
+fn _0032() {
+  te_null(
+    false,
+    &scope!(),
+    r#"sublist("[1,2,3,4,5]", 2, 3)"#,
+    r#"sublist: expected list, actual value type is string"#,
+  );
+}
