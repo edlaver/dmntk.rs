@@ -5116,1297 +5116,2527 @@ fn _0637() {
 
 #[test]
 fn _0638() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0639() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0640() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0641() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0642() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0643() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0644() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0645() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_boolean_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_boolean_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0646() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is number)"#,
+  );
 }
 
 #[test]
 fn _0647() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is string)"#,
+  );
 }
 
 #[test]
 fn _0648() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0649() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is date)"#,
+  );
 }
 
 #[test]
 fn _0650() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is date and time)"#,
+  );
 }
 
 #[test]
 fn _0651() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is time)"#,
+  );
 }
 
 #[test]
 fn _0652() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0653() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0654() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0655() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0656() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_date_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_date_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, actual type is Null)"#,
+  );
 }
 
 #[test]
 fn _0657() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is number)"#,
+  );
 }
 
 #[test]
 fn _0658() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is string)"#,
+  );
 }
 
 #[test]
 fn _0659() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0660() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date)"#,
+  );
 }
 
 #[test]
 fn _0661() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date and time)"#,
+  );
 }
 
 #[test]
 fn _0662() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is time)"#,
+  );
 }
 
 #[test]
 fn _0663() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0664() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0665() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0666() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0667() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dateAndTime_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dateAndTime_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is Null)"#,
+  );
 }
 
 #[test]
 fn _0668() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is number)"#,
+  );
 }
 
 #[test]
 fn _0669() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is string)"#,
+  );
 }
 
 #[test]
 fn _0670() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0671() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is date)"#,
+  );
 }
 
 #[test]
 fn _0672() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is date and time)"#,
+  );
 }
 
 #[test]
 fn _0673() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is time)"#,
+  );
 }
 
 #[test]
 fn _0674() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0675() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0676() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is years and months duration)"#,
+  );
 }
 
 #[test]
 fn _0677() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0678() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0679() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_time_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_time_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, actual type is Null)"#,
+  );
 }
 
 #[test]
 fn _0680() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0681() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0682() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0683() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0684() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0685() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0686() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0687() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0688() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0689() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0690() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0691() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0692() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_list_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_list_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0693() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0694() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0695() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0696() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0697() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0698() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0699() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0700() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0701() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0702() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0703() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0704() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0705() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_context_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_context_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0706() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is number)"#,
+  );
 }
 
 #[test]
 fn _0707() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is string)"#,
+  );
 }
 
 #[test]
 fn _0708() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0709() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0710() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0711() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is years and months duration)"#,
+  );
 }
 
 #[test]
 fn _0712() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0713() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0714() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_dtDuration_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_dtDuration_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is Null)"#,
+  );
 }
 
 #[test]
 fn _0715() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is number)"#,
+  );
 }
 
 #[test]
 fn _0716() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is string)"#,
+  );
 }
 
 #[test]
 fn _0717() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is boolean)"#,
+  );
 }
 
 #[test]
 fn _0718() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is time)"#,
+  );
 }
 
 #[test]
 fn _0719() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is list<number>)"#,
+  );
 }
 
 #[test]
 fn _0720() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is context<a: number>)"#,
+  );
 }
 
 #[test]
 fn _0721() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is days and time duration)"#,
+  );
 }
 
 #[test]
 fn _0722() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0723() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0724() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_ymDuration_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_ymDuration_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is Null)"#,
+  );
 }
 
 #[test]
 fn _0725() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0726() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0727() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0728() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0729() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0730() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0731() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0732() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0733() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0734() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0735() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0736() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0737() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_range_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_range_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
+  );
 }
 
 #[test]
 fn _0738() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_number",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0739() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_string",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0740() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_boolean",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0741() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_date",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0742() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_dateAndTime",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0743() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_time",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0744() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_list",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0745() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_context",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0746() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_dtDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0747() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_ymDuration",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0748() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_range",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0749() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_function",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0750() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_function_to_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_add_lhs_function_to_rhs_null",
+    &CTX,
+    r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
+  );
 }
 
 #[test]
 fn _0751() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_number", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_number", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0752() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_string", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_string", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0753() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_boolean", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_boolean", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0754() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_date", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_date", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0755() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dateAndTime", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0756() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_time", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_time", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0757() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_list", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_list", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0758() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_context", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_context", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0759() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dtDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0760() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_ymDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0761() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_range", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_range", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0762() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_function", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_function", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0763() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_null", &CTX, r#""#);
+  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_null", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0764() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - "10")"#,
+  );
 }
 
 #[test]
 fn _0765() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - true)"#,
+  );
 }
 
 #[test]
 fn _0766() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0767() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0768() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0769() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - [10])"#,
+  );
 }
 
 #[test]
 fn _0770() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0771() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - P1D)"#,
+  );
 }
 
 #[test]
 fn _0772() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0773() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0774() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0775() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_number_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_number_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10 - null)"#,
+  );
 }
 
 #[test]
 fn _0776() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - 10)"#,
+  );
 }
 
 #[test]
 fn _0777() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - "10")"#,
+  );
 }
 
 #[test]
 fn _0778() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - true)"#,
+  );
 }
 
 #[test]
 fn _0779() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0780() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0781() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0782() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - [10])"#,
+  );
 }
 
 #[test]
 fn _0783() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0784() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - P1D)"#,
+  );
 }
 
 #[test]
 fn _0785() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0786() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0787() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0788() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_string_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_string_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: "10" - null)"#,
+  );
 }
 
 #[test]
 fn _0789() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - 10)"#,
+  );
 }
 
 #[test]
 fn _0790() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - "10")"#,
+  );
 }
 
 #[test]
 fn _0791() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - true)"#,
+  );
 }
 
 #[test]
 fn _0792() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0793() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0794() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0795() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - [10])"#,
+  );
 }
 
 #[test]
 fn _0796() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0797() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - P1D)"#,
+  );
 }
 
 #[test]
 fn _0798() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0799() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0800() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0801() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_boolean_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_boolean_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: true - null)"#,
+  );
 }
 
 #[test]
 fn _0802() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - 10)"#,
+  );
 }
 
 #[test]
 fn _0803() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - "10")"#,
+  );
 }
 
 #[test]
 fn _0804() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - true)"#,
+  );
 }
 
 #[test]
 fn _0805() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0806() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - [10])"#,
+  );
 }
 
 #[test]
 fn _0807() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0808() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0809() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0810() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_date_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_date_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01 - null)"#,
+  );
 }
 
 #[test]
 fn _0811() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10)"#,
+  );
 }
 
 #[test]
 fn _0812() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - "10")"#,
+  );
 }
 
 #[test]
 fn _0813() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - true)"#,
+  );
 }
 
 #[test]
 fn _0814() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0815() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - [10])"#,
+  );
 }
 
 #[test]
 fn _0816() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0817() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0818() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0819() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dateAndTime_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dateAndTime_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - null)"#,
+  );
 }
 
 #[test]
 fn _0820() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - 10)"#,
+  );
 }
 
 #[test]
 fn _0821() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - "10")"#,
+  );
 }
 
 #[test]
 fn _0822() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - true)"#,
+  );
 }
 
 #[test]
 fn _0823() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0824() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0825() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - [10])"#,
+  );
 }
 
 #[test]
 fn _0826() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0827() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0828() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0829() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0830() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_time_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_time_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: 10:10:10 - null)"#,
+  );
 }
 
 #[test]
 fn _0831() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - 10)"#,
+  );
 }
 
 #[test]
 fn _0832() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - "10")"#,
+  );
 }
 
 #[test]
 fn _0833() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - true)"#,
+  );
 }
 
 #[test]
 fn _0834() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0835() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0836() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0837() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - [10])"#,
+  );
 }
 
 #[test]
 fn _0838() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0839() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - P1D)"#,
+  );
 }
 
 #[test]
 fn _0840() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0841() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0842() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0843() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_list_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_list_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: [10] - null)"#,
+  );
 }
 
 #[test]
 fn _0844() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - 10)"#,
+  );
 }
 
 #[test]
 fn _0845() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - "10")"#,
+  );
 }
 
 #[test]
 fn _0846() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - true)"#,
+  );
 }
 
 #[test]
 fn _0847() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0848() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0849() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0850() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - [10])"#,
+  );
 }
 
 #[test]
 fn _0851() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0852() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - P1D)"#,
+  );
 }
 
 #[test]
 fn _0853() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0854() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0855() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0856() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_context_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_context_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: {a: 10} - null)"#,
+  );
 }
 
 #[test]
 fn _0857() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - 10)"#,
+  );
 }
 
 #[test]
 fn _0858() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - "10")"#,
+  );
 }
 
 #[test]
 fn _0859() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - true)"#,
+  );
 }
 
 #[test]
 fn _0860() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0861() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0862() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0863() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - [10])"#,
+  );
 }
 
 #[test]
 fn _0864() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0865() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0866() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0867() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0868() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_dtDuration_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_dtDuration_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1D - null)"#,
+  );
 }
 
 #[test]
 fn _0869() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - 10)"#,
+  );
 }
 
 #[test]
 fn _0870() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - "10")"#,
+  );
 }
 
 #[test]
 fn _0871() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - true)"#,
+  );
 }
 
 #[test]
 fn _0872() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0873() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0874() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0875() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - [10])"#,
+  );
 }
 
 #[test]
 fn _0876() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0877() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - P1D)"#,
+  );
 }
 
 #[test]
 fn _0878() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0879() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0880() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_ymDuration_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_ymDuration_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: P1Y - null)"#,
+  );
 }
 
 #[test]
 fn _0881() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - 10)"#,
+  );
 }
 
 #[test]
 fn _0882() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - "10")"#,
+  );
 }
 
 #[test]
 fn _0883() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - true)"#,
+  );
 }
 
 #[test]
 fn _0884() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_date", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_date",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - 2021-01-01)"#,
+  );
 }
 
 #[test]
 fn _0885() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_dateAndTime", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_dateAndTime",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - 2021-01-01T10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0886() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_time", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_time",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - 10:10:10)"#,
+  );
 }
 
 #[test]
 fn _0887() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_list", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_list",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - [10])"#,
+  );
 }
 
 #[test]
 fn _0888() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_context", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_context",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - {a: 10})"#,
+  );
 }
 
 #[test]
 fn _0889() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_dtDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_dtDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - P1D)"#,
+  );
 }
 
 #[test]
 fn _0890() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_ymDuration", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_ymDuration",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - P1Y)"#,
+  );
 }
 
 #[test]
 fn _0891() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_range", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_range",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - [1..10])"#,
+  );
 }
 
 #[test]
 fn _0892() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_function", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_function",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+  );
 }
 
 #[test]
 fn _0893() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_range_minus_rhs_null", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_range_minus_rhs_null",
+    &CTX,
+    r#"null([subtraction] incompatible types: [1..10] - null)"#,
+  );
 }
 
 #[test]
 fn _0894() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_function_minus_rhs_number", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_function_minus_rhs_number",
+    &CTX,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10)"#,
+  );
 }
 
 #[test]
 fn _0895() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_function_minus_rhs_string", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_function_minus_rhs_string",
+    &CTX,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - "10")"#,
+  );
 }
 
 #[test]
 fn _0896() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_subtract_lhs_function_minus_rhs_boolean", &CTX, r#""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "error_when_subtract_lhs_function_minus_rhs_boolean",
+    &CTX,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - true)"#,
+  );
 }
 
 #[test]
@@ -8318,822 +9548,3 @@ fn _1087() {
     r#"null(exponentiation base is not a number)"#,
   );
 }
-
-/*
-
-dmn_3_0100::_0625'
-    null(addition err 2)
-
-dmn_3_0100::_0626'
-    null(addition err 2)
-
-dmn_3_0100::_0627'
-    null(addition err 2)
-
-dmn_3_0100::_0628'
-    null(addition err 2)
-
-dmn_3_0100::_0629'
-    null(addition err 2)
-
-dmn_3_0100::_0630'
-    null(addition err 2)
-
-dmn_3_0100::_0632'
-    null(addition err 2)
-
-dmn_3_0100::_0631'
-    null(addition err 2)
-
-dmn_3_0100::_0633'
-
-
-dmn_3_0100::_0635'
-
-
-dmn_3_0100::_0634'
-
-
-dmn_3_0100::_0636'
-
-
-dmn_3_0100::_0637'
-
-
-dmn_3_0100::_0638'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0639'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0640'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0641'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0642'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0643'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0644'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0645'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)
-
-dmn_3_0100::_0646'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is number)
-
-dmn_3_0100::_0647'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is string)
-
-dmn_3_0100::_0648'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is boolean)
-
-dmn_3_0100::_0649'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is date)
-
-dmn_3_0100::_0650'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is date and time)
-
-dmn_3_0100::_0651'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is time)
-
-dmn_3_0100::_0652'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is list<number>)
-
-dmn_3_0100::_0654'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is range<number>)
-
-dmn_3_0100::_0653'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is context<a: number>)
-
-dmn_3_0100::_0655'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is function<Any>->Any)
-
-dmn_3_0100::_0656'
-    null([builders::add] invalid argument type, expected years and months duration, actual type is Null)
-
-dmn_3_0100::_0657'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is number)
-
-dmn_3_0100::_0658'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is string)
-
-dmn_3_0100::_0659'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is boolean)
-
-dmn_3_0100::_0661'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date and time)
-
-dmn_3_0100::_0660'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date)
-
-dmn_3_0100::_0662'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is time)
-
-dmn_3_0100::_0663'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is list<number>)
-
-dmn_3_0100::_0665'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is range<number>)
-
-dmn_3_0100::_0664'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is context<a: number>)
-
-dmn_3_0100::_0667'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is Null)
-
-dmn_3_0100::_0668'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is number)
-
-dmn_3_0100::_0666'
-    null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is function<Any>->Any)
-
-dmn_3_0100::_0669'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is string)
-
-dmn_3_0100::_0670'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is boolean)
-
-dmn_3_0100::_0673'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is time)
-
-dmn_3_0100::_0674'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is list<number>)
-
-dmn_3_0100::_0676'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is years and months duration)
-
-dmn_3_0100::_0671'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is date)
-
-dmn_3_0100::_0677'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is range<number>)
-
-dmn_3_0100::_0675'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is context<a: number>)
-
-dmn_3_0100::_0672'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is date and time)
-
-dmn_3_0100::_0679'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is Null)
-
-dmn_3_0100::_0678'
-    null([builders::add] invalid argument type, expected days and time duration, actual type is function<Any>->Any)
-
-dmn_3_0100::_0683'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0682'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0680'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0681'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0684'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0686'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0687'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0688'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0690'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0689'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0685'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0691'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0692'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)
-
-dmn_3_0100::_0693'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0694'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0695'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0696'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0698'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0697'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0699'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0700'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0701'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0702'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0703'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0704'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0705'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)
-
-dmn_3_0100::_0707'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is string)
-
-dmn_3_0100::_0706'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is number)
-
-dmn_3_0100::_0708'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is boolean)
-
-dmn_3_0100::_0709'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is list<number>)
-
-dmn_3_0100::_0711'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is years and months duration)
-
-dmn_3_0100::_0710'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is context<a: number>)
-
-dmn_3_0100::_0712'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is range<number>)
-
-dmn_3_0100::_0713'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is function<Any>->Any)
-
-dmn_3_0100::_0715'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is number)
-
-dmn_3_0100::_0714'
-    null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is Null)
-
-dmn_3_0100::_0716'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is string)
-
-dmn_3_0100::_0718'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is time)
-
-dmn_3_0100::_0717'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is boolean)
-
-dmn_3_0100::_0719'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is list<number>)
-
-dmn_3_0100::_0721'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is days and time duration)
-
-dmn_3_0100::_0720'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is context<a: number>)
-
-dmn_3_0100::_0722'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is range<number>)
-
-dmn_3_0100::_0723'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is function<Any>->Any)
-
-dmn_3_0100::_0725'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0724'
-    null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is Null)
-
-dmn_3_0100::_0726'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0727'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0728'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0729'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0731'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0730'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0732'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0733'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0734'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0735'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0737'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0736'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)
-
-dmn_3_0100::_0738'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0739'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0740'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0741'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0742'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0744'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0743'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0746'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0745'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0750'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0748'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0747'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0751'
-    null
-
-dmn_3_0100::_0749'
-    null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)
-
-dmn_3_0100::_0752'
-    null
-
-dmn_3_0100::_0759'
-    null
-
-dmn_3_0100::_0753'
-    null
-
-dmn_3_0100::_0761'
-    null
-
-dmn_3_0100::_0755'
-    null
-
-dmn_3_0100::_0762'
-    null
-
-dmn_3_0100::_0756'
-    null
-
-dmn_3_0100::_0763'
-    null
-
-dmn_3_0100::_0757'
-    null
-
-dmn_3_0100::_0758'
-    null
-
-dmn_3_0100::_0754'
-    null
-
-dmn_3_0100::_0760'
-    null
-
-dmn_3_0100::_0764'
-    null([subtraction] incompatible types: 10 - "10")
-
-dmn_3_0100::_0765'
-    null([subtraction] incompatible types: 10 - true)
-
-dmn_3_0100::_0766'
-    null([subtraction] incompatible types: 10 - 2021-01-01)
-
-dmn_3_0100::_0767'
-    null([subtraction] incompatible types: 10 - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0768'
-    null([subtraction] incompatible types: 10 - 10:10:10)
-
-dmn_3_0100::_0769'
-    null([subtraction] incompatible types: 10 - [10])
-
-dmn_3_0100::_0770'
-    null([subtraction] incompatible types: 10 - {a: 10})
-
-dmn_3_0100::_0771'
-    null([subtraction] incompatible types: 10 - P1D)
-
-dmn_3_0100::_0772'
-    null([subtraction] incompatible types: 10 - P1Y)
-
-dmn_3_0100::_0773'
-    null([subtraction] incompatible types: 10 - [1..10])
-
-dmn_3_0100::_0774'
-    null([subtraction] incompatible types: 10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0775'
-    null([subtraction] incompatible types: 10 - null)
-
-dmn_3_0100::_0777'
-    null([subtraction] incompatible types: "10" - "10")
-
-dmn_3_0100::_0776'
-    null([subtraction] incompatible types: "10" - 10)
-
-dmn_3_0100::_0778'
-    null([subtraction] incompatible types: "10" - true)
-
-dmn_3_0100::_0779'
-    null([subtraction] incompatible types: "10" - 2021-01-01)
-
-dmn_3_0100::_0780'
-    null([subtraction] incompatible types: "10" - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0781'
-    null([subtraction] incompatible types: "10" - 10:10:10)
-
-dmn_3_0100::_0782'
-    null([subtraction] incompatible types: "10" - [10])
-
-dmn_3_0100::_0783'
-    null([subtraction] incompatible types: "10" - {a: 10})
-
-dmn_3_0100::_0785'
-    null([subtraction] incompatible types: "10" - P1Y)
-
-dmn_3_0100::_0784'
-    null([subtraction] incompatible types: "10" - P1D)
-
-dmn_3_0100::_0786'
-    null([subtraction] incompatible types: "10" - [1..10])
-
-dmn_3_0100::_0787'
-    null([subtraction] incompatible types: "10" - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0788'
-    null([subtraction] incompatible types: "10" - null)
-
-dmn_3_0100::_0789'
-    null([subtraction] incompatible types: true - 10)
-
-dmn_3_0100::_0790'
-    null([subtraction] incompatible types: true - "10")
-
-dmn_3_0100::_0791'
-    null([subtraction] incompatible types: true - true)
-
-dmn_3_0100::_0792'
-    null([subtraction] incompatible types: true - 2021-01-01)
-
-dmn_3_0100::_0793'
-    null([subtraction] incompatible types: true - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0794'
-    null([subtraction] incompatible types: true - 10:10:10)
-
-dmn_3_0100::_0796'
-    null([subtraction] incompatible types: true - {a: 10})
-
-dmn_3_0100::_0795'
-    null([subtraction] incompatible types: true - [10])
-
-dmn_3_0100::_0797'
-    null([subtraction] incompatible types: true - P1D)
-
-dmn_3_0100::_0798'
-    null([subtraction] incompatible types: true - P1Y)
-
-dmn_3_0100::_0799'
-    null([subtraction] incompatible types: true - [1..10])
-
-dmn_3_0100::_0801'
-    null([subtraction] incompatible types: true - null)
-
-dmn_3_0100::_0802'
-    null([subtraction] incompatible types: 2021-01-01 - 10)
-
-dmn_3_0100::_0800'
-    null([subtraction] incompatible types: true - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0803'
-    null([subtraction] incompatible types: 2021-01-01 - "10")
-
-dmn_3_0100::_0804'
-    null([subtraction] incompatible types: 2021-01-01 - true)
-
-dmn_3_0100::_0805'
-    null([subtraction] incompatible types: 2021-01-01 - 10:10:10)
-
-dmn_3_0100::_0806'
-    null([subtraction] incompatible types: 2021-01-01 - [10])
-
-dmn_3_0100::_0807'
-    null([subtraction] incompatible types: 2021-01-01 - {a: 10})
-dmn_3_0100::_0808'
-    null([subtraction] incompatible types: 2021-01-01 - [1..10])
-
-dmn_3_0100::_0809'
-    null([subtraction] incompatible types: 2021-01-01 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0811'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10)
-
-dmn_3_0100::_0810'
-    null([subtraction] incompatible types: 2021-01-01 - null)
-
-dmn_3_0100::_0812'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - "10")
-
-dmn_3_0100::_0813'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - true)
-
-dmn_3_0100::_0814'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10:10:10)
-
-dmn_3_0100::_0815'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - [10])
-
-dmn_3_0100::_0816'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - {a: 10})
-
-dmn_3_0100::_0817'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - [1..10])
-
-dmn_3_0100::_0819'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - null)
-
-dmn_3_0100::_0818'
-    null([subtraction] incompatible types: 2021-01-01T10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0820'
-    null([subtraction] incompatible types: 10:10:10 - 10)
-
-dmn_3_0100::_0821'
-    null([subtraction] incompatible types: 10:10:10 - "10")
-
-task: Failed to run task "test": exit status 101
-dmn_3_0100::_0822'
-    null([subtraction] incompatible types: 10:10:10 - true)
-
-dmn_3_0100::_0823'
-    null([subtraction] incompatible types: 10:10:10 - 2021-01-01)
-
-dmn_3_0100::_0824'
-    null([subtraction] incompatible types: 10:10:10 - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0825'
-    null([subtraction] incompatible types: 10:10:10 - [10])
-
-dmn_3_0100::_0826'
-    null([subtraction] incompatible types: 10:10:10 - {a: 10})
-
-dmn_3_0100::_0827'
-    null([subtraction] incompatible types: 10:10:10 - P1Y)
-
-dmn_3_0100::_0828'
-    null([subtraction] incompatible types: 10:10:10 - [1..10])
-
-dmn_3_0100::_0829'
-    null([subtraction] incompatible types: 10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0830'
-    null([subtraction] incompatible types: 10:10:10 - null)
-
-dmn_3_0100::_0831'
-    null([subtraction] incompatible types: [10] - 10)
-
-dmn_3_0100::_0832'
-    null([subtraction] incompatible types: [10] - "10")
-
-dmn_3_0100::_0834'
-    null([subtraction] incompatible types: [10] - 2021-01-01)
-
-dmn_3_0100::_0833'
-    null([subtraction] incompatible types: [10] - true)
-
-dmn_3_0100::_0835'
-    null([subtraction] incompatible types: [10] - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0836'
-    null([subtraction] incompatible types: [10] - 10:10:10)
-
-dmn_3_0100::_0837'
-    null([subtraction] incompatible types: [10] - [10])
-
-dmn_3_0100::_0839'
-    null([subtraction] incompatible types: [10] - P1D)
-
-dmn_3_0100::_0840'
-    null([subtraction] incompatible types: [10] - P1Y)
-
-dmn_3_0100::_0838'
-    null([subtraction] incompatible types: [10] - {a: 10})
-
-dmn_3_0100::_0841'
-    null([subtraction] incompatible types: [10] - [1..10])
-
-dmn_3_0100::_0843'
-    null([subtraction] incompatible types: [10] - null)
-
-dmn_3_0100::_0842'
-    null([subtraction] incompatible types: [10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0844'
-    null([subtraction] incompatible types: {a: 10} - 10)
-
-dmn_3_0100::_0845'
-    null([subtraction] incompatible types: {a: 10} - "10")
-
-dmn_3_0100::_0846'
-    null([subtraction] incompatible types: {a: 10} - true)
-
-dmn_3_0100::_0847'
-    null([subtraction] incompatible types: {a: 10} - 2021-01-01)
-
-dmn_3_0100::_0848'
-    null([subtraction] incompatible types: {a: 10} - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0849'
-    null([subtraction] incompatible types: {a: 10} - 10:10:10)
-
-dmn_3_0100::_0851'
-    null([subtraction] incompatible types: {a: 10} - {a: 10})
-
-dmn_3_0100::_0853'
-    null([subtraction] incompatible types: {a: 10} - P1Y)
-
-dmn_3_0100::_0854'
-    null([subtraction] incompatible types: {a: 10} - [1..10])
-
-dmn_3_0100::_0856'
-    null([subtraction] incompatible types: {a: 10} - null)
-
-dmn_3_0100::_0855'
-    null([subtraction] incompatible types: {a: 10} - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0850'
-    null([subtraction] incompatible types: {a: 10} - [10])
-
-dmn_3_0100::_0852'
-    null([subtraction] incompatible types: {a: 10} - P1D)
-
-dmn_3_0100::_0858'
-    null([subtraction] incompatible types: P1D - "10")
-
-dmn_3_0100::_0861'
-    null([subtraction] incompatible types: P1D - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0862'
-    null([subtraction] incompatible types: P1D - 10:10:10)
-
-dmn_3_0100::_0857'
-    null([subtraction] incompatible types: P1D - 10)
-
-dmn_3_0100::_0860'
-    null([subtraction] incompatible types: P1D - 2021-01-01)
-
-dmn_3_0100::_0865'
-    null([subtraction] incompatible types: P1D - P1Y)
-
-dmn_3_0100::_0863'
-    null([subtraction] incompatible types: P1D - [10])
-
-dmn_3_0100::_0868'
-    null([subtraction] incompatible types: P1D - null)
-
-dmn_3_0100::_0859'
-    null([subtraction] incompatible types: P1D - true)
-
-dmn_3_0100::_0866'
-    null([subtraction] incompatible types: P1D - [1..10])
-
-dmn_3_0100::_0869'
-    null([subtraction] incompatible types: P1Y - 10)
-
-dmn_3_0100::_0870'
-    null([subtraction] incompatible types: P1Y - "10")
-
-dmn_3_0100::_0867'
-    null([subtraction] incompatible types: P1D - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0873'
-    null([subtraction] incompatible types: P1Y - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0874'
-    null([subtraction] incompatible types: P1Y - 10:10:10)
-
-dmn_3_0100::_0864'
-    null([subtraction] incompatible types: P1D - {a: 10})
-
-dmn_3_0100::_0871'
-    null([subtraction] incompatible types: P1Y - true)
-
-dmn_3_0100::_0875'
-    null([subtraction] incompatible types: P1Y - [10])
-
-dmn_3_0100::_0872'
-    null([subtraction] incompatible types: P1Y - 2021-01-01)
-
-dmn_3_0100::_0877'
-    null([subtraction] incompatible types: P1Y - P1D)
-
-dmn_3_0100::_0876'
-    null([subtraction] incompatible types: P1Y - {a: 10})
-
-dmn_3_0100::_0878'
-    null([subtraction] incompatible types: P1Y - [1..10])
-
-dmn_3_0100::_0880'
-    null([subtraction] incompatible types: P1Y - null)
-
-dmn_3_0100::_0881'
-    null([subtraction] incompatible types: [1..10] - 10)
-
-dmn_3_0100::_0879'
-    null([subtraction] incompatible types: P1Y - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0882'
-    null([subtraction] incompatible types: [1..10] - "10")
-
-dmn_3_0100::_0884'
-    null([subtraction] incompatible types: [1..10] - 2021-01-01)
-
-dmn_3_0100::_0885'
-    null([subtraction] incompatible types: [1..10] - 2021-01-01T10:10:10)
-
-dmn_3_0100::_0883'
-    null([subtraction] incompatible types: [1..10] - true)
-
-dmn_3_0100::_0886'
-    null([subtraction] incompatible types: [1..10] - 10:10:10)
-
-dmn_3_0100::_0887'
-    null([subtraction] incompatible types: [1..10] - [10])
-
-dmn_3_0100::_0889'
-    null([subtraction] incompatible types: [1..10] - P1D)
-
-dmn_3_0100::_0888'
-    null([subtraction] incompatible types: [1..10] - {a: 10})
-
-dmn_3_0100::_0890'
-    null([subtraction] incompatible types: [1..10] - P1Y)
-
-dmn_3_0100::_0891'
-    null([subtraction] incompatible types: [1..10] - [1..10])
-
-dmn_3_0100::_0894'
-    null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10)
-
-dmn_3_0100::_0892'
-    null([subtraction] incompatible types: [1..10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))
-
-dmn_3_0100::_0893'
-    null([subtraction] incompatible types: [1..10] - null)
-
-dmn_3_0100::_0895'
-    null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - "10")
-
-dmn_3_0100::_0896'
-    null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - true)
- */
