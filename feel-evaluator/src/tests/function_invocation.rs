@@ -80,3 +80,15 @@ fn _0005() {
   );
   te_number(false, scope, r#"add(17.82,32.18)"#, 2073, 0);
 }
+
+#[test]
+fn _0006() {
+  let scope = &te_scope(r#"{add: function (x: number, y: number) x + y }"#);
+  te_null(false, scope, r#"add(k: 17.82,l: 32.18)"#, "parameter with name x not found in arguments");
+}
+
+#[test]
+fn _0007() {
+  let scope = &te_scope(r#"{add: function (x: number, y: number) x + y }"#);
+  te_null(false, scope, r#"add(x: 17.82,y: 32.18, z:11.2)"#, "invalid number of arguments");
+}

@@ -54,6 +54,7 @@ mod division;
 mod empty_input;
 mod every_expression;
 mod exponentiation;
+mod external_functions;
 mod filter;
 mod for_expression;
 mod function_invocation;
