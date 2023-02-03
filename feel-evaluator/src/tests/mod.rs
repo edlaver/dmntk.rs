@@ -62,7 +62,6 @@ mod if_expression;
 mod instance_of;
 mod iterations;
 mod join;
-mod list;
 mod literal_at;
 mod literal_boolean;
 mod multiline;
@@ -72,6 +71,7 @@ mod negation;
 mod parentheses;
 mod properties;
 mod range;
+mod satisfies;
 mod some_expression;
 mod subtraction;
 mod unary_tests;
@@ -315,6 +315,26 @@ pub fn satisfies(trace: bool, scope: &FeelScope, input_expression: &str, input_v
   };
   match crate::evaluate(scope, &node) {
     Ok(value) => assert_eq!(value, Value::Boolean(expected)),
+    Err(reason) => {
+      println!("ERROR: {reason}");
+      panic!("`satisfies` failed");
+    }
+  }
+}
+
+pub fn satisfies_null(trace: bool, scope: &FeelScope, input_expression: &str, input_values: &str, input_entry: &str, expected: &str) {
+  let input_expression_node = dmntk_feel_parser::parse_textual_expression(scope, input_expression, trace).unwrap();
+  let input_entry_node = dmntk_feel_parser::parse_unary_tests(scope, input_entry, trace).unwrap();
+  let node = if !input_values.is_empty() {
+    let input_values_node = dmntk_feel_parser::parse_unary_tests(scope, input_values, trace).unwrap();
+    let left = AstNode::In(Box::new(input_expression_node.clone()), Box::new(input_values_node));
+    let right = AstNode::In(Box::new(input_expression_node), Box::new(input_entry_node));
+    AstNode::And(Box::new(left), Box::new(right))
+  } else {
+    AstNode::In(Box::new(input_expression_node), Box::new(input_entry_node))
+  };
+  match crate::evaluate(scope, &node) {
+    Ok(value) => assert_eq!(value, Value::Null(Some(expected.to_string()))),
     Err(reason) => {
       println!("ERROR: {reason}");
       panic!("`satisfies` failed");

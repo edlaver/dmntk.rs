@@ -2198,7 +2198,7 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
           return VALUE_TRUE;
         }
       }
-      _ => return value_null!(),
+      _ => return value_null!("eval_in_list"),
     }
   }
   VALUE_FALSE
@@ -2269,7 +2269,17 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
           return Value::Boolean(false);
         }
       }
-      _ => return value_null!("eval_in_negated_list"),
+      Value::List(inner) => {
+        if let Value::Boolean(true) = eval_in_list(left, inner.as_vec()) {
+          return Value::Boolean(false);
+        }
+      }
+      inner @ Value::Range(_, _, _, _) => {
+        if let Value::Boolean(true) = eval_in_range(left, inner) {
+          return Value::Boolean(false);
+        }
+      }
+      other => return value_null!("unexpected type in negated list: {}", other.type_of()),
     }
   }
   Value::Boolean(true)

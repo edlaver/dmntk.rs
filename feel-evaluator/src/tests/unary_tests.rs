@@ -31,63 +31,54 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn test_0001() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "-");
+  valid_unary_tests(false, &scope!(), "-");
 }
 
 #[test]
 fn test_0002() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "1");
+  valid_unary_tests(false, &scope!(), "1");
 }
 
 #[test]
 fn test_0003() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "1,2");
+  valid_unary_tests(false, &scope!(), "1,2");
 }
 
 #[test]
 fn test_0004() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "1,2,3");
+  valid_unary_tests(false, &scope!(), "1,2,3");
 }
 
 #[test]
 fn test_0005() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "[]");
+  valid_unary_tests(false, &scope!(), "[]");
 }
 
 #[test]
 fn test_0006() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "[1]");
+  valid_unary_tests(false, &scope!(), "[1]");
 }
 
 #[test]
 fn test_0007() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "[1,2]");
+  valid_unary_tests(false, &scope!(), "[1,2]");
 }
 
 #[test]
 fn test_0008() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "[1,2,3]");
+  valid_unary_tests(false, &scope!(), "[1,2,3]");
 }
 
 #[test]
 fn test_0009() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "[1..2]");
+  valid_unary_tests(false, &scope!(), "[1..2]");
 }
 
 #[test]
 fn test_0010() {
-  let scope = &te_scope("{}");
-  valid_unary_tests(false, scope, "not(1,2,3)");
+  valid_unary_tests(false, &scope!(), "not(1,2,3)");
 }
