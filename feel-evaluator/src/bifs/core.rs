@@ -2318,55 +2318,57 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
           } else {
             return value_null!("substring: invalid length value: {}", length_number);
           };
-          if position > 0 {
-            let first = (position - 1) as usize;
-            let last = first + count;
-            if first < input_string_len && last <= input_string_len {
-              return Value::String(input_string.chars().skip(first).take(count).collect());
-            } else {
-              value_null!(
-                "sublist: invalid range, len = {}, start position = {}, end position = {}",
-                input_string_len,
-                first + 1,
-                last + 1
-              )
+          match position.cmp(&0) {
+            Ordering::Greater => {
+              let first = (position - 1) as usize;
+              let last = first + count;
+              if first < input_string_len && last <= input_string_len {
+                return Value::String(input_string.chars().skip(first).take(count).collect());
+              } else {
+                value_null!(
+                  "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                  input_string_len,
+                  first + 1,
+                  last + 1
+                )
+              }
             }
-          } else if position < 0 {
-            let first = (input_string_len as isize) + position;
-            let last = first + count as isize;
-            if first >= 0 && (first as usize) < input_string_len && (last as usize) <= input_string_len {
-              return Value::String(input_string.chars().skip(first as usize).take(count).collect());
-            } else {
-              value_null!(
-                "sublist: invalid range, len = {}, start position = {}, end position = {}",
-                input_string_len,
-                first + 1,
-                last + 1
-              )
+            Ordering::Less => {
+              let first = (input_string_len as isize) + position;
+              let last = first + count as isize;
+              if first >= 0 && (first as usize) < input_string_len && (last as usize) <= input_string_len {
+                return Value::String(input_string.chars().skip(first as usize).take(count).collect());
+              } else {
+                value_null!(
+                  "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                  input_string_len,
+                  first + 1,
+                  last + 1
+                )
+              }
             }
-          } else {
-            value_null!("substring: start position must not be zero")
+            Ordering::Equal => value_null!("substring: start position must not be zero"),
           }
         }
-        Value::Null(_) => {
-          if position > 0 {
+        Value::Null(_) => match position.cmp(&0) {
+          Ordering::Greater => {
             let index = (position - 1) as usize;
             if index < input_string_len {
               return Value::String(input_string.chars().skip(index).collect());
             } else {
               value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
-          } else if position < 0 {
+          }
+          Ordering::Less => {
             let index = (input_string_len as isize) + position;
             if index >= 0 {
               return Value::String(input_string.chars().skip(index as usize).collect());
             } else {
               value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
-          } else {
-            value_null!("substring: start position must not be zero")
           }
-        }
+          Ordering::Equal => value_null!("substring: start position must not be zero"),
+        },
         other => {
           value_null!("sublist: expected number, actual length type is {}", other.type_of())
         }
@@ -2383,11 +2385,11 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
 pub fn substring_after(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
-      return if let Some(index) = input_string.find(match_string) {
+      if let Some(index) = input_string.find(match_string) {
         Value::String(input_string[match_string.len() + index..].to_string())
       } else {
         Value::String("".to_string())
-      };
+      }
     } else {
       value_null!("substring after: expected string, actual match type is: {}", match_input_string.type_of())
     }
@@ -2400,11 +2402,11 @@ pub fn substring_after(input_string_value: &Value, match_input_string: &Value) -
 pub fn substring_before(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
-      return if let Some(index) = input_string.find(match_string) {
+      if let Some(index) = input_string.find(match_string) {
         Value::String(input_string[..index].to_string())
       } else {
         Value::String("".to_string())
-      };
+      }
     } else {
       value_null!("substring before: expected string, actual match type is: {}", match_input_string.type_of())
     }
