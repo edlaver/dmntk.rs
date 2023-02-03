@@ -72,3 +72,23 @@ fn _0006() {
 fn _0007() {
   te_null(false, &scope!(), r#"substring before(string: "foobar", m: "bar")"#, r#"parameter 'match' not found"#);
 }
+
+#[test]
+fn _0008() {
+  te_null(
+    false,
+    &scope!(),
+    r#"substring before(["foobar"], "ob")"#,
+    r#"substring before: expected string, actual input type is: list<string>"#,
+  );
+}
+
+#[test]
+fn _0009() {
+  te_null(
+    false,
+    &scope!(),
+    r#"substring before("foobar", ["ob"])"#,
+    r#"substring before: expected string, actual match type is: list<string>"#,
+  );
+}

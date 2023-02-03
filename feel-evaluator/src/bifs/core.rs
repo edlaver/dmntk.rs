@@ -2301,65 +2301,85 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
 /// `start_position`. First position is 1, last position is -1.
 pub fn substring(input_string_value: &Value, start_position_value: &Value, length_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
-    if let Value::Number(start_position) = start_position_value {
-      let start: isize = if let Ok(sp) = start_position.try_into() {
-        sp
+    if let Value::Number(start_position_number) = start_position_value {
+      let position: isize = if let Ok(start_position) = start_position_number.try_into() {
+        start_position
       } else {
-        return value_null!("start position is out of range of isize '{}'", start_position.to_string());
+        return value_null!("substring: invalid start position value: {}", start_position_number);
       };
       let input_string_len = input_string.chars().count();
       match length_value {
-        Value::Number(length) => {
-          if *length < FeelNumber::one() {
-            return value_null!();
+        Value::Number(length_number) => {
+          if *length_number < FeelNumber::one() {
+            return value_null!("substring: length is less than 1");
           }
-          let count: usize = if let Ok(l) = length.trunc().try_into() {
-            l
+          let count: usize = if let Ok(length) = length_number.trunc().try_into() {
+            length
           } else {
-            return value_null!("length is out of range of usize '{}'", length.to_string());
+            return value_null!("substring: invalid length value: {}", length_number);
           };
-          if start > 0 {
-            let index = (start - 1) as usize;
-            if index < input_string_len && index + count <= input_string_len {
-              return Value::String(input_string.chars().skip(index).take(count).collect());
+          if position > 0 {
+            let first = (position - 1) as usize;
+            let last = first + count;
+            if first < input_string_len && last <= input_string_len {
+              return Value::String(input_string.chars().skip(first).take(count).collect());
+            } else {
+              value_null!(
+                "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                input_string_len,
+                first + 1,
+                last + 1
+              )
             }
-          }
-          if start < 0 {
-            let index = (input_string_len as isize) + start;
-            if index >= 0 && index as usize + count <= input_string_len {
-              return Value::String(input_string.chars().skip(index as usize).take(count).collect());
+          } else if position < 0 {
+            let first = (input_string_len as isize) + position;
+            let last = first + count as isize;
+            if first >= 0 && (first as usize) < input_string_len && (last as usize) <= input_string_len {
+              return Value::String(input_string.chars().skip(first as usize).take(count).collect());
+            } else {
+              value_null!(
+                "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                input_string_len,
+                first + 1,
+                last + 1
+              )
             }
+          } else {
+            value_null!("substring: start position must not be zero")
           }
-          value_null!()
         }
         Value::Null(_) => {
-          if start > 0 {
-            let index = (start - 1) as usize;
+          if position > 0 {
+            let index = (position - 1) as usize;
             if index < input_string_len {
               return Value::String(input_string.chars().skip(index).collect());
+            } else {
+              value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
-          }
-          if start < 0 {
-            let index = (input_string_len as isize) + start;
+          } else if position < 0 {
+            let index = (input_string_len as isize) + position;
             if index >= 0 {
               return Value::String(input_string.chars().skip(index as usize).collect());
+            } else {
+              value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
+          } else {
+            value_null!("substring: start position must not be zero")
           }
-          value_null!()
         }
-        _ => {
-          value_null!("substring")
+        other => {
+          value_null!("sublist: expected number, actual length type is {}", other.type_of())
         }
       }
     } else {
-      value_null!("substring")
+      value_null!("sublist: expected number, actual start position type is {}", start_position_value.type_of())
     }
   } else {
-    value_null!("substring")
+    value_null!("sublist: expected string, actual value type is {}", input_string_value.type_of())
   }
 }
 
-/// Returns substring of `input_string_value`  after the `match_input_string` in string.
+/// Returns substring of `input_string_value` after the `match_input_string` in string.
 pub fn substring_after(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
@@ -2368,12 +2388,15 @@ pub fn substring_after(input_string_value: &Value, match_input_string: &Value) -
       } else {
         Value::String("".to_string())
       };
+    } else {
+      value_null!("substring after: expected string, actual match type is: {}", match_input_string.type_of())
     }
+  } else {
+    value_null!("substring after: expected string, actual input type is: {}", input_string_value.type_of())
   }
-  value_null!("substring_after")
 }
 
-/// Returns substring of `input_string_value`  before the `match_input_string` in string.
+/// Returns substring of `input_string_value` before the `match_input_string` in string.
 pub fn substring_before(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
@@ -2382,9 +2405,12 @@ pub fn substring_before(input_string_value: &Value, match_input_string: &Value) 
       } else {
         Value::String("".to_string())
       };
+    } else {
+      value_null!("substring before: expected string, actual match type is: {}", match_input_string.type_of())
     }
+  } else {
+    value_null!("substring before: expected string, actual input type is: {}", input_string_value.type_of())
   }
-  value_null!("substring_before")
 }
 
 ///
@@ -2408,25 +2434,36 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
   if let Value::Number(hour) = hour_value {
     if let Value::Number(minute) = minute_value {
       if let Value::Number(second) = second_value {
-        if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
-          let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
-          if let Ok(h) = hour.try_into() {
-            if let Ok(m) = minute.try_into() {
-              if let Ok(s) = seconds.try_into() {
-                if let Ok(n) = nanoseconds.try_into() {
-                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                    return Value::Time(feel_time);
-                  }
-                }
-              }
+        if (0..24).contains(hour) {
+          if (0..60).contains(minute) {
+            if (0..60).contains(second) {
+              // unwraps below are safe, value ranges are checked above
+              let seconds = second.trunc();
+              let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
+              let h = hour.try_into().unwrap();
+              let m = minute.try_into().unwrap();
+              let s = seconds.try_into().unwrap();
+              let n = nanoseconds.try_into().unwrap();
+              let feel_time = FeelTime::new_hms_opt(h, m, s, n).unwrap();
+              Value::Time(feel_time)
+            } else {
+              value_null!("second must be 0..59, current value is {}", second)
             }
+          } else {
+            value_null!("minute must be 0..59, current value is {}", minute)
           }
+        } else {
+          value_null!("hour must be 0..23, current value is {}", hour)
         }
+      } else {
+        value_null!("seconds must be a number, current type is {}", second_value.type_of())
       }
+    } else {
+      value_null!("minutes must be a number, current type is {}", minute_value.type_of())
     }
+  } else {
+    value_null!("hour must be a number, current type is {}", hour_value.type_of())
   }
-  value_null!("time_3")
 }
 
 ///
@@ -2444,28 +2481,9 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let s = seconds.try_into().unwrap();
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
-                Value::DaysAndTimeDuration(offset) => {
-                  if let Some(feel_time) = FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32) {
-                    Value::Time(feel_time)
-                  } else {
-                    value_null!("time_4 1")
-                  }
-                }
-                Value::Null(_) => {
-                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                    Value::Time(feel_time)
-                  } else {
-                    value_null!("time_4 2")
-                  }
-                }
-                _ => {
-                  value_null!(
-                    "core",
-                    "time_4",
-                    "offset must be a days and time duration or null, current type is: {}",
-                    offset_value.type_of()
-                  )
-                }
+                Value::DaysAndTimeDuration(offset) => Value::Time(FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32).unwrap()),
+                Value::Null(_) => Value::Time(FeelTime::new_hms_opt(h, m, s, n).unwrap()),
+                _ => value_null!("expected days and time duration or null, current offset type is {}", offset_value.type_of()),
               }
             } else {
               value_null!("core", "time_4", "second must be 0..59, current value is: {}", second)
@@ -2555,82 +2573,6 @@ pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value 
 #[cfg(test)]
 mod tests {
   use super::*;
-  use dmntk_feel::values::Value;
-  use dmntk_feel::{value_null, value_number};
-
-  #[test]
-  fn test_bif_substring() {
-    // *** utility functions ***
-
-    ///
-    fn eq_substring(expected: &str, input_string: &str, start_position: i32) {
-      assert_eq!(
-        Value::String(expected.to_string()),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
-      );
-    }
-    ///
-    fn eq_substring_null(input_string: &str, start_position: i32) {
-      assert_eq!(
-        value_null!(),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
-      );
-    }
-    ///
-    fn eq_substring_len(expected: &str, input_string: &str, start_position: i32, length: u32) {
-      assert_eq!(
-        Value::String(expected.to_string()),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
-      );
-    }
-    ///
-    fn eq_substring_len_null(input_string: &str, start_position: i32, length: u32) {
-      assert_eq!(
-        value_null!(),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
-      );
-    }
-
-    // *** tests ***
-
-    // starting position may be not zero
-    eq_substring_null("homeless", 0);
-    // positive starting position
-    eq_substring("homeless", "homeless", 1);
-    eq_substring("less", "homeless", 5);
-    eq_substring("ss", "homeless", 7);
-    eq_substring("s", "homeless", 8);
-    eq_substring("😀", "foo\u{1F40E}bar\u{1F600}", 8);
-    eq_substring_null("homeless", 9);
-    // negative starting position
-    eq_substring("s", "homeless", -1);
-    eq_substring("less", "homeless", -4);
-    eq_substring("homeless", "homeless", -8);
-    eq_substring_null("homeless", -9);
-    // positive starting position with length
-    eq_substring_len("homeless", "homeless", 1, 8);
-    eq_substring_len("home", "homeless", 1, 4);
-    eq_substring_len("less", "homeless", 5, 4);
-    eq_substring_len("el", "homeless", 4, 2);
-    eq_substring_len("ss", "homeless", 7, 2);
-    eq_substring_len("s", "homeless", 7, 1);
-    eq_substring_len("s", "homeless", 8, 1);
-    eq_substring_len_null("homeless", 0, 4);
-    eq_substring_len_null("homeless", 1, 0);
-    eq_substring_len_null("homeless", 1, 9);
-    // negative starting position with length
-    eq_substring_len("homeless", "homeless", -8, 8);
-    eq_substring_len("home", "homeless", -8, 4);
-    eq_substring_len("less", "homeless", -4, 4);
-    eq_substring_len("el", "homeless", -5, 2);
-    eq_substring_len("ss", "homeless", -2, 2);
-    eq_substring_len("s", "homeless", -2, 1);
-    eq_substring_len("s", "homeless", -1, 1);
-    eq_substring_len("😀", "foo\u{1F40E}bar\u{1F600}", -1, 1);
-    eq_substring_len_null("homeless", -1, 0);
-    eq_substring_len_null("homeless", -3, 4);
-    eq_substring_len_null("homeless", -9, 2);
-  }
 
   #[test]
   fn test_gregorian_month_of_year() {

@@ -322,12 +322,42 @@ fn _0049() {
     false,
     &scope!(),
     r#"time(23,59,45,"10")"#,
-    "[core::time_4] offset must be a days and time duration or null, current type is: string",
+    "expected days and time duration or null, current offset type is string",
   );
 }
 
 #[test]
-#[should_panic]
 fn _0050() {
+  te_null(false, &scope!(), r#"time(24,59,3)"#, r#"hour must be 0..23, current value is 24"#);
+}
+
+#[test]
+fn _0051() {
+  te_null(false, &scope!(), r#"time(12,61,3)"#, r#"minute must be 0..59, current value is 61"#);
+}
+
+#[test]
+fn _0052() {
+  te_null(false, &scope!(), r#"time(11,59,300)"#, r#"second must be 0..59, current value is 300"#);
+}
+
+#[test]
+fn _0053() {
+  te_null(false, &scope!(), r#"time("12",45,13)"#, r#"hour must be a number, current type is string"#);
+}
+
+#[test]
+fn _0054() {
+  te_null(false, &scope!(), r#"time(12,"45",13)"#, r#"minutes must be a number, current type is string"#);
+}
+
+#[test]
+fn _0055() {
+  te_null(false, &scope!(), r#"time(12,45,"13")"#, r#"seconds must be a number, current type is string"#);
+}
+
+#[test]
+#[should_panic]
+fn _0056() {
   te_null(false, &scope!(), r#"time(23,59,45,@"P3000000000000000000D")"#, "");
 }
