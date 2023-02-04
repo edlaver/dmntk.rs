@@ -201,11 +201,7 @@ impl ModelParser {
 
   /// Parses a single [ItemDefinition].
   fn parse_item_definition(&mut self, node: &Node) -> Result<ItemDefinition> {
-    let type_ref = optional_child_required_content(node, NODE_TYPE_REF)?;
-    let type_language = optional_attribute(node, ATTR_TYPE_LANGUAGE);
-    let allowed_values = self.parse_unary_tests(node, NODE_ALLOWED_VALUES)?;
-    let item_components_definitions = self.parse_item_definitions(node, NODE_ITEM_COMPONENT)?;
-    let item_definition = ItemDefinition {
+    Ok(ItemDefinition {
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
       id: optional_attribute(node, ATTR_ID),
@@ -213,15 +209,14 @@ impl ModelParser {
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
-      type_ref,
-      type_language,
+      type_ref: optional_child_required_content(node, NODE_TYPE_REF)?,
+      type_language: optional_attribute(node, ATTR_TYPE_LANGUAGE),
       feel_type: None,
-      allowed_values,
-      item_components: item_components_definitions,
+      allowed_values: self.parse_unary_tests(node, NODE_ALLOWED_VALUES)?,
+      item_components: self.parse_item_definitions(node, NODE_ITEM_COMPONENT)?,
       is_collection: self.parse_boolean_attribute(node, ATTR_IS_COLLECTION, false),
       function_item: self.parse_function_item(node)?,
-    };
-    Ok(item_definition)
+    })
   }
 
   /// Parses optional function item.
