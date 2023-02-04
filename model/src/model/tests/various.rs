@@ -30,10 +30,25 @@
  * limitations under the License.
  */
 
-mod builtin_aggregator;
-mod decision_table_orientation;
-mod hit_policy;
-mod parser;
-mod parser_dmndi;
-mod test_models;
-mod various;
+use crate::model::tests::test_models::*;
+use crate::parse;
+
+#[test]
+fn test_invalid_function_kind() {
+  let definitions = parse(T_DMN_0001);
+  assert!(definitions.is_err());
+  assert_eq!(
+    r#"Err(DmntkError("ModelParserError: 'Python' is not a valid function kind, accepted values are: 'FEEL', 'Java', 'PMML'"))"#,
+    format!("{:?}", definitions)
+  )
+}
+
+#[test]
+fn test_invalid_hit_policy() {
+  let definitions = parse(T_DMN_0002);
+  assert!(definitions.is_err());
+  assert_eq!(
+    r#"Err(DmntkError("ModelParserError: 'LAST' is not a valid hit policy, allowed values are: 'UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER'"))"#,
+    format!("{:?}", definitions)
+  )
+}

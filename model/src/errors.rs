@@ -30,14 +30,14 @@ impl From<ModelParserError> for DmntkError {
 /// Raised when parsed text is not a valid function kind, accepted values are:
 /// `FEEL`, `Java` or `PMML`.
 pub fn err_invalid_function_kind(s: &str) -> DmntkError {
-  ModelParserError(format!("'{s}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`")).into()
+  ModelParserError(format!("'{s}' is not a valid function kind, accepted values are: 'FEEL', 'Java', 'PMML'")).into()
 }
 
 /// Raised when parsed text is not a valid hit policy, accepted values are:
 /// `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER` or `OUTPUT ORDER`.
 pub fn err_invalid_hit_policy(s: &str) -> DmntkError {
   ModelParserError(format!(
-    "'{s}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`"
+    "'{s}' is not a valid hit policy, allowed values are: 'UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER'"
   ))
   .into()
 }

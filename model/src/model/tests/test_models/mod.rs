@@ -30,10 +30,5 @@
  * limitations under the License.
  */
 
-mod builtin_aggregator;
-mod decision_table_orientation;
-mod hit_policy;
-mod parser;
-mod parser_dmndi;
-mod test_models;
-mod various;
+pub const T_DMN_0001: &str = include_str!("t_0001.dmn");
+pub const T_DMN_0002: &str = include_str!("t_0002.dmn");
