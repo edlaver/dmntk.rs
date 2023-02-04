@@ -30,17 +30,25 @@
  * limitations under the License.
  */
 
-pub const T_DMN_0001: &str = include_str!("t_0001.dmn");
-pub const T_DMN_0002: &str = include_str!("t_0002.dmn");
-pub const T_DMN_0003: &str = include_str!("t_0003.dmn");
-pub const T_DMN_0004: &str = include_str!("t_0004.dmn");
-pub const T_DMN_0005: &str = include_str!("t_0005.dmn");
-pub const T_DMN_0006: &str = include_str!("t_0006.dmn");
-pub const T_DMN_0007: &str = include_str!("t_0007.dmn");
-pub const T_DMN_0008: &str = include_str!("t_0008.dmn");
-pub const T_DMN_0009: &str = include_str!("t_0009.dmn");
-pub const T_DMN_0010: &str = include_str!("t_0010.dmn");
-pub const T_DMN_0011: &str = include_str!("t_0011.dmn");
-pub const T_DMN_0012: &str = include_str!("t_0012.dmn");
-pub const T_DMN_0013: &str = include_str!("t_0013.dmn");
-pub const T_DMN_FULL: &str = include_str!("t_full.dmn");
+use crate::model::tests::test_models::*;
+use crate::model::DmnElement;
+use crate::parse;
+
+#[test]
+fn _0001() {
+  let definitions = parse(T_DMN_FULL).unwrap();
+  assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", definitions.id().as_ref().unwrap());
+  //------------------------------------------------------------------------------------------------
+  // EXTENSION ELEMENTS IN DEFINITIONS
+  //------------------------------------------------------------------------------------------------
+  let extension_elements = definitions.extension_elements().as_ref().unwrap();
+  assert_eq!(2, extension_elements.elements().len());
+  assert_eq!(
+    r#"ExtensionElements { elements: [Element { name: "rectangle" }, Element { name: "circle" }] }"#,
+    format!("{:?}", extension_elements)
+  );
+  assert_eq!(r#"Element { name: "rectangle" }"#, format!("{:?}", extension_elements.elements()[0]));
+  assert_eq!("rectangle", extension_elements.elements()[0].name());
+  assert_eq!(r#"Element { name: "circle" }"#, format!("{:?}", extension_elements.elements()[1]));
+  assert_eq!("circle", extension_elements.elements()[1].name());
+}

@@ -418,7 +418,7 @@ fn _3_0086_import() {
   assert_eq!(None, import.id().as_ref());
   assert_eq!(None, import.description().as_ref());
   assert_eq!(None, import.label().as_ref());
-  assert_eq!(None, import.extension_elements().as_ref());
+  assert!(import.extension_elements().is_none());
   assert_eq!(0, import.extension_attributes().len());
   assert_eq!("myimport", import.name());
   assert_eq!("myimport", import.feel_name().to_string());

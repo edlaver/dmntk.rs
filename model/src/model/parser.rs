@@ -71,6 +71,7 @@ const NODE_DMNDI_DECISION_SERVICE_DIVIDER_LINE: &str = "DMNDecisionServiceDivide
 const NODE_DESCRIPTION: &str = "description";
 const NODE_ENCAPSULATED_DECISION: &str = "encapsulatedDecision";
 const NODE_ENCAPSULATED_LOGIC: &str = "encapsulatedLogic";
+const NODE_EXTENSION_ELEMENTS: &str = "extensionElements";
 const NODE_FUNCTION_DEFINITION: &str = "functionDefinition";
 const NODE_FORMAL_PARAMETER: &str = "formalParameter";
 const NODE_FUNCTION_ITEM: &str = "functionItem";
@@ -782,10 +783,23 @@ impl ModelParser {
   }
 
   /// Parses extension elements.
-  /// Currently extension elements are ignored and [None] is always returned.
-  /// This function is a placeholder for further development.   
-  fn parse_extension_elements(&self, _: &Node) -> Option<ExtensionElement> {
-    None
+  fn parse_extension_elements(&self, node: &Node) -> Option<ExtensionElements> {
+    if let Some(ref child_node) = node.children().find(|n| n.tag_name().name() == NODE_EXTENSION_ELEMENTS) {
+      let mut extension_elements = ExtensionElements { elements: vec![] };
+      for element_node in child_node.children() {
+        // currently only element names from the first dependency level is parsed
+        // actually only visual tools use those extension elements
+        // but in case DMNTK would need these for some model visualization
+        // then this function must be adjusted
+        let name = element_node.tag_name().name().trim().to_string();
+        if !name.is_empty() {
+          extension_elements.elements.push(Element { name });
+        }
+      }
+      Some(extension_elements)
+    } else {
+      None
+    }
   }
 
   /// Parses extension attributes.
