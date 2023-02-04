@@ -309,10 +309,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::Date(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 6")
+            between_null3!("date", rhv.type_of())
           }
         } else {
-          value_null!("between err 7")
+          between_null2!("date", mhv.type_of())
         }
       }
       Value::Time(lh) => {
@@ -320,10 +320,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::Time(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 9")
+            between_null3!("time", rhv.type_of())
           }
         } else {
-          value_null!("between err 10")
+          between_null2!("time", mhv.type_of())
         }
       }
       Value::DateTime(lh) => {
@@ -331,21 +331,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::DateTime(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 12")
+            between_null3!("date and time", rhv.type_of())
           }
         } else {
-          value_null!("between err 13")
-        }
-      }
-      Value::YearsAndMonthsDuration(lh) => {
-        if let Value::YearsAndMonthsDuration(mh) = mhv {
-          if let Value::YearsAndMonthsDuration(rh) = rhv {
-            Value::Boolean(mh <= lh && lh <= rh)
-          } else {
-            value_null!("between err 14")
-          }
-        } else {
-          value_null!("between err 15")
+          between_null2!("date and time", mhv.type_of())
         }
       }
       Value::DaysAndTimeDuration(lh) => {
@@ -353,13 +342,24 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::DaysAndTimeDuration(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 16")
+            between_null3!("days and time duration", rhv.type_of())
           }
         } else {
-          value_null!("between err 17")
+          between_null2!("days and time duration", mhv.type_of())
         }
       }
-      _ => value_null!("between err"),
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(mh) = mhv {
+          if let Value::YearsAndMonthsDuration(rh) = rhv {
+            Value::Boolean(mh <= lh && lh <= rh)
+          } else {
+            between_null3!("years and months duration", rhv.type_of())
+          }
+        } else {
+          between_null2!("years and months duration", mhv.type_of())
+        }
+      }
+      other => value_null!("unexpected value type in 'between' operator: {}", other.type_of()),
     }
   }))
 }
