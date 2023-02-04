@@ -410,11 +410,6 @@ impl Definitions {
     &self.item_definitions
   }
 
-  /// Returns mutable reference to the container of instances of [ItemDefinition] contained in this [Definitions].
-  pub fn item_definitions_mut(&mut self) -> &mut Vec<ItemDefinition> {
-    &mut self.item_definitions
-  }
-
   /// Returns an optional reference to [ItemDefinition] with specified name
   /// or [None] when such [ItemDefinition] was not found in this [Definitions].
   pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {

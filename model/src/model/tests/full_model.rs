@@ -39,6 +39,14 @@ fn _0001() {
   let definitions = parse(T_DMN_FULL).unwrap();
   assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", definitions.id().as_ref().unwrap());
   //------------------------------------------------------------------------------------------------
+  // ITEM DEFINITIONS
+  //------------------------------------------------------------------------------------------------
+  assert_eq!(0, definitions.item_definitions().len());
+  //------------------------------------------------------------------------------------------------
+  // BUSINESS CONTEXT DEFINITIONS
+  //------------------------------------------------------------------------------------------------
+  assert_eq!(0, definitions.business_context_elements().len());
+  //------------------------------------------------------------------------------------------------
   // EXTENSION ELEMENTS IN DEFINITIONS
   //------------------------------------------------------------------------------------------------
   let extension_elements = definitions.extension_elements().as_ref().unwrap();
@@ -51,4 +59,22 @@ fn _0001() {
   assert_eq!("rectangle", extension_elements.elements()[0].name());
   assert_eq!(r#"Element { name: "circle" }"#, format!("{:?}", extension_elements.elements()[1]));
   assert_eq!("circle", extension_elements.elements()[1].name());
+  //------------------------------------------------------------------------------------------------
+  // DRG ELEMENTS
+  //------------------------------------------------------------------------------------------------
+  assert_eq!(1, definitions.drg_elements().len());
+  assert_eq!(1, definitions.decisions().len());
+  assert_eq!(0, definitions.input_data().len());
+  //------------------------------------------------------------------------------------------------
+  // DMNDI
+  //------------------------------------------------------------------------------------------------
+  assert!(definitions.dmndi().is_none());
+}
+
+#[test]
+fn _0002() {
+  let definitions = parse(T_DMN_FULL).unwrap();
+  let cloned_definitions = definitions.clone();
+  assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", cloned_definitions.id().as_ref().unwrap());
+  assert_eq!(format!("{:?}", definitions), format!("{:?}", cloned_definitions));
 }
