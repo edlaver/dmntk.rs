@@ -53,7 +53,7 @@ fn _0001() {
   assert_eq!(2, extension_elements.elements().len());
   assert_eq!(
     r#"ExtensionElements { elements: [Element { name: "rectangle" }, Element { name: "circle" }] }"#,
-    format!("{:?}", extension_elements)
+    format!("{extension_elements:?}")
   );
   assert_eq!(r#"Element { name: "rectangle" }"#, format!("{:?}", extension_elements.elements()[0]));
   assert_eq!("rectangle", extension_elements.elements()[0].name());
@@ -76,5 +76,5 @@ fn _0002() {
   let definitions = parse(T_DMN_FULL).unwrap();
   let cloned_definitions = definitions.clone();
   assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", cloned_definitions.id().as_ref().unwrap());
-  assert_eq!(format!("{:?}", definitions), format!("{:?}", cloned_definitions));
+  assert_eq!(format!("{definitions:?}"), format!("{cloned_definitions:?}"));
 }

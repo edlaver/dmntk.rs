@@ -38,8 +38,8 @@ fn _0001() {
   let definitions = parse(T_DMN_0001);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: 'Python' is not a valid function kind, accepted values are: 'FEEL', 'Java', 'PMML'"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: 'Python' is not a valid function kind, accepted values are: 'FEEL', 'Java', 'PMML'"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -48,8 +48,8 @@ fn _0002() {
   let definitions = parse(T_DMN_0002);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: 'LAST' is not a valid hit policy, allowed values are: 'UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER'"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: 'LAST' is not a valid hit policy, allowed values are: 'UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER'"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -58,8 +58,8 @@ fn _0003() {
   let definitions = parse(T_DMN_0003);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: 'AVG' is not a valid aggregation, allowed values are: 'COUNT', 'SUM', 'MIN', 'MAX'"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: 'AVG' is not a valid aggregation, allowed values are: 'COUNT', 'SUM', 'MIN', 'MAX'"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -68,8 +68,8 @@ fn _0004() {
   let definitions = parse(T_DMN_0004);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: required input expression in decision table's input clause is missing"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: required input expression in decision table's input clause is missing"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -78,8 +78,8 @@ fn _0005() {
   let definitions = parse(T_DMN_0005);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: required expression instance in context entry is missing"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: required expression instance in context entry is missing"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -88,8 +88,8 @@ fn _0006() {
   let definitions = parse(T_DMN_0006);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: number of elements in a row differs from the number of columns defined in a relation"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: number of elements in a row differs from the number of columns defined in a relation"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -98,8 +98,8 @@ fn _0007() {
   let definitions = parse(T_DMN_0007);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: parsing model from XML failed with reason: the root node was opened but never closed"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: parsing model from XML failed with reason: the root node was opened but never closed"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -108,8 +108,8 @@ fn _0008() {
   let definitions = parse(T_DMN_0008);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: unexpected XML node, expected: definitions, actual: definition"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: unexpected XML node, expected: definitions, actual: definition"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -118,8 +118,8 @@ fn _0009() {
   let definitions = parse(T_DMN_0009);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: expected value for mandatory attribute 'namespace' in node 'definitions' at [2:1]"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: expected value for mandatory attribute 'namespace' in node 'definitions' at [2:1]"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -128,8 +128,8 @@ fn _0010() {
   let definitions = parse(T_DMN_0010);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: expected mandatory child node 'variable' in parent node 'decision' at [11:5]"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: expected mandatory child node 'variable' in parent node 'decision' at [11:5]"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -138,8 +138,8 @@ fn _0011() {
   let definitions = parse(T_DMN_0011);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: expected mandatory text content in node 'text'"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: expected mandatory text content in node 'text'"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -148,8 +148,8 @@ fn _0012() {
   let definitions = parse(T_DMN_0012);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: conversion to valid color value failed with reason: number too large to fit in target type"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: conversion to valid color value failed with reason: number too large to fit in target type"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
 
@@ -158,7 +158,7 @@ fn _0013() {
   let definitions = parse(T_DMN_0013);
   assert!(definitions.is_err());
   assert_eq!(
-    r#"Err(DmntkError("ModelParserError: conversion to valid double value failed with reason: invalid float literal"))"#,
-    format!("{:?}", definitions)
+    r#"ModelParserError: conversion to valid double value failed with reason: invalid float literal"#,
+    format!("{}", definitions.err().unwrap())
   )
 }
