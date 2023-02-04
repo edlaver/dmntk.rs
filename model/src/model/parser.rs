@@ -148,7 +148,7 @@ const ATTR_Y: &str = "y";
 pub struct ModelParser {}
 
 impl ModelParser {
-  /// Parses the XML document containing [Definitions] serialized to interchange format.
+  /// Parses the XML document containing DMN™ model.
   pub fn parse(&mut self, xml: &str) -> Result<Definitions> {
     // parse document
     match roxmltree::Document::parse(xml) {
@@ -162,6 +162,7 @@ impl ModelParser {
       Err(reason) => Err(err_xml_parsing_model_failed(&reason.to_string())),
     }
   }
+
   /// Parses [Definitions].
   fn parse_definitions(&mut self, node: &Node) -> Result<Definitions> {
     let drg_elements = self.parse_drg_elements(node)?;
@@ -189,33 +190,38 @@ impl ModelParser {
     Ok(definitions)
   }
 
-  /// Parser a collection of [ItemDefinition].
+  /// Parses a collection of [ItemDefinition].
   fn parse_item_definitions(&mut self, node: &Node, child_name: &str) -> Result<Vec<ItemDefinition>> {
     let mut items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
-      let type_ref = optional_child_required_content(child_node, NODE_TYPE_REF)?;
-      let type_language = optional_attribute(child_node, ATTR_TYPE_LANGUAGE);
-      let allowed_values = self.parse_unary_tests(child_node, NODE_ALLOWED_VALUES)?;
-      let item_components_definitions = self.parse_item_definitions(child_node, NODE_ITEM_COMPONENT)?;
-      let item_definition = ItemDefinition {
-        name: required_name(child_node)?,
-        feel_name: required_feel_name(child_node)?,
-        id: optional_attribute(child_node, ATTR_ID),
-        description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
-        label: optional_attribute(child_node, ATTR_LABEL),
-        extension_elements: self.parse_extension_elements(child_node),
-        extension_attributes: self.parse_extension_attributes(child_node),
-        type_ref,
-        type_language,
-        feel_type: None,
-        allowed_values,
-        item_components: item_components_definitions,
-        is_collection: self.parse_boolean_attribute(child_node, ATTR_IS_COLLECTION, false),
-        function_item: self.parse_function_item(child_node)?,
-      };
-      items.push(item_definition);
+      items.push(self.parse_item_definition(child_node)?);
     }
     Ok(items)
+  }
+
+  /// Parses a single [ItemDefinition].
+  fn parse_item_definition(&mut self, node: &Node) -> Result<ItemDefinition> {
+    let type_ref = optional_child_required_content(node, NODE_TYPE_REF)?;
+    let type_language = optional_attribute(node, ATTR_TYPE_LANGUAGE);
+    let allowed_values = self.parse_unary_tests(node, NODE_ALLOWED_VALUES)?;
+    let item_components_definitions = self.parse_item_definitions(node, NODE_ITEM_COMPONENT)?;
+    let item_definition = ItemDefinition {
+      name: required_name(node)?,
+      feel_name: required_feel_name(node)?,
+      id: optional_attribute(node, ATTR_ID),
+      description: optional_child_optional_content(node, NODE_DESCRIPTION),
+      label: optional_attribute(node, ATTR_LABEL),
+      extension_elements: self.parse_extension_elements(node),
+      extension_attributes: self.parse_extension_attributes(node),
+      type_ref,
+      type_language,
+      feel_type: None,
+      allowed_values,
+      item_components: item_components_definitions,
+      is_collection: self.parse_boolean_attribute(node, ATTR_IS_COLLECTION, false),
+      function_item: self.parse_function_item(node)?,
+    };
+    Ok(item_definition)
   }
 
   /// Parses optional function item.

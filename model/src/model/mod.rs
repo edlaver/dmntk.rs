@@ -1008,14 +1008,13 @@ pub struct Decision {
   /// Collection of the instances of [KnowledgeRequirement] that compose this [Decision].
   knowledge_requirements: Vec<KnowledgeRequirement>,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
-  authority_requirements: Vec<AuthorityRequirement>,
-  //TODO add the following:
-  // supported_objectives
-  // impacted_performance_indicator
-  // decision_maker
-  // decision_owner
-  // using_processes
-  // using_tasks
+  authority_requirements: Vec<AuthorityRequirement>, //TODO add the following:
+                                                     // supported_objectives
+                                                     // impacted_performance_indicator
+                                                     // decision_maker
+                                                     // decision_owner
+                                                     // using_processes
+                                                     // using_tasks
 }
 
 impl Decision {
