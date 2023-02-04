@@ -200,7 +200,6 @@ impl ModelParser {
   }
 
   /// Parses a single [ItemDefinition].
-  #[rustfmt::skip]
   fn parse_item_definition(&mut self, node: &Node) -> Result<ItemDefinition> {
     Ok(ItemDefinition {
       name: required_name(node)?,
@@ -216,16 +215,17 @@ impl ModelParser {
       allowed_values: self.parse_unary_tests(node, NODE_ALLOWED_VALUES)?,
       item_components: self.parse_item_definitions(node, NODE_ITEM_COMPONENT)?,
       is_collection: self.parse_boolean_attribute(node, ATTR_IS_COLLECTION, false),
-      function_item: self.parse_function_item(node)?, })
+      function_item: self.parse_function_item(node)?,
+    })
   }
 
   /// Parses optional function item.
-  #[rustfmt::skip]
   fn parse_function_item(&self, node: &Node) -> Result<Option<FunctionItem>> {
     if let Some(ref n) = node.children().find(|n| n.tag_name().name() == NODE_FUNCTION_ITEM) {
       Ok(Some(FunctionItem {
         output_type_ref: optional_attribute(n, ATTR_OUTPUT_TYPE_REF),
-        parameters: self.parse_information_items_from_child(n, NODE_PARAMETERS)?, }))
+        parameters: self.parse_information_items_from_child(n, NODE_PARAMETERS)?,
+      }))
     } else {
       Ok(None)
     }
