@@ -31,75 +31,109 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
-fn test_0001() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "2 between 1 and 4", true);
+fn _0001() {
+  te_bool(false, &scope!(), r#"2 between 1 and 4"#, true);
 }
 
 #[test]
-fn test_0002() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "1 between 1 and 4", true);
+fn _0002() {
+  te_bool(false, &scope!(), r#"1 between 1 and 4"#, true);
 }
 
 #[test]
-fn test_0003() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "4 between 1 and 4", true);
+fn _0003() {
+  te_bool(false, &scope!(), r#"4 between 1 and 4"#, true);
 }
 
 #[test]
-fn test_0004() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "0.99 between 1 and 4", false);
+fn _0004() {
+  te_bool(false, &scope!(), r#"0.99 between 1 and 4"#, false);
 }
 
 #[test]
-fn test_0005() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "4.01 between 1 and 4", false);
+fn _0005() {
+  te_bool(false, &scope!(), r#"4.01 between 1 and 4"#, false);
 }
 
 #[test]
-fn test_0006() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "6 between 1 and 4 + 2", true);
+fn _0006() {
+  te_bool(false, &scope!(), r#"6 between 1 and 4 + 2"#, true);
 }
 
 #[test]
-fn test_0007() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "2 between 1 + 1 and 4 + 2", true);
+fn _0007() {
+  te_bool(false, &scope!(), r#"2 between 1 + 1 and 4 + 2"#, true);
 }
 
 #[test]
-fn test_0008() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "5 - 2 between 1 + 2 and 10.2/2", true);
+fn _0008() {
+  te_bool(false, &scope!(), r#"5 - 2 between 1 + 2 and 10.2/2"#, true);
 }
 
 #[test]
-fn test_0009() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "5 - 2 - 0.1 between 1 + 2 and 10.2/2", false);
+fn _0009() {
+  te_bool(false, &scope!(), r#"5 - 2 - 0.1 between 1 + 2 and 10.2/2"#, false);
 }
 
 #[test]
-fn test_0010() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "true = (2 between 1 and 4)", true);
+fn _0010() {
+  te_bool(false, &scope!(), r#"true = (2 between 1 and 4)"#, true);
 }
 
 #[test]
-fn test_0011() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(2 between 1 and 4) = true", true);
+fn _0011() {
+  te_bool(false, &scope!(), r#"(2 between 1 and 4) = true"#, true);
 }
 
 #[test]
-fn test_0012() {
-  let scope = &te_scope("{}");
-  te_bool(false, scope, "(2 between 1 and 4) = (5 between 3 and 8)", true);
+fn _0012() {
+  te_bool(false, &scope!(), r#"(2 between 1 and 4) = (5 between 3 and 8)"#, true);
+}
+
+#[test]
+fn _0013() {
+  te_null(
+    false,
+    &scope!(),
+    r#"2 between "1" and 4"#,
+    "expected number as a second argument in 'between' operator, actual value type is string",
+  );
+}
+
+#[test]
+fn _0014() {
+  te_null(
+    false,
+    &scope!(),
+    r#"2 between 1 and "4""#,
+    "expected number as a third argument in 'between' operator, actual value type is string",
+  );
+}
+
+#[test]
+fn _0015() {
+  te_bool(false, &scope!(), r#" "k" between "a" and "z" "#, true);
+}
+
+#[test]
+fn _0016() {
+  te_null(
+    false,
+    &scope!(),
+    r#" "k" between 1 and "z" "#,
+    "expected string as a second argument in 'between' operator, actual value type is number",
+  );
+}
+
+#[test]
+fn _0017() {
+  te_null(
+    false,
+    &scope!(),
+    r#" "k" between "a" and 15 "#,
+    "expected string as a third argument in 'between' operator, actual value type is number",
+  );
 }

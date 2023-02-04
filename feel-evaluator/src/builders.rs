@@ -252,25 +252,45 @@ fn build_at(text: &str) -> Result<Evaluator> {
   Err(err_invalid_at_literal(text))
 }
 
+/// Prepares null value with error message for second argument in `between` operator.
+macro_rules! between_null2 {
+  ($expected:literal, $actual:expr) => {
+    Value::Null(Some(format!(
+      "expected {} as a second argument in 'between' operator, actual value type is {}",
+      $expected, $actual
+    )))
+  };
+}
+
+/// Prepares null value with error message for third argument in `between` operator.
+macro_rules! between_null3 {
+  ($expected:literal, $actual:expr) => {
+    Value::Null(Some(format!(
+      "expected {} as a third argument in 'between' operator, actual value type is {}",
+      $expected, $actual
+    )))
+  };
+}
+
 ///
 fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let mhe = build_evaluator(mhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let mhv = mhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let mhv = mhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
       Value::Number(lh) => {
         if let Value::Number(mh) = mhv {
           if let Value::Number(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 1")
+            between_null3!("number", rhv.type_of())
           }
         } else {
-          value_null!("between err 2")
+          between_null2!("number", mhv.type_of())
         }
       }
       Value::String(lh) => {
@@ -278,10 +298,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::String(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 3")
+            between_null3!("string", rhv.type_of())
           }
         } else {
-          value_null!("between err 4")
+          between_null2!("string", mhv.type_of())
         }
       }
       Value::Date(lh) => {
