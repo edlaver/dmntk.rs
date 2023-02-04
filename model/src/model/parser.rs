@@ -61,9 +61,9 @@ const NODE_DMNDI_DMN_SHAPE: &str = "DMNShape";
 const NODE_DMNDI_BOUNDS: &str = "Bounds";
 const NODE_DMNDI_DMN_EDGE: &str = "DMNEdge";
 const NODE_DMNDI_WAYPOINT: &str = "waypoint";
-const NODE_DMNDI_FILL_COLOR: &str = "fillColor";
-const NODE_DMNDI_STROKE_COLOR: &str = "strokeColor";
-const NODE_DMNDI_FONT_COLOR: &str = "fontColor";
+const NODE_DMNDI_FILL_COLOR: &str = "FillColor";
+const NODE_DMNDI_STROKE_COLOR: &str = "StrokeColor";
+const NODE_DMNDI_FONT_COLOR: &str = "FontColor";
 const NODE_DMNDI_LABEL_HORIZONTAL_ALIGNMENT: &str = "labelHorizontalAlignment";
 const NODE_DMNDI_LABEL_VERTICAL_ALIGNMENT: &str = "labelVerticalAlignment";
 const NODE_DMNDI_LABEL: &str = "DMNLabel";
@@ -1182,6 +1182,6 @@ mod xml_utils {
 
   /// XML utility function that returns node's name with node's position in the original document.
   pub fn node_name_pos(n: &Node) -> String {
-    format!("`{}` at [{}]", n.tag_name().name(), n.document().text_pos_at(n.position()))
+    format!("'{}' at [{}]", n.tag_name().name(), n.document().text_pos_at(n.position()))
   }
 }

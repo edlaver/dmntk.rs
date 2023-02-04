@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions namespace="https://dmntk.io" 
-             name="invalid-model-0002"
+             name="invalid-model-0004"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
 
     <description>
         This is an example of invalid model.
-        The hit policy has an invalid value.
-        Allowed values are "UNIQUE", "FIRST", "PRIORITY", "ANY", "COLLECT", "RULE ORDER" or "OUTPUT ORDER".
+        Decision table has no required "inputExpression" element.
     </description>
     
     <decision name="Approval Status" id="_3b2953a3-745f-4d2e-b55d-75c8c5ae653c">
@@ -14,11 +13,9 @@
         <informationRequirement>
             <requiredInput href="#_794d4d86-5c66-4e41-bb32-7195d7d086b1"/>
         </informationRequirement>
-        <decisionTable hitPolicy="LAST" outputLabel="Approval Status" preferredOrientation="Rule-as-Row">
+        <decisionTable hitPolicy="FIRST" outputLabel="Approval Status">
             <input label="Age">
-                <inputExpression typeRef="number">
-                    <text>Age</text>
-                </inputExpression>
+            <!-- required <inputExpression/> element is omitted -->
             </input>
             <output>
                 <outputValues>
@@ -47,4 +44,3 @@
         <variable typeRef="number" name="Age"/>
     </inputData>
 </definitions>
-

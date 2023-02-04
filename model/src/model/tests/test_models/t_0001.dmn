@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions namespace="https://dmntk.io"
-             name="invalid-function-kind"
-             id="_003d81bb-25db-49d2-b97c-590dd4ffebce"
+             name="invalid-model-0001"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
 
     <description>
