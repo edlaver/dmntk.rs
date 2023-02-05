@@ -426,17 +426,21 @@ fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
     scope.push(FeelContext::default());
     // evaluate context entries
     for evaluator in &evaluators {
-      if let Value::ContextEntry(name, value) = evaluator(scope) {
-        if evaluated_ctx.contains_entry(&name) {
-          // duplicated context entry keys are not allowed
-          scope.pop();
-          return value_null!("duplicated context entry key: {}", name);
-        } else {
-          // add newly evaluated entry to evaluated context
-          evaluated_ctx.set_entry(&name, (*value).clone());
-          // add newly evaluated entry to special context
-          scope.set_value(&name, *value);
+      match evaluator(scope) as Value {
+        Value::ContextEntry(name, value) => {
+          if evaluated_ctx.contains_entry(&name) {
+            // duplicated context entry keys are not allowed
+            scope.pop();
+            return value_null!("duplicated context entry key: {}", name);
+          } else {
+            // add newly evaluated entry to evaluated context
+            evaluated_ctx.set_entry(&name, (*value).clone());
+            // add newly evaluated entry to special context
+            scope.set_value(&name, *value);
+          }
         }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected context entry, actual value type is {}", other.type_of()),
       }
     }
     // remove special context from scope
@@ -450,12 +454,11 @@ fn build_context_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
-      Value::String(s) => Value::ContextEntry(Name::from(s), Box::new(rhv)),
       Value::ContextEntryKey(name) => Value::ContextEntry(name, Box::new(rhv)),
-      _ => value_null!("build_context_entry"),
+      _ => value_null!("expected context entry key, actual value type is {}", lhv.type_of()),
     }
   }))
 }
@@ -475,8 +478,12 @@ fn build_context_type(lhs: &[AstNode]) -> Result<Evaluator> {
   Ok(Box::new(move |scope: &FeelScope| {
     let mut entries = BTreeMap::new();
     for evaluator in &evaluators {
-      if let Value::ContextTypeEntry(name, feel_type) = evaluator(scope) {
-        entries.insert(name, feel_type.clone());
+      match evaluator(scope) as Value {
+        Value::ContextTypeEntry(name, feel_type) => {
+          entries.insert(name, feel_type.clone());
+        }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected context type entry, actual value type is {}", other.type_of()),
       }
     }
     Value::FeelType(FeelType::Context(entries))
@@ -488,8 +495,8 @@ fn build_context_type_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::ContextTypeEntryKey(name) = lhv {
       if let Value::FeelType(feel_type) = rhv {
         Value::ContextTypeEntry(name, feel_type)
@@ -792,16 +799,16 @@ fn build_formal_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::ParameterName(parameter_name) = lhv {
       if let Value::FeelType(parameter_type) = rhv {
         Value::FormalParameter(parameter_name, parameter_type)
       } else {
-        value_null!("expected type of formal parameter")
+        value_null!("expected type of the formal parameter")
       }
     } else {
-      value_null!("expected name of formal parameter")
+      value_null!("expected name of the formal parameter")
     }
   }))
 }
@@ -813,18 +820,17 @@ fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
     evaluators.push(build_evaluator(node)?);
   }
   Ok(Box::new(move |scope: &FeelScope| {
-    Value::FormalParameters(
-      evaluators
-        .iter()
-        .filter_map(|evaluator| {
-          if let Value::FormalParameter(parameter_name, parameter_type) = evaluator(scope) {
-            Some((parameter_name, parameter_type))
-          } else {
-            None
-          }
-        })
-        .collect::<Vec<(Name, FeelType)>>(),
-    )
+    let mut formal_parameters = vec![];
+    for evaluator in &evaluators {
+      match evaluator(scope) as Value {
+        Value::FormalParameter(parameter_name, parameter_type) => {
+          formal_parameters.push((parameter_name, parameter_type));
+        }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected formal parameter, actual value type is {}", other.type_of()),
+      }
+    }
+    Value::FormalParameters(formal_parameters)
   }))
 }
 
@@ -893,22 +899,26 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    if let Value::FormalParameters(parameters) = lhe(scope) {
-      if let Value::FunctionBody(body, external) = rhe(scope) {
-        // evaluate closure context
-        let mut closure_ctx = FeelContext::default();
-        for closure_name in closure.iter() {
-          if let Some(closure_value) = scope.search_entry(closure_name) {
-            closure_ctx.create_entry(closure_name, closure_value);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
+    match lhv {
+      Value::FormalParameters(parameters) => {
+        if let Value::FunctionBody(body, external) = rhv {
+          // evaluate closure context
+          let mut closure_ctx = FeelContext::default();
+          for closure_name in closure.iter() {
+            if let Some(closure_value) = scope.search_entry(closure_name) {
+              closure_ctx.create_entry(closure_name, closure_value);
+            }
           }
+          //TODO is `FeelType::Any` always ok for function result type in function definition?
+          Value::FunctionDefinition(parameters, body, external, closure.clone(), closure_ctx, FeelType::Any)
+        } else {
+          value_null!("invalid body in function definition")
         }
-        //TODO is `FeelType::Any` always ok for function result type in function definition?
-        Value::FunctionDefinition(parameters, body, external, closure.clone(), closure_ctx, FeelType::Any)
-      } else {
-        value_null!("invalid body in function definition")
       }
-    } else {
-      value_null!("invalid formal parameters in function definition")
+      null @ Value::Null(_) => return null,
+      other => return value_null!("expected formal parameters, actual value type is {}", other.type_of()),
     }
   }))
 }
