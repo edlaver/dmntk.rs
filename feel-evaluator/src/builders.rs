@@ -917,8 +917,8 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
           value_null!("invalid body in function definition")
         }
       }
-      null @ Value::Null(_) => return null,
-      other => return value_null!("expected formal parameters, actual value type is {}", other.type_of()),
+      null @ Value::Null(_) => null,
+      other => value_null!("expected formal parameters, actual value type is {}", other.type_of()),
     }
   }))
 }
