@@ -31,6 +31,7 @@
  */
 
 use super::*;
+use dmntk_feel::{scope, FeelType};
 
 #[test]
 fn _0001() {
@@ -70,206 +71,235 @@ fn _0006() {
 
 #[test]
 fn _0007() {
-  let scope = &te_scope(r#"{Order:4.0}"#);
-  te_bool(false, scope, "Order instance of days and time duration", false);
+  let scope = &te_scope(r#"{Birth Date: @"1983-02-12T13:00:00"}"#);
+  te_bool(false, scope, "Birth Date instance of date and time", true);
 }
 
 #[test]
 fn _0008() {
-  let scope = &te_scope(r#"{Order:4.0}"#);
-  te_bool(false, scope, "Order instance of years and months duration", false);
+  let scope = &te_scope(r#"{Birth Date: @"1983-02-12T13:00:00"}"#);
+  te_bool(false, scope, "Birth Date instance of Any", true);
 }
 
 #[test]
 fn _0009() {
-  let scope = &te_scope(r#"{Order:4.0}"#);
-  te_bool(false, scope, "Order instance of Any", true);
+  let scope = &te_scope(r#"{Birth Date: @"1983-02-12T13:00:00"}"#);
+  te_bool(false, scope, "Birth Date instance of number", false);
 }
 
 #[test]
 fn _0010() {
   let scope = &te_scope(r#"{Order:4.0}"#);
-  te_bool(false, scope, "Order instance of Null", false);
+  te_bool(false, scope, "Order instance of days and time duration", false);
 }
 
 #[test]
 fn _0011() {
+  let scope = &te_scope(r#"{Order:4.0}"#);
+  te_bool(false, scope, "Order instance of years and months duration", false);
+}
+
+#[test]
+fn _0012() {
+  let scope = &te_scope(r#"{Order:4.0}"#);
+  te_bool(false, scope, "Order instance of Any", true);
+}
+
+#[test]
+fn _0013() {
+  let scope = &te_scope(r#"{Order:4.0}"#);
+  te_bool(false, scope, "Order instance of Null", false);
+}
+
+#[test]
+fn _0014() {
   let scope = &te_scope(r#"{Order:null}"#);
   te_bool(false, scope, "Order instance of Null", true);
 }
 
 #[test]
-fn _0012() {
+fn _0015() {
   let scope = &te_scope(r#"{Customer:"Business"}"#);
   te_bool(false, scope, "Customer instance of string", true);
 }
 
 #[test]
-fn _0013() {
+fn _0016() {
   let scope = &te_scope(r#"{Customer:"Business"}"#);
   te_bool(false, scope, "Customer instance of number", false);
 }
 
 #[test]
-fn _0014() {
+fn _0017() {
   let scope = &te_scope(r#"{Customer:"Business"}"#);
   te_bool(false, scope, "Customer instance of boolean", false);
 }
 
 #[test]
-fn _0015() {
+fn _0018() {
   let scope = &te_scope(r#"{Delivery status:true}"#);
   te_bool(false, scope, "Delivery status instance of boolean", true);
 }
 
 #[test]
-fn _0016() {
+fn _0019() {
   let scope = &te_scope(r#"{Delivery status:true}"#);
   te_bool(false, scope, "Delivery status instance of number", false);
 }
 
 #[test]
-fn _0017() {
+fn _0020() {
   let scope = &te_scope(r#"{Delivery status:true}"#);
   te_bool(false, scope, "Delivery status instance of string", false);
 }
 
 #[test]
-fn _0018() {
+fn _0021() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<number>", true);
 }
 
 #[test]
-fn _0019() {
+fn _0022() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<string>", false);
 }
 
 #[test]
-fn _0020() {
+fn _0023() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<boolean>", false);
 }
 
 #[test]
-fn _0021() {
+fn _0024() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<date>", false);
 }
 
 #[test]
-fn _0022() {
+fn _0025() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<time>", false);
 }
 
 #[test]
-fn _0023() {
+fn _0026() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<date and time>", false);
 }
 
 #[test]
-fn _0024() {
+fn _0027() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<years and months duration>", false);
 }
 
 #[test]
-fn _0025() {
+fn _0028() {
   let scope = &te_scope(r#"{Orders:[1,2,3,4]}"#);
   te_bool(false, scope, "Orders instance of list<days and time duration>", false);
 }
 
 #[test]
-fn _0026() {
+fn _0029() {
   let scope = &te_scope(r#"{Items:[1..10]}"#);
   te_bool(false, scope, "Items instance of range<number>", true);
 }
 
 #[test]
-fn _0027() {
-  let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<string>", false);
-}
-
-#[test]
-fn _0028() {
-  let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<boolean>", false);
-}
-
-#[test]
-fn _0029() {
-  let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<date>", false);
-}
-
-#[test]
 fn _0030() {
   let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<time>", false);
+  te_bool(false, scope, "Items instance of Any", true);
 }
 
 #[test]
 fn _0031() {
   let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<date and time>", false);
+  te_bool(false, scope, "Items instance of range<string>", false);
 }
 
 #[test]
 fn _0032() {
   let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<years and months duration>", false);
+  te_bool(false, scope, "Items instance of range<boolean>", false);
 }
 
 #[test]
 fn _0033() {
   let scope = &te_scope(r#"{Items:[1..10]}"#);
-  te_bool(false, scope, "Items instance of range<days and time duration>", false);
+  te_bool(false, scope, "Items instance of range<date>", false);
 }
 
 #[test]
 fn _0034() {
-  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of context<name:string>", false);
+  let scope = &te_scope(r#"{Items:[1..10]}"#);
+  te_bool(false, scope, "Items instance of range<time>", false);
 }
 
 #[test]
 fn _0035() {
-  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of context<name:string,age:number,car:string>", false);
+  let scope = &te_scope(r#"{Items:[1..10]}"#);
+  te_bool(false, scope, "Items instance of range<date and time>", false);
 }
 
 #[test]
 fn _0036() {
-  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of context<name:string,a:number>", false);
+  let scope = &te_scope(r#"{Items:[1..10]}"#);
+  te_bool(false, scope, "Items instance of range<years and months duration>", false);
 }
 
 #[test]
 fn _0037() {
-  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of context<n:string,age:number>", false);
+  let scope = &te_scope(r#"{Items:[1..10]}"#);
+  te_bool(false, scope, "Items instance of range<days and time duration>", false);
 }
 
 #[test]
 fn _0038() {
   let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of context<name:string,age:number>", true);
+  te_bool(false, scope, "Person instance of context<name:string>", false);
 }
 
 #[test]
 fn _0039() {
   let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
-  te_bool(false, scope, "Person instance of function<string>->string", false);
+  te_bool(false, scope, "Person instance of context<name:string,age:number,car:string>", false);
 }
 
 #[test]
 fn _0040() {
+  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
+  te_bool(false, scope, "Person instance of context<name:string,a:number>", false);
+}
+
+#[test]
+fn _0041() {
+  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
+  te_bool(false, scope, "Person instance of context<n:string,age:number>", false);
+}
+
+#[test]
+fn _0042() {
+  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
+  te_bool(false, scope, "Person instance of context<name:string,age:number>", true);
+}
+
+#[test]
+fn _0043() {
+  let scope = &te_scope(r#"{Person:{name:"John",age:49}}"#);
+  te_bool(false, scope, "Person instance of function<string>->string", false);
+}
+
+#[test]
+fn _0044() {
   let scope = &te_scope(r#"{Power: 25.5,engine:{power:280.5}}"#);
   te_bool(false, scope, "Power instance of engine.power", true);
 }
 
-//TODO Add more tests with qualified name to different types
+#[test]
+fn _0045() {
+  let node = AstNode::InstanceOf(Box::new(AstNode::Irrelevant), Box::new(AstNode::FeelType(FeelType::Number)));
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"null(invalid value in 'instance of' operator: Irrelevant)"#, result.ok().unwrap().to_string());
+}

@@ -1212,8 +1212,8 @@ fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::FeelType(feel_type) = rhv {
       match lhv {
         Value::Number { .. } => match feel_type {
@@ -1276,7 +1276,7 @@ fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           FeelType::Any => VALUE_TRUE,
           expected => Value::Boolean(value.type_of() == expected),
         },
-        other => value_null!("invalid value type in 'instance of': {}", other as Value),
+        other => value_null!("invalid value in 'instance of' operator: {}", other),
       }
     } else {
       Value::Boolean(lhv.type_of() == rhv.type_of())
