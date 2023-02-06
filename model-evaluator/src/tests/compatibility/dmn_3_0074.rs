@@ -137,7 +137,7 @@ fn _0016() {
 #[test]
 fn _0017() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dateTime_008_a", &ctx, r#"null(aaa)"#);
+  assert_decision(&MODEL_EVALUATOR, "dateTime_008_a", &ctx, r#"null(could not retrieve time offset for date and time)"#);
 }
 
 #[test]
@@ -149,7 +149,7 @@ fn _0018() {
 #[test]
 fn _0019() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dateTime_009_a", &ctx, r#"null(bbb)"#);
+  assert_decision(&MODEL_EVALUATOR, "dateTime_009_a", &ctx, r#"null(could not retrieve timezone for date and time)"#);
 }
 
 #[test]
@@ -179,13 +179,13 @@ fn _0023() {
 #[test]
 fn _0024() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_004_a", &ctx, r#"null(ccc)"#);
+  assert_decision(&MODEL_EVALUATOR, "time_004_a", &ctx, r#"null(could not retrieve time offset for time)"#);
 }
 
 #[test]
 fn _0025() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_005_a", &ctx, r#"null(ddd)"#);
+  assert_decision(&MODEL_EVALUATOR, "time_005_a", &ctx, r#"null(could not retrieve timezone for time)"#);
 }
 
 #[test]
@@ -215,37 +215,37 @@ fn _0029() {
 #[test]
 fn _0030() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"null(no such property in years and months duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"null(no such property in years and months duration: days)"#);
 }
 
 #[test]
 fn _0031() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"null(no such property in years and months duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"null(no such property in years and months duration: hours)"#);
 }
 
 #[test]
 fn _0032() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"null(no such property in years and months duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"null(no such property in years and months duration: minutes)"#);
 }
 
 #[test]
 fn _0033() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_006", &ctx, r#"null(no such property in years and months duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "ym_duration_006", &ctx, r#"null(no such property in years and months duration: seconds)"#);
 }
 
 #[test]
 fn _0034() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_001", &ctx, r#"null(no such property in days and time duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_001", &ctx, r#"null(no such property in days and time duration: years)"#);
 }
 
 #[test]
 fn _0035() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_002", &ctx, r#"null(no such property in days and time duration)"#);
+  assert_decision(&MODEL_EVALUATOR, "dt_duration_002", &ctx, r#"null(no such property in days and time duration: months)"#);
 }
 
 #[test]

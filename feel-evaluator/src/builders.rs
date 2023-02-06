@@ -1693,17 +1693,17 @@ fn get_property_from_value(value: Value, name: &Name) -> Value {
         if let Some(offset) = date_time.feel_time_offset() {
           Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
         } else {
-          value_null!("aaa")
+          value_null!("could not retrieve time offset for date and time")
         }
       }
       "timezone" => {
         if let Some(feel_time_zone) = date_time.feel_time_zone() {
           Value::String(feel_time_zone)
         } else {
-          value_null!("bbb")
+          value_null!("could not retrieve timezone for date and time")
         }
       }
-      _ => value_null!("no such property in date and time"),
+      other => value_null!("no such property in date and time: {}", other),
     },
     Value::Time(time) => match property_name.as_str() {
       "hour" => Value::Number(time.hour().into()),
@@ -1713,29 +1713,29 @@ fn get_property_from_value(value: Value, name: &Name) -> Value {
         if let Some(offset) = time.feel_time_offset() {
           Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
         } else {
-          value_null!("ccc")
+          value_null!("could not retrieve time offset for time")
         }
       }
       "timezone" => {
         if let Some(feel_time_zone) = time.feel_time_zone() {
           Value::String(feel_time_zone)
         } else {
-          value_null!("ddd")
+          value_null!("could not retrieve timezone for time")
         }
       }
-      _ => value_null!("no such property in date and time"),
+      other => value_null!("no such property in time: {}", other),
     },
     Value::DaysAndTimeDuration(dt_duration) => match property_name.as_str() {
       "days" => Value::Number(dt_duration.get_days().into()),
       "hours" => Value::Number(dt_duration.get_hours().into()),
       "minutes" => Value::Number(dt_duration.get_minutes().into()),
       "seconds" => Value::Number(dt_duration.get_seconds().into()),
-      _ => value_null!("no such property in days and time duration"),
+      other => value_null!("no such property in days and time duration: {}", other),
     },
     Value::YearsAndMonthsDuration(ym_duration) => match property_name.as_str() {
       "years" => Value::Number(ym_duration.years().into()),
       "months" => Value::Number(ym_duration.months().into()),
-      _ => value_null!("no such property in years and months duration"),
+      other => value_null!("no such property in years and months duration: {}", other),
     },
     Value::Range(rs, cs, re, ce) => match property_name.as_str() {
       "start" => *rs,
@@ -1769,7 +1769,7 @@ fn get_property_from_value(value: Value, name: &Name) -> Value {
       other => value_null!("no such property in unary less or equal: {}", other),
     },
     v @ Value::Null(_) => v,
-    other => value_null!("build_path: unexpected type :{}, for property: {}", other, property_name),
+    other => value_null!("unexpected type: {}, for property: {}", other.type_of(), property_name),
   }
 }
 
@@ -1824,18 +1824,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
         Value::List(Values::new(result))
       }
-      v @ Value::Date(_)
-      | v @ Value::DateTime(_)
-      | v @ Value::Time(_)
-      | v @ Value::DaysAndTimeDuration(_)
-      | v @ Value::YearsAndMonthsDuration(_)
-      | v @ Value::Range(_, _, _, _)
-      | v @ Value::UnaryGreater(_)
-      | v @ Value::UnaryGreaterOrEqual(_)
-      | v @ Value::UnaryLess(_)
-      | v @ Value::UnaryLessOrEqual(_) => get_property_from_value(v, &property_name),
-      v @ Value::Null(_) => v,
-      other => value_null!("build_path: unexpected type :{}, for property: {}", other, property_name),
+      other => get_property_from_value(other, &property_name),
     }
   }))
 }
@@ -2315,7 +2304,7 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
 }
 
 ///
-fn eval_in_range(lhv: &Value, l: &Box<Value>, l_closed: bool, r: &Box<Value>, r_closed: bool) -> Value {
+fn eval_in_range(lhv: &Value, l: &Value, l_closed: bool, r: &Value, r_closed: bool) -> Value {
   match lhv {
     Value::Number(value) => match l.borrow() {
       Value::Number(lv) => match r.borrow() {
