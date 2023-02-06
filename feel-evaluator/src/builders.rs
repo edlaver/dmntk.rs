@@ -1060,7 +1060,7 @@ fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Boolean(lh >= rh),
-        _ => value_null!("eval_greater_or_equal_string"),
+        _ => value_null!("eval_greater_or_equal_number"),
       },
       Value::String(lh) => match rhv {
         Value::String(rh) => Value::Boolean(lh >= rh),
