@@ -169,6 +169,7 @@ fn _0022() {
   te_bool(false, scope, "(a) in (1,2,3,4,5)", false);
   te_bool(false, scope, "2 in (<3)", true);
   te_bool(false, scope, "6 in (>5)", true);
+  te_bool(false, scope, "6 in (>3,>5)", true);
   te_bool(false, scope, "2 in (<3,>5)", true);
   te_bool(false, scope, "3 in (<3,>5)", false);
   te_bool(false, scope, "4.12 in (<3,>5)", false);
@@ -485,4 +486,64 @@ fn _0076() {
 #[test]
 fn _0077() {
   te_null(false, &scope!(), r#" 1 in (function() 1) "#, "unexpected argument type in 'in' operator: function<>->Any");
+}
+
+#[test]
+fn _0078() {
+  te_bool(false, &scope!(), r#" null in [1,2,null,3] "#, true);
+}
+
+#[test]
+fn _0079() {
+  te_bool(false, &scope!(), r#" 5 in [1,2,null,3] "#, false);
+}
+
+#[test]
+fn _0080() {
+  te_bool(false, &scope!(), r#" @"10:11:12" in [@"10:11:10", @"10:11:11", @"10:11:12", @"10:11:13"] "#, true);
+}
+
+#[test]
+fn _0081() {
+  te_bool(false, &scope!(), r#" @"10:11:18" in [@"10:11:10", @"10:11:11", @"10:11:12" ,@"10:11:13"] "#, false);
+}
+
+#[test]
+fn _0082() {
+  te_bool(
+    false,
+    &scope!(),
+    r#" @"2023-02-06T10:11:12" in [@"2023-02-06T10:11:10", @"2023-02-06T10:11:11", @"2023-02-06T10:11:12", @"2023-02-06T10:11:13"] "#,
+    true,
+  );
+}
+
+#[test]
+fn _0083() {
+  te_bool(
+    false,
+    &scope!(),
+    r#" @"2023-02-06T10:11:18" in [@"2023-02-06T10:11:10", @"2023-02-06T10:11:11", @"2023-02-06T10:11:12" ,@"2023-02-06T10:11:13"] "#,
+    false,
+  );
+}
+
+#[test]
+fn _0084() {
+  te_bool(false, &scope!(), r#" @"P3D" in [@"P1D", @"P2D", @"P3D", @"P4D"] "#, true);
+}
+
+#[test]
+fn _0085() {
+  te_bool(false, &scope!(), r#" @"P5D" in [@"P1D", @"P2D", @"P3D", @"P4D"] "#, false);
+}
+
+#[test]
+fn _0086() {
+  te_bool(false, &scope!(), r#"[1,2,3] in [1]"#, false);
+}
+
+#[test]
+fn _0087() {
+  te_null(false, &scope!(), r#" 10 in [(function() 1)] "#, "eval_in_list");
 }

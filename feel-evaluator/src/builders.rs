@@ -1163,11 +1163,11 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       | inner @ Value::DaysAndTimeDuration(_)
       | inner @ Value::Context(_) => eval_in_equal(&lhv, &inner),
       Value::Range(l, l_closed, r, r_closed) => eval_in_range(&lhv, &l, l_closed, &r, r_closed),
-      Value::List(inner) => {
-        if let Value::List(_) = lhv {
-          eval_in_list_in_list(&lhv, inner.as_vec())
+      Value::List(r_inner) => {
+        if let Value::List(l_inner) = lhv {
+          eval_in_list_in_list(l_inner.as_vec(), r_inner.as_vec())
         } else {
-          eval_in_list(&lhv, inner.as_vec())
+          eval_in_list(&lhv, r_inner.as_vec())
         }
       }
       Value::ExpressionList(inner) => eval_in_list(&lhv, inner.as_vec()),
@@ -2224,28 +2224,26 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
 }
 
 /// Checks if all elements from `list` are present in `items`.
-fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
-  if let Value::List(lhs) = list {
-    for item in items {
-      if let Value::List(rhs) = item {
-        let mut available: HashSet<usize> = (0..rhs.as_vec().len()).collect();
-        for l in lhs.as_vec() {
-          let mut found = false;
-          for (index, r) in rhs.as_vec().iter().enumerate() {
-            if available.contains(&index) {
-              if let Value::Boolean(true) = eval_in_equal(l, r) {
-                available.remove(&index);
-                found = true;
-                break;
-              }
+fn eval_in_list_in_list(l_items: &[Value], r_items: &[Value]) -> Value {
+  for item in r_items {
+    if let Value::List(rhs) = item {
+      let mut available: HashSet<usize> = (0..rhs.as_vec().len()).collect();
+      for l in l_items {
+        let mut found = false;
+        for (index, r) in rhs.as_vec().iter().enumerate() {
+          if available.contains(&index) {
+            if let Value::Boolean(true) = eval_in_equal(l, r) {
+              available.remove(&index);
+              found = true;
+              break;
             }
           }
-          if !found {
-            return VALUE_FALSE;
-          }
         }
-        return VALUE_TRUE;
+        if !found {
+          return VALUE_FALSE;
+        }
       }
+      return VALUE_TRUE;
     }
   }
   VALUE_FALSE
