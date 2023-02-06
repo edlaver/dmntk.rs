@@ -301,9 +301,9 @@ impl fmt::Display for Value {
       Value::Range(v1, c1, v2, c2) => write!(f, "{}{}..{}{}", if *c1 { '[' } else { '(' }, v1, v2, if *c2 { ']' } else { ')' }),
       Value::String(s) => write!(f, "\"{s}\""),
       Value::Time(time) => write!(f, "{time}"),
-      Value::UnaryGreater(_) => write!(f, "UnaryGreater"),
-      Value::UnaryGreaterOrEqual(_) => write!(f, "UnaryGreaterOrEqual"),
-      Value::UnaryLess(_) => write!(f, "UnaryLess"),
+      Value::UnaryGreater(value) => write!(f, "UnaryGreater({value})"),
+      Value::UnaryGreaterOrEqual(value) => write!(f, "UnaryGreaterOrEqual({value})"),
+      Value::UnaryLess(value) => write!(f, "UnaryLess({value})"),
       Value::UnaryLessOrEqual(value) => write!(f, "UnaryLessOrEqual({value})"),
       Value::YearsAndMonthsDuration(ym_duration) => write!(f, "{ym_duration}"),
     }

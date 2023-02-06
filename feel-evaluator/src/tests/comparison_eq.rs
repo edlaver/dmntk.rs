@@ -34,92 +34,97 @@ use super::*;
 use dmntk_feel::scope;
 
 #[test]
-fn test_0001() {
+fn _0001() {
   te_bool(false, &scope!(), "1=1", true);
 }
 
 #[test]
-fn test_0002() {
+fn _0002() {
   te_bool(false, &scope!(), "100 = null", false);
 }
 
 #[test]
-fn test_0003() {
+fn _0003() {
+  te_bool(false, &scope!(), r#" "a" = null "#, false);
+}
+
+#[test]
+fn _0004() {
   te_bool(false, &scope!(), "1 = 1.000", true);
 }
 
 #[test]
-fn test_0004() {
+fn _0005() {
   te_bool(false, &scope!(), "1.276=1.276", true);
 }
 
 #[test]
-fn test_0005() {
+fn _0006() {
   te_bool(false, &scope!(), ".54635=.54635", true);
 }
 
 #[test]
-fn test_0006() {
+fn _0007() {
   te_bool(false, &scope!(), "(1+1)=2", true);
 }
 
 #[test]
-fn test_0007() {
+fn _0008() {
   te_bool(false, &scope!(), "(1+2)=2", false);
 }
 
 #[test]
-fn test_0008() {
+fn _0009() {
   te_bool(false, &scope!(), " ( 1 + 1 ) = 2", true);
 }
 
 #[test]
-fn test_0009() {
+fn _0010() {
   te_bool(false, &scope!(), " ( 1 + 3 ) = 2", false);
 }
 
 #[test]
-fn test_0010() {
+fn _0011() {
   te_bool(false, &scope!(), "(1+1)=(5-3)", true);
 }
 
 #[test]
-fn test_0011() {
+fn _0012() {
   te_bool(false, &scope!(), "(1*2)=(10/5)", true);
 }
 
 #[test]
-fn test_0012() {
+fn _0013() {
   te_bool(false, &scope!(), "true=true", true);
 }
 
 #[test]
-fn test_0013() {
+fn _0014() {
   te_bool(false, &scope!(), "true=false", false);
 }
 
 #[test]
-fn test_0014() {
+fn _0015() {
   te_bool(false, &scope!(), "false=true", false);
 }
 
 #[test]
-fn test_0015() {
+fn _0016() {
   te_bool(false, &scope!(), "true=true", true);
 }
 
 #[test]
-fn test_0016() {
+fn _0017() {
   te_bool(false, &scope!(), "true=null", false);
 }
 
 #[test]
-fn test_0017() {
+fn _0018() {
   te_bool(false, &scope!(), r#"(10 = 10)"#, true);
 }
 
 #[test]
-fn test_0018() {
+fn _0019() {
   te_null(
     false,
     &scope!(),
@@ -129,36 +134,241 @@ fn test_0018() {
 }
 
 #[test]
-fn test_0019() {
+fn _0020() {
   te_bool(false, &scope!(), r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bar"}}"#, true);
 }
 
 #[test]
-fn test_0020() {
+fn _0021() {
   te_bool(false, &scope!(), r#"{a: {c: "bar", b: "foo"}} = {a: {b: "foo", c: "bars"}}"#, false);
 }
 
 #[test]
-fn test_0021() {
+fn _0022() {
+  te_bool(false, &scope!(), r#"{a: {b: "bar", c: "car"}} = {a: {b: "bar", c: "car", d: "dar"}}"#, false);
+}
+
+#[test]
+fn _0023() {
+  te_bool(false, &scope!(), r#"{a: {b: "bar", c: "car"}} = {a: {b: "bar", c: null}}"#, false);
+}
+
+#[test]
+fn _0024() {
+  te_null(
+    false,
+    &scope!(),
+    r#"{a: {b: "bar", c: {x: "car"}}} = {a: {b: "bar", c: 15}}"#,
+    r#"equal err '{a: {b: "bar", c: {x: "car"}}}' =?= '{a: {b: "bar", c: 15}}'"#,
+  );
+}
+
+#[test]
+fn _0025() {
+  te_bool(false, &scope!(), r#"{a: {b: "bar", c: "car"}} = null"#, false);
+}
+
+#[test]
+fn _0026() {
+  te_null(false, &scope!(), r#"{a: {b: "bar", c: "car"}} = 15"#, r#"equal err '{a: {b: "bar", c: "car"}}' =?= '15'"#);
+}
+
+#[test]
+fn _0027() {
   te_bool(false, &scope!(), r#"[1,2,3] = [1,2,3]"#, true);
 }
 
 #[test]
-fn test_0022() {
+fn _0028() {
+  te_bool(false, &scope!(), r#"[1,2,3] = [1,2,3,4]"#, false);
+}
+
+#[test]
+fn _0029() {
+  te_bool(false, &scope!(), r#"[1,2,3] = null"#, false);
+}
+
+#[test]
+fn _0030() {
+  te_null(false, &scope!(), r#"[1,2,3] = "a" "#, r#"equal err '[1, 2, 3]' =?= '"a"'"#);
+}
+
+#[test]
+fn _0031() {
   te_bool(false, &scope!(), r#" @"P0D" = @"-P0D" "#, true);
 }
 
 #[test]
-fn test_0023() {
+fn _0032() {
   te_bool(false, &scope!(), r#" @"2002-04-02T23:00:00-04:00" = @"2002-04-03T02:00:00-01:00" "#, true);
 }
 
 #[test]
-fn test_0024() {
+fn _0033() {
   te_bool(
     false,
     &scope!(),
     r#" date and time("2018-12-08T00:00:00+00:00") = date and time("2018-12-08T00:00:00@Etc/UTC") "#,
     true,
   );
+}
+
+#[test]
+fn _0034() {
+  te_bool(false, &scope!(), r#" @"2018-12-08" = null "#, false);
+}
+
+#[test]
+fn _0035() {
+  te_null(false, &scope!(), r#" @"2018-12-08" = 2018 "#, r#"equal err '2018-12-08' =?= '2018'"#);
+}
+
+#[test]
+fn _0036() {
+  te_bool(false, &scope!(), r#" @"2018-12-08T10:11:12" = null "#, false);
+}
+
+#[test]
+fn _0037() {
+  te_null(false, &scope!(), r#" @"2018-12-08T10:11:12" = 2018 "#, r#"equal err '2018-12-08T10:11:12' =?= '2018'"#);
+}
+
+#[test]
+fn _0038() {
+  te_bool(false, &scope!(), r#" @"10:11:12" = null "#, false);
+}
+
+#[test]
+fn _0039() {
+  te_null(false, &scope!(), r#" @"10:11:12" = 10 "#, r#"equal err '10:11:12' =?= '10'"#);
+}
+
+#[test]
+fn _0040() {
+  te_bool(false, &scope!(), r#" @"P1D" = null "#, false);
+}
+
+#[test]
+fn _0041() {
+  te_null(false, &scope!(), r#" @"P1D" = "P1D" "#, r#"equal err 'P1D' =?= '"P1D"'"#);
+}
+
+#[test]
+fn _0042() {
+  te_bool(false, &scope!(), r#" @"P1Y" = null "#, false);
+}
+
+#[test]
+fn _0043() {
+  te_null(false, &scope!(), r#" @"P1Y" = "P1Y" "#, r#"equal err 'P1Y' =?= '"P1Y"'"#);
+}
+
+#[test]
+fn _0044() {
+  let scope = te_scope("{ start: null }");
+  te_bool(false, &scope, r#" <= 10 = (start..10]" "#, true);
+}
+
+#[test]
+fn _0045() {
+  te_null(false, &scope!(), r#" <= 10 = (null)" "#, "equal err 'UnaryLessOrEqual(10)' =?= 'null'");
+}
+
+#[test]
+fn _0046() {
+  let scope = te_scope("{ start: null }");
+  te_bool(false, &scope, r#" <= 10 = [start..10]" "#, false);
+}
+
+#[test]
+fn _0047() {
+  let scope = te_scope("{ start: null }");
+  te_bool(false, &scope, r#" < 10 = (start..10)" "#, true);
+}
+
+#[test]
+fn _0048() {
+  te_null(false, &scope!(), r#" < 10 = (null)" "#, "equal err 'UnaryLess(10)' =?= 'null'");
+}
+
+#[test]
+fn _0049() {
+  let scope = te_scope("{ start: null }");
+  te_bool(false, &scope, r#" < 10 = (start..10]" "#, false);
+}
+
+#[test]
+fn _0050() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" >= 10 = [10..end)" "#, true);
+}
+
+#[test]
+fn _0051() {
+  te_null(false, &scope!(), r#" >= 10 = (null)" "#, "equal err 'UnaryGreaterOrEqual(10)' =?= 'null'");
+}
+
+#[test]
+fn _0052() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" >= 10 = [10..end]" "#, false);
+}
+
+#[test]
+fn _0053() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" >= 10 = [10..end)" "#, true);
+}
+
+#[test]
+fn _0054() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" >= 10 = [10..end]" "#, false);
+}
+
+#[test]
+fn _0055() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" > 10 = (10..end)" "#, true);
+}
+
+#[test]
+fn _0056() {
+  te_null(false, &scope!(), r#" > 10 = (null)" "#, "equal err 'UnaryGreater(10)' =?= 'null'");
+}
+
+#[test]
+fn _0057() {
+  let scope = te_scope("{ end: null }");
+  te_bool(false, &scope, r#" > 10 = (10..end]" "#, false);
+}
+
+#[test]
+fn _0058() {
+  te_bool(false, &scope!(), r#" [1..2] = [1..2] "#, true);
+}
+
+#[test]
+fn _0059() {
+  te_bool(false, &scope!(), r#" [1..3] = [1..2] "#, false);
+}
+
+#[test]
+fn _0060() {
+  te_bool(false, &scope!(), r#" [1..2] = [1..2) "#, false);
+}
+
+#[test]
+fn _0061() {
+  te_bool(false, &scope!(), r#" (1..2] = [1..2] "#, false);
+}
+
+#[test]
+fn _0062() {
+  te_bool(false, &scope!(), r#" (1..2] = null "#, false);
+}
+
+#[test]
+fn _0063() {
+  te_null(false, &scope!(), r#" (1..2] = 10 "#, r#"equal err '(1..2]' =?= '10'"#);
 }

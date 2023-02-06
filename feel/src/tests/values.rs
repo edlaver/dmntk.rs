@@ -154,9 +154,9 @@ fn test_display() {
   eq_dsp!(r#"(1..1]"#, Value::Range(b_number.clone(), false, b_number.clone(), true));
   eq_dsp!(r#""beta""#, Value::String("beta".to_string()));
   eq_dsp!(r#"12:13:23"#, Value::Time(v_time));
-  eq_dsp!(r#"UnaryGreater"#, Value::UnaryGreater(b_number.clone()));
-  eq_dsp!(r#"UnaryGreaterOrEqual"#, Value::UnaryGreaterOrEqual(b_number.clone()));
-  eq_dsp!(r#"UnaryLess"#, Value::UnaryLess(b_number.clone()));
+  eq_dsp!(r#"UnaryGreater(1)"#, Value::UnaryGreater(b_number.clone()));
+  eq_dsp!(r#"UnaryGreaterOrEqual(1)"#, Value::UnaryGreaterOrEqual(b_number.clone()));
+  eq_dsp!(r#"UnaryLess(1)"#, Value::UnaryLess(b_number.clone()));
   eq_dsp!(r#"UnaryLessOrEqual(1)"#, Value::UnaryLessOrEqual(b_number));
   eq_dsp!(r#"P3Y2M"#, Value::YearsAndMonthsDuration(v_years_and_months_duration));
 }

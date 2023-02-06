@@ -2162,6 +2162,7 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
         }
         Some(false)
       }
+      Value::Null(_) => Some(false),
       _ => None,
     },
     _ => None,
