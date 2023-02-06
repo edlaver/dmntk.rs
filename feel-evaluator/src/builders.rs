@@ -1152,7 +1152,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
     match rhv {
-      inner @ Value::Number(_)
+      inner @ Value::Null(_)
+      | inner @ Value::Number(_)
       | inner @ Value::String(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)
@@ -1176,9 +1177,7 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::UnaryGreater(inner) => eval_in_unary_greater(&lhv, inner.borrow()),
       Value::UnaryGreaterOrEqual(inner) => eval_in_unary_greater_or_equal(&lhv, inner.borrow()),
       Value::Irrelevant => VALUE_TRUE,
-      _ => {
-        value_null!("eval_in")
-      }
+      _ => value_null!("unexpected argument type in 'in' operator: {}", rhv.type_of()),
     }
   }))
 }
