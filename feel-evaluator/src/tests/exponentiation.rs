@@ -142,3 +142,13 @@ fn test_0021() {
 fn test_0022() {
   te_null(false, &scope!(), r#"4 ** "foo""#, r#"exponentiation exponent is not a number"#);
 }
+
+#[test]
+fn test_0023() {
+  te_null(
+    false,
+    &scope!(),
+    r#"4 ** 10000000000000000000000000000000000000000"#,
+    r#"exponentiation result is not a finite number"#,
+  );
+}

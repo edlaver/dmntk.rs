@@ -121,14 +121,3 @@ fn _0017() {
   let scope = &te_scope("{}");
   te_null(false, scope, "sqrt(null)", r#"sqrt: argument must be a number"#);
 }
-
-#[test]
-fn _0018() {
-  let scope = &te_scope("{}");
-  te_null(
-    false,
-    scope,
-    "sqrt(exp(1000000000000000000000000000000000000000000000))",
-    r#"sqrt: result is not a finite number"#,
-  );
-}

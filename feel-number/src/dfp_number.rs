@@ -105,8 +105,13 @@ impl FeelNumber {
     bid128_is_zero(bid128_rem(self.0, Self::two().0, flags!()))
   }
   ///
-  pub fn exp(&self) -> Self {
-    Self(bid128_exp(self.0, round!(), flags!()), true)
+  pub fn exp(&self) -> Option<Self> {
+    let n = bid128_exp(self.0, round!(), flags!());
+    if bid128_is_finite(n) {
+      Some(Self(n, true))
+    } else {
+      None
+    }
   }
   ///
   pub fn floor(&self) -> Self {

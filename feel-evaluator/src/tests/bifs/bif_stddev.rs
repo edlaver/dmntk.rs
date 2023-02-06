@@ -103,7 +103,7 @@ fn _0012() {
   te_null(
     false,
     &scope!(),
-    r#"stddev([1,exp(1000000000000000000000000000000000000000000000)])"#,
+    r#"stddev([1, 4 ** 6174, 4 ** 6174, 4 ** 6174])"#,
     r#"stddev: intermediate result is not a finite number"#,
   );
 }

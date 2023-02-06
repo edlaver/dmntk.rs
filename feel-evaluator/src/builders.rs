@@ -606,8 +606,8 @@ fn build_exp(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::Number(lh) = lhv {
       if let Value::Number(rh) = rhv {
         if let Some(result) = lh.pow(&rh) {

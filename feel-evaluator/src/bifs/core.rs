@@ -759,7 +759,9 @@ pub fn even(number_value: &Value) -> Value {
 /// Returns the Euler’s number e raised to the power of **value** given as a parameter.
 pub fn exp(value: &Value) -> Value {
   if let Value::Number(num) = value {
-    return Value::Number(num.exp());
+    if let Some(n) = num.exp() {
+      return Value::Number(n);
+    }
   }
   value_null!("exp")
 }

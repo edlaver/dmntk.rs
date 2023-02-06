@@ -280,7 +280,7 @@ fn _0048() {
     &MODEL_EVALUATOR,
     "divide_lhs_ymDuration_by_rhs_ymDuration_002",
     &CTX,
-    r#"null([division] incompatible types: P10D * P0Y)"#,
+    r#"null([division] incompatible types: P10D / P0Y)"#,
   );
 }
 
@@ -4285,7 +4285,7 @@ fn _0548() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_string",
     &CTX,
-    r#"null([division] incompatible types: P1D * "10")"#,
+    r#"null([division] incompatible types: P1D / "10")"#,
   );
 }
 
@@ -4295,7 +4295,7 @@ fn _0549() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_boolean",
     &CTX,
-    r#"null([division] incompatible types: P1D * true)"#,
+    r#"null([division] incompatible types: P1D / true)"#,
   );
 }
 
@@ -4305,7 +4305,7 @@ fn _0550() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_date",
     &CTX,
-    r#"null([division] incompatible types: P1D * 2021-01-01)"#,
+    r#"null([division] incompatible types: P1D / 2021-01-01)"#,
   );
 }
 
@@ -4315,7 +4315,7 @@ fn _0551() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_dateAndTime",
     &CTX,
-    r#"null([division] incompatible types: P1D * 2021-01-01T10:10:10)"#,
+    r#"null([division] incompatible types: P1D / 2021-01-01T10:10:10)"#,
   );
 }
 
@@ -4325,7 +4325,7 @@ fn _0552() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_time",
     &CTX,
-    r#"null([division] incompatible types: P1D * 10:10:10)"#,
+    r#"null([division] incompatible types: P1D / 10:10:10)"#,
   );
 }
 
@@ -4335,7 +4335,7 @@ fn _0553() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_list",
     &CTX,
-    r#"null([division] incompatible types: P1D * [10])"#,
+    r#"null([division] incompatible types: P1D / [10])"#,
   );
 }
 
@@ -4345,7 +4345,7 @@ fn _0554() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_context",
     &CTX,
-    r#"null([division] incompatible types: P1D * {a: 10})"#,
+    r#"null([division] incompatible types: P1D / {a: 10})"#,
   );
 }
 
@@ -4355,7 +4355,7 @@ fn _0555() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_ymDuration",
     &CTX,
-    r#"null([division] incompatible types: P1D * P1Y)"#,
+    r#"null([division] incompatible types: P1D / P1Y)"#,
   );
 }
 
@@ -4365,7 +4365,7 @@ fn _0556() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_range",
     &CTX,
-    r#"null([division] incompatible types: P1D * [1..10])"#,
+    r#"null([division] incompatible types: P1D / [1..10])"#,
   );
 }
 
@@ -4375,7 +4375,7 @@ fn _0557() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_function",
     &CTX,
-    r#"null([division] incompatible types: P1D * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+    r#"null([division] incompatible types: P1D / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
 }
 
@@ -4385,7 +4385,7 @@ fn _0558() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_dtDuration_by_rhs_null",
     &CTX,
-    r#"null([division] incompatible types: P1D * null)"#,
+    r#"null([division] incompatible types: P1D / null)"#,
   );
 }
 
@@ -4395,7 +4395,7 @@ fn _0559() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_string",
     &CTX,
-    r#"null([division] incompatible types: P1Y * "10")"#,
+    r#"null([division] incompatible types: P1Y / "10")"#,
   );
 }
 
@@ -4405,7 +4405,7 @@ fn _0560() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_boolean",
     &CTX,
-    r#"null([division] incompatible types: P1Y * true)"#,
+    r#"null([division] incompatible types: P1Y / true)"#,
   );
 }
 
@@ -4415,7 +4415,7 @@ fn _0561() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_date",
     &CTX,
-    r#"null([division] incompatible types: P1Y * 2021-01-01)"#,
+    r#"null([division] incompatible types: P1Y / 2021-01-01)"#,
   );
 }
 
@@ -4425,7 +4425,7 @@ fn _0562() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_dateAndTime",
     &CTX,
-    r#"null([division] incompatible types: P1Y * 2021-01-01T10:10:10)"#,
+    r#"null([division] incompatible types: P1Y / 2021-01-01T10:10:10)"#,
   );
 }
 
@@ -4435,7 +4435,7 @@ fn _0563() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_time",
     &CTX,
-    r#"null([division] incompatible types: P1Y * 10:10:10)"#,
+    r#"null([division] incompatible types: P1Y / 10:10:10)"#,
   );
 }
 
@@ -4445,7 +4445,7 @@ fn _0564() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_list",
     &CTX,
-    r#"null([division] incompatible types: P1Y * [10])"#,
+    r#"null([division] incompatible types: P1Y / [10])"#,
   );
 }
 
@@ -4455,7 +4455,7 @@ fn _0565() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_context",
     &CTX,
-    r#"null([division] incompatible types: P1Y * {a: 10})"#,
+    r#"null([division] incompatible types: P1Y / {a: 10})"#,
   );
 }
 
@@ -4465,7 +4465,7 @@ fn _0566() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_dtDuration",
     &CTX,
-    r#"null([division] incompatible types: P1Y * P1D)"#,
+    r#"null([division] incompatible types: P1Y / P1D)"#,
   );
 }
 
@@ -4475,7 +4475,7 @@ fn _0567() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_range",
     &CTX,
-    r#"null([division] incompatible types: P1Y * [1..10])"#,
+    r#"null([division] incompatible types: P1Y / [1..10])"#,
   );
 }
 
@@ -4485,7 +4485,7 @@ fn _0568() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_function",
     &CTX,
-    r#"null([division] incompatible types: P1Y * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
+    r#"null([division] incompatible types: P1Y / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
 }
 
@@ -4495,7 +4495,7 @@ fn _0569() {
     &MODEL_EVALUATOR,
     "error_when_divide_lhs_ymDuration_by_rhs_null",
     &CTX,
-    r#"null([division] incompatible types: P1Y * null)"#,
+    r#"null([division] incompatible types: P1Y / null)"#,
   );
 }
 

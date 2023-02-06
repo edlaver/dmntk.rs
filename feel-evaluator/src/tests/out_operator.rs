@@ -35,7 +35,7 @@ use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
-  let node = &AstNode::Out(
+  let node = AstNode::Out(
     Box::new(AstNode::Numeric("21".to_string(), "".to_string())),
     Box::new(AstNode::Numeric("21".to_string(), "".to_string())),
   );

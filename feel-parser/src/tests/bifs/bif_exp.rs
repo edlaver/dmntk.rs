@@ -30,8 +30,24 @@
  * limitations under the License.
  */
 
-mod bif_abs;
-mod bif_exp;
-mod bif_list_contains;
-mod bif_not;
-mod bif_sort;
+use super::super::*;
+use crate::lalr::TokenType::StartTextualExpression;
+
+#[test]
+fn _0001() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartTextualExpression,
+    "exp(100000000000000000000000000000)",
+    r#"
+       FunctionInvocation
+       ├─ Name
+       │  └─ `exp`
+       └─ PositionalParameters
+          └─ Numeric
+             └─ `100000000000000000000000000000.`
+    "#,
+    false,
+  );
+}
