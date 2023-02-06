@@ -128,13 +128,93 @@ fn _0017() {
 }
 
 #[test]
+fn _0018() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"2023-02-06" - @"2021-02-06" "#, "P730D");
+}
+
+#[test]
+fn _0019() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"2023-02-06" - @"2021-02-06T12:13:18Z" "#, "P729DT11H46M42S");
+}
+
+#[test]
+fn _0020() {
+  te_date(false, &scope!(), r#" @"2023-02-06" - @"P1Y1M" "#, 2022, 1, 6);
+}
+
+#[test]
+fn _0021() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"2023-02-06T12:13:18Z" - @"2021-02-06" "#, "P730DT12H13M18S");
+}
+
+#[test]
+fn _0022() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"2023-02-06T12:13:18" - @"2021-02-06T12:13:18" "#, "P730D");
+}
+
+#[test]
+fn _0023() {
+  te_date_time_local(false, &scope!(), r#" @"2023-02-06T12:13:18" - @"P1DT2H" "#, (2023, 2, 5), (10, 13, 18, 0));
+}
+
+#[test]
+fn _0024() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"12:34:56" - @"09:15:36" "#, "PT3H19M20S");
+}
+
+#[test]
+fn _0025() {
+  te_date_time_local(false, &scope!(), r#" @"2023-02-06T12:13:18" - @"P1Y" "#, (2022, 2, 6), (12, 13, 18, 0));
+}
+
+#[test]
+fn _0026() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"P2DT3H" - @"PT3H" "#, "P2D");
+}
+
+#[test]
+fn _0027() {
+  te_years_and_months_duration_x(false, &scope!(), r#" @"P2Y5M" - @"P5M" "#, "P2Y");
+}
+
+#[test]
 /// Date converted to date and time has the timezone equal to UTC 00:00:00. Subtracted date and time has local timezone.
 /// Such subtraction is not allowed (both date and times should have offset defined), that's why null value should be returned.
-fn _0018() {
+fn _0028() {
   te_null(
     false,
     &scope!(),
     r#" @"2021-01-02" - @"2021-01-01T10:10:10" "#,
     "[subtraction] incompatible types: 2021-01-02 - 2021-01-01T10:10:10",
+  );
+}
+
+#[test]
+fn _0029() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-06T12:13:18" - 5 "#,
+    "[subtraction] incompatible types: 2023-02-06T12:13:18 - 5",
+  );
+}
+
+#[test]
+fn _0030() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"999999999-01-01T00:00:00" - @"P20D" "#,
+    "[subtraction] incompatible types: 999999999-01-01T00:00:00 - P20D",
+  );
+}
+
+#[test]
+fn _0031() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"999999999-01-01T00:00:00" - @"P20Y" "#,
+    "[subtraction] incompatible types: 999999999-01-01T00:00:00 - P20Y",
   );
 }
