@@ -31,57 +31,74 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn test_0001() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "1/1", 1, 0);
+  te_number(false, &scope!(), r#" 1/1 "#, 1, 0);
 }
 
 #[test]
 fn test_0002() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, " 1 / 2 ", 5, 1);
+  te_number(false, &scope!(), r#" 1 / 2 "#, 5, 1);
 }
 
 #[test]
 fn test_0003() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, " 5 / 2 / 4 ", 625, 3);
+  te_number(false, &scope!(), r#" 5 / 2 / 4 "#, 625, 3);
 }
 
 #[test]
 fn test_0004() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "10/2/5", 1, 0);
+  te_number(false, &scope!(), r#" 10 / 2 / 5"#, 1, 0);
 }
 
 #[test]
 fn test_0005() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "( 1 / 2 ) / ( 12 / 6 )", 25, 2);
+  te_number(false, &scope!(), r#"( 1 / 2 ) / ( 12 / 6 )"#, 25, 2);
 }
 
 #[test]
 fn test_0006() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "( ( ( 6 / 3 ) ) )", 2, 0);
+  te_number(false, &scope!(), r#"( ( ( 6 / 3 ) ) )"#, 2, 0);
 }
 
 #[test]
 fn test_0007() {
-  let scope = &te_scope(r#"{}"#);
-  te_number_x(false, scope, "1/3", "0.3333333333333333333333333333333333");
+  te_number_x(false, &scope!(), r#"1/3"#, r#"0.3333333333333333333333333333333333"#);
 }
 
 #[test]
 fn test_0008() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "1.01/2", 505, 3);
+  te_number(false, &scope!(), r#"1.01/2"#, 505, 3);
 }
 
 #[test]
 fn test_0009() {
-  let scope = &te_scope(r#"{}"#);
-  te_null(false, scope, "0.0 / 0.0", "[division] division by zero");
+  te_null(false, &scope!(), r#"0.0 / 0.0"#, r#"[division] division by zero"#);
+}
+
+#[test]
+fn test_0010() {
+  te_null(false, &scope!(), r#" 0.0 / "a" "#, r#"[division] incompatible types: 0.0 / "a""#);
+}
+
+#[test]
+fn test_0011() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"P10D" / 2 "#, r#"P5D"#);
+}
+
+#[test]
+fn test_0012() {
+  te_null(false, &scope!(), r#" @"P10D" / 0 "#, r#"[division] division by zero"#);
+}
+
+#[test]
+fn test_0013() {
+  te_years_and_months_duration_x(false, &scope!(), r#" @"P10Y" / 2 "#, r#"P5Y"#);
+}
+
+#[test]
+fn test_0014() {
+  te_null(false, &scope!(), r#" @"P10Y" / 0 "#, r#"[division] division by zero"#);
 }
