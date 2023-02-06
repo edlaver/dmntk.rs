@@ -1161,7 +1161,7 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       | inner @ Value::YearsAndMonthsDuration(_)
       | inner @ Value::DaysAndTimeDuration(_)
       | inner @ Value::Context(_) => eval_in_equal(&lhv, &inner),
-      Value::Range(_, _, _, _) => eval_in_range(&lhv, &rhv),
+      Value::Range(l, l_closed, r, r_closed) => eval_in_range(&lhv, &l, l_closed, &r, r_closed),
       Value::List(inner) => {
         if let Value::List(_) = lhv {
           eval_in_list_in_list(&lhv, inner.as_vec())
@@ -2223,8 +2223,8 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
           return VALUE_TRUE;
         }
       }
-      inner @ Value::Range(_, _, _, _) => {
-        if let Value::Boolean(true) = eval_in_range(left, inner) {
+      Value::Range(l, l_closed, r, r_closed) => {
+        if let Value::Boolean(true) = eval_in_range(left, l, *l_closed, r, *r_closed) {
           return VALUE_TRUE;
         }
       }
@@ -2304,8 +2304,8 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
           return Value::Boolean(false);
         }
       }
-      inner @ Value::Range(_, _, _, _) => {
-        if let Value::Boolean(true) = eval_in_range(left, inner) {
+      Value::Range(l, l_closed, r, r_closed) => {
+        if let Value::Boolean(true) = eval_in_range(left, l, *l_closed, r, *r_closed) {
           return Value::Boolean(false);
         }
       }
@@ -2316,102 +2316,81 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
 }
 
 ///
-fn eval_in_range(left: &Value, right: &Value) -> Value {
-  match left {
-    Value::Number(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Number(lv) => match r.borrow() {
-          Value::Number(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+fn eval_in_range(lhv: &Value, l: &Box<Value>, l_closed: bool, r: &Box<Value>, r_closed: bool) -> Value {
+  match lhv {
+    Value::Number(value) => match l.borrow() {
+      Value::Number(lv) => match r.borrow() {
+        Value::Number(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::String(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::String(lv) => match r.borrow() {
-          Value::String(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::String(value) => match l.borrow() {
+      Value::String(lv) => match r.borrow() {
+        Value::String(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::Date(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Date(lv) => match r.borrow() {
-          Value::Date(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::Date(value) => match l.borrow() {
+      Value::Date(lv) => match r.borrow() {
+        Value::Date(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::Time(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Time(lv) => match r.borrow() {
-          Value::Time(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::Time(value) => match l.borrow() {
+      Value::Time(lv) => match r.borrow() {
+        Value::Time(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::DateTime(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::DateTime(lv) => match r.borrow() {
-          Value::DateTime(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::DateTime(value) => match l.borrow() {
+      Value::DateTime(lv) => match r.borrow() {
+        Value::DateTime(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::YearsAndMonthsDuration(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::YearsAndMonthsDuration(lv) => match r.borrow() {
-          Value::YearsAndMonthsDuration(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::YearsAndMonthsDuration(value) => match l.borrow() {
+      Value::YearsAndMonthsDuration(lv) => match r.borrow() {
+        Value::YearsAndMonthsDuration(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::DaysAndTimeDuration(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::DaysAndTimeDuration(lv) => match r.borrow() {
-          Value::DaysAndTimeDuration(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::DaysAndTimeDuration(value) => match l.borrow() {
+      Value::DaysAndTimeDuration(lv) => match r.borrow() {
+        Value::DaysAndTimeDuration(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
