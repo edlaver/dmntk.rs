@@ -73,3 +73,17 @@ fn _0005() {
   let result = crate::evaluate(&scope!(), &node);
   assert_eq!(r#"null(expected a feel type)"#, result.ok().unwrap().to_string());
 }
+
+#[test]
+fn _0006() {
+  let node = AstNode::RangeType(Box::new(AstNode::FeelType(FeelType::Number)));
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"type(range<number>)"#, result.ok().unwrap().to_string());
+}
+
+#[test]
+fn _0007() {
+  let node = AstNode::RangeType(Box::new(AstNode::Numeric("0".into(), "0".into())));
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"null(expected a feel type)"#, result.ok().unwrap().to_string());
+}
