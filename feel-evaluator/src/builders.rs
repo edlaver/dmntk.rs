@@ -2740,7 +2740,7 @@ mod tests {
   fn test_unimplemented_external_function_kind() {
     let evaluator = Box::new(move |_: &FeelScope| Value::Boolean(false)) as Evaluator;
     let body = FunctionBody::External(Arc::new(evaluator));
-    let result = eval_external_function_definition(&scope!(), &vec![], &body, FeelType::Boolean);
+    let result = eval_external_function_definition(&scope!(), &[], &body, FeelType::Boolean);
     assert_eq!("null(expected JAVA or PMML mapping, actual value is false)", result.to_string())
   }
 }
