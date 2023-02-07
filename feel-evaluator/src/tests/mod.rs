@@ -74,6 +74,7 @@ mod name;
 mod negation;
 mod out_operator;
 mod parentheses;
+mod path;
 mod properties;
 mod range;
 mod satisfies;

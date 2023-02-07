@@ -1462,13 +1462,12 @@ fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::ParameterName(name) = lhs {
     let lhv = Value::ParameterName(name.clone());
     let rhe = build_evaluator(rhs)?;
-    Ok(Box::new(move |scope: &FeelScope| {
+    return Ok(Box::new(move |scope: &FeelScope| {
       let rhv = rhe(scope);
       Value::NamedParameter(Box::new(lhv.clone()), Box::new(rhv))
-    }))
-  } else {
-    Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
+    }));
   }
+  Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
 }
 
 fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
