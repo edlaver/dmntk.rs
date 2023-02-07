@@ -79,6 +79,7 @@ mod range;
 mod satisfies;
 mod some_expression;
 mod subtraction;
+mod types;
 mod unary_tests;
 mod various;
 
