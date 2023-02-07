@@ -1531,7 +1531,7 @@ fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
   if let Ok(num) = text.parse::<FeelNumber>() {
     Ok(Box::new(move |_: &FeelScope| Value::Number(num)))
   } else {
-    Ok(Box::new(move |_: &FeelScope| value_null!("failed to convert text '{text}' into number")))
+    Ok(Box::new(move |_: &FeelScope| value_null!("failed to convert text '{}' into number", text)))
   }
 }
 

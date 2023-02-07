@@ -67,6 +67,7 @@ mod iterations;
 mod join;
 mod literal_at;
 mod literal_boolean;
+mod literal_numeric;
 mod multiline;
 mod multiplication;
 mod name;
