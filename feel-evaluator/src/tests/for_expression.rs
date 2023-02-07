@@ -31,17 +31,16 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"for n in [12,8,32] return n + 1"#, "[13,9,33]");
+  te_be_value(false, &scope!(), r#"for n in [12,8,32] return n + 1"#, "[13,9,33]");
 }
 
 #[test]
 fn _0002() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"for n in 1..10 return n - 1"#, "[0,1,2,3,4,5,6,7,8,9]");
+  te_be_value(false, &scope!(), r#"for n in 1..10 return n - 1"#, "[0,1,2,3,4,5,6,7,8,9]");
 }
 
 #[test]
@@ -82,10 +81,9 @@ fn _0004() {
 
 #[test]
 fn _0005() {
-  let scope = &te_scope(r#"{}"#);
   te_be_value(
     false,
-    scope,
+    &scope!(),
     r#"
       for x in [1,2,3],
           y in [6,7,8]
@@ -97,10 +95,9 @@ fn _0005() {
 
 #[test]
 fn _0006() {
-  let scope = &te_scope(r#"{}"#);
   te_be_value(
     false,
-    scope,
+    &scope!(),
     r#"for x in [1,2,3], y in [6,7,8], z in [-1,-2,-3] return x + y + z"#,
     "[6,5,4,7,6,5,8,7,6,7,6,5,8,7,6,9,8,7,8,7,6,9,8,7,10,9,8]",
   );
@@ -108,6 +105,5 @@ fn _0006() {
 
 #[test]
 fn _0007() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"for n in 4..2 return n"#, "[4,3,2]");
+  te_be_value(false, &scope!(), r#"for n in 4..2 return n"#, "[4,3,2]");
 }
