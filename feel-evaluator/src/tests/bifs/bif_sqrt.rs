@@ -31,6 +31,7 @@
  */
 
 use super::super::*;
+use crate::bifs::core::sqrt;
 use dmntk_feel::scope;
 
 #[test]
@@ -120,4 +121,10 @@ fn _0016() {
 fn _0017() {
   let scope = &te_scope("{}");
   te_null(false, scope, "sqrt(null)", r#"sqrt: argument must be a number"#);
+}
+
+#[test]
+fn _0018() {
+  let result = sqrt(&Value::Number(FeelNumber::infinite()));
+  assert_eq!("null(sqrt: result is not a finite number)", result.to_string());
 }

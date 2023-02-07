@@ -63,34 +63,46 @@ macro_rules! round {
 pub struct FeelNumber(BID128, bool);
 
 impl FeelNumber {
+  /// Returns [FeelNumber] value Inf (infinite).
+  pub fn infinite() -> FeelNumber {
+    Self(bid128_inf(), false)
+  }
+
   /// Returns [FeelNumber] value 0 (zero).
   pub fn zero() -> FeelNumber {
     Self(bid128_from_uint64(0), false)
   }
+
   /// Returns [FeelNumber] value 1 (one).
   pub fn one() -> FeelNumber {
     Self(bid128_from_uint64(1), false)
   }
+
   /// Returns [FeelNumber] value 2 (two).
   pub fn two() -> FeelNumber {
     Self(bid128_from_uint64(2), false)
   }
+
   /// Returns [FeelNumber] value 1000000000 (billion).
   pub fn billion() -> FeelNumber {
     Self(bid128_from_uint64(1_000_000_000), false)
   }
+
   /// Creates a new [FeelNumber] from integer value and a scale.
   pub fn new(n: i64, s: i32) -> Self {
     Self(bid128_scalbn(bid128_from_int64(n), -s), false)
   }
+
   /// Creates a new [FeelNumber] from [isize].
   fn from_isize(n: isize) -> Self {
     Self(bid128_from_string(&format!("{n}"), round!(), flags!()), false)
   }
+
   /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
     Self(bid128_abs(self.0), false)
   }
+
   /// Returns a nearest integer greater than this [FeelNumber].
   pub fn ceiling(&self) -> Self {
     let bid = bid128_round_integral_positive(self.0, flags!());
@@ -100,10 +112,12 @@ impl FeelNumber {
       Self(bid, false)
     }
   }
+
   ///
   pub fn even(&self) -> bool {
     bid128_is_zero(bid128_rem(self.0, Self::two().0, flags!()))
   }
+
   ///
   pub fn exp(&self) -> Option<Self> {
     let n = bid128_exp(self.0, round!(), flags!());
@@ -113,34 +127,42 @@ impl FeelNumber {
       None
     }
   }
+
   ///
   pub fn floor(&self) -> Self {
     Self(bid128_round_integral_negative(self.0, flags!()), false)
   }
+
   ///
   pub fn frac(&self) -> Self {
     Self(bid128_sub(self.0, bid128_round_integral_zero(self.0, flags!()), round!(), flags!()), true)
   }
+
   ///
   pub fn is_integer(&self) -> bool {
     bid128_quiet_equal(self.0, bid128_round_integral_zero(self.0, flags!()), flags!())
   }
+
   ///
   pub fn is_zero(&self) -> bool {
     bid128_quiet_equal(self.0, Self::zero().0, flags!())
   }
+
   ///
   pub fn is_one(&self) -> bool {
     bid128_quiet_equal(self.0, Self::one().0, flags!())
   }
+
   ///
   pub fn is_negative(&self) -> bool {
     bid128_quiet_less(self.0, Self::zero().0, flags!())
   }
+
   ///
   pub fn is_positive(&self) -> bool {
     bid128_quiet_greater(self.0, Self::zero().0, flags!())
   }
+
   ///
   pub fn ln(&self) -> Option<Self> {
     let n = bid128_log(self.0, round!(), flags!());
@@ -150,6 +172,7 @@ impl FeelNumber {
       None
     }
   }
+
   ///
   pub fn odd(&self) -> bool {
     if self.is_integer() {
@@ -158,6 +181,7 @@ impl FeelNumber {
       false
     }
   }
+
   ///
   pub fn pow(&self, rhs: &FeelNumber) -> Option<Self> {
     let n = bid128_pow(self.0, rhs.0, round!(), flags!());
@@ -167,6 +191,7 @@ impl FeelNumber {
       None
     }
   }
+
   ///
   pub fn round(&self, rhs: &FeelNumber) -> Self {
     let r = bid128_negate(rhs.0);
@@ -174,6 +199,7 @@ impl FeelNumber {
     let q = bid128_scalbn(Self::one().0, n);
     Self(bid128_quantize(self.0, q, round!(), flags!()), false)
   }
+
   ///
   pub fn sqrt(&self) -> Option<Self> {
     let n = bid128_sqrt(self.0, round!(), flags!());
@@ -183,6 +209,7 @@ impl FeelNumber {
       None
     }
   }
+
   ///
   pub fn square(&self) -> Option<Self> {
     let n = bid128_pow(self.0, Self::two().0, round!(), flags!());
@@ -192,10 +219,12 @@ impl FeelNumber {
       None
     }
   }
+
   ///
   pub fn trunc(&self) -> Self {
     Self(bid128_round_integral_zero(self.0, flags!()), false)
   }
+
   /// Calculates the remainder of the division.
   fn remainder(&self, rhs: BID128) -> BID128 {
     let mut n = bid128_div(self.0, rhs, round!(), flags!());

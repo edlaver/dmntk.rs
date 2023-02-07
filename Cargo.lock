@@ -516,9 +516,9 @@ dependencies = [
 
 [[package]]
 name = "dfp-number-sys"
-version = "0.0.12"
+version = "0.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "895c57f097f5fab124942aa98a2c026115fb6b7b401fd21615b32ee13e229196"
+checksum = "4ae638714badf6fd93d31c2e00a230809e5e7ec6149a74797f73568275b6df37"
 dependencies = [
  "cc",
  "libc",
