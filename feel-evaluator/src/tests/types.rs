@@ -59,3 +59,17 @@ fn _0003() {
   let result = crate::evaluate(&scope!(), &node);
   assert_eq!(r#"null(expected function's parameter types)"#, result.ok().unwrap().to_string());
 }
+
+#[test]
+fn _0004() {
+  let node = AstNode::ListType(Box::new(AstNode::FeelType(FeelType::Boolean)));
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"type(list<boolean>)"#, result.ok().unwrap().to_string());
+}
+
+#[test]
+fn _0005() {
+  let node = AstNode::ListType(Box::new(AstNode::Numeric("0".into(), "0".into())));
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"null(expected a feel type)"#, result.ok().unwrap().to_string());
+}
