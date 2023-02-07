@@ -757,18 +757,21 @@ fn build_for(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let mut evaluators_range = vec![];
   if let AstNode::IterationContexts(items) = lhs {
     for item in items {
-      if let AstNode::IterationContextSingle(variable_name, expr_node) = item {
-        if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_single = build_evaluator(expr_node)?;
-          evaluators_single.push((name.clone(), evaluator_single));
-        }
-      }
-      if let AstNode::IterationContextRange(variable_name, range_start_node, range_end_node) = item {
-        if let AstNode::Name(name) = variable_name.borrow() {
+      match item {
+        AstNode::IterationContextRange(variable_name, range_start_node, range_end_node) => {
           let evaluator_range_start = build_evaluator(range_start_node)?;
           let evaluator_range_end = build_evaluator(range_end_node)?;
-          evaluators_range.push((name.clone(), evaluator_range_start, evaluator_range_end));
+          if let AstNode::Name(name) = variable_name.borrow() {
+            evaluators_range.push((name.clone(), evaluator_range_start, evaluator_range_end));
+          }
         }
+        AstNode::IterationContextSingle(variable_name, expr_node) => {
+          let evaluator_single = build_evaluator(expr_node)?;
+          if let AstNode::Name(name) = variable_name.borrow() {
+            evaluators_single.push((name.clone(), evaluator_single));
+          }
+        }
+        _ => {}
       }
     }
   }
@@ -2725,5 +2728,19 @@ fn eval_pmml_function(document: &str, model_name: &str, _arguments: &[Value]) ->
     ("", _) => value_null!("PMML document not specified"),
     (_, "") => value_null!("PMML model name not specified"),
     _ => Value::String(format!("PMML, document = {document}, model name = {model_name}")),
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use dmntk_feel::{scope, FeelType};
+
+  #[test]
+  fn test_unimplemented_external_function_kind() {
+    let evaluator = Box::new(move |_: &FeelScope| Value::Boolean(false)) as Evaluator;
+    let body = FunctionBody::External(Arc::new(evaluator));
+    let result = eval_external_function_definition(&scope!(), &vec![], &body, FeelType::Boolean);
+    assert_eq!("null(expected JAVA or PMML mapping, actual value is false)", result.to_string())
   }
 }
