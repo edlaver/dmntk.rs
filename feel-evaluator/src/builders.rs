@@ -821,7 +821,7 @@ fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
           formal_parameters.push((parameter_name, parameter_type));
         }
         null @ Value::Null(_) => return null,
-        other => return value_null!("expected formal parameter, actual value type is {}", other.type_of()),
+        other => return value_null!("expected formal parameter, actual value type is: {}", other.type_of()),
       }
     }
     Value::FormalParameters(formal_parameters)
