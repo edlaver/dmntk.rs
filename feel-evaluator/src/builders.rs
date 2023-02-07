@@ -1403,7 +1403,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of days and time duration")
           }
         }
         Value::YearsAndMonthsDuration(ref rh) => {
@@ -1411,7 +1411,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of years and months duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
@@ -1422,7 +1422,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of days and time duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
@@ -1433,13 +1433,13 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of years and months duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
       },
       value @ Value::Null(_) => value,
-      _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      other => value_null!("unexpected value type in multiplication: {}", other.type_of()),
     }
   }))
 }
@@ -1495,11 +1495,12 @@ fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
 fn build_neg(lhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
+    let lhv = lhe(scope) as Value;
     match lhv {
       Value::Number(lh) => Value::Number(-lh),
       Value::DaysAndTimeDuration(lh) => Value::DaysAndTimeDuration(-lh),
-      _ => value_null!("arithmetic negation err 1"),
+      Value::YearsAndMonthsDuration(lh) => Value::YearsAndMonthsDuration(-lh),
+      other => value_null!("unexpected type in arithmetic negation: {}", other.type_of()),
     }
   }))
 }
