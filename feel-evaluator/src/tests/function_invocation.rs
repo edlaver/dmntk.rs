@@ -31,6 +31,7 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
@@ -103,4 +104,24 @@ fn _0008() {
 fn _0009() {
   let scope = &te_scope(r#"{add: function(x, y) x + y }"#);
   te_null(false, scope, r#"add(17.82, 32.18, 11.2)"#, "invalid number of arguments");
+}
+
+#[test]
+fn _0010() {
+  te_null(
+    false,
+    &scope!(),
+    r#"pull(2)"#,
+    "expected built-in function name or function definition, actual is null(context has no value for key 'pull')",
+  );
+}
+
+#[test]
+fn _0011() {
+  te_null(
+    false,
+    &scope!(),
+    r#"pull(x: 2)"#,
+    "expected built-in function name or function definition, actual is null(context has no value for key 'pull')",
+  );
 }
