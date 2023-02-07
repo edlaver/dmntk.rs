@@ -963,7 +963,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{rhs:?}")))
   }
 }
 
