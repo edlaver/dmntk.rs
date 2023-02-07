@@ -137,3 +137,58 @@ fn _0016() {
   let scope = te_scope(r#"{ valueOf: function(n) external {java:{class:"java.lang.Float",method signature:"valueOf(java.lang.String)"}} }"#);
   te_null(false, &scope, r#"valueOf("99,9")"#, "");
 }
+
+#[test]
+fn _0017() {
+  let scope = te_scope(r#"{ valueOf: function(n) external { java: { class:"java.lang.Float" } } }"#);
+  te_null(
+    false,
+    &scope,
+    r#"valueOf("99,9")"#,
+    "expected built-in function name or function definition, actual is null(invalid body in function definition)",
+  );
+}
+
+#[test]
+fn _0018() {
+  let scope = te_scope(r#"{ valueOf: function(n) external { java: { method signature: "valueOf(java.lang.String)" } } }"#);
+  te_null(
+    false,
+    &scope,
+    r#"valueOf("99,9")"#,
+    "expected built-in function name or function definition, actual is null(invalid body in function definition)",
+  );
+}
+
+#[test]
+fn _0019() {
+  let scope = te_scope(r#"{ valueOf: function(n) external { pmml: { document: "document-name" } } }"#);
+  te_null(
+    false,
+    &scope,
+    r#"valueOf("99,9")"#,
+    "expected built-in function name or function definition, actual is null(invalid body in function definition)",
+  );
+}
+
+#[test]
+fn _0020() {
+  let scope = te_scope(r#"{ valueOf: function(n) external { pmml: { model: "model-name" } } }"#);
+  te_null(
+    false,
+    &scope,
+    r#"valueOf("99,9")"#,
+    "expected built-in function name or function definition, actual is null(invalid body in function definition)",
+  );
+}
+
+#[test]
+fn _0021() {
+  let scope = te_scope(r#"{ valueOf: function(n) external 20 }"#);
+  te_null(
+    false,
+    &scope,
+    r#"valueOf("99,9")"#,
+    "expected built-in function name or function definition, actual is null(invalid body in function definition)",
+  );
+}
