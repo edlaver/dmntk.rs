@@ -833,12 +833,12 @@ fn build_function_body(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
   if *rhs {
     build_external_function_body(lhs)
   } else {
-    build_fee_function_body(lhs)
+    build_internal_function_body(lhs)
   }
 }
 
 ///
-fn build_fee_function_body(lhs: &AstNode) -> Result<Evaluator> {
+fn build_internal_function_body(lhs: &AstNode) -> Result<Evaluator> {
   let lhe = Arc::new(build_evaluator(lhs)?);
   Ok(Box::new(move |_: &FeelScope| Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()), false)))
 }

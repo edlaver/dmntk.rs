@@ -212,3 +212,33 @@ fn _0033() {
 fn _0034() {
   te_null(false, &scope!(), r#" true in [false..true]"#, "eval_in_range");
 }
+
+#[test]
+fn _0035() {
+  let node = AstNode::Range(
+    Box::new(AstNode::IntervalStart(Box::new(AstNode::Numeric("1".into(), "0".into())), false)),
+    Box::new(AstNode::IntervalEnd(Box::new(AstNode::Numeric("5".into(), "0".into())), false)),
+  );
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"(1.0..5.0)"#, result.ok().unwrap().to_string());
+}
+
+#[test]
+fn _0036() {
+  let node = AstNode::Range(
+    Box::new(AstNode::IntervalEnd(Box::new(AstNode::Numeric("5".into(), "0".into())), false)),
+    Box::new(AstNode::IntervalStart(Box::new(AstNode::Numeric("1".into(), "0".into())), false)),
+  );
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"null(expected interval start)"#, result.ok().unwrap().to_string());
+}
+
+#[test]
+fn _0037() {
+  let node = AstNode::Range(
+    Box::new(AstNode::IntervalStart(Box::new(AstNode::Numeric("1".into(), "0".into())), false)),
+    Box::new(AstNode::IntervalStart(Box::new(AstNode::Numeric("1".into(), "0".into())), false)),
+  );
+  let result = crate::evaluate(&scope!(), &node);
+  assert_eq!(r#"null(expected interval end)"#, result.ok().unwrap().to_string());
+}
