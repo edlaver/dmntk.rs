@@ -678,15 +678,12 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                     if let Ok(u_index) = usize::try_from(index) {
                       u_index
                     } else {
-                      return value_null!("index is out of range {}", index.to_string());
+                      return value_null!("index is out of range 1..2⁶⁴: {}", index.to_string());
                     }
                   };
                   if n > 0 && n <= list_size {
-                    if let Some(value) = values.as_vec().get(n - 1) {
-                      value.to_owned()
-                    } else {
-                      value_null!("no value in filter for index {}", n)
-                    }
+                    // unwrap below is safe, index `n` is checked above, `values` variable is immutable
+                    values.as_vec().get(n - 1).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [1..{}], actual index is {}", list_size, n)
                   }
@@ -695,21 +692,18 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                     if let Ok(u_index) = usize::try_from(index.abs()) {
                       u_index
                     } else {
-                      return value_null!("index is out of range {}", index.to_string());
+                      return value_null!("index is out of range 1..2⁶⁴: {}", index.to_string());
                     }
                   };
                   if n > 0 && n <= list_size {
-                    if let Some(value) = values.as_vec().get(list_size - n) {
-                      value.to_owned()
-                    } else {
-                      value_null!("no value in filter for index -{}", n)
-                    }
+                    // unwrap below is safe, index `n` is checked above, `values` variable is immutable
+                    values.as_vec().get(list_size - n).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [-{}..-1], actual index is -{}", list_size, n)
                   }
                 }
               } else {
-                // return null when the list is empty, no matter what value has the index
+                // return null when the list is empty, no matter what value the index has
                 value_null!()
               }
             } else {
@@ -751,7 +745,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         }
         _ => value_null!("only number or boolean indexes are allowed in filters"),
       },
-      other => value_null!("fatal error in filter with value: {}", other as Value),
+      other => value_null!("unexpected value type in filter: {}", other.type_of()),
     }
   }))
 }
