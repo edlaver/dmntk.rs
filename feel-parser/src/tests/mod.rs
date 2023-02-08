@@ -32,6 +32,7 @@
 
 mod ast;
 mod bifs;
+mod closure;
 mod context;
 mod expr;
 
@@ -46,7 +47,7 @@ macro_rules! scope {
 use crate::lalr::TokenType;
 use crate::lalr::TokenType::StartTextualExpression;
 use crate::parser::Parser;
-use crate::ParsingScope;
+use crate::{AstNode, ParsingScope};
 use difference::Changeset;
 use dmntk_feel::Name;
 pub(crate) use scope;

@@ -71,13 +71,6 @@ impl fmt::Display for ParsingScope {
   }
 }
 
-impl From<ParsingContext> for ParsingScope {
-  /// Creates a [ParsingScope] from [ParsingContext].
-  fn from(ctx: ParsingContext) -> Self {
-    Self { stack: RefCell::new(vec![ctx]) }
-  }
-}
-
 impl ParsingScope {
   /// Returns a context removed from the top of the stack.
   pub fn pop(&self) -> Option<ParsingContext> {
