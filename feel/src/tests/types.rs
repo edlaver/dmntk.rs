@@ -678,7 +678,7 @@ fn test_type_get_conformant_value() {
   let v_date_b = Value::Date(FeelDate::new(2022, 11, 30));
   // date time
   let t_date_time = FeelType::DateTime;
-  let v_date_time = Value::DateTime(FeelDateTime::new(FeelDate::new(2022, 9, 27), FeelTime::new_hms_opt(9, 2, 0, 0).unwrap()));
+  let v_date_time = Value::DateTime(FeelDateTime::new(FeelDate::new(2022, 9, 27), FeelTime::local_opt(9, 2, 0, 0).unwrap()));
   // days and time duration
   let t_days_and_time_duration = FeelType::DaysAndTimeDuration;
   let v_days_and_time_duration = Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(100));
@@ -694,7 +694,7 @@ fn test_type_get_conformant_value() {
   let v_string = Value::String("alpha".to_string());
   // time
   let t_time = FeelType::Time;
-  let v_time = Value::Time(FeelTime::new_hms_opt(9, 2, 0, 0).unwrap());
+  let v_time = Value::Time(FeelTime::local_opt(9, 2, 0, 0).unwrap());
   // years and months duration
   let t_years_and_months_duration = FeelType::YearsAndMonthsDuration;
   let v_years_and_months_duration = Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3));

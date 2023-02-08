@@ -89,32 +89,32 @@ fn _0009() {
 
 #[test]
 fn _0010() {
-  te_time(false, &scope!(), r#"time("12:34:56") - duration("P0D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P0D")"#, FeelTime::local_opt(12, 34, 56, 0).unwrap());
 }
 
 #[test]
 fn _0011() {
-  te_time(false, &scope!(), r#"time("12:34:56") - duration("P1D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P1D")"#, FeelTime::local_opt(12, 34, 56, 0).unwrap());
 }
 
 #[test]
 fn _0012() {
-  te_time(false, &scope!(), r#"time("12:34:56") - duration("P11D")"#, FeelTime::new_hms_opt(12, 34, 56, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("P11D")"#, FeelTime::local_opt(12, 34, 56, 0).unwrap());
 }
 
 #[test]
 fn _0013() {
-  te_time(false, &scope!(), r#"time("12:34:56") - duration("PT10S")"#, FeelTime::new_hms_opt(12, 34, 46, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:56") - duration("PT10S")"#, FeelTime::local_opt(12, 34, 46, 0).unwrap());
 }
 
 #[test]
 fn _0014() {
-  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT25S")"#, FeelTime::new_hms_opt(12, 33, 58, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT25S")"#, FeelTime::local_opt(12, 33, 58, 0).unwrap());
 }
 
 #[test]
 fn _0015() {
-  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT40M")"#, FeelTime::new_hms_opt(11, 54, 23, 0).unwrap());
+  te_time(false, &scope!(), r#"time("12:34:23") - duration("PT40M")"#, FeelTime::local_opt(11, 54, 23, 0).unwrap());
 }
 
 #[test]

@@ -34,7 +34,7 @@ fn test_debug() {
   let v_number = Value::Number(FeelNumber::new(1, 0));
   let b_number = Box::new(v_number);
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;
@@ -110,7 +110,7 @@ fn test_display() {
   let v_number = Value::Number(FeelNumber::new(1, 0));
   let b_number = Box::new(v_number);
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;
@@ -170,7 +170,7 @@ fn test_type_of() {
   let v_boolean = Value::Boolean(false);
   let b_boolean = Box::new(v_boolean.clone());
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;

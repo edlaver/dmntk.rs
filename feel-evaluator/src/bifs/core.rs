@@ -2448,7 +2448,7 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
               let m = minute.try_into().unwrap();
               let s = seconds.try_into().unwrap();
               let n = nanoseconds.try_into().unwrap();
-              let feel_time = FeelTime::new_hms_opt(h, m, s, n).unwrap();
+              let feel_time = FeelTime::local_opt(h, m, s, n).unwrap();
               Value::Time(feel_time)
             } else {
               value_null!("second must be 0..59, current value is {}", second)
@@ -2485,8 +2485,8 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let s = seconds.try_into().unwrap();
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
-                Value::DaysAndTimeDuration(offset) => Value::Time(FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32).unwrap()),
-                Value::Null(_) => Value::Time(FeelTime::new_hms_opt(h, m, s, n).unwrap()),
+                Value::DaysAndTimeDuration(offset) => Value::Time(FeelTime::offset_opt(h, m, s, n, offset.as_seconds() as i32).unwrap()),
+                Value::Null(_) => Value::Time(FeelTime::local_opt(h, m, s, n).unwrap()),
                 _ => value_null!("expected days and time duration or null, current offset type is {}", offset_value.type_of()),
               }
             } else {

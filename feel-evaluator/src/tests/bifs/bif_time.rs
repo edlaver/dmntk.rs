@@ -55,19 +55,14 @@ fn _0004() {
     false,
     scope,
     r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmsno_opt(12, 59, 1, 300_000_000, -3600).unwrap(),
+    FeelTime::offset_opt(12, 59, 1, 300_000_000, -3600).unwrap(),
   );
 }
 
 #[test]
 fn _0005() {
   let scope = &te_scope(r#"{Hours:12,Minutes:59,Seconds:1.9999999999999999999999999999999999999999999999999,Timezone:@"-PT1H"}"#);
-  te_time(
-    false,
-    scope,
-    r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmsno_opt(12, 59, 2, 0, -3600).unwrap(),
-  );
+  te_time(false, scope, r#"time(Hours,Minutes,Seconds,Timezone)"#, FeelTime::offset_opt(12, 59, 2, 0, -3600).unwrap());
 }
 
 #[test]
@@ -77,7 +72,7 @@ fn _0006() {
     false,
     scope,
     r#"time(Hours,Minutes,Seconds,Timezone)"#,
-    FeelTime::new_hmsno_opt(12, 59, 1, 300_000, -3603).unwrap(),
+    FeelTime::offset_opt(12, 59, 1, 300_000, -3603).unwrap(),
   );
 }
 

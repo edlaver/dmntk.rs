@@ -246,33 +246,6 @@ impl TryFrom<FeelTime> for DateTime<FixedOffset> {
 }
 
 impl FeelTime {
-  ///
-  pub fn new_hmsnz_opt(hour: u8, minute: u8, second: u8, nano: u64, zone: FeelZone) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
-    }
-    None
-  }
-
-  ///
-  pub fn new_hmsno_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      if let Ok(zone) = FeelZone::try_from(offset) {
-        return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
-      }
-    }
-    None
-  }
-
-  ///
-  pub fn new_hms_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
-    } else {
-      None
-    }
-  }
-
   /// Creates UTC time from specified time values.
   pub fn utc(hour: u8, minute: u8, second: u8, nanos: u64) -> Self {
     Self(hour, minute, second, nanos, FeelZone::Utc)
@@ -283,9 +256,36 @@ impl FeelTime {
     Self(hour, minute, second, nanos, FeelZone::Local)
   }
 
+  ///
+  pub fn local_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
+    } else {
+      None
+    }
+  }
+
   /// Creates a time from specified time and offset values.
   pub fn offset(hour: u8, minute: u8, second: u8, nanos: u64, offset: i32) -> Self {
     Self(hour, minute, second, nanos, FeelZone::Offset(offset))
+  }
+
+  ///
+  pub fn offset_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      if let Ok(zone) = FeelZone::try_from(offset) {
+        return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
+      }
+    }
+    None
+  }
+
+  ///
+  pub fn zone_opt(hour: u8, minute: u8, second: u8, nano: u64, zone: FeelZone) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
+    }
+    None
   }
 
   pub fn hour(&self) -> u8 {

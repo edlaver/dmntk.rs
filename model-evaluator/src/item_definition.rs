@@ -555,7 +555,7 @@ mod tests {
     let context_str = r#"{ Delivery Time : time("18:35:23") }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Delivery", "Time"])).unwrap();
-    assert_eq!(Value::Time(FeelTime::new_hms_opt(18, 35, 23, 0).unwrap()), evaluator.eval("tDeliveryTime", value).unwrap());
+    assert_eq!(Value::Time(FeelTime::local_opt(18, 35, 23, 0).unwrap()), evaluator.eval("tDeliveryTime", value).unwrap());
   }
 
   #[test]
@@ -565,7 +565,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Appointment"])).unwrap();
     assert_eq!(
-      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 12), FeelTime::new_hms_opt(18, 35, 23, 0).unwrap())),
+      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 12), FeelTime::local_opt(18, 35, 23, 0).unwrap())),
       evaluator.eval("tAppointment", value).unwrap()
     );
   }
@@ -694,9 +694,9 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
     let expected = Value::List(Values::new(vec![
-      Value::Time(FeelTime::new_hms_opt(12, 21, 35, 0).unwrap()),
-      Value::Time(FeelTime::new_hms_opt(12, 21, 36, 0).unwrap()),
-      Value::Time(FeelTime::new_hms_opt(12, 21, 37, 0).unwrap()),
+      Value::Time(FeelTime::local_opt(12, 21, 35, 0).unwrap()),
+      Value::Time(FeelTime::local_opt(12, 21, 36, 0).unwrap()),
+      Value::Time(FeelTime::local_opt(12, 21, 37, 0).unwrap()),
     ]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
@@ -708,8 +708,8 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
     let expected = Value::List(Values::new(vec![
-      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 10), FeelTime::new_hms_opt(21, 23, 18, 0).unwrap())),
-      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 11), FeelTime::new_hms_opt(12, 18, 59, 0).unwrap())),
+      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 10), FeelTime::local_opt(21, 23, 18, 0).unwrap())),
+      Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 11), FeelTime::local_opt(12, 18, 59, 0).unwrap())),
     ]));
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }

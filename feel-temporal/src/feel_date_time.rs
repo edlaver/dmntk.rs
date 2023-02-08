@@ -96,7 +96,7 @@ impl TryFrom<&str> for FeelDateTime {
                                         date = updated_date;
                                       }
                                     }
-                                    if let Some(time) = FeelTime::new_hmsnz_opt(hour, min, sec, nanos, zone) {
+                                    if let Some(time) = FeelTime::zone_opt(hour, min, sec, nanos, zone) {
                                       return Ok(FeelDateTime(date, time));
                                     }
                                   }
@@ -224,7 +224,7 @@ impl Add<FeelDaysAndTimeDuration> for FeelDateTime {
       if let Some(date_time) = fixed_date_time.checked_add_signed(Duration::nanoseconds(rhs.as_nanos())) {
         return Some(FeelDateTime(
           FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-          FeelTime::new_hmsnz_opt(
+          FeelTime::zone_opt(
             date_time.hour() as u8,
             date_time.minute() as u8,
             date_time.second() as u8,
@@ -251,7 +251,7 @@ impl Sub<FeelDaysAndTimeDuration> for FeelDateTime {
       date_time -= Duration::nanoseconds(rhs.as_nanos());
       return Some(FeelDateTime(
         FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-        FeelTime::new_hmsnz_opt(
+        FeelTime::zone_opt(
           date_time.hour() as u8,
           date_time.minute() as u8,
           date_time.second() as u8,
