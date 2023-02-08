@@ -346,7 +346,7 @@ mod tests {
     let feel_time_e = FeelTime::zone_opt(0, 0, 0, 0, FeelZone::Offset(15)).unwrap();
     assert_eq!(15, feel_time_offset(&FeelDateTime::new(feel_date.clone(), feel_time_e)).unwrap());
     let feel_time_f = FeelTime::zone_opt(0, 0, 0, 0, FeelZone::Zone("Etc/UTC".to_string())).unwrap();
-    assert_eq!(0, feel_time_offset(&FeelDateTime::new(feel_date.clone(), feel_time_f)).unwrap());
+    assert_eq!(0, feel_time_offset(&FeelDateTime::new(feel_date, feel_time_f)).unwrap());
   }
 
   #[test]
