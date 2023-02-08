@@ -176,7 +176,7 @@ impl<'parser> Parser<'parser> {
           self.yy_n = YY_TABLE[self.yy_n as usize];
           if self.yy_n <= 0 {
             if self.yy_n == YY_TABLE_N_INF {
-              action = Action::Error; // TODO Find the input, for which this error is triggered.
+              action = Action::Error;
             } else {
               self.yy_n = -self.yy_n;
               action = Action::Reduce;

@@ -239,3 +239,11 @@ fn _0002() {
     false,
   );
 }
+
+#[test]
+fn _0003() {
+  let input = r#"Flights[ From = Original Flight.From and To = Original Flight.To and Departure > Original Flight.Departure and Status = "scheduled" and has capacity(item, Reassigned Passengers List)][1]"#;
+  // this test should fail without properly set scope
+  let node = Parser::new(&scope!(), StartExpression, input, false).parse();
+  assert!(node.is_err());
+}
