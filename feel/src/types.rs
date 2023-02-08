@@ -362,15 +362,6 @@ impl FeelType {
   }
 
   ///
-  pub fn zip(&self, other: &FeelType) -> Self {
-    if self == other {
-      self.clone()
-    } else {
-      FeelType::Any
-    }
-  }
-
-  ///
   pub fn is_equivalent(&self, other: &FeelType) -> bool {
     match other {
       FeelType::Any => matches!(self, FeelType::Any),

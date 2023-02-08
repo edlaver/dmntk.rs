@@ -116,25 +116,6 @@ pub enum Value {
   /// Value for storing built-in function definition.
   BuiltInFunction(Bif),
 
-  /// Value representing a collection of comma-separated list of expressions.
-  ExpressionList(Values),
-
-  /// Value representing a mapping to externally defined `Java` function.
-  ExternalJavaFunction(
-    /// Class name.
-    String,
-    /// Method signature.
-    String,
-  ),
-
-  /// Value representing a mapping to externally defined `PMML` function.
-  ExternalPmmlFunction(
-    /// Document.
-    String,
-    /// Model name.
-    String,
-  ),
-
   /// Value representing a context.
   Context(FeelContext),
 
@@ -161,6 +142,25 @@ pub enum Value {
 
   /// Value for days and time durations.
   DaysAndTimeDuration(FeelDaysAndTimeDuration),
+
+  /// Value representing a collection of comma-separated list of expressions.
+  ExpressionList(Values),
+
+  /// Value representing a mapping to externally defined `Java` function.
+  ExternalJavaFunction(
+    /// Class name.
+    String,
+    /// Method signature.
+    String,
+  ),
+
+  /// Value representing a mapping to externally defined `PMML` function.
+  ExternalPmmlFunction(
+    /// Document.
+    String,
+    /// Model name.
+    String,
+  ),
 
   /// Value representing the `FEEL` type of a value.
   FeelType(FeelType),
@@ -277,7 +277,7 @@ impl fmt::Display for Value {
       Value::DaysAndTimeDuration(dt_duration) => write!(f, "{dt_duration}"),
       Value::ExpressionList(items) => write!(f, "{items}"),
       Value::ExternalJavaFunction(class_name, method_signature) => write!(f, "ExternalJavaFunction({class_name}, {method_signature})"),
-      Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPMMLFunction({iri}, {model_name})"),
+      Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPmmlFunction({iri}, {model_name})"),
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),

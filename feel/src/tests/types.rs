@@ -5,7 +5,43 @@ use crate::types::{is_built_in_type_name, FeelType};
 use crate::values::{Value, Values};
 use crate::{value_null, value_number, FeelNumber, FeelScope, FunctionBody};
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
+use std::str::FromStr;
 use std::sync::Arc;
+
+#[test]
+fn test_from_string() {
+  assert_eq!(FeelType::Any, FeelType::from_str("Any").unwrap());
+  assert_eq!(FeelType::Null, FeelType::from_str("Null").unwrap());
+  assert_eq!(FeelType::Boolean, FeelType::from_str("boolean").unwrap());
+  assert_eq!(FeelType::Number, FeelType::from_str("number").unwrap());
+  assert_eq!(FeelType::String, FeelType::from_str("string").unwrap());
+  assert_eq!(FeelType::Date, FeelType::from_str("date").unwrap());
+  assert_eq!(FeelType::Time, FeelType::from_str("time").unwrap());
+  assert_eq!(FeelType::DateTime, FeelType::from_str("date and time").unwrap());
+  assert_eq!(FeelType::DaysAndTimeDuration, FeelType::from_str("days and time duration").unwrap());
+  assert_eq!(FeelType::YearsAndMonthsDuration, FeelType::from_str("years and months duration").unwrap());
+  assert_eq!("TypesError: invalid FEEL type name: range", FeelType::from_str("range").err().unwrap().to_string());
+}
+
+#[test]
+fn test_from_name() {
+  fn eq(expected: FeelType, s: &str) {
+    let name = &Name::from(s);
+    let actual: FeelType = name.into();
+    assert_eq!(expected, actual);
+  }
+  eq(FeelType::Any, "Any");
+  eq(FeelType::Null, "Null");
+  eq(FeelType::Boolean, "boolean");
+  eq(FeelType::Number, "number");
+  eq(FeelType::String, "string");
+  eq(FeelType::Date, "date");
+  eq(FeelType::Time, "time");
+  eq(FeelType::DateTime, "date and time");
+  eq(FeelType::DaysAndTimeDuration, "days and time duration");
+  eq(FeelType::YearsAndMonthsDuration, "years and months duration");
+  eq(FeelType::Any, "range");
+}
 
 #[test]
 fn test_get_value_checked() {
