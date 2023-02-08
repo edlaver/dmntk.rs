@@ -312,17 +312,23 @@ mod tests {
 
   #[test]
   fn test_abs_should_pass() {
-    let duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
-    assert_eq!("P2Y3M", duration.abs().to_string());
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    assert_eq!("P2Y3M", ym_duration.abs().to_string());
     let duration = FeelYearsAndMonthsDuration::try_from("-P2Y3M").unwrap();
     assert_eq!("P2Y3M", duration.abs().to_string());
   }
 
   #[test]
   fn test_properties() {
-    let duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
-    assert_eq!(2, duration.years());
-    assert_eq!(3, duration.months());
-    assert_eq!(27, duration.as_months());
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    assert_eq!(2, ym_duration.years());
+    assert_eq!(3, ym_duration.months());
+    assert_eq!(27, ym_duration.as_months());
+  }
+
+  #[test]
+  fn test_eq_receiver() {
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    ym_duration.assert_receiver_is_total_eq();
   }
 }

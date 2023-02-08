@@ -393,6 +393,7 @@ pub fn last_day_of_month(year: Year, month: Month) -> Option<Day> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use dmntk_common::Result;
 
   #[test]
   fn test_display() {
@@ -503,5 +504,18 @@ mod tests {
     assert!((FeelDate(2021, 2, 2) >= FeelDate(2021, 2, 1)));
     assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 1)));
     assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 2)));
+  }
+
+  #[test]
+  fn test_conversion() {
+    let date = FeelDate(2023, 2, 8);
+    let date_time: DateTime<FixedOffset> = date.try_into().unwrap();
+    assert_eq!("2023-02-08 00:00:00 +00:00", date_time.to_string());
+    let date = FeelDate(262144, 2, 8);
+    let date_time: Result<DateTime<FixedOffset>> = date.try_into();
+    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
+    let date = FeelDate(262144, 2, 8);
+    let date_time: Result<NaiveDate> = date.try_into();
+    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
   }
 }

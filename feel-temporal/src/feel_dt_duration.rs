@@ -520,42 +520,42 @@ mod tests {
 
   #[test]
   fn duration_as_seconds() {
-    let duration = FeelDaysAndTimeDuration::try_from("PT12S").unwrap();
-    assert_eq!(12, duration.as_seconds());
-    let duration = FeelDaysAndTimeDuration::try_from("-PT12S").unwrap();
-    assert_eq!(-12, duration.as_seconds());
-    let duration = FeelDaysAndTimeDuration::try_from("PT2H").unwrap();
-    assert_eq!(7_200, duration.as_seconds());
-    let duration = FeelDaysAndTimeDuration::try_from("-PT2H").unwrap();
-    assert_eq!(-7_200, duration.as_seconds());
+    let dt_duration_a = FeelDaysAndTimeDuration::try_from("PT12S").unwrap();
+    assert_eq!(12, dt_duration_a.as_seconds());
+    let dt_duration_b = FeelDaysAndTimeDuration::try_from("-PT12S").unwrap();
+    assert_eq!(-12, dt_duration_b.as_seconds());
+    let dt_duration_c = FeelDaysAndTimeDuration::try_from("PT2H").unwrap();
+    assert_eq!(7_200, dt_duration_c.as_seconds());
+    let dt_duration_d = FeelDaysAndTimeDuration::try_from("-PT2H").unwrap();
+    assert_eq!(-7_200, dt_duration_d.as_seconds());
   }
 
   #[test]
   fn duration_properties() {
-    let duration = FeelDaysAndTimeDuration::try_from("P3DT5H18M36S").unwrap();
-    assert_eq!(3, duration.get_days());
-    assert_eq!(5, duration.get_hours());
-    assert_eq!(18, duration.get_minutes());
-    assert_eq!(36, duration.get_seconds());
-    assert_eq!(278_316, duration.as_seconds());
-    let duration = FeelDaysAndTimeDuration::try_from("-P3DT5H18M36S").unwrap();
-    assert_eq!(3, duration.get_days());
-    assert_eq!(5, duration.get_hours());
-    assert_eq!(18, duration.get_minutes());
-    assert_eq!(36, duration.get_seconds());
-    assert_eq!(-278_316, duration.as_seconds());
+    let dt_duration_a = FeelDaysAndTimeDuration::try_from("P3DT5H18M36S").unwrap();
+    assert_eq!(3, dt_duration_a.get_days());
+    assert_eq!(5, dt_duration_a.get_hours());
+    assert_eq!(18, dt_duration_a.get_minutes());
+    assert_eq!(36, dt_duration_a.get_seconds());
+    assert_eq!(278_316, dt_duration_a.as_seconds());
+    let dt_duration_b = FeelDaysAndTimeDuration::try_from("-P3DT5H18M36S").unwrap();
+    assert_eq!(3, dt_duration_b.get_days());
+    assert_eq!(5, dt_duration_b.get_hours());
+    assert_eq!(18, dt_duration_b.get_minutes());
+    assert_eq!(36, dt_duration_b.get_seconds());
+    assert_eq!(-278_316, dt_duration_b.as_seconds());
   }
 
   #[test]
   fn test_abs_should_pass() {
-    let duration = FeelDaysAndTimeDuration::try_from("PT12S").unwrap();
-    assert_eq!("PT12S", duration.abs().to_string());
-    let duration = FeelDaysAndTimeDuration::try_from("-PT12S").unwrap();
-    assert_eq!("PT12S", duration.abs().to_string());
-    let duration = FeelDaysAndTimeDuration::try_from("P3DT5H18M36S").unwrap();
-    assert_eq!("P3DT5H18M36S", duration.abs().to_string());
-    let duration = FeelDaysAndTimeDuration::try_from("-P3DT5H18M36S").unwrap();
-    assert_eq!("P3DT5H18M36S", duration.abs().to_string());
+    let dt_duration_a = FeelDaysAndTimeDuration::try_from("PT12S").unwrap();
+    assert_eq!("PT12S", dt_duration_a.abs().to_string());
+    let dt_duration_b = FeelDaysAndTimeDuration::try_from("-PT12S").unwrap();
+    assert_eq!("PT12S", dt_duration_b.abs().to_string());
+    let dt_duration_c = FeelDaysAndTimeDuration::try_from("P3DT5H18M36S").unwrap();
+    assert_eq!("P3DT5H18M36S", dt_duration_c.abs().to_string());
+    let dt_duration_d = FeelDaysAndTimeDuration::try_from("-P3DT5H18M36S").unwrap();
+    assert_eq!("P3DT5H18M36S", dt_duration_d.abs().to_string());
   }
 
   #[test]
@@ -563,5 +563,11 @@ mod tests {
   fn test_large_days() {
     //TODO Maybe it is possible NOT TO convert the number of days into nanoseconds?
     FeelDaysAndTimeDuration::try_from("P3000000000000000000D").unwrap();
+  }
+
+  #[test]
+  fn test_eq_receiver() {
+    let dt_duration = FeelDaysAndTimeDuration::try_from("P1DT2H3M15S").unwrap();
+    dt_duration.assert_receiver_is_total_eq();
   }
 }
