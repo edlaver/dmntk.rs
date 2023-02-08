@@ -64,6 +64,11 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-feel-grammar
 
+  cov-feel-temporal:
+    desc: Runs code coverage using grcov for dmntk-feel-temporal
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-temporal
+
   cov-model:
     desc: Runs code coverage using grcov for dmntk-model
     cmds:

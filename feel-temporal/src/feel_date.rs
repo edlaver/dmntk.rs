@@ -309,21 +309,7 @@ impl FeelDate {
   ///
   pub fn month_of_year(&self) -> Option<MonthOfYear> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
-      match naive_date.month() {
-        1 => Some(("January".to_string(), 1_u8)),
-        2 => Some(("February".to_string(), 2_u8)),
-        3 => Some(("March".to_string(), 3_u8)),
-        4 => Some(("April".to_string(), 4_u8)),
-        5 => Some(("May".to_string(), 5_u8)),
-        6 => Some(("June".to_string(), 6_u8)),
-        7 => Some(("July".to_string(), 7_u8)),
-        8 => Some(("August".to_string(), 8_u8)),
-        9 => Some(("September".to_string(), 9_u8)),
-        10 => Some(("October".to_string(), 10_u8)),
-        11 => Some(("November".to_string(), 11_u8)),
-        12 => Some(("December".to_string(), 12_u8)),
-        _ => None,
-      }
+      month_of_year(naive_date.month())
     } else {
       None
     }

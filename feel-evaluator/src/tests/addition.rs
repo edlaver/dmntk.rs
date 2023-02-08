@@ -118,21 +118,31 @@ fn _0015() {
 
 #[test]
 fn _0016() {
-  te_date_time_local(false, &scope!(), r#" @"P1DT1H" + @"2021-01-12T10:10:10" "#, (2021, 1, 13), (11, 10, 10, 0));
+  te_date(false, &scope!(), r#" @"2021-01-12" + @"P1DT1H" "#, 2021, 1, 13);
 }
 
 #[test]
 fn _0017() {
-  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1Y1M" "#, (2022, 2, 12), (10, 10, 10, 0));
+  te_date(false, &scope!(), r#" @"2021-01-12" + (-@"P1D") "#, 2021, 1, 11);
 }
 
 #[test]
 fn _0018() {
-  te_date_time_local(false, &scope!(), r#" @"P1Y1M" + @"2021-01-12T10:10:10" "#, (2022, 2, 12), (10, 10, 10, 0));
+  te_date_time_local(false, &scope!(), r#" @"P1DT1H" + @"2021-01-12T10:10:10" "#, (2021, 1, 13), (11, 10, 10, 0));
 }
 
 #[test]
 fn _0019() {
+  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1Y1M" "#, (2022, 2, 12), (10, 10, 10, 0));
+}
+
+#[test]
+fn _0020() {
+  te_date_time_local(false, &scope!(), r#" @"P1Y1M" + @"2021-01-12T10:10:10" "#, (2022, 2, 12), (10, 10, 10, 0));
+}
+
+#[test]
+fn _0021() {
   te_null(
     false,
     &scope!(),
@@ -142,22 +152,22 @@ fn _0019() {
 }
 
 #[test]
-fn _0020() {
+fn _0022() {
   te_years_and_months_duration_x(false, &scope!(), r#" @"P1Y1M" + @"P2Y3M" "#, r#"P3Y4M"#);
 }
 
 #[test]
-fn _0021() {
+fn _0023() {
   te_days_and_time_duration_x(false, &scope!(), r#" @"P1DT2H" + @"P2DT3H" "#, r#"P3DT5H"#);
 }
 
 #[test]
-fn _0022() {
+fn _0024() {
   te_null(false, &scope!(), r#" null + @"P1DT2H" "#, r#""#);
 }
 
 #[test]
-fn _0023() {
+fn _0025() {
   te_null(
     false,
     &scope!(),
@@ -167,7 +177,7 @@ fn _0023() {
 }
 
 #[test]
-fn _0024() {
+fn _0026() {
   te_null(
     false,
     &scope!(),
@@ -177,7 +187,7 @@ fn _0024() {
 }
 
 #[test]
-fn _0025() {
+fn _0027() {
   te_null(
     false,
     &scope!(),
@@ -187,17 +197,37 @@ fn _0025() {
 }
 
 #[test]
-fn _0026() {
+fn _0028() {
   te_date(false, &scope!(), r#" @"2023-02-05" + @"P2D" "#, 2023, 2, 7);
 }
 
 #[test]
-fn _0027() {
+fn _0029() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-06" + @"P999999Y" "#,
+    "invalid result while adding years and months duration to date",
+  );
+}
+
+#[test]
+fn _0030() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-06" + @"P999999999999999Y" "#,
+    "invalid result while adding years and months duration to date",
+  );
+}
+
+#[test]
+fn _0031() {
   te_date(false, &scope!(), r#" @"P2D" + @"2023-02-05" "#, 2023, 2, 7);
 }
 
 #[test]
-fn _0028() {
+fn _0032() {
   te_null(
     false,
     &scope!(),
@@ -207,17 +237,17 @@ fn _0028() {
 }
 
 #[test]
-fn _0029() {
+fn _0033() {
   te_date(false, &scope!(), r#" @"2023-02-05" + @"P2Y1M" "#, 2025, 3, 5);
 }
 
 #[test]
-fn _0030() {
+fn _0034() {
   te_date(false, &scope!(), r#" @"P2Y1M" + @"2023-02-05" "#, 2025, 3, 5);
 }
 
 #[test]
-fn _0031() {
+fn _0035() {
   te_null(
     false,
     &scope!(),
@@ -227,7 +257,7 @@ fn _0031() {
 }
 
 #[test]
-fn _0032() {
+fn _0036() {
   te_null(
     false,
     &scope!(),
@@ -237,7 +267,7 @@ fn _0032() {
 }
 
 #[test]
-fn _0033() {
+fn _0037() {
   te_null(
     false,
     &scope!(),
@@ -247,7 +277,7 @@ fn _0033() {
 }
 
 #[test]
-fn _0034() {
+fn _0038() {
   te_null(
     false,
     &scope!(),
@@ -257,7 +287,7 @@ fn _0034() {
 }
 
 #[test]
-fn _0035() {
+fn _0039() {
   te_null(
     false,
     &scope!(),
@@ -267,7 +297,7 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0040() {
   te_null(
     false,
     &scope!(),
@@ -277,7 +307,7 @@ fn _0036() {
 }
 
 #[test]
-fn _0037() {
+fn _0041() {
   te_null(
     false,
     &scope!(),
@@ -287,7 +317,7 @@ fn _0037() {
 }
 
 #[test]
-fn _0038() {
+fn _0042() {
   te_null(
     false,
     &scope!(),
@@ -297,17 +327,17 @@ fn _0038() {
 }
 
 #[test]
-fn _0039() {
+fn _0043() {
   te_time(false, &scope!(), r#" @"10:11:12" + @"PT2H" "#, FeelTime::local(12, 11, 12, 0));
 }
 
 #[test]
-fn _0040() {
+fn _0044() {
   te_time(false, &scope!(), r#" @"PT2H" + @"10:11:12" "#, FeelTime::local(12, 11, 12, 0));
 }
 
 #[test]
-fn _0041() {
+fn _0045() {
   te_null(
     false,
     &scope!(),

@@ -223,6 +223,25 @@ pub fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
   (hour < 24 && minute < 60 && second < 60) || (hour == 24 && minute == 0 && second == 0)
 }
 
+/// Returns month of year based on specified month number.
+pub fn month_of_year(month: u32) -> Option<MonthOfYear> {
+  match month {
+    1 => Some(("January".to_string(), 1_u8)),
+    2 => Some(("February".to_string(), 2_u8)),
+    3 => Some(("March".to_string(), 3_u8)),
+    4 => Some(("April".to_string(), 4_u8)),
+    5 => Some(("May".to_string(), 5_u8)),
+    6 => Some(("June".to_string(), 6_u8)),
+    7 => Some(("July".to_string(), 7_u8)),
+    8 => Some(("August".to_string(), 8_u8)),
+    9 => Some(("September".to_string(), 9_u8)),
+    10 => Some(("October".to_string(), 10_u8)),
+    11 => Some(("November".to_string(), 11_u8)),
+    12 => Some(("December".to_string(), 12_u8)),
+    _ => None,
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -328,5 +347,37 @@ mod tests {
     assert_eq!(15, feel_time_offset(&FeelDateTime::new(feel_date.clone(), feel_time_e)).unwrap());
     let feel_time_f = FeelTime::zone_opt(0, 0, 0, 0, FeelZone::Zone("Etc/UTC".to_string())).unwrap();
     assert_eq!(0, feel_time_offset(&FeelDateTime::new(feel_date.clone(), feel_time_f)).unwrap());
+  }
+
+  #[test]
+  fn test_month_of_year() {
+    // check month names
+    assert_eq!("January", month_of_year(1).unwrap().0);
+    assert_eq!("February", month_of_year(2).unwrap().0);
+    assert_eq!("March", month_of_year(3).unwrap().0);
+    assert_eq!("April", month_of_year(4).unwrap().0);
+    assert_eq!("May", month_of_year(5).unwrap().0);
+    assert_eq!("June", month_of_year(6).unwrap().0);
+    assert_eq!("July", month_of_year(7).unwrap().0);
+    assert_eq!("August", month_of_year(8).unwrap().0);
+    assert_eq!("September", month_of_year(9).unwrap().0);
+    assert_eq!("October", month_of_year(10).unwrap().0);
+    assert_eq!("November", month_of_year(11).unwrap().0);
+    assert_eq!("December", month_of_year(12).unwrap().0);
+    // check month numbers
+    assert_eq!(1, month_of_year(1).unwrap().1);
+    assert_eq!(2, month_of_year(2).unwrap().1);
+    assert_eq!(3, month_of_year(3).unwrap().1);
+    assert_eq!(4, month_of_year(4).unwrap().1);
+    assert_eq!(5, month_of_year(5).unwrap().1);
+    assert_eq!(6, month_of_year(6).unwrap().1);
+    assert_eq!(7, month_of_year(7).unwrap().1);
+    assert_eq!(8, month_of_year(8).unwrap().1);
+    assert_eq!(9, month_of_year(9).unwrap().1);
+    assert_eq!(10, month_of_year(10).unwrap().1);
+    assert_eq!(11, month_of_year(11).unwrap().1);
+    assert_eq!(12, month_of_year(12).unwrap().1);
+    // check out of range
+    assert!(month_of_year(13).is_none());
   }
 }

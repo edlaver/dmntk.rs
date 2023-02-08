@@ -94,6 +94,8 @@ impl TryFrom<&str> for FeelDateTime {
                                       hour = 0;
                                       if let Some(updated_date) = date.add_days(1) {
                                         date = updated_date;
+                                      } else {
+                                        return Err(err_invalid_date_time_literal(s));
                                       }
                                     }
                                     if let Some(time) = FeelTime::zone_opt(hour, min, sec, nanos, zone) {
