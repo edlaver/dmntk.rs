@@ -39,6 +39,7 @@ use dmntk_common::Result;
 use dmntk_model::model::HitPolicy;
 use std::collections::HashSet;
 use std::convert::TryFrom;
+use std::fmt;
 use std::str::FromStr;
 
 /// Cell on the plane.
@@ -182,29 +183,22 @@ impl RuleNumbersPlacement {
 }
 
 /// Plane.
+#[derive(Default)]
 pub struct Plane {
   /// Matrix of cells.
   content: Vec<Vec<Cell>>,
 }
 
-impl Default for Plane {
-  /// Creates a new, empty plane.
-  // FIXME this plane is not empty, it has one initial empty line
-  fn default() -> Self {
-    Self { content: vec![vec![]] }
-  }
-}
-
 impl Plane {
-  /// Adds a new row to the plane.
-  pub fn add_row(&mut self) {
-    self.content.push(vec![])
-  }
-  /// Adds a new **cell** at the end of the specified **row**.
+  /// Adds a new `cell` at the end of the specified `row`.
   pub fn add_cell(&mut self, row: usize, cell: Cell) {
+    if row == self.content.len() {
+      self.content.push(vec![]);
+    }
     self.content[row].push(cell)
   }
-  /// Returns a cell placed in specified **row** and **col**.
+
+  /// Returns a `cell` placed in specified `row` and `col`.
   pub fn cell(&self, row: usize, col: usize) -> Result<&Cell> {
     if self.content.is_empty() {
       return Err(err_plane_is_empty());
@@ -217,7 +211,8 @@ impl Plane {
     }
     Ok(&self.content[row][col])
   }
-  /// Returns the text contained in a region pointed by row and column.
+
+  /// Returns the text contained in a region pointed by `row` and `col`.
   pub fn region_text(&self, row: usize, col: usize) -> Result<String> {
     let cell = self.cell(row, col)?;
     if let Cell::Region(_, _, text) = cell {
@@ -226,7 +221,8 @@ impl Plane {
       Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
-  /// Returns the region number of a region pointed by row and column.
+
+  /// Returns the region number of a region pointed by `row` and `col`.
   pub fn region_number(&self, row: usize, col: usize) -> Result<usize> {
     let cell = self.cell(row, col)?;
     if let Cell::Region(number, _, _) = cell {
@@ -235,10 +231,12 @@ impl Plane {
       Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
   }
-  /// Returns the number of cells in specified **row**.
+
+  /// Returns the number of cells in specified `row`.
   pub fn row_len(&self, row: usize) -> usize {
     self.content[row].len()
   }
+
   /// Removes the first column from the plane.
   pub fn remove_first_column(&mut self) {
     for row in &mut self.content {
@@ -269,6 +267,7 @@ impl Plane {
     }
     Ok(true)
   }
+
   /// Verifies if columns in a rectangle have equal regions.
   /// Different columns may have different regions.
   pub fn equal_regions_in_columns(&self, rect: &Rect) -> Result<bool> {
@@ -325,8 +324,6 @@ impl Plane {
   }
 
   ///
-  ///
-  ///
   pub fn pivot(&mut self) {
     let mut pivot_content: Vec<Vec<Cell>> = vec![];
     while !self.content[0].is_empty() {
@@ -348,22 +345,19 @@ impl Plane {
     }
     self.content = pivot_content;
   }
-  // FIXME this finalization is needed because the initialization must be fixed and generating plane in canvas must be fixed
-  // TODO check if the plane is rectangular.
-  pub fn finalize(&mut self) -> Result<()> {
-    self.content.remove(self.content.len() - 1);
-    Ok(())
-  }
+
   /// Returns rectangle containing input clauses in horizontal table.
   pub fn horz_input_clause_rect(&self) -> Result<Rect> {
     let p = self.main_double_crossing()?;
     Ok(Rect::new(0, 0, p.x, p.y))
   }
+
   /// Returns a rectangle containing input entries in horizontal table.
   pub fn horz_input_entries_rect(&self) -> Result<Rect> {
     let p = self.main_double_crossing()?;
     Ok(Rect::new(0, p.y + 1, p.x, self.height()))
   }
+
   /// Returns a rectangle containing output clauses in horizontal table.
   pub fn horz_output_clause_rect(&self) -> Result<Rect> {
     let p = self.main_double_crossing()?;
@@ -373,6 +367,7 @@ impl Plane {
       Ok(Rect::new(p.x + 1, 0, self.width(), p.y))
     }
   }
+
   /// Returns a rectangle containing output entries in horizontal table.
   pub fn horz_output_entries_rect(&self) -> Result<Rect> {
     let p = self.main_double_crossing()?;
@@ -382,6 +377,7 @@ impl Plane {
       Ok(Rect::new(p.x + 1, p.y + 1, self.width(), self.height()))
     }
   }
+
   /// Returns a rectangle containing annotation clauses in horizontal table.
   pub fn horz_annotation_clauses_rect(&self) -> Result<Rect> {
     if let Some(p) = self.horizontal_double_crossing() {
@@ -390,6 +386,7 @@ impl Plane {
       Ok(RECT_ZERO)
     }
   }
+
   /// Returns a rectangle containing output entries in horizontal table.
   pub fn horz_annotation_entries_rect(&self) -> Result<Rect> {
     if let Some(p) = self.horizontal_double_crossing() {
@@ -398,6 +395,7 @@ impl Plane {
       Ok(RECT_ZERO)
     }
   }
+
   /// Checks if the plane contains main double crossing.
   /// If the main double crossing was found on this plane, its position is returned.
   pub fn main_double_crossing(&self) -> Result<Point> {
@@ -410,6 +408,7 @@ impl Plane {
     }
     Err(err_plane_no_main_double_crossing())
   }
+
   /// Checks if the plane contains horizontal double crossing.
   /// If the horizontal double crossing was found on this plane, its position is returned.
   pub fn horizontal_double_crossing(&self) -> Option<Point> {
@@ -422,6 +421,7 @@ impl Plane {
     }
     None
   }
+
   /// Checks if the plane contains vertical double crossing.
   /// If the vertical double crossing was found on this plane, its position is returned.
   pub fn vertical_double_crossing(&self) -> Option<Point> {
@@ -434,6 +434,7 @@ impl Plane {
     }
     None
   }
+
   /// Recognizes the hit policy placement. In properly defined decision table
   /// and thus in the properly defined plane, the hit policy is placed
   /// either in the top-left or in the bottom-left corner.
@@ -459,6 +460,7 @@ impl Plane {
     // hit policy was not found in the top-left nor bottom-right corner if the plane
     Ok(HitPolicyPlacement::NotPresent)
   }
+
   /// Recognizes the placement of the rule numbers in decision table.
   pub fn recognize_rule_numbers_placement(&self) -> Result<RuleNumbersPlacement> {
     match self.recognize_horizontal_rule_numbers() {
@@ -466,6 +468,7 @@ impl Plane {
       other => other,
     }
   }
+
   /// Checks if rule numbers are placed on the left side below horizontal output double line.
   fn recognize_horizontal_rule_numbers(&self) -> Result<RuleNumbersPlacement> {
     let mut row = 0;
@@ -497,6 +500,7 @@ impl Plane {
       Ok(RuleNumbersPlacement::NotPresent)
     }
   }
+
   /// Checks if rule numbers are placed on the right side after vertical output double line.
   fn recognize_vertical_rule_numbers(&self) -> Result<RuleNumbersPlacement> {
     let mut col = 0;
@@ -529,11 +533,13 @@ impl Plane {
       Ok(RuleNumbersPlacement::NotPresent)
     }
   }
+
   /// Checks if the cell pointed by coordinates **row** and **col**
   /// is a horizontal output double line.
   fn is_horizontal_output_double_line(&self, row: usize, col: usize) -> bool {
     self.content[row][col] == Cell::HorizontalOutputDoubleLine
   }
+
   /// Checks if the cell pointed by coordinates **row** and **col**
   /// is a vertical output double line.
   fn is_vertical_output_double_line(&self, row: usize, col: usize) -> bool {
@@ -542,8 +548,8 @@ impl Plane {
 }
 
 /// Implementation of Display trait for Plane.
-impl std::fmt::Display for Plane {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for Plane {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
     for row in &self.content {
       for cell in row {
