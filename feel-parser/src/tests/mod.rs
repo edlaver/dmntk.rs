@@ -47,7 +47,7 @@ macro_rules! scope {
 use crate::lalr::TokenType;
 use crate::lalr::TokenType::StartTextualExpression;
 use crate::parser::Parser;
-use crate::{AstNode, ParsingScope};
+use crate::ParsingScope;
 use difference::Changeset;
 use dmntk_feel::Name;
 pub(crate) use scope;

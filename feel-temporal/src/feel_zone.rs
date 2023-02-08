@@ -86,7 +86,6 @@ impl PartialEq for FeelZone {
       (FeelZone::Utc, FeelZone::Offset(offset)) | (FeelZone::Offset(offset), FeelZone::Utc) => *offset == 0,
       (FeelZone::Local, FeelZone::Local) => true,
       (FeelZone::Offset(offset), FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Offset(offset)) => {
-        //
         (*offset == 0 && zone_name == ETC_UTC)
           || if let Some(zone_offset) = get_zone_offset(zone_name) {
             *offset == zone_offset
@@ -95,7 +94,6 @@ impl PartialEq for FeelZone {
           }
       }
       (FeelZone::Offset(_), FeelZone::Offset(_)) => true,
-      //(FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => zone_name1 == zone_name2 || (get_zone_offset(zone_name1) == get_zone_offset(zone_name2)),
       (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => zone_name1 == zone_name2,
       _ => false,
     }
@@ -236,6 +234,7 @@ mod tests {
     assert!((FeelZone::Utc != FeelZone::Zone("Europe/Warsaw".to_string())));
     assert!((FeelZone::Offset(1) == FeelZone::Offset(1)));
     assert!((FeelZone::Offset(1) != FeelZone::Zone("Europe/Warsaw".to_string())));
+    assert!((FeelZone::Offset(2) != FeelZone::Zone("Europe/Sofa".to_string())));
     assert!((FeelZone::Offset(1) == FeelZone::Offset(2)));
     assert!((FeelZone::Zone("Europe/Warsaw".to_string()) == FeelZone::Zone("Europe/Warsaw".to_string())));
     assert!((FeelZone::Zone("Europe/Warsaw".to_string()) != FeelZone::Zone("Australia/Sydney".to_string())));
