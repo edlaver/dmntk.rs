@@ -224,23 +224,33 @@ fn _0031() {
 
 #[test]
 fn _0032() {
-  te_date_time_local(false, &scope!(), r#" @"2023-02-06T12:13:18" - @"P1Y" "#, (2022, 2, 6), (12, 13, 18, 0));
+  te_time(false, &scope!(), r#" @"12:34:56" - (-@"P1DT2H") "#, FeelTime::local(14, 34, 56, 0));
 }
 
 #[test]
 fn _0033() {
-  te_days_and_time_duration_x(false, &scope!(), r#" @"P2DT3H" - @"PT3H" "#, "P2D");
+  te_time(false, &scope!(), r#" @"12:34:56" - @"PT14H" "#, FeelTime::local(22, 34, 56, 0));
 }
 
 #[test]
 fn _0034() {
+  te_date_time_local(false, &scope!(), r#" @"2023-02-06T12:13:18" - @"P1Y" "#, (2022, 2, 6), (12, 13, 18, 0));
+}
+
+#[test]
+fn _0035() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"P2DT3H" - @"PT3H" "#, "P2D");
+}
+
+#[test]
+fn _0036() {
   te_years_and_months_duration_x(false, &scope!(), r#" @"P2Y5M" - @"P5M" "#, "P2Y");
 }
 
 #[test]
 /// Date converted to date and time has the timezone equal to UTC 00:00:00. Subtracted date and time has local timezone.
 /// Such subtraction is not allowed (both date and times should have offset defined), that's why null value should be returned.
-fn _0035() {
+fn _0037() {
   te_null(
     false,
     &scope!(),
@@ -250,7 +260,7 @@ fn _0035() {
 }
 
 #[test]
-fn _0036() {
+fn _0038() {
   te_null(
     false,
     &scope!(),
@@ -260,7 +270,7 @@ fn _0036() {
 }
 
 #[test]
-fn _0037() {
+fn _0039() {
   te_null(
     false,
     &scope!(),
@@ -270,7 +280,7 @@ fn _0037() {
 }
 
 #[test]
-fn _0038() {
+fn _0040() {
   te_null(
     false,
     &scope!(),

@@ -83,8 +83,6 @@ impl FromStr for FeelTime {
                         hour = 0;
                       }
                       let time = FeelTime(hour, min, sec, nanos, zone);
-                      // even if parsing from string was successful, the time may still be invalid, so another check
-                      let _: DateTime<FixedOffset> = time.clone().try_into().map_err(|_| err_invalid_time_literal(s))?;
                       return Ok(time);
                     }
                   }

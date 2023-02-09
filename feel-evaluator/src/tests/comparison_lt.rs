@@ -175,40 +175,45 @@ fn _0028() {
 
 #[test]
 fn _0029() {
-  te_bool(false, &scope!(), r#" @"P1D" < @"P1D" "#, false);
+  te_bool(false, &scope!(), r#" @"10:10:10.23" < @"10:10:10.24" "#, true);
 }
 
 #[test]
 fn _0030() {
-  te_null(false, &scope!(), r#" @"P1D" < "P1D" "#, "eval_less_then_days_and_time_duration");
+  te_bool(false, &scope!(), r#" @"P1D" < @"P1D" "#, false);
 }
 
 #[test]
 fn _0031() {
-  te_bool(false, &scope!(), r#" @"P2D" < @"P1D" "#, false);
+  te_null(false, &scope!(), r#" @"P1D" < "P1D" "#, "eval_less_then_days_and_time_duration");
 }
 
 #[test]
 fn _0032() {
-  te_bool(false, &scope!(), r#" @"P1D" < @"P2D" "#, true);
+  te_bool(false, &scope!(), r#" @"P2D" < @"P1D" "#, false);
 }
 
 #[test]
 fn _0033() {
-  te_bool(false, &scope!(), r#" @"P1Y" < @"P1Y" "#, false);
+  te_bool(false, &scope!(), r#" @"P1D" < @"P2D" "#, true);
 }
 
 #[test]
 fn _0034() {
-  te_null(false, &scope!(), r#" @"P1Y" < "P1Y" "#, "eval_less_then_years_and_months_duration");
+  te_bool(false, &scope!(), r#" @"P1Y" < @"P1Y" "#, false);
 }
 
 #[test]
 fn _0035() {
-  te_bool(false, &scope!(), r#" @"P2Y" < @"P1Y" "#, false);
+  te_null(false, &scope!(), r#" @"P1Y" < "P1Y" "#, "eval_less_then_years_and_months_duration");
 }
 
 #[test]
 fn _0036() {
+  te_bool(false, &scope!(), r#" @"P2Y" < @"P1Y" "#, false);
+}
+
+#[test]
+fn _0037() {
   te_bool(false, &scope!(), r#" @"P1Y" < @"P2Y" "#, true);
 }
