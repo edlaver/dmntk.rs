@@ -218,6 +218,11 @@ fn _0030() {
 }
 
 #[test]
+fn _0030_() {
+  te_date_time_utc(false, &scope!(), r#" @"2023-02-06T12:13:18Z" - @"P1DT2H" "#, (2023, 2, 5), (10, 13, 18, 0));
+}
+
+#[test]
 fn _0031() {
   te_days_and_time_duration_x(false, &scope!(), r#" @"12:34:56" - @"09:15:36" "#, "PT3H19M20S");
 }

@@ -76,27 +76,27 @@ impl TryFrom<&str> for FeelDateTime {
                         if let Ok(min) = min_match.as_str().parse::<u8>() {
                           if let Some(sec_match) = captures.name("seconds") {
                             if let Ok(sec) = sec_match.as_str().parse::<u8>() {
-                              let mut fractional = 0.0;
-                              if let Some(frac_match) = captures.name("fractional") {
-                                if let Ok(frac) = frac_match.as_str().parse::<f64>() {
-                                  fractional = frac;
-                                }
-                              }
+                              let fractional = if let Some(frac_match) = captures.name("fractional") {
+                                frac_match.as_str().parse::<f64>().unwrap_or(0.0)
+                              } else {
+                                0.0
+                              };
                               let nanos = (fractional * 1e9).trunc() as u64;
                               if let Some(mut date) = FeelDate::new_opt(year, month, day) {
                                 if let Some(zone) = FeelZone::from_captures(&captures) {
-                                  if is_valid_time(hour, min, sec) {
-                                    if hour == 24 {
-                                      if let Some(updated_date) = date.add_days(1) {
-                                        hour = 0;
-                                        date = updated_date;
-                                      } else {
-                                        return Err(err_invalid_date_time_literal(s));
-                                      }
+                                  if !is_valid_time(hour, min, sec) {
+                                    return Err(err_invalid_date_time_literal(s));
+                                  }
+                                  if hour == 24 {
+                                    if let Some(updated_date) = date.add_days(1) {
+                                      hour = 0;
+                                      date = updated_date;
+                                    } else {
+                                      return Err(err_invalid_date_time_literal(s));
                                     }
-                                    if let Some(time) = FeelTime::zone_opt(hour, min, sec, nanos, zone) {
-                                      return Ok(FeelDateTime(date, time));
-                                    }
+                                  }
+                                  if let Some(time) = FeelTime::zone_opt(hour, min, sec, nanos, zone) {
+                                    return Ok(FeelDateTime(date, time));
                                   }
                                 }
                               }
