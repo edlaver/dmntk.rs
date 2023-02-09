@@ -232,15 +232,6 @@ impl Sub<FeelDaysAndTimeDuration> for FeelTime {
   }
 }
 
-impl TryFrom<FeelTime> for DateTime<FixedOffset> {
-  type Error = DmntkError;
-  /// Converts [FeelTime] into [DateTime] with [FixedOffset].
-  fn try_from(me: FeelTime) -> Result<Self, Self::Error> {
-    let result: DateTime<FixedOffset> = FeelDateTime::new(FeelDate::today(), me).try_into()?;
-    Ok(result)
-  }
-}
-
 impl FeelTime {
   /// Creates UTC time from specified time values.
   pub fn utc(hour: u8, minute: u8, second: u8, nanos: u64) -> Self {
