@@ -49,3 +49,9 @@ fn _0002() {
     date_time.err().unwrap().to_string()
   );
 }
+
+#[test]
+fn _0003() {
+  let date_time: Result<FeelDateTime> = "2023-02-09T24:01:00".try_into();
+  assert_eq!("TemporalError: invalid date and time literal '2023-02-09T24:01:00'", date_time.err().unwrap().to_string());
+}

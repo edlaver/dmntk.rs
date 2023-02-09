@@ -87,12 +87,8 @@ impl TryFrom<&str> for FeelDateTime {
                                 if let Some(zone) = FeelZone::from_captures(&captures) {
                                   if is_valid_time(hour, min, sec) {
                                     if hour == 24 {
-                                      if min != 0 || sec != 0 || nanos != 0 {
-                                        // fix for hour == 24 //TODO make it more reasonably
-                                        return Err(err_invalid_date_time_literal(s));
-                                      }
-                                      hour = 0;
                                       if let Some(updated_date) = date.add_days(1) {
+                                        hour = 0;
                                         date = updated_date;
                                       } else {
                                         return Err(err_invalid_date_time_literal(s));
@@ -169,16 +165,15 @@ impl PartialEq for FeelDateTime {
 impl PartialOrd for FeelDateTime {
   /// Returns the ordering of two date and times.
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-    if let Some(d) = self.0.partial_cmp(&other.0) {
-      if let Some(t) = self.1.partial_cmp(&other.1) {
-        return match (d, t) {
-          (Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
-          (Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
-          (Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
-          (Ordering::Less, _) => Some(Ordering::Less),
-          (Ordering::Greater, _) => Some(Ordering::Greater),
-        };
-      }
+    let d = self.0.cmp(&other.0);
+    if let Some(t) = self.1.partial_cmp(&other.1) {
+      return match (d, t) {
+        (Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
+        (Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
+        (Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
+        (Ordering::Less, _) => Some(Ordering::Less),
+        (Ordering::Greater, _) => Some(Ordering::Greater),
+      };
     }
     None
   }

@@ -267,3 +267,53 @@ fn _0043() {
 fn _0044() {
   te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00@Australia/Melbourne", @"2021-04-02T23:00:00+11:00")"#, false);
 }
+
+#[test]
+fn _0045() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00Z", @"2021-04-02T23:00:00Z")"#, true);
+}
+
+#[test]
+fn _0046() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00Z", @"2021-04-02T23:00:00@Australia/Melbourne")"#, false);
+}
+
+#[test]
+fn _0047() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00Z", @"2021-04-02T23:00:00-01:00:00")"#, false);
+}
+
+#[test]
+fn _0048() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00+01:00:00", @"2021-04-02T23:00:00+01:00:00")"#, true);
+}
+
+#[test]
+fn _0049() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00+01:00:00", @"2021-04-02T23:00:00-01:00:00")"#, false);
+}
+
+#[test]
+fn _0050() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00@Europe/Warsaw", @"2021-04-02T23:00:00@Europe/Warsaw")"#, true);
+}
+
+#[test]
+fn _0051() {
+  te_bool(
+    false,
+    &scope!(),
+    r#"is(@"2021-04-02T23:00:00@Europe/Warsaw", @"2021-04-02T23:00:00@Australia/Melbourne")"#,
+    false,
+  );
+}
+
+#[test]
+fn _0052() {
+  te_bool(false, &scope!(), r#"is(@"2021-04-02T23:00:00@Australia/Melbourne", @"2021-04-02T23:00:00")"#, false);
+}
+
+#[test]
+fn _0053() {
+  te_bool(false, &scope!(), r#"is(@"999999999-04-02T23:00:00Z", @"999999999-04-02T23:00:00Z")"#, false);
+}

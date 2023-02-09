@@ -219,6 +219,9 @@ pub fn nanos_to_string(nano: u64) -> String {
   buffer.iter().take(count).collect()
 }
 
+/// Returns `true` when the specified parameters constitute valid time.
+/// In `FEEL` language it is allowed for and hour to have a value of `24`,
+/// only when minutes and seconds are zero.
 pub fn is_valid_time(hour: u8, minute: u8, second: u8) -> bool {
   (hour < 24 && minute < 60 && second < 60) || (hour == 24 && minute == 0 && second == 0)
 }

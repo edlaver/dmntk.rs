@@ -100,26 +100,35 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
 }
 
 impl PartialEq for FeelDate {
-  /// Returns `true` when two dated are equal.
+  ///
   fn eq(&self, other: &Self) -> bool {
     self.0 == other.0 && self.1 == other.1 && self.2 == other.2
   }
 }
 
+impl Eq for FeelDate {}
+
 impl PartialOrd for FeelDate {
-  /// Returns the ordering of two dates.
+  ///
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
+impl Ord for FeelDate {
+  ///
+  fn cmp(&self, other: &Self) -> Ordering {
     let y = self.0.cmp(&other.0);
     let m = self.1.cmp(&other.1);
     let d = self.2.cmp(&other.2);
     match (y, m, d) {
-      (Ordering::Equal, Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
-      (Ordering::Equal, Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
-      (Ordering::Equal, Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
-      (Ordering::Equal, Ordering::Less, _) => Some(Ordering::Less),
-      (Ordering::Equal, Ordering::Greater, _) => Some(Ordering::Greater),
-      (Ordering::Less, _, _) => Some(Ordering::Less),
-      (Ordering::Greater, _, _) => Some(Ordering::Greater),
+      (Ordering::Equal, Ordering::Equal, Ordering::Equal) => Ordering::Equal,
+      (Ordering::Equal, Ordering::Equal, Ordering::Less) => Ordering::Less,
+      (Ordering::Equal, Ordering::Equal, Ordering::Greater) => Ordering::Greater,
+      (Ordering::Equal, Ordering::Less, _) => Ordering::Less,
+      (Ordering::Equal, Ordering::Greater, _) => Ordering::Greater,
+      (Ordering::Less, _, _) => Ordering::Less,
+      (Ordering::Greater, _, _) => Ordering::Greater,
     }
   }
 }

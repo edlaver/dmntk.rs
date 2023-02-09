@@ -78,17 +78,15 @@ impl FromStr for FeelTime {
                   }
                   let nanos = (fractional * 1e9).trunc() as u64;
                   if let Some(zone) = FeelZone::from_captures(&captures) {
-                    if hour == 24 {
-                      if min != 0 || sec != 0 || nanos != 0 {
-                        // fix for hour == 24 //TODO make it more reasonably
-                        return Err(err_invalid_time_literal(s));
+                    if is_valid_time(hour, min, sec) {
+                      if hour == 24 {
+                        hour = 0;
                       }
-                      hour = 0;
+                      let time = FeelTime(hour, min, sec, nanos, zone);
+                      // even if parsing from string was successful, the time may still be invalid, so another check
+                      let _: DateTime<FixedOffset> = time.clone().try_into().map_err(|_| err_invalid_time_literal(s))?;
+                      return Ok(time);
                     }
-                    let time = FeelTime(hour, min, sec, nanos, zone);
-                    // even if parsing from string was successful, the time may still be invalid, so another check
-                    let _: DateTime<FixedOffset> = time.clone().try_into().map_err(|_| err_invalid_time_literal(s))?;
-                    return Ok(time);
                   }
                 }
               }
