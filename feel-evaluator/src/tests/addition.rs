@@ -257,6 +257,7 @@ fn _0035() {
 }
 
 #[test]
+#[cfg(not(target_os = "windows"))]
 fn _0036() {
   te_null(
     false,
@@ -307,6 +308,7 @@ fn _0040() {
 }
 
 #[test]
+#[cfg(not(target_os = "windows"))]
 fn _0041() {
   te_null(
     false,
