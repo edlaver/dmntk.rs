@@ -70,13 +70,18 @@ fn _0004() {
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision005", &ctx, r#"null(stddev)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    "decision005",
+    &ctx,
+    r#"null(stddev: expected number, actual type is string with value "foo")"#,
+  );
 }
 
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision007", &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, "decision007", &ctx, r#"null(stddev: minimum two input arguments expected)"#);
 }
 
 #[test]

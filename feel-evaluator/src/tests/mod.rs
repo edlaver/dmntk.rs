@@ -49,31 +49,40 @@ mod comparison_le;
 mod comparison_lt;
 mod comparison_ne;
 mod conjunction;
+mod context;
 mod disjunction;
 mod division;
 mod empty_input;
 mod every_expression;
 mod exponentiation;
+mod external_functions;
 mod filter;
 mod for_expression;
+mod formal_parameters;
+mod function_definition;
 mod function_invocation;
 mod if_expression;
 mod instance_of;
 mod iterations;
 mod join;
-mod list;
 mod literal_at;
 mod literal_boolean;
+mod literal_numeric;
 mod multiline;
 mod multiplication;
 mod name;
 mod negation;
+mod out_operator;
 mod parentheses;
+mod path;
 mod properties;
 mod range;
+mod satisfies;
 mod some_expression;
 mod subtraction;
+mod types;
 mod unary_tests;
+mod various;
 
 const SECONDS_IN_DAY: i64 = 86_400;
 const SECONDS_IN_HOUR: i64 = 3_600;
@@ -286,7 +295,7 @@ pub fn valid_unary_tests(trace: bool, scope: &FeelScope, text: &str) {
   match dmntk_feel_parser::parse_unary_tests(scope, text, trace) {
     Ok(node) => match build_evaluator(&node) {
       Ok(evaluator) => {
-        if let v @ Value::Null(_) = evaluator(scope) {
+        if let v @ Value::Null(_) = evaluator(scope) as Value {
           panic!("evaluating unary tests failed, value: {v}")
         }
       }
@@ -313,6 +322,26 @@ pub fn satisfies(trace: bool, scope: &FeelScope, input_expression: &str, input_v
   };
   match crate::evaluate(scope, &node) {
     Ok(value) => assert_eq!(value, Value::Boolean(expected)),
+    Err(reason) => {
+      println!("ERROR: {reason}");
+      panic!("`satisfies` failed");
+    }
+  }
+}
+
+pub fn satisfies_null(trace: bool, scope: &FeelScope, input_expression: &str, input_values: &str, input_entry: &str, expected: &str) {
+  let input_expression_node = dmntk_feel_parser::parse_textual_expression(scope, input_expression, trace).unwrap();
+  let input_entry_node = dmntk_feel_parser::parse_unary_tests(scope, input_entry, trace).unwrap();
+  let node = if !input_values.is_empty() {
+    let input_values_node = dmntk_feel_parser::parse_unary_tests(scope, input_values, trace).unwrap();
+    let left = AstNode::In(Box::new(input_expression_node.clone()), Box::new(input_values_node));
+    let right = AstNode::In(Box::new(input_expression_node), Box::new(input_entry_node));
+    AstNode::And(Box::new(left), Box::new(right))
+  } else {
+    AstNode::In(Box::new(input_expression_node), Box::new(input_entry_node))
+  };
+  match crate::evaluate(scope, &node) {
+    Ok(value) => assert_eq!(value, Value::Null(Some(expected.to_string()))),
     Err(reason) => {
       println!("ERROR: {reason}");
       panic!("`satisfies` failed");

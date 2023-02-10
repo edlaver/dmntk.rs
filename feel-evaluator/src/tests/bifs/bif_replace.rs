@@ -252,3 +252,23 @@ fn _0040() {
     r#"parameter 'replacement' not found"#,
   );
 }
+
+#[test]
+fn _0041() {
+  te_null(false, &scope!(), r#"replace(10,"[a-z]","A")"#, r#"replace: input must be a string"#);
+}
+
+#[test]
+fn _0042() {
+  te_null(false, &scope!(), r#"replace("abc1",10,"A")"#, r#"replace: pattern must be a string"#);
+}
+
+#[test]
+fn _0043() {
+  te_null(false, &scope!(), r#"replace("abc1","[a-z]",10)"#, r#"replace: replacement must be a string"#);
+}
+
+#[test]
+fn _0044() {
+  te_null(false, &scope!(), r#"replace("abc1","[a-z","A")"#, r#"replace: invalid pattern"#);
+}

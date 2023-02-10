@@ -92,7 +92,7 @@ fn _0006(b: &mut Bencher) {
 fn _0007(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision008";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split: input must be a string)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -100,7 +100,7 @@ fn _0007(b: &mut Bencher) {
 fn _0008(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision008_a";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split: delimiter must be a string)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -108,6 +108,6 @@ fn _0008(b: &mut Bencher) {
 fn _0009(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision008_b";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(split: input must be a string)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

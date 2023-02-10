@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-use crate::tests::{te_number, te_scope, te_string};
+use super::*;
 
 #[test]
 fn _0001() {
@@ -64,4 +64,10 @@ fn _0004() {
     r#"if aDate > date("2017-01-01") then substring before(aString, " ") else substring after(aString, " ")"#,
     r#"World"#,
   );
+}
+
+#[test]
+fn _0005() {
+  let scope = &te_scope(r#"{N:9}"#);
+  te_null(false, scope, r#"if N then 1 else 2"#, r#"condition in 'if' expression is not a boolean value"#);
 }

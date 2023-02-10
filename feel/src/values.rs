@@ -116,25 +116,6 @@ pub enum Value {
   /// Value for storing built-in function definition.
   BuiltInFunction(Bif),
 
-  /// Value representing a collection of comma-separated list of expressions.
-  ExpressionList(Values),
-
-  /// Value representing a mapping to externally defined `Java` function.
-  ExternalJavaFunction(
-    /// Class name.
-    String,
-    /// Method signature.
-    String,
-  ),
-
-  /// Value representing a mapping to externally defined `PMML` function.
-  ExternalPmmlFunction(
-    /// Document.
-    String,
-    /// Model name.
-    String,
-  ),
-
   /// Value representing a context.
   Context(FeelContext),
 
@@ -161,6 +142,25 @@ pub enum Value {
 
   /// Value for days and time durations.
   DaysAndTimeDuration(FeelDaysAndTimeDuration),
+
+  /// Value representing a collection of comma-separated list of expressions.
+  ExpressionList(Values),
+
+  /// Value representing a mapping to externally defined `Java` function.
+  ExternalJavaFunction(
+    /// Class name.
+    String,
+    /// Method signature.
+    String,
+  ),
+
+  /// Value representing a mapping to externally defined `PMML` function.
+  ExternalPmmlFunction(
+    /// Document.
+    String,
+    /// Model name.
+    String,
+  ),
 
   /// Value representing the `FEEL` type of a value.
   FeelType(FeelType),
@@ -277,7 +277,7 @@ impl fmt::Display for Value {
       Value::DaysAndTimeDuration(dt_duration) => write!(f, "{dt_duration}"),
       Value::ExpressionList(items) => write!(f, "{items}"),
       Value::ExternalJavaFunction(class_name, method_signature) => write!(f, "ExternalJavaFunction({class_name}, {method_signature})"),
-      Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPMMLFunction({iri}, {model_name})"),
+      Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPmmlFunction({iri}, {model_name})"),
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
       Value::FormalParameter(_, _) => write!(f, "FormalParameter"),
       Value::FormalParameters(_) => write!(f, "FormalParameters"),
@@ -301,9 +301,9 @@ impl fmt::Display for Value {
       Value::Range(v1, c1, v2, c2) => write!(f, "{}{}..{}{}", if *c1 { '[' } else { '(' }, v1, v2, if *c2 { ']' } else { ')' }),
       Value::String(s) => write!(f, "\"{s}\""),
       Value::Time(time) => write!(f, "{time}"),
-      Value::UnaryGreater(_) => write!(f, "UnaryGreater"),
-      Value::UnaryGreaterOrEqual(_) => write!(f, "UnaryGreaterOrEqual"),
-      Value::UnaryLess(_) => write!(f, "UnaryLess"),
+      Value::UnaryGreater(value) => write!(f, "UnaryGreater({value})"),
+      Value::UnaryGreaterOrEqual(value) => write!(f, "UnaryGreaterOrEqual({value})"),
+      Value::UnaryLess(value) => write!(f, "UnaryLess({value})"),
       Value::UnaryLessOrEqual(value) => write!(f, "UnaryLessOrEqual({value})"),
       Value::YearsAndMonthsDuration(ym_duration) => write!(f, "{ym_duration}"),
     }
@@ -521,8 +521,8 @@ impl Values {
   }
 }
 
-impl std::fmt::Display for Values {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for Values {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "[{}]", self.0.iter().map(|value| value.to_string()).collect::<Vec<String>>().join(", "))
   }
 }

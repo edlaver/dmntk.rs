@@ -66,19 +66,22 @@ impl QualifiedName {
   pub fn push(&mut self, name: Name) {
     self.0.push(name);
   }
+
+  /// Inserts a given [Name] at specified position in [QualifiedName].
+  pub fn insert(&mut self, index: usize, name: Name) {
+    self.0.insert(index, name);
+  }
+
+  /// Returns last [Name] from [QualifiedName].
+  pub fn pop(&mut self) -> Option<Name> {
+    self.0.pop()
+  }
 }
 
 impl From<Name> for QualifiedName {
   /// Converts a name into qualified name.
   fn from(value: Name) -> Self {
     Self(value.to_string().split('.').map(Name::from).collect())
-  }
-}
-
-impl From<QualifiedName> for Name {
-  ///
-  fn from(qname: QualifiedName) -> Name {
-    qname.0.first().unwrap_or(&"".into()).clone()
   }
 }
 

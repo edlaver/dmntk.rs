@@ -134,3 +134,9 @@ fn _0013() {
   let scope = &te_scope("{}");
   te_null(false, scope, "sort(list: [3,1,4,5,2], p: function(x,y) x < y)", r#"parameter 'precedes' not found"#);
 }
+
+#[test]
+fn _0014() {
+  let scope = &te_scope("{}");
+  te_be_value(false, scope, "sort([3,1,4,5,2], function(x,y) 10)", r#"[3,1,4,5,2]"#);
+}

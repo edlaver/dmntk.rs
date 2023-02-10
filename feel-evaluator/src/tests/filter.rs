@@ -31,6 +31,7 @@
  */
 
 use super::*;
+use dmntk_feel::scope;
 
 #[test]
 fn _0001() {
@@ -55,20 +56,38 @@ fn _0003() {
 
 #[test]
 fn _0004() {
+  let scope = &te_scope(r#"{A:[]}"#);
+  te_null(false, scope, "A[2]", "");
+}
+
+#[test]
+fn _0005() {
+  let scope = &te_scope(r#"{A:[]}"#);
+  te_null(false, scope, "A[-1]", "");
+}
+
+#[test]
+fn _0006() {
+  let scope = &te_scope(r#"{A:[]}"#);
+  te_null(false, scope, "A[-2]", "");
+}
+
+#[test]
+fn _0007() {
   let scope = &te_scope(r#"{A:[1,3,5]}"#);
   te_number(false, scope, "A[2]", 3, 0);
   te_number(false, scope, "A[-2]", 3, 0);
 }
 
 #[test]
-fn _0005() {
+fn _0008() {
   let scope = &te_scope(r#"{A:[1,3,5]}"#);
   te_number(false, scope, "A[3]", 5, 0);
   te_number(false, scope, "A[-1]", 5, 0);
 }
 
 #[test]
-fn _0006() {
+fn _0009() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_null(false, scope, "B[0]", "index in filter is out of range [1..5], actual index is 0");
   te_null(false, scope, "B[6]", "index in filter is out of range [1..5], actual index is 6");
@@ -76,246 +95,249 @@ fn _0006() {
 }
 
 #[test]
-fn _0007() {
+fn _0010() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[1]", "A");
   te_string(false, scope, "B[-5]", "A");
 }
 
 #[test]
-fn _0008() {
+fn _0011() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[2]", "B");
   te_string(false, scope, "B[-4]", "B");
 }
 
 #[test]
-fn _0009() {
+fn _0012() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[3]", "C");
   te_string(false, scope, "B[-3]", "C");
 }
 
 #[test]
-fn _0010() {
+fn _0013() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[4]", "D");
   te_string(false, scope, "B[-2]", "D");
 }
 
 #[test]
-fn _0011() {
+fn _0014() {
   let scope = &te_scope(r#"{B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[5]", "E");
   te_string(false, scope, "B[-1]", "E");
 }
 
 #[test]
-fn _0012() {
+fn _0015() {
   let scope = &te_scope(r#"{A:[1,3,5],B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[A[1]]", "A");
 }
 
 #[test]
-fn _0013() {
+fn _0016() {
   let scope = &te_scope(r#"{A:[1,3,5],B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[A[2]]", "C");
 }
 
 #[test]
-fn _0014() {
+fn _0017() {
   let scope = &te_scope(r#"{A:[1,3,5],B:["A","B","C","D","E"]}"#);
   te_string(false, scope, "B[A[3]]", "E");
 }
 
 #[test]
-fn _0015() {
+fn _0018() {
   let scope = &te_scope(r#"{l:[{x:1,y:2},{x:null,y:3}]}"#);
   te_be_value(false, scope, "l[x<2]", "{x:1,y:2}");
 }
 
 #[test]
-fn _0016() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, "[{x:1,y:2},{x:null,y:3}][x<2]", "{x:1,y:2}");
-}
-
-#[test]
-fn _0017() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, "[{x:1,y:2},{x:null,y:3}][y>2]", "{x:null,y:3}");
-}
-
-#[test]
-fn _0018() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, "[1,2,3,4,5,6,7,8,9,10][item>=5]", "[5,6,7,8,9,10]");
-}
-
-#[test]
 fn _0019() {
+  te_be_value(false, &scope!(), "[{x:1,y:2},{x:null,y:3}][x<2]", "{x:1,y:2}");
+}
+
+#[test]
+fn _0020() {
+  te_be_value(false, &scope!(), "[{x:1,y:2},{x:null,y:3}][y>2]", "{x:null,y:3}");
+}
+
+#[test]
+fn _0021() {
+  te_be_value(false, &scope!(), "[1,2,3,4,5,6,7,8,9,10][item>=5]", "[5,6,7,8,9,10]");
+}
+
+#[test]
+fn _0022() {
   let scope = &te_scope(r#"{l:[{x:1,y:2},{x:2,y:4},{x:3,y:6}]}"#);
   te_be_value(false, scope, "l[2]", "{x:2,y:4}");
 }
 
 #[test]
-fn _0020() {
+fn _0023() {
   let scope = &te_scope(r#"{l:[{x:1,y:2},{x:2,y:4},{x:3,y:6}]}"#);
   te_be_value(false, scope, "l[x=2]", "{x:2,y:4}");
 }
 
 #[test]
-fn _0021() {
+fn _0024() {
   let scope = &te_scope(r#"{l:[{x:1,y:2},{x:2,y:4},{x:3,y:6}]}"#);
   te_value(false, scope, "l[x=2].y", "4");
 }
 
 #[test]
-fn _0022() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][1]", 1, 0);
-}
-
-#[test]
-fn _0023() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][item=4]", 4, 0);
-}
-
-#[test]
-fn _0024() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, "[1,2,3,4,5,6][item>=4]", "[4,5,6]");
-}
-
-#[test]
 fn _0025() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][1][1]", 1, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][1]", 1, 0);
 }
 
 #[test]
 fn _0026() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][2]", 2, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][item=4]", 4, 0);
 }
 
 #[test]
 fn _0027() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][3]", 3, 0);
+  te_be_value(false, &scope!(), "[1,2,3,4,5,6][item>=4]", "[4,5,6]");
 }
 
 #[test]
 fn _0028() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][4]", 4, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][1][1]", 1, 0);
 }
 
 #[test]
 fn _0029() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][5]", 5, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][2]", 2, 0);
 }
 
 #[test]
 fn _0030() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][6]", 6, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][3]", 3, 0);
 }
 
 #[test]
 fn _0031() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-1]", 6, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][4]", 4, 0);
 }
 
 #[test]
 fn _0032() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-2]", 5, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][5]", 5, 0);
 }
 
 #[test]
 fn _0033() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-3]", 4, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][6]", 6, 0);
 }
 
 #[test]
 fn _0034() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-4]", 3, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-1]", 6, 0);
 }
 
 #[test]
 fn _0035() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-5]", 2, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-2]", 5, 0);
 }
 
 #[test]
 fn _0036() {
-  let scope = &te_scope(r#"{}"#);
-  te_number(false, scope, "[1,2,3,4,5,6][-6]", 1, 0);
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-3]", 4, 0);
 }
 
 #[test]
 fn _0037() {
-  let scope = &te_scope(r#"{}"#);
-  te_null(false, scope, "[1,2,3,4,5,6][0]", "index in filter is out of range [1..6], actual index is 0");
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-4]", 3, 0);
 }
 
 #[test]
 fn _0038() {
-  let scope = &te_scope(r#"{}"#);
-  te_null(false, scope, "[1,2,3,4,5,6][7]", "index in filter is out of range [1..6], actual index is 7");
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-5]", 2, 0);
 }
 
 #[test]
 fn _0039() {
-  let scope = &te_scope(r#"{}"#);
-  te_null(false, scope, "[1,2,3,4,5,6][-7]", "index in filter is out of range [-6..-1], actual index is -7");
+  te_number(false, &scope!(), "[1,2,3,4,5,6][-6]", 1, 0);
 }
 
 #[test]
 fn _0040() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"true[true]"#, r#"[true]"#);
+  te_null(false, &scope!(), "[1,2,3,4,5,6][0]", "index in filter is out of range [1..6], actual index is 0");
 }
 
 #[test]
 fn _0041() {
-  let scope = &te_scope(r#"{}"#);
-  be_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}]"#, r#"[{a:1},{a:2},{a:3}]"#);
+  te_null(false, &scope!(), "[1,2,3,4,5,6][7]", "index in filter is out of range [1..6], actual index is 7");
 }
 
 #[test]
 fn _0042() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}][1]"#, r#"{a:1}"#);
+  te_null(false, &scope!(), "[1,2,3,4,5,6][-7]", "index in filter is out of range [-6..-1], actual index is -7");
 }
 
 #[test]
 fn _0043() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"[{item: 1}, {item: 2}, {item: 3}][item >= 2]"#, r#"[{item:2},{item:3}]"#);
+  te_be_value(false, &scope!(), r#" true[true] "#, r#"[true]"#);
 }
 
 #[test]
 fn _0044() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}][item.a=2]"#, r#"{a:2}"#);
+  te_be_value(false, &scope!(), r#" true[false] "#, r#"[]"#);
 }
 
 #[test]
 fn _0045() {
-  let scope = &te_scope(r#"{}"#);
-  te_be_value(false, scope, r#"[{a: 1}, {a: 2}, {a: 3}][item.a >= 2]"#, r#"[{a:2},{a:3}]"#);
+  te_date(false, &scope!(), r#" @"2023-02-06"[1] "#, 2023, 2, 6);
 }
 
 #[test]
 fn _0046() {
+  te_date_time_local(false, &scope!(), r#" @"2023-02-06T10:11:12"[1] "#, (2023, 2, 6), (10, 11, 12, 0));
+}
+
+#[test]
+fn _0047() {
+  te_time(false, &scope!(), r#" @"10:11:12Z"[-1] "#, FeelTime::utc(10, 11, 12, 0));
+}
+
+#[test]
+fn _0048() {
+  te_days_and_time_duration_x(false, &scope!(), r#" @"P1DT2H3M15S"[1] "#, "P1DT2H3M15S");
+}
+
+#[test]
+fn _0049() {
+  te_years_and_months_duration_x(false, &scope!(), r#" @"P5Y4M"[1] "#, "P5Y4M");
+}
+
+#[test]
+fn _0050() {
+  be_be_value(false, &scope!(), r#"[{a: 1}, {a: 2}, {a: 3}]"#, r#"[{a:1},{a:2},{a:3}]"#);
+}
+
+#[test]
+fn _0051() {
+  te_be_value(false, &scope!(), r#"[{a: 1}, {a: 2}, {a: 3}][1]"#, r#"{a:1}"#);
+}
+
+#[test]
+fn _0052() {
+  te_be_value(false, &scope!(), r#"[{item: 1}, {item: 2}, {item: 3}][item >= 2]"#, r#"[{item:2},{item:3}]"#);
+}
+
+#[test]
+fn _0053() {
+  te_be_value(false, &scope!(), r#"[{a: 1}, {a: 2}, {a: 3}][item.a=2]"#, r#"{a:2}"#);
+}
+
+#[test]
+fn _0054() {
+  te_be_value(false, &scope!(), r#"[{a: 1}, {a: 2}, {a: 3}][item.a >= 2]"#, r#"[{a:2},{a:3}]"#);
+}
+
+#[test]
+fn _0055() {
   let scope = &te_scope(
     r#"{
     DeptTable:    [ {manager:"Smith",name:"Sales",number:10},
@@ -332,7 +354,7 @@ fn _0046() {
 }
 
 #[test]
-fn _0047() {
+fn _0056() {
   let scope = &te_scope(
     r#"
     {
@@ -351,7 +373,7 @@ fn _0047() {
 }
 
 #[test]
-fn _0048() {
+fn _0057() {
   let scope = &te_scope(
     r#"
     {
@@ -370,7 +392,7 @@ fn _0048() {
 }
 
 #[test]
-fn _0049() {
+fn _0058() {
   let scope = &te_scope(
     r#"{
     DeptTable:    [ {manager:"Smith",name:"Sales",number:10},
@@ -387,7 +409,7 @@ fn _0049() {
 }
 
 #[test]
-fn _0050() {
+fn _0059() {
   let scope = &te_scope(
     r#"{
     DeptTable:    [ {manager:"Smith",name:"Sales",number:10},
@@ -404,7 +426,7 @@ fn _0050() {
 }
 
 #[test]
-fn _0051() {
+fn _0060() {
   let scope = &te_scope(
     r#"{
      check_eq: function(x,y) x = y,
@@ -419,7 +441,7 @@ fn _0051() {
 }
 
 #[test]
-fn _0052() {
+fn _0061() {
   let scope = &te_scope(
     r#"{
       "Flight List": [
@@ -439,7 +461,7 @@ fn _0052() {
 }
 
 #[test]
-fn _0053() {
+fn _0062() {
   let scope = &te_scope(
     r#"{
       "Flight List": [
@@ -462,4 +484,84 @@ fn _0053() {
     r#"Flight List[Status = "cancelled"][1]"#,
     r#"{"Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Departure": @"2017-01-01T18:00:00", "Flight Number": "UA123", "From": "SFO", "Status": "cancelled", "To": "SNA"}"#,
   );
+}
+
+#[test]
+fn _0063() {
+  let scope = &te_scope(
+    r#"{
+      "Flight List": [
+        { "Flight Number": "UA456",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA123",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
+        { "Flight Number": "UA789",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T21:00:00", "Arrival": @"2017-01-01T23:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": "UA1001", "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 0, "Status": "cancelled" },
+        { "Flight Number": "UA1111", "From": "SFO", "To": "LAX", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 2, "Status": "scheduled" }]
+    }"#,
+  );
+  te_be_value(false, scope, r#"Flight List[Status = "cancelled"].Flight Number"#, r#"["UA123", "UA1001"]"#);
+}
+
+#[test]
+fn _0064() {
+  let scope = &te_scope(
+    r#"{
+      "Flight List": [
+        { "Flight Number": { n: "UA456",  tag: "A" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": { n: "UA123",  tag: "B" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
+        { "Flight Number": { n: "UA789",  tag: "C" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T21:00:00", "Arrival": @"2017-01-01T23:00:00", "Capacity": 2, "Status": "scheduled" },
+        { "Flight Number": { n: "UA1001", tag: "D" }, "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 0, "Status": "cancelled" },
+        { "Flight Number": { n: "UA1111", tag: "E" }, "From": "SFO", "To": "LAX", "Departure": @"2017-01-01T23:00:00", "Arrival": @"2017-01-02T05:00:00", "Capacity": 2, "Status": "scheduled" }]
+    }"#,
+  );
+  te_be_value(false, scope, r#"Flight List[Status = "cancelled"].Flight Number.tag"#, r#"["B", "D"]"#);
+}
+
+#[test]
+fn _0065() {
+  let scope = &te_scope(r#"{ A: 10 }"#);
+  te_number(false, scope, "A[1]", 10, 0);
+}
+
+#[test]
+fn _0066() {
+  let scope = &te_scope(r#"{ A: 10 }"#);
+  te_number(false, scope, "A[-1]", 10, 0);
+}
+
+#[test]
+fn _0067() {
+  let scope = &te_scope(r#"{ A: [1,2,3] }"#);
+  te_null(false, scope, "A[99999999999999999999]", r#"index is out of range 1..2⁶⁴: 99999999999999999999"#);
+}
+
+#[test]
+fn _0068() {
+  let scope = &te_scope(r#"{ A: [1,2,3] }"#);
+  te_null(false, scope, "A[-99999999999999999999]", r#"index is out of range 1..2⁶⁴: -99999999999999999999"#);
+}
+
+#[test]
+fn _0069() {
+  let scope = &te_scope(r#"{ A: [1,2,3] }"#);
+  te_null(false, scope, "A[2.5]", r#"index in filter must be an integer value, actual value is 2.5"#);
+}
+
+#[test]
+fn _0070() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-07"[2] "#,
+    "for singletons, only filter index with value 1 or -1 is accepted",
+  );
+}
+
+#[test]
+fn _0071() {
+  te_null(false, &scope!(), r#" @"2023-02-07"["a"] "#, "only number or boolean indexes are allowed in filters");
+}
+
+#[test]
+fn _0072() {
+  te_null(false, &scope!(), r#" (function() 1)[1] "#, "unexpected value type in filter: function<>->Any");
 }

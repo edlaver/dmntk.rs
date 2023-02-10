@@ -119,13 +119,13 @@ fn _0005() {
     r#"Manager.Address.Street"#,
     r#"
        Path
-       ├─ Path
-       │  ├─ Name
-       │  │  └─ `Manager`
-       │  └─ Name
-       │     └─ `Address`
-       └─ Name
-          └─ `Street`
+       ├─ Name
+       │  └─ `Manager`
+       └─ Path
+          ├─ Name
+          │  └─ `Address`
+          └─ Name
+             └─ `Street`
     "#,
     false,
   );
@@ -133,6 +133,34 @@ fn _0005() {
 
 #[test]
 fn _0006() {
+  let scope = scope!();
+  scope.set_name("Manager".into());
+  scope.set_name("Address".into());
+  scope.set_name("City".into());
+  scope.set_name("Street".into());
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"Manager.Address.City.Street"#,
+    r#"
+       Path
+       ├─ Name
+       │  └─ `Manager`
+       └─ Path
+          ├─ Name
+          │  └─ `Address`
+          └─ Path
+             ├─ Name
+             │  └─ `City`
+             └─ Name
+                └─ `Street`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0007() {
   let scope = scope!();
   let mut ctx_a = ParsingContext::default();
   ctx_a.set_name("Street".into());
@@ -145,20 +173,20 @@ fn _0006() {
     r#"Manager.Address.Street"#,
     r#"
        Path
-       ├─ Path
-       │  ├─ Name
-       │  │  └─ `Manager`
-       │  └─ Name
-       │     └─ `Address`
-       └─ Name
-          └─ `Street`
+       ├─ Name
+       │  └─ `Manager`
+       └─ Path
+          ├─ Name
+          │  └─ `Address`
+          └─ Name
+             └─ `Street`
     "#,
     false,
   );
 }
 
 #[test]
-fn _0007() {
+fn _0008() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
   ctx_1.set_name("principal".into());
@@ -179,7 +207,62 @@ fn _0007() {
 }
 
 #[test]
-fn _0008() {
+fn _0009() {
+  let scope = scope!();
+  scope.set_name("principal".into());
+  scope.set_name("loan".into());
+  scope.set_name("id".into());
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"(loan.principal.id)"#,
+    r#"
+       Path
+       ├─ Name
+       │  └─ `loan`
+       └─ Path
+          ├─ Name
+          │  └─ `principal`
+          └─ Name
+             └─ `id`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0010() {
+  let scope = scope!();
+  scope.set_name("principal".into());
+  scope.set_name("loan".into());
+  scope.set_name("id".into());
+  scope.set_name("type".into());
+  accept(
+    &scope,
+    StartTextualExpression,
+    r#"(loan.principal.id.type - 1)"#,
+    r#"
+       Sub
+       ├─ Path
+       │  ├─ Name
+       │  │  └─ `loan`
+       │  └─ Path
+       │     ├─ Name
+       │     │  └─ `principal`
+       │     └─ Path
+       │        ├─ Name
+       │        │  └─ `id`
+       │        └─ Name
+       │           └─ `type`
+       └─ Numeric
+          └─ `1.`
+    "#,
+    false,
+  );
+}
+
+#[test]
+fn _0011() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
   ctx_1.set_name("principal".into());
@@ -208,7 +291,7 @@ fn _0008() {
 }
 
 #[test]
-fn _0009() {
+fn _0012() {
   let scope = scope!();
   let mut ctx_1 = ParsingContext::default();
   ctx_1.set_name("fromString".into());
@@ -219,13 +302,13 @@ fn _0009() {
     r#"Date.fromString.day"#,
     r#"
        Path
-       ├─ Path
-       │  ├─ Name
-       │  │  └─ `Date`
-       │  └─ Name
-       │     └─ `fromString`
-       └─ Name
-          └─ `day`
+       ├─ Name
+       │  └─ `Date`
+       └─ Path
+          ├─ Name
+          │  └─ `fromString`
+          └─ Name
+             └─ `day`
     "#,
     false,
   );

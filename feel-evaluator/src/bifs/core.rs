@@ -759,7 +759,9 @@ pub fn even(number_value: &Value) -> Value {
 /// Returns the Euler’s number e raised to the power of **value** given as a parameter.
 pub fn exp(value: &Value) -> Value {
   if let Value::Number(num) = value {
-    return Value::Number(num.exp());
+    if let Some(n) = num.exp() {
+      return Value::Number(n);
+    }
   }
   value_null!("exp")
 }
@@ -1471,18 +1473,19 @@ pub fn modulo(dividend_value: &Value, divisor_value: &Value) -> Value {
   }
 }
 
+/// ???
+fn gregorian_month(opt_month_of_year: Option<MonthOfYear>) -> Value {
+  if let Some(month_of_year) = opt_month_of_year {
+    value_string!(month_of_year.0)
+  } else {
+    value_null!("[month of year] no month")
+  }
+}
+
 /// Returns the month of the year according to the Gregorian calendar enumeration:
 /// `January`, `February`, `March`, `April`, `May`, `June`, `July`,
 /// `August`, `September`, `October`, `November`, `December`.
 pub fn month_of_year(value: &Value) -> Value {
-  fn gregorian_month(opt_month_of_year: Option<MonthOfYear>) -> Value {
-    if let Some(month_of_year) = opt_month_of_year {
-      value_string!(month_of_year.0)
-    } else {
-      //TODO this case is uncovered and must be eliminated after refactoring date and time crate
-      value_null!("[month of year] no month")
-    }
-  }
   match value {
     Value::Date(date) => gregorian_month(date.month_of_year()),
     Value::DateTime(date_time) => gregorian_month(date_time.month_of_year()),
@@ -1790,17 +1793,17 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
   value_null!("probably index is out of range")
 }
 
+lazy_static! {
+  // Rust implementation is eager when parsing matching groups, so place numbers in square brackets.
+  static ref RG_REPLACE_NUM: Regex = Regex::new("\\$([1-9][0-9]*)").unwrap();
+}
+
 /// ???
 pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replacement_string_value: &Value, flags_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(pattern_string) = pattern_string_value {
       if let Value::String(replacement_string) = replacement_string_value {
-        // Rust implementation is eager when parsing matching groups, so place numbers in square brackets
-        let repl = if let Ok(rg) = Regex::new("\\$([1-9][0-9]*)") {
-          rg.replace_all(replacement_string.as_str(), "$${${1}}").to_string()
-        } else {
-          replacement_string.clone()
-        };
+        let repl = RG_REPLACE_NUM.replace_all(replacement_string.as_str(), "$${${1}}").to_string();
         // check and use flags
         if let Value::String(flags_string) = flags_string_value {
           let mut flags = "".to_string();
@@ -1840,12 +1843,19 @@ pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replace
         // replace without any flags
         if let Ok(re) = Regex::new(pattern_string) {
           let result = re.replace_all(input_string.as_str(), repl.as_str()).to_string();
-          return Value::String(result);
+          Value::String(result)
+        } else {
+          value_null!("replace: invalid pattern")
         }
+      } else {
+        value_null!("replace: replacement must be a string")
       }
+    } else {
+      value_null!("replace: pattern must be a string")
     }
+  } else {
+    value_null!("replace: input must be a string")
   }
-  value_null!("replace")
 }
 
 ///
@@ -1897,10 +1907,15 @@ pub fn split(input_string_value: &Value, delimiter_string_value: &Value) -> Valu
     if let Value::String(delimiter_string) = delimiter_string_value {
       if let Ok(re) = Regex::new(delimiter_string) {
         return Value::List(Values::new(re.split(input_string).map(|s| Value::String(s.to_string())).collect()));
+      } else {
+        value_null!("split: invalid delimiter")
       }
+    } else {
+      value_null!("split: delimiter must be a string")
     }
+  } else {
+    value_null!("split: input must be a string")
   }
-  value_null!("split")
 }
 
 /// Returns the square root of the given [Value].
@@ -1912,13 +1927,13 @@ pub fn sqrt(value: &Value) -> Value {
       if let Some(result) = v.sqrt() {
         Value::Number(result)
       } else {
-        value_null!("?1")
+        value_null!("sqrt: result is not a finite number")
       }
     } else {
-      value_null!("?2")
+      value_null!("sqrt: argument must be positive number or zero")
     }
   } else {
-    value_null!("sqrt")
+    value_null!("sqrt: argument must be a number")
   }
 }
 
@@ -2117,7 +2132,7 @@ pub fn starts(value1: &Value, value2: &Value) -> Value {
   invalid_argument_type!("starts", "scalar or range of scalars", value1.type_of())
 }
 
-/// Returns **true** when the input string starts with specified match string.
+/// Returns `true` when the input string starts with specified match string.
 pub fn starts_with(input_string_value: &Value, match_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_string_value {
@@ -2130,10 +2145,10 @@ pub fn starts_with(input_string_value: &Value, match_string_value: &Value) -> Va
   }
 }
 
-///
+/// Returns the sample standard deviation of the list of numbers.
 pub fn stddev(values: &[Value]) -> Value {
   if values.len() < 2 {
-    return value_null!();
+    return value_null!("stddev: minimum two input arguments expected");
   }
   let mut sum = FeelNumber::zero();
   let mut numbers = vec![];
@@ -2142,7 +2157,7 @@ pub fn stddev(values: &[Value]) -> Value {
       sum += x;
       numbers.push(x);
     } else {
-      return value_null!("stddev");
+      return value_null!("stddev: expected number, actual type is {} with value {}", value.type_of(), value);
     }
   }
   let n: FeelNumber = numbers.len().into();
@@ -2152,17 +2167,17 @@ pub fn stddev(values: &[Value]) -> Value {
     if let Some(square) = (number - avg).square() {
       sum2 += square;
     } else {
-      return value_null!("stddev: square error");
+      return value_null!("stddev: intermediate result is not a finite number");
     }
   }
   if let Some(stddev) = (sum2 / (n - FeelNumber::one())).sqrt() {
     Value::Number(stddev)
   } else {
-    value_null!("stddev")
+    value_null!("stddev: result is not a finite number")
   }
 }
 
-/// Converts specified value to [Value::String].
+/// Converts specified value to string.
 pub fn string(value: &Value) -> Value {
   match value {
     Value::Null(_) => value_null!(),
@@ -2176,7 +2191,7 @@ pub fn string_length(input_string_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     Value::Number(input_string.chars().count().into())
   } else {
-    value_null!("string_length")
+    value_null!("string length: expected string as an argument")
   }
 }
 
@@ -2200,7 +2215,7 @@ pub fn sum(values: &[Value]) -> Value {
   }
 }
 
-/// ???
+/// Returns list of all elements of list, starting with specified position, 1st position is 1, last position is -1.
 pub fn sublist2(list: &Value, position_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(position_number) = position_value {
@@ -2209,23 +2224,35 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
           let index = position - 1;
           if index < items.len() {
             return Value::List(Values::new(items.as_vec()[index..].to_vec()));
+          } else {
+            value_null!("sublist: position is out of range, len = {}, position = {}", items.len(), position)
           }
+        } else {
+          value_null!("sublist: invalid position value: {}", position_value)
         }
-      }
-      if position_number.is_negative() {
+      } else if position_number.is_negative() {
         if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
           let index = position;
           if index <= items.len() {
             return Value::List(Values::new(items.as_vec()[items.len() - index..].to_vec()));
+          } else {
+            value_null!("sublist: position is out of range, len = {}, position = -{}", items.len(), position)
           }
+        } else {
+          value_null!("sublist: invalid position value: {}", position_value)
         }
+      } else {
+        value_null!("sublist: position must not be zero")
       }
+    } else {
+      value_null!("sublist: expected number, actual position value type is {}", position_value.type_of())
     }
+  } else {
+    value_null!("sublist: expected list, actual value type is {}", list.type_of())
   }
-  value_null!("probably index is out of range")
 }
 
-/// ???
+/// Returns list of specified length of elements of list, starting with specified position, 1st position is 1, last position is -1.
 pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> Value {
   if let Value::List(items) = list {
     if let Value::Number(length_number) = length_value {
@@ -2237,113 +2264,157 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
               let last = first + length;
               if first < items.len() && last <= items.len() {
                 return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+              } else {
+                value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
+            } else {
+              value_null!("sublist: invalid position value: {}", position_value)
             }
-          }
-          if position_number.is_negative() {
+          } else if position_number.is_negative() {
             if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
               let first = items.len() - position;
               let last = first + length;
               if first < items.len() && last <= items.len() {
                 return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+              } else {
+                value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
+            } else {
+              value_null!("sublist: invalid position value: {}", position_value)
             }
+          } else {
+            value_null!("sublist: position must not be zero")
           }
+        } else {
+          value_null!("sublist: expected number, actual position value type is {}", position_value.type_of())
         }
+      } else {
+        value_null!("sublist: invalid length value: {}", length_value)
       }
+    } else {
+      value_null!("sublist: expected number, actual length value type is {}", length_value.type_of())
     }
+  } else {
+    value_null!("sublist: expected list, actual value type is {}", list.type_of())
   }
-  value_null!("probably index is out of range")
 }
 
 /// Returns `length` (or all) characters from string, starting at
 /// `start_position`. First position is 1, last position is -1.
 pub fn substring(input_string_value: &Value, start_position_value: &Value, length_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
-    if let Value::Number(start_position) = start_position_value {
-      let start: isize = if let Ok(sp) = start_position.try_into() {
-        sp
+    if let Value::Number(start_position_number) = start_position_value {
+      let position: isize = if let Ok(start_position) = start_position_number.try_into() {
+        start_position
       } else {
-        return value_null!("start position is out of range of isize '{}'", start_position.to_string());
+        return value_null!("substring: invalid start position value: {}", start_position_number);
       };
       let input_string_len = input_string.chars().count();
       match length_value {
-        Value::Number(length) => {
-          if *length < FeelNumber::one() {
-            return value_null!();
+        Value::Number(length_number) => {
+          if *length_number < FeelNumber::one() {
+            return value_null!("substring: length is less than 1");
           }
-          let count: usize = if let Ok(l) = length.trunc().try_into() {
-            l
+          let count: usize = if let Ok(length) = length_number.trunc().try_into() {
+            length
           } else {
-            return value_null!("length is out of range of usize '{}'", length.to_string());
+            return value_null!("substring: invalid length value: {}", length_number);
           };
-          if start > 0 {
-            let index = (start - 1) as usize;
-            if index < input_string_len && index + count <= input_string_len {
-              return Value::String(input_string.chars().skip(index).take(count).collect());
+          match position.cmp(&0) {
+            Ordering::Greater => {
+              let first = (position - 1) as usize;
+              let last = first + count;
+              if first < input_string_len && last <= input_string_len {
+                return Value::String(input_string.chars().skip(first).take(count).collect());
+              } else {
+                value_null!(
+                  "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                  input_string_len,
+                  first + 1,
+                  last + 1
+                )
+              }
             }
-          }
-          if start < 0 {
-            let index = (input_string_len as isize) + start;
-            if index >= 0 && index as usize + count <= input_string_len {
-              return Value::String(input_string.chars().skip(index as usize).take(count).collect());
+            Ordering::Less => {
+              let first = (input_string_len as isize) + position;
+              let last = first + count as isize;
+              if first >= 0 && (first as usize) < input_string_len && (last as usize) <= input_string_len {
+                return Value::String(input_string.chars().skip(first as usize).take(count).collect());
+              } else {
+                value_null!(
+                  "sublist: invalid range, len = {}, start position = {}, end position = {}",
+                  input_string_len,
+                  first + 1,
+                  last + 1
+                )
+              }
             }
+            Ordering::Equal => value_null!("substring: start position must not be zero"),
           }
-          value_null!()
         }
-        Value::Null(_) => {
-          if start > 0 {
-            let index = (start - 1) as usize;
+        Value::Null(_) => match position.cmp(&0) {
+          Ordering::Greater => {
+            let index = (position - 1) as usize;
             if index < input_string_len {
               return Value::String(input_string.chars().skip(index).collect());
+            } else {
+              value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
           }
-          if start < 0 {
-            let index = (input_string_len as isize) + start;
+          Ordering::Less => {
+            let index = (input_string_len as isize) + position;
             if index >= 0 {
               return Value::String(input_string.chars().skip(index as usize).collect());
+            } else {
+              value_null!("substring: position is out of range, len = {}, position = {}", input_string_len, start_position_number)
             }
           }
-          value_null!()
-        }
-        _ => {
-          value_null!("substring")
+          Ordering::Equal => value_null!("substring: start position must not be zero"),
+        },
+        other => {
+          value_null!("sublist: expected number, actual length type is {}", other.type_of())
         }
       }
     } else {
-      value_null!("substring")
+      value_null!("sublist: expected number, actual start position type is {}", start_position_value.type_of())
     }
   } else {
-    value_null!("substring")
+    value_null!("sublist: expected string, actual value type is {}", input_string_value.type_of())
   }
 }
 
-/// Returns substring of `input_string_value`  after the `match_input_string` in string.
+/// Returns substring of `input_string_value` after the `match_input_string` in string.
 pub fn substring_after(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
-      return if let Some(index) = input_string.find(match_string) {
+      if let Some(index) = input_string.find(match_string) {
         Value::String(input_string[match_string.len() + index..].to_string())
       } else {
         Value::String("".to_string())
-      };
+      }
+    } else {
+      value_null!("substring after: expected string, actual match type is: {}", match_input_string.type_of())
     }
+  } else {
+    value_null!("substring after: expected string, actual input type is: {}", input_string_value.type_of())
   }
-  value_null!("substring_after")
 }
 
-/// Returns substring of `input_string_value`  before the `match_input_string` in string.
+/// Returns substring of `input_string_value` before the `match_input_string` in string.
 pub fn substring_before(input_string_value: &Value, match_input_string: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::String(match_string) = match_input_string {
-      return if let Some(index) = input_string.find(match_string) {
+      if let Some(index) = input_string.find(match_string) {
         Value::String(input_string[..index].to_string())
       } else {
         Value::String("".to_string())
-      };
+      }
+    } else {
+      value_null!("substring before: expected string, actual match type is: {}", match_input_string.type_of())
     }
+  } else {
+    value_null!("substring before: expected string, actual input type is: {}", input_string_value.type_of())
   }
-  value_null!("substring_before")
 }
 
 ///
@@ -2367,25 +2438,36 @@ pub fn time_3(hour_value: &Value, minute_value: &Value, second_value: &Value) ->
   if let Value::Number(hour) = hour_value {
     if let Value::Number(minute) = minute_value {
       if let Value::Number(second) = second_value {
-        if (0..24).contains(hour) && (0..60).contains(minute) && (0..60).contains(second) {
-          let seconds = second.trunc();
-          let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
-          if let Ok(h) = hour.try_into() {
-            if let Ok(m) = minute.try_into() {
-              if let Ok(s) = seconds.try_into() {
-                if let Ok(n) = nanoseconds.try_into() {
-                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                    return Value::Time(feel_time);
-                  }
-                }
-              }
+        if (0..24).contains(hour) {
+          if (0..60).contains(minute) {
+            if (0..60).contains(second) {
+              // unwraps below are safe, value ranges are checked above
+              let seconds = second.trunc();
+              let nanoseconds = (second.frac() * FeelNumber::billion()).trunc();
+              let h = hour.try_into().unwrap();
+              let m = minute.try_into().unwrap();
+              let s = seconds.try_into().unwrap();
+              let n = nanoseconds.try_into().unwrap();
+              let feel_time = FeelTime::local_opt(h, m, s, n).unwrap();
+              Value::Time(feel_time)
+            } else {
+              value_null!("second must be 0..59, current value is {}", second)
             }
+          } else {
+            value_null!("minute must be 0..59, current value is {}", minute)
           }
+        } else {
+          value_null!("hour must be 0..23, current value is {}", hour)
         }
+      } else {
+        value_null!("seconds must be a number, current type is {}", second_value.type_of())
       }
+    } else {
+      value_null!("minutes must be a number, current type is {}", minute_value.type_of())
     }
+  } else {
+    value_null!("hour must be a number, current type is {}", hour_value.type_of())
   }
-  value_null!("time_3")
 }
 
 ///
@@ -2403,28 +2485,9 @@ pub fn time_4(hour_value: &Value, minute_value: &Value, second_value: &Value, of
               let s = seconds.try_into().unwrap();
               let n = (second.frac() * FeelNumber::billion()).trunc().try_into().unwrap();
               match offset_value {
-                Value::DaysAndTimeDuration(offset) => {
-                  if let Some(feel_time) = FeelTime::new_hmsno_opt(h, m, s, n, offset.as_seconds() as i32) {
-                    Value::Time(feel_time)
-                  } else {
-                    value_null!("time_4 1")
-                  }
-                }
-                Value::Null(_) => {
-                  if let Some(feel_time) = FeelTime::new_hms_opt(h, m, s, n) {
-                    Value::Time(feel_time)
-                  } else {
-                    value_null!("time_4 2")
-                  }
-                }
-                _ => {
-                  value_null!(
-                    "core",
-                    "time_4",
-                    "offset must be a days and time duration or null, current type is: {}",
-                    offset_value.type_of()
-                  )
-                }
+                Value::DaysAndTimeDuration(offset) => Value::Time(FeelTime::offset_opt(h, m, s, n, offset.as_seconds() as i32).unwrap()),
+                Value::Null(_) => Value::Time(FeelTime::local_opt(h, m, s, n).unwrap()),
+                _ => value_null!("expected days and time duration or null, current offset type is {}", offset_value.type_of()),
               }
             } else {
               value_null!("core", "time_4", "second must be 0..59, current value is: {}", second)
@@ -2513,81 +2576,10 @@ pub fn years_and_months_duration(from_value: &Value, to_value: &Value) -> Value 
 
 #[cfg(test)]
 mod tests {
-  use crate::bifs::core::substring;
-  use dmntk_feel::values::Value;
-  use dmntk_feel::{value_null, value_number};
+  use super::*;
 
   #[test]
-  fn bif_substring() {
-    // *** utility functions ***
-
-    ///
-    fn eq_substring(expected: &str, input_string: &str, start_position: i32) {
-      assert_eq!(
-        Value::String(expected.to_string()),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
-      );
-    }
-    ///
-    fn eq_substring_null(input_string: &str, start_position: i32) {
-      assert_eq!(
-        value_null!(),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_null!())
-      );
-    }
-    ///
-    fn eq_substring_len(expected: &str, input_string: &str, start_position: i32, length: u32) {
-      assert_eq!(
-        Value::String(expected.to_string()),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
-      );
-    }
-    ///
-    fn eq_substring_len_null(input_string: &str, start_position: i32, length: u32) {
-      assert_eq!(
-        value_null!(),
-        substring(&Value::String(input_string.to_string()), &value_number!(start_position), &value_number!(length))
-      );
-    }
-
-    // *** tests ***
-
-    // starting position may be not zero
-    eq_substring_null("homeless", 0);
-    // positive starting position
-    eq_substring("homeless", "homeless", 1);
-    eq_substring("less", "homeless", 5);
-    eq_substring("ss", "homeless", 7);
-    eq_substring("s", "homeless", 8);
-    eq_substring("😀", "foo\u{1F40E}bar\u{1F600}", 8);
-    eq_substring_null("homeless", 9);
-    // negative starting position
-    eq_substring("s", "homeless", -1);
-    eq_substring("less", "homeless", -4);
-    eq_substring("homeless", "homeless", -8);
-    eq_substring_null("homeless", -9);
-    // positive starting position with length
-    eq_substring_len("homeless", "homeless", 1, 8);
-    eq_substring_len("home", "homeless", 1, 4);
-    eq_substring_len("less", "homeless", 5, 4);
-    eq_substring_len("el", "homeless", 4, 2);
-    eq_substring_len("ss", "homeless", 7, 2);
-    eq_substring_len("s", "homeless", 7, 1);
-    eq_substring_len("s", "homeless", 8, 1);
-    eq_substring_len_null("homeless", 0, 4);
-    eq_substring_len_null("homeless", 1, 0);
-    eq_substring_len_null("homeless", 1, 9);
-    // negative starting position with length
-    eq_substring_len("homeless", "homeless", -8, 8);
-    eq_substring_len("home", "homeless", -8, 4);
-    eq_substring_len("less", "homeless", -4, 4);
-    eq_substring_len("el", "homeless", -5, 2);
-    eq_substring_len("ss", "homeless", -2, 2);
-    eq_substring_len("s", "homeless", -2, 1);
-    eq_substring_len("s", "homeless", -1, 1);
-    eq_substring_len("😀", "foo\u{1F40E}bar\u{1F600}", -1, 1);
-    eq_substring_len_null("homeless", -1, 0);
-    eq_substring_len_null("homeless", -3, 4);
-    eq_substring_len_null("homeless", -9, 2);
+  fn test_gregorian_month_of_year() {
+    assert_eq!("null([month of year] no month)", gregorian_month(None).to_string());
   }
 }

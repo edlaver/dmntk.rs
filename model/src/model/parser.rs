@@ -61,9 +61,9 @@ const NODE_DMNDI_DMN_SHAPE: &str = "DMNShape";
 const NODE_DMNDI_BOUNDS: &str = "Bounds";
 const NODE_DMNDI_DMN_EDGE: &str = "DMNEdge";
 const NODE_DMNDI_WAYPOINT: &str = "waypoint";
-const NODE_DMNDI_FILL_COLOR: &str = "fillColor";
-const NODE_DMNDI_STROKE_COLOR: &str = "strokeColor";
-const NODE_DMNDI_FONT_COLOR: &str = "fontColor";
+const NODE_DMNDI_FILL_COLOR: &str = "FillColor";
+const NODE_DMNDI_STROKE_COLOR: &str = "StrokeColor";
+const NODE_DMNDI_FONT_COLOR: &str = "FontColor";
 const NODE_DMNDI_LABEL_HORIZONTAL_ALIGNMENT: &str = "labelHorizontalAlignment";
 const NODE_DMNDI_LABEL_VERTICAL_ALIGNMENT: &str = "labelVerticalAlignment";
 const NODE_DMNDI_LABEL: &str = "DMNLabel";
@@ -71,6 +71,7 @@ const NODE_DMNDI_DECISION_SERVICE_DIVIDER_LINE: &str = "DMNDecisionServiceDivide
 const NODE_DESCRIPTION: &str = "description";
 const NODE_ENCAPSULATED_DECISION: &str = "encapsulatedDecision";
 const NODE_ENCAPSULATED_LOGIC: &str = "encapsulatedLogic";
+const NODE_EXTENSION_ELEMENTS: &str = "extensionElements";
 const NODE_FUNCTION_DEFINITION: &str = "functionDefinition";
 const NODE_FORMAL_PARAMETER: &str = "formalParameter";
 const NODE_FUNCTION_ITEM: &str = "functionItem";
@@ -148,7 +149,7 @@ const ATTR_Y: &str = "y";
 pub struct ModelParser {}
 
 impl ModelParser {
-  /// Parses the XML document containing [Definitions] serialized to interchange format.
+  /// Parses the XML document containing DMN™ model.
   pub fn parse(&mut self, xml: &str) -> Result<Definitions> {
     // parse document
     match roxmltree::Document::parse(xml) {
@@ -162,6 +163,7 @@ impl ModelParser {
       Err(reason) => Err(err_xml_parsing_model_failed(&reason.to_string())),
     }
   }
+
   /// Parses [Definitions].
   fn parse_definitions(&mut self, node: &Node) -> Result<Definitions> {
     let drg_elements = self.parse_drg_elements(node)?;
@@ -189,33 +191,33 @@ impl ModelParser {
     Ok(definitions)
   }
 
-  /// Parser a collection of [ItemDefinition].
+  /// Parses a collection of [ItemDefinition].
   fn parse_item_definitions(&mut self, node: &Node, child_name: &str) -> Result<Vec<ItemDefinition>> {
     let mut items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
-      let type_ref = optional_child_required_content(child_node, NODE_TYPE_REF)?;
-      let type_language = optional_attribute(child_node, ATTR_TYPE_LANGUAGE);
-      let allowed_values = self.parse_unary_tests(child_node, NODE_ALLOWED_VALUES)?;
-      let item_components_definitions = self.parse_item_definitions(child_node, NODE_ITEM_COMPONENT)?;
-      let item_definition = ItemDefinition {
-        name: required_name(child_node)?,
-        feel_name: required_feel_name(child_node)?,
-        id: optional_attribute(child_node, ATTR_ID),
-        description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
-        label: optional_attribute(child_node, ATTR_LABEL),
-        extension_elements: self.parse_extension_elements(child_node),
-        extension_attributes: self.parse_extension_attributes(child_node),
-        type_ref,
-        type_language,
-        feel_type: None,
-        allowed_values,
-        item_components: item_components_definitions,
-        is_collection: self.parse_boolean_attribute(child_node, ATTR_IS_COLLECTION, false),
-        function_item: self.parse_function_item(child_node)?,
-      };
-      items.push(item_definition);
+      items.push(self.parse_item_definition(child_node)?);
     }
     Ok(items)
+  }
+
+  /// Parses a single [ItemDefinition].
+  fn parse_item_definition(&mut self, node: &Node) -> Result<ItemDefinition> {
+    Ok(ItemDefinition {
+      name: required_name(node)?,
+      feel_name: required_feel_name(node)?,
+      id: optional_attribute(node, ATTR_ID),
+      description: optional_child_optional_content(node, NODE_DESCRIPTION),
+      label: optional_attribute(node, ATTR_LABEL),
+      extension_elements: self.parse_extension_elements(node),
+      extension_attributes: self.parse_extension_attributes(node),
+      type_ref: optional_child_required_content(node, NODE_TYPE_REF)?,
+      type_language: optional_attribute(node, ATTR_TYPE_LANGUAGE),
+      feel_type: None,
+      allowed_values: self.parse_unary_tests(node, NODE_ALLOWED_VALUES)?,
+      item_components: self.parse_item_definitions(node, NODE_ITEM_COMPONENT)?,
+      is_collection: self.parse_boolean_attribute(node, ATTR_IS_COLLECTION, false),
+      function_item: self.parse_function_item(node)?,
+    })
   }
 
   /// Parses optional function item.
@@ -781,10 +783,23 @@ impl ModelParser {
   }
 
   /// Parses extension elements.
-  /// Currently extension elements are ignored and [None] is always returned.
-  /// This function is a placeholder for further development.   
-  fn parse_extension_elements(&self, _: &Node) -> Option<ExtensionElement> {
-    None
+  fn parse_extension_elements(&self, node: &Node) -> Option<ExtensionElements> {
+    if let Some(ref child_node) = node.children().find(|n| n.tag_name().name() == NODE_EXTENSION_ELEMENTS) {
+      let mut extension_elements = ExtensionElements { elements: vec![] };
+      for element_node in child_node.children() {
+        // currently only element names from the first dependency level is parsed
+        // actually only visual tools use those extension elements
+        // but in case DMNTK would need these for some model visualization
+        // then this function must be adjusted
+        let name = element_node.tag_name().name().trim().to_string();
+        if !name.is_empty() {
+          extension_elements.elements.push(Element { name });
+        }
+      }
+      Some(extension_elements)
+    } else {
+      None
+    }
   }
 
   /// Parses extension attributes.
@@ -1180,8 +1195,8 @@ mod xml_utils {
     }
   }
 
-  /// XML utility function that returns node's name with node's position in the original document.
-  pub fn node_name_pos(n: &Node) -> String {
-    format!("`{}` at [{}]", n.tag_name().name(), n.document().text_pos_at(n.range().start))
+  /// Utility function that returns the node's name with its position in the original document.
+  pub fn node_name_pos(node: &Node) -> String {
+    format!("'{}' at [{}]", node.tag_name().name(), node.document().text_pos_at(node.range().start))
   }
 }

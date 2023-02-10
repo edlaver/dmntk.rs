@@ -30,17 +30,24 @@
  * limitations under the License.
  */
 
-use super::*;
+use super::super::*;
+use crate::lalr::TokenType::StartTextualExpression;
 
 #[test]
-fn test_list() {
-  let scope = &te_scope("{}");
-  satisfies(false, scope, "1", "", "[]", false);
-  satisfies(false, scope, "1", "", "[1]", true);
-  satisfies(false, scope, "10", "", "[9,10,11]", true);
-  satisfies(false, scope, "8", "", "[9,10,11]", false);
-  satisfies(false, scope, "12", "", "[9,10,11]", false);
-  satisfies(false, scope, "10", "", "[9],[10],[11]", true);
-  satisfies(false, scope, "8", "", "[9],[10],[11]", false);
-  satisfies(false, scope, "12", "", "[9],[10],[11]", false);
+fn _0001() {
+  let scope = scope!();
+  accept(
+    &scope,
+    StartTextualExpression,
+    "exp(100000000000000000000000000000)",
+    r#"
+       FunctionInvocation
+       ├─ Name
+       │  └─ `exp`
+       └─ PositionalParameters
+          └─ Numeric
+             └─ `100000000000000000000000000000.`
+    "#,
+    false,
+  );
 }

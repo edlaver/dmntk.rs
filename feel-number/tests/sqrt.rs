@@ -21,3 +21,8 @@ fn test_sqrt_003() {
 fn test_sqrt_004() {
   eqs!("1.414213562373095048801688724209698", num!(2).sqrt().unwrap());
 }
+
+#[test]
+fn test_sqrt_005() {
+  assert!(FeelNumber::infinite().sqrt().is_none());
+}

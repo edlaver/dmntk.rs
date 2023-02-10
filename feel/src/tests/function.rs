@@ -39,12 +39,45 @@ fn test_function_body_decision_table() {
 }
 
 #[test]
+fn test_function_body_function_definition() {
+  let scope = &FeelScope::default();
+  let fun_body = FunctionBody::FunctionDefinition(Arc::new(Box::new(|_: &FeelScope| value_number!(4))));
+  assert_eq!(value_number!(4), fun_body.evaluate(scope));
+  assert_eq!("FunctionBodyFunctionDefinition", format!("{fun_body:?}"));
+  let fun_body_a = FunctionBody::FunctionDefinition(Arc::new(Box::new(|_: &FeelScope| value_number!(40))));
+  assert_eq!(fun_body, fun_body_a);
+  assert_eq!(fun_body, fun_body.clone());
+}
+
+#[test]
+fn test_function_body_invocation() {
+  let scope = &FeelScope::default();
+  let fun_body = FunctionBody::Invocation(Arc::new(Box::new(|_: &FeelScope| value_number!(5))));
+  assert_eq!(value_number!(5), fun_body.evaluate(scope));
+  assert_eq!("FunctionBodyInvocation", format!("{fun_body:?}"));
+  let fun_body_a = FunctionBody::Invocation(Arc::new(Box::new(|_: &FeelScope| value_number!(50))));
+  assert_eq!(fun_body, fun_body_a);
+  assert_eq!(fun_body, fun_body.clone());
+}
+
+#[test]
+fn test_function_body_relation() {
+  let scope = &FeelScope::default();
+  let fun_body = FunctionBody::Relation(Arc::new(Box::new(|_: &FeelScope| value_number!(6))));
+  assert_eq!(value_number!(6), fun_body.evaluate(scope));
+  assert_eq!("FunctionBodyRelation", format!("{fun_body:?}"));
+  let fun_body_a = FunctionBody::Relation(Arc::new(Box::new(|_: &FeelScope| value_number!(60))));
+  assert_eq!(fun_body, fun_body_a);
+  assert_eq!(fun_body, fun_body.clone());
+}
+
+#[test]
 fn test_function_body_decision_service() {
   let scope = &FeelScope::default();
-  let fun_body = FunctionBody::DecisionService(Arc::new(Box::new(|_: &FeelScope| value_number!(4))));
-  assert_eq!(value_number!(4), fun_body.evaluate(scope));
+  let fun_body = FunctionBody::DecisionService(Arc::new(Box::new(|_: &FeelScope| value_number!(7))));
+  assert_eq!(value_number!(7), fun_body.evaluate(scope));
   assert_eq!("FunctionBodyDecisionService", format!("{fun_body:?}"));
-  let fun_body_a = FunctionBody::DecisionService(Arc::new(Box::new(|_: &FeelScope| value_number!(40))));
+  let fun_body_a = FunctionBody::DecisionService(Arc::new(Box::new(|_: &FeelScope| value_number!(70))));
   assert_eq!(fun_body, fun_body_a);
   assert_eq!(fun_body, fun_body.clone());
 }
@@ -52,10 +85,10 @@ fn test_function_body_decision_service() {
 #[test]
 fn test_function_body_external() {
   let scope = &FeelScope::default();
-  let fun_body = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(5))));
-  assert_eq!(value_number!(5), fun_body.evaluate(scope));
+  let fun_body = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(8))));
+  assert_eq!(value_number!(8), fun_body.evaluate(scope));
   assert_eq!("FunctionBodyExternal", format!("{fun_body:?}"));
-  let fun_body_a = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(50))));
+  let fun_body_a = FunctionBody::External(Arc::new(Box::new(|_: &FeelScope| value_number!(80))));
   assert_eq!(fun_body, fun_body_a);
   assert_eq!(fun_body, fun_body.clone());
 }

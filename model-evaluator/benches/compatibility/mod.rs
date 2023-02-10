@@ -135,6 +135,7 @@ mod dmn_3_0087;
 mod dmn_3_0088;
 mod dmn_3_0089;
 mod dmn_3_0090;
+mod dmn_3_0100;
 mod dmn_3_1100;
 mod dmn_3_1101;
 mod dmn_3_1102;

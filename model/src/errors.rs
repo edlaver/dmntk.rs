@@ -30,14 +30,14 @@ impl From<ModelParserError> for DmntkError {
 /// Raised when parsed text is not a valid function kind, accepted values are:
 /// `FEEL`, `Java` or `PMML`.
 pub fn err_invalid_function_kind(s: &str) -> DmntkError {
-  ModelParserError(format!("'{s}' is not a valid function kind, accepted values are: `FEEL`, `Java`, `PMML`")).into()
+  ModelParserError(format!("'{s}' is not a valid function kind, accepted values are: 'FEEL', 'Java', 'PMML'")).into()
 }
 
 /// Raised when parsed text is not a valid hit policy, accepted values are:
 /// `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER` or `OUTPUT ORDER`.
 pub fn err_invalid_hit_policy(s: &str) -> DmntkError {
   ModelParserError(format!(
-    "'{s}' is not a valid hit policy, allowed values are: `UNIQUE`, `FIRST`, `PRIORITY`, `ANY`, `COLLECT`, `RULE ORDER`, `OUTPUT ORDER`"
+    "'{s}' is not a valid hit policy, allowed values are: 'UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER'"
   ))
   .into()
 }
@@ -45,7 +45,7 @@ pub fn err_invalid_hit_policy(s: &str) -> DmntkError {
 /// Raised when parsed text is not a valid aggregation for hit policy, accepted values are:
 /// `COUNT`, `SUM`, `MIN`, or `MAX`.
 pub fn err_invalid_aggregation(s: &str) -> DmntkError {
-  ModelParserError(format!("'{s}' is not a valid aggregation, allowed values are: `COUNT`, `SUM`, `MIN`, `MAX`")).into()
+  ModelParserError(format!("'{s}' is not a valid aggregation, allowed values are: 'COUNT', 'SUM', 'MIN', 'MAX'")).into()
 }
 
 /// Invalid value for a color.
@@ -87,13 +87,13 @@ pub fn err_xml_unexpected_node(s1: &str, s2: &str) -> DmntkError {
 }
 
 pub fn err_xml_expected_mandatory_attribute(s1: &str, s2: &str) -> DmntkError {
-  ModelParserError(format!("expected value for mandatory attribute `{s2}` in node `{s1}`")).into()
+  ModelParserError(format!("expected value for mandatory attribute '{s2}' in node {s1}")).into()
 }
 
 pub fn err_xml_expected_mandatory_child_node(s1: &str, s2: &str) -> DmntkError {
-  ModelParserError(format!("expected mandatory child node '{s2}' in parent node '{s1}'")).into()
+  ModelParserError(format!("expected mandatory child node '{s2}' in parent node {s1}")).into()
 }
 
 pub fn err_xml_expected_mandatory_text_content(s: &str) -> DmntkError {
-  ModelParserError(format!("expected mandatory text content in node: {s}")).into()
+  ModelParserError(format!("expected mandatory text content in node '{s}'")).into()
 }

@@ -36,27 +36,14 @@ use crate::AstNode;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::{Name, QualifiedName};
 use std::collections::BTreeSet;
-use std::fmt;
 
 /// Context for closures (lambdas).
-#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Default)]
 pub struct ClosureBuilder {
   /// Collection of parameter names in function definitions.
   parameter_names: BTreeSet<QualifiedName>,
   /// Collection of names used in expressions.
   names: BTreeSet<QualifiedName>,
-  /// Collection of closed names.
-  closure: BTreeSet<QualifiedName>,
-}
-
-impl fmt::Display for ClosureBuilder {
-  /// Implements [Display](fmt::Display) trait for [ClosureBuilder].
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    let parameter_names = self.parameter_names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
-    let names = self.names.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
-    let closure = self.closure.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(",");
-    write!(f, "[{names}]-[{parameter_names}]=[{closure}]")
-  }
 }
 
 impl ClosureBuilder {

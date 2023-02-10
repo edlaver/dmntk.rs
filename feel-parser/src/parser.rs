@@ -176,7 +176,7 @@ impl<'parser> Parser<'parser> {
           self.yy_n = YY_TABLE[self.yy_n as usize];
           if self.yy_n <= 0 {
             if self.yy_n == YY_TABLE_N_INF {
-              action = Action::Error; // TODO Find the input, for which this error is triggered.
+              action = Action::Error;
             } else {
               self.yy_n = -self.yy_n;
               action = Action::Reduce;
@@ -1028,14 +1028,21 @@ impl<'parser> ReduceActions for Parser<'parser> {
   }
 
   ///
-  fn action_path_names(&mut self) -> Result<()> {
-    trace_action!(self, "path_names");
-    if let TokenValue::Name(lhs_name) = &self.yy_value_stack[self.yy_value_stack.len() - 3] {
-      if let Some(TokenValue::Name(rhs_name)) = &self.yy_value_stack.last() {
-        let lhs = AstNode::Name(lhs_name.clone());
-        let rhs = AstNode::Name(rhs_name.clone());
-        self.yy_node_stack.push(AstNode::Path(Box::new(lhs), Box::new(rhs)));
-      }
+  fn action_path_segment(&mut self) -> Result<()> {
+    trace_action!(self, "path_segment");
+    let rhs = self.yy_node_stack.pop().unwrap();
+    if let TokenValue::Name(name) = &self.yy_value_stack[self.yy_value_stack.len() - 3] {
+      let lhs = AstNode::Name(name.clone());
+      self.yy_node_stack.push(AstNode::Path(Box::new(lhs), Box::new(rhs)));
+    }
+    Ok(())
+  }
+
+  ///
+  fn action_path_segment_tail(&mut self) -> Result<()> {
+    trace_action!(self, "path_segment_tail");
+    if let Some(TokenValue::Name(name)) = &self.yy_value_stack.last() {
+      self.yy_node_stack.push(AstNode::Name(name.clone()));
     }
     Ok(())
   }

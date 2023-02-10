@@ -32,7 +32,8 @@
 
 //! Hit policy tests.
 
-use dmntk_model::model::{BuiltinAggregator, HitPolicy};
+use crate::model::{BuiltinAggregator, HitPolicy};
+use dmntk_common::Result;
 
 #[test]
 fn test_display() {
@@ -80,4 +81,21 @@ fn test_equality() {
   assert!((HitPolicy::Unique != HitPolicy::First));
   assert!((HitPolicy::Any != HitPolicy::OutputOrder));
   assert!((HitPolicy::Priority != HitPolicy::Collect(BuiltinAggregator::Count)));
+}
+
+#[test]
+fn test_try_from() {
+  assert!(HitPolicy::Unique == "U".try_into().unwrap());
+  assert!(HitPolicy::Any == "A".try_into().unwrap());
+  assert!(HitPolicy::Priority == "P".try_into().unwrap());
+  assert!(HitPolicy::First == "F".try_into().unwrap());
+  assert!(HitPolicy::Collect(BuiltinAggregator::List) == "C".try_into().unwrap());
+  assert!(HitPolicy::Collect(BuiltinAggregator::Count) == "C#".try_into().unwrap());
+  assert!(HitPolicy::Collect(BuiltinAggregator::Sum) == "C+".try_into().unwrap());
+  assert!(HitPolicy::Collect(BuiltinAggregator::Min) == "C<".try_into().unwrap());
+  assert!(HitPolicy::Collect(BuiltinAggregator::Max) == "C>".try_into().unwrap());
+  assert!(HitPolicy::OutputOrder == "O".try_into().unwrap());
+  assert!(HitPolicy::RuleOrder == "R".try_into().unwrap());
+  let hit_policy: Result<HitPolicy> = "K".try_into();
+  assert!(hit_policy.is_err());
 }

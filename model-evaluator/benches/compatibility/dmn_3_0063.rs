@@ -81,7 +81,12 @@ fn _0004(b: &mut Bencher) {
 fn _0005(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision005";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(stddev)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &ctx,
+    r#"null(stddev: expected number, actual type is string with value "foo")"#,
+  );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -89,7 +94,7 @@ fn _0005(b: &mut Bencher) {
 fn _0006(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision007";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(stddev: minimum two input arguments expected)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

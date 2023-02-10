@@ -77,3 +77,18 @@ fn _0008() {
 fn _0009() {
   te_null(false, &scope!(), r#"split(string: "John Doe", d: "\\s")"#, r#"parameter 'delimiter' not found"#);
 }
+
+#[test]
+fn _0010() {
+  te_null(false, &scope!(), r#"split(10,"\\s")"#, r#"split: input must be a string"#);
+}
+
+#[test]
+fn _0011() {
+  te_null(false, &scope!(), r#"split("John Doe",10)"#, r#"split: delimiter must be a string"#);
+}
+
+#[test]
+fn _0012() {
+  te_null(false, &scope!(), r#"split("John Doe","[a-z")"#, r#"split: invalid delimiter"#);
+}

@@ -5,7 +5,43 @@ use crate::types::{is_built_in_type_name, FeelType};
 use crate::values::{Value, Values};
 use crate::{value_null, value_number, FeelNumber, FeelScope, FunctionBody};
 use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
+use std::str::FromStr;
 use std::sync::Arc;
+
+#[test]
+fn test_from_string() {
+  assert_eq!(FeelType::Any, FeelType::from_str("Any").unwrap());
+  assert_eq!(FeelType::Null, FeelType::from_str("Null").unwrap());
+  assert_eq!(FeelType::Boolean, FeelType::from_str("boolean").unwrap());
+  assert_eq!(FeelType::Number, FeelType::from_str("number").unwrap());
+  assert_eq!(FeelType::String, FeelType::from_str("string").unwrap());
+  assert_eq!(FeelType::Date, FeelType::from_str("date").unwrap());
+  assert_eq!(FeelType::Time, FeelType::from_str("time").unwrap());
+  assert_eq!(FeelType::DateTime, FeelType::from_str("date and time").unwrap());
+  assert_eq!(FeelType::DaysAndTimeDuration, FeelType::from_str("days and time duration").unwrap());
+  assert_eq!(FeelType::YearsAndMonthsDuration, FeelType::from_str("years and months duration").unwrap());
+  assert_eq!("TypesError: invalid FEEL type name: range", FeelType::from_str("range").err().unwrap().to_string());
+}
+
+#[test]
+fn test_from_name() {
+  fn eq(expected: FeelType, s: &str) {
+    let name = &Name::from(s);
+    let actual: FeelType = name.into();
+    assert_eq!(expected, actual);
+  }
+  eq(FeelType::Any, "Any");
+  eq(FeelType::Null, "Null");
+  eq(FeelType::Boolean, "boolean");
+  eq(FeelType::Number, "number");
+  eq(FeelType::String, "string");
+  eq(FeelType::Date, "date");
+  eq(FeelType::Time, "time");
+  eq(FeelType::DateTime, "date and time");
+  eq(FeelType::DaysAndTimeDuration, "days and time duration");
+  eq(FeelType::YearsAndMonthsDuration, "years and months duration");
+  eq(FeelType::Any, "range");
+}
 
 #[test]
 fn test_get_value_checked() {
@@ -678,7 +714,7 @@ fn test_type_get_conformant_value() {
   let v_date_b = Value::Date(FeelDate::new(2022, 11, 30));
   // date time
   let t_date_time = FeelType::DateTime;
-  let v_date_time = Value::DateTime(FeelDateTime::new(FeelDate::new(2022, 9, 27), FeelTime::new_hms_opt(9, 2, 0, 0).unwrap()));
+  let v_date_time = Value::DateTime(FeelDateTime::new(FeelDate::new(2022, 9, 27), FeelTime::local_opt(9, 2, 0, 0).unwrap()));
   // days and time duration
   let t_days_and_time_duration = FeelType::DaysAndTimeDuration;
   let v_days_and_time_duration = Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(100));
@@ -694,7 +730,7 @@ fn test_type_get_conformant_value() {
   let v_string = Value::String("alpha".to_string());
   // time
   let t_time = FeelType::Time;
-  let v_time = Value::Time(FeelTime::new_hms_opt(9, 2, 0, 0).unwrap());
+  let v_time = Value::Time(FeelTime::local_opt(9, 2, 0, 0).unwrap());
   // years and months duration
   let t_years_and_months_duration = FeelType::YearsAndMonthsDuration;
   let v_years_and_months_duration = Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3));

@@ -32,6 +32,7 @@
 
 mod ast;
 mod bifs;
+mod closure;
 mod context;
 mod expr;
 

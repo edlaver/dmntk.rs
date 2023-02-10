@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+//!
+
 mod builder;
 mod canvas;
 mod plane;
@@ -37,7 +39,24 @@ mod point;
 mod recognizer;
 mod rect;
 
-pub const EX_01: &str = r#"
+fn eq_vectors(actual: &[String], expected: &[&str]) {
+  assert_eq!(actual.len(), expected.len());
+  for (index, value) in actual.iter().enumerate() {
+    assert_eq!(value, expected[index]);
+  }
+}
+
+fn eq_matrices(actual: &[Vec<String>], expected: &[&[&str]]) {
+  assert_eq!(actual.len(), expected.len());
+  for (r, row) in actual.iter().enumerate() {
+    assert_eq!(row.len(), expected[r].len());
+    for (c, col) in row.iter().enumerate() {
+      assert_eq!(col, expected[r][c]);
+    }
+  }
+}
+
+const EX_01: &str = r#"
   ┌───┬────────────┬───────╥──────┐
   │ U │  Customer  │ Order ║      │
   ╞═══╪════════════╪═══════╬══════╡
@@ -49,7 +68,7 @@ pub const EX_01: &str = r#"
   └───┴────────────┴───────╨──────┘
 "#;
 
-pub const EX_02: &str = r#"
+const EX_02: &str = r#"
   ┌───┬───────────┬───────╥──────┐
   │ U │ Customer  │ Order ║      │
   │   ├───────────┼───────╫──────┤
@@ -65,7 +84,7 @@ pub const EX_02: &str = r#"
   └───┴───────────┴───────╨──────┘
 "#;
 
-pub const EX_03: &str = r#"
+const EX_03: &str = r#"
   ┌───┬───────────┬───────╥─────────────────────╥─────────────┬───────────┐
   │ U │           │       ║    Order options    ║             │           │
   │   │ Customer  │ Order ╟──────────┬──────────╢ Description │ Reference │
@@ -83,7 +102,7 @@ pub const EX_03: &str = r#"
   └───┴───────────┴───────╨──────────┴──────────╨─────────────┴───────────┘
 "#;
 
-pub const EX_04: &str = r#"
+const EX_04: &str = r#"
   ┌─────────────────────────────────────┐
   │ Order options                       │
   ├───┬───────────┬───────╥─────────────┴───────╥─────────────┬───────────┐
@@ -103,7 +122,7 @@ pub const EX_04: &str = r#"
   └───┴───────────┴───────╨──────────┴──────────╨─────────────┴───────────┘
 "#;
 
-pub const EX_05: &str = r#"
+const EX_05: &str = r#"
   ┌─────────────────╥───────────────┬──────────┬───────────────┐
   │ Applicant age   ║     <25       │ [25..60] │      >60      │
   ├─────────────────╫──────┬────────┼──────────┼────────┬──────┤
@@ -115,7 +134,7 @@ pub const EX_05: &str = r#"
   └─────────────────╨──────┴────────┴──────────┴────────┴──────┘
 "#;
 
-pub const EX_06: &str = r#"
+const EX_06: &str = r#"
   ┌─────────────────────────────────╥───────────────┬──────────┬───────────────┐
   │ Applicant age                   ║     <25       │ [25..60] │      >60      │
   ├─────────────────────────────────╫──────┬────────┼──────────┼────────┬──────┤
@@ -133,7 +152,7 @@ pub const EX_06: &str = r#"
   └─────────────────────────────────╨──────┴────────┴──────────┴────────┴──────┘
 "#;
 
-pub const EX_07: &str = r#"
+const EX_07: &str = r#"
   ┌──────────────────────────────────────────────────────────────────────────────────┐
   │ Sell options                                                                     │
   ├─────────────────────────────────┬─────────────────────╥───────────────┬──────────┼───────────────┐
@@ -153,7 +172,7 @@ pub const EX_07: &str = r#"
   └─────────────────────────────────┴─────────────────────╨──────┴────────┴──────────┴────────┴──────┘
 "#;
 
-pub const EX_08: &str = r#"
+const EX_08: &str = r#"
   ┌───────────────────────────┐
   │ information item name     │
   ├───┬────────────────────┬──┴─────────────────╥────────────────────┐
@@ -172,7 +191,7 @@ pub const EX_08: &str = r#"
   └───┴────────────────────┴────────────────────╨────────────────────┘
 "#;
 
-pub const EX_09: &str = r#"
+const EX_09: &str = r#"
   ┌───────────────────────────┐
   │   information item name   │
   ├────────────────────┬──────┴─────────────╥─────────────────────────────────────┬──────────────────┐
@@ -189,7 +208,7 @@ pub const EX_09: &str = r#"
   └────────────────────┴────────────────────╨──────────────────┴──────────────────┴──────────────────┘
 "#;
 
-pub const EX_10: &str = r#"
+const EX_10: &str = r#"
   ┌────────────────────────────────────────────────────────────────┐
   │ information item name                                          │
   ├──────────────────────────────────╥─────────────────────────────┤
@@ -206,7 +225,7 @@ pub const EX_10: &str = r#"
   └────────────────────┴─────────────╨──────────────┴──────────────┘
 "#;
 
-pub const EX_ERR_01: &str = r#"
+const EX_ERR_01: &str = r#"
   ┌───┬────────────┬───────╥──────┐
   │ U │  Customer  │ Order ║      │
   ╞═══╪════════════╪═══════ ══════╡
@@ -218,7 +237,7 @@ pub const EX_ERR_01: &str = r#"
   └───┴────────────┴───────╨──────┘
 "#;
 
-pub const EX_ERR_02: &str = r#"
+const EX_ERR_02: &str = r#"
   ┌───┬────────────┬───────╥──────╮
   │ U │  Customer  │ Order ║      │
   ╞═══╪════════════╪═══════╬══════╡
@@ -230,7 +249,7 @@ pub const EX_ERR_02: &str = r#"
   └───┴────────────┴───────╨──────┘
 "#;
 
-pub const EX_ERR_03: &str = r#"
+const EX_ERR_03: &str = r#"
   ┌───┬────────────┬───────╥──────┐
   ┌ U │  Customer  │ Order ║      │
   ╞═══╪════════════╪═══════╬══════╡
@@ -241,20 +260,3 @@ pub const EX_ERR_03: &str = r#"
   │ 3 │ "Private"  │   -   ║ 0.05 │
   └───┴────────────┴───────╨──────┘
 "#;
-
-fn eq_vectors(actual: &[String], expected: &[&str]) {
-  assert_eq!(actual.len(), expected.len());
-  for (index, value) in actual.iter().enumerate() {
-    assert_eq!(value, expected[index]);
-  }
-}
-
-fn eq_matrices(actual: &[Vec<String>], expected: &[&[&str]]) {
-  assert_eq!(actual.len(), expected.len());
-  for (r, row) in actual.iter().enumerate() {
-    assert_eq!(row.len(), expected[r].len());
-    for (c, col) in row.iter().enumerate() {
-      assert_eq!(col, expected[r][c]);
-    }
-  }
-}

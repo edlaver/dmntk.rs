@@ -100,26 +100,35 @@ impl TryFrom<(FeelNumber, FeelNumber, FeelNumber)> for FeelDate {
 }
 
 impl PartialEq for FeelDate {
-  /// Returns `true` when two dated are equal.
+  ///
   fn eq(&self, other: &Self) -> bool {
     self.0 == other.0 && self.1 == other.1 && self.2 == other.2
   }
 }
 
+impl Eq for FeelDate {}
+
 impl PartialOrd for FeelDate {
-  /// Returns the ordering of two dates.
+  ///
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    Some(self.cmp(other))
+  }
+}
+
+impl Ord for FeelDate {
+  ///
+  fn cmp(&self, other: &Self) -> Ordering {
     let y = self.0.cmp(&other.0);
     let m = self.1.cmp(&other.1);
     let d = self.2.cmp(&other.2);
     match (y, m, d) {
-      (Ordering::Equal, Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
-      (Ordering::Equal, Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
-      (Ordering::Equal, Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
-      (Ordering::Equal, Ordering::Less, _) => Some(Ordering::Less),
-      (Ordering::Equal, Ordering::Greater, _) => Some(Ordering::Greater),
-      (Ordering::Less, _, _) => Some(Ordering::Less),
-      (Ordering::Greater, _, _) => Some(Ordering::Greater),
+      (Ordering::Equal, Ordering::Equal, Ordering::Equal) => Ordering::Equal,
+      (Ordering::Equal, Ordering::Equal, Ordering::Less) => Ordering::Less,
+      (Ordering::Equal, Ordering::Equal, Ordering::Greater) => Ordering::Greater,
+      (Ordering::Equal, Ordering::Less, _) => Ordering::Less,
+      (Ordering::Equal, Ordering::Greater, _) => Ordering::Greater,
+      (Ordering::Less, _, _) => Ordering::Less,
+      (Ordering::Greater, _, _) => Ordering::Greater,
     }
   }
 }
@@ -309,21 +318,7 @@ impl FeelDate {
   ///
   pub fn month_of_year(&self) -> Option<MonthOfYear> {
     if let Some(naive_date) = NaiveDate::from_ymd_opt(self.0, self.1, self.2) {
-      match naive_date.month() {
-        1 => Some(("January".to_string(), 1_u8)),
-        2 => Some(("February".to_string(), 2_u8)),
-        3 => Some(("March".to_string(), 3_u8)),
-        4 => Some(("April".to_string(), 4_u8)),
-        5 => Some(("May".to_string(), 5_u8)),
-        6 => Some(("June".to_string(), 6_u8)),
-        7 => Some(("July".to_string(), 7_u8)),
-        8 => Some(("August".to_string(), 8_u8)),
-        9 => Some(("September".to_string(), 9_u8)),
-        10 => Some(("October".to_string(), 10_u8)),
-        11 => Some(("November".to_string(), 11_u8)),
-        12 => Some(("December".to_string(), 12_u8)),
-        _ => None,
-      }
+      month_of_year(naive_date.month())
     } else {
       None
     }
@@ -393,6 +388,7 @@ pub fn last_day_of_month(year: Year, month: Month) -> Option<Day> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use dmntk_common::Result;
 
   #[test]
   fn test_display() {
@@ -503,5 +499,18 @@ mod tests {
     assert!((FeelDate(2021, 2, 2) >= FeelDate(2021, 2, 1)));
     assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 1)));
     assert!((FeelDate(2021, 2, 1) <= FeelDate(2021, 2, 2)));
+  }
+
+  #[test]
+  fn test_conversion() {
+    let date = FeelDate(2023, 2, 8);
+    let date_time: DateTime<FixedOffset> = date.try_into().unwrap();
+    assert_eq!("2023-02-08 00:00:00 +00:00", date_time.to_string());
+    let date = FeelDate(262144, 2, 8);
+    let date_time: Result<DateTime<FixedOffset>> = date.try_into();
+    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
+    let date = FeelDate(262144, 2, 8);
+    let date_time: Result<NaiveDate> = date.try_into();
+    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
   }
 }

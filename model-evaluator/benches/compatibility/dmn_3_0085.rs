@@ -63,7 +63,7 @@ fn _0002_a(b: &mut Bencher) {
   let input_data = r#"{}"#;
   let ctx = context(input_data);
   let invocable_name = "decisionService_002";
-  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(addition err 2)"#);
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(expected string as a second argument in addition)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -72,7 +72,7 @@ fn _0002_b(b: &mut Bencher) {
   let input_data = r#"{decision_002_input: null}"#;
   let ctx = context(input_data);
   let invocable_name = "decisionService_002";
-  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(addition err 2)"#);
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(expected string as a second argument in addition)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -81,7 +81,7 @@ fn _0002_c(b: &mut Bencher) {
   let input_data = r#"{decision_002_input: 1234}"#;
   let ctx = context(input_data);
   let invocable_name = "decisionService_002";
-  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(addition err 2)"#);
+  assert_decision_service(&MODEL_EVALUATOR, invocable_name, input_data, r#"null(expected string as a second argument in addition)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 

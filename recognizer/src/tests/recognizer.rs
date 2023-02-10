@@ -30,8 +30,8 @@
  * limitations under the License.
  */
 
+use super::*;
 use crate::recognizer::Recognizer;
-use crate::tests::{eq_matrices, eq_vectors, EX_01, EX_02, EX_03, EX_05, EX_06, EX_07, EX_08, EX_09, EX_10, EX_ERR_01, EX_ERR_02, EX_ERR_03};
 use dmntk_examples::decision_tables::H_110010;
 use dmntk_model::model::{BuiltinAggregator, DecisionTableOrientation, HitPolicy};
 
@@ -125,7 +125,7 @@ fn test_dt_0001() {
 
 #[test]
 fn test_example_01() {
-  let rec = &Recognizer::recognize(&String::from(EX_01)).unwrap();
+  let rec = &Recognizer::recognize(EX_01).unwrap();
   no_information_item_name(rec);
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
@@ -142,7 +142,7 @@ fn test_example_01() {
 
 #[test]
 fn test_example_02() {
-  let rec = &Recognizer::recognize(&String::from(EX_02)).unwrap();
+  let rec = &Recognizer::recognize(EX_02).unwrap();
   no_information_item_name(rec);
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
@@ -150,7 +150,7 @@ fn test_example_02() {
 
 #[test]
 fn test_example_03() {
-  let rec = &Recognizer::recognize(&String::from(EX_03)).unwrap();
+  let rec = &Recognizer::recognize(EX_03).unwrap();
   no_information_item_name(rec);
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
@@ -158,7 +158,7 @@ fn test_example_03() {
 
 #[test]
 fn ex_0033() {
-  let rec = &Recognizer::recognize(&String::from(EX_05)).unwrap();
+  let rec = &Recognizer::recognize(EX_05).unwrap();
   no_information_item_name(rec);
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsColumn);
@@ -166,7 +166,7 @@ fn ex_0033() {
 
 #[test]
 fn ex_0044() {
-  let rec = &Recognizer::recognize(&String::from(EX_06)).unwrap();
+  let rec = &Recognizer::recognize(EX_06).unwrap();
   no_information_item_name(rec);
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsColumn);
@@ -210,7 +210,7 @@ fn ex_0044() {
 
 #[test]
 fn ex_0064() {
-  let rec = &Recognizer::recognize(&String::from(EX_07)).unwrap();
+  let rec = &Recognizer::recognize(EX_07).unwrap();
   eq_information_item_name(rec, " Sell options                                                                     ");
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsColumn);
@@ -253,7 +253,7 @@ fn ex_0064() {
 
 #[test]
 fn general_horizontal() {
-  let rec = &Recognizer::recognize(&String::from(EX_08)).unwrap();
+  let rec = &Recognizer::recognize(EX_08).unwrap();
   eq_information_item_name(rec, " information item name     ");
   eq_hit_policy(rec, HitPolicy::Collect(BuiltinAggregator::List));
   eq_orientation(rec, DecisionTableOrientation::RuleAsRow);
@@ -281,7 +281,7 @@ fn general_horizontal() {
 
 #[test]
 fn general_vertical() {
-  let rec = &Recognizer::recognize(&String::from(EX_09)).unwrap();
+  let rec = &Recognizer::recognize(EX_09).unwrap();
   eq_information_item_name(rec, "   information item name   ");
   eq_hit_policy(rec, HitPolicy::Unique);
   eq_orientation(rec, DecisionTableOrientation::RuleAsColumn);
@@ -289,7 +289,7 @@ fn general_vertical() {
 
 #[test]
 fn general_cross_tab() {
-  assert!(&Recognizer::recognize(&String::from(EX_10)).is_err());
+  assert!(&Recognizer::recognize(EX_10).is_err());
   // eq_information_item_name(rec, " information item name                                          ");
   // eq_hit_policy(rec, HitPolicy::Unique);
   // eq_orientation(rec, DecisionTableOrientation::Crosstab);
@@ -308,7 +308,7 @@ fn general_cross_tab() {
 fn test_err_01() {
   assert_eq!(
     "RecognizerError: expected characters not found: ['╬']",
-    Recognizer::recognize(&String::from(EX_ERR_01)).err().unwrap().to_string()
+    Recognizer::recognize(EX_ERR_01).err().unwrap().to_string()
   );
 }
 
@@ -316,7 +316,7 @@ fn test_err_01() {
 fn test_err_02() {
   assert_eq!(
     "RecognizerError: character ' ' is not allowed in ['─', '┴']",
-    Recognizer::recognize(&String::from(EX_ERR_02)).err().unwrap().to_string()
+    Recognizer::recognize(EX_ERR_02).err().unwrap().to_string()
   );
 }
 
@@ -324,6 +324,6 @@ fn test_err_02() {
 fn test_err_03() {
   assert_eq!(
     "RecognizerError: rectangle is not closed, start point: (0,1), end point: (0,0)",
-    Recognizer::recognize(&String::from(EX_ERR_03)).err().unwrap().to_string()
+    Recognizer::recognize(EX_ERR_03).err().unwrap().to_string()
   );
 }

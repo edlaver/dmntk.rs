@@ -660,7 +660,7 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
               let result = model_evaluator.evaluate_invocable(invocable_name, &input_data);
               println!("{}", result.jsonify())
             }
-            Err(reason) => eprintln!("evaluating invocable {invocable_name} failed with reason: {reason}"),
+            Err(reason) => eprintln!("building model evaluator failed with reason: {reason}"),
           },
           Err(reason) => eprintln!("parsing model failed with reason: {reason}"),
         },
@@ -691,7 +691,7 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   let model_evaluator = match dmntk_evaluator::ModelEvaluator::new(&definitions) {
     Ok(model_evaluator) => model_evaluator,
     Err(reason) => {
-      eprintln!("preparing model evaluator failed with reason: {reason}");
+      eprintln!("building model evaluator failed with reason: {reason}");
       return;
     }
   };

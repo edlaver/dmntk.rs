@@ -44,13 +44,13 @@ fn _0001() {
     r#"Date.fromString.day"#,
     r#"
        Path
-       ├─ Path
-       │  ├─ Name
-       │  │  └─ `Date`
-       │  └─ Name
-       │     └─ `fromString`
-       └─ Name
-          └─ `day`
+       ├─ Name
+       │  └─ `Date`
+       └─ Path
+          ├─ Name
+          │  └─ `fromString`
+          └─ Name
+             └─ `day`
     "#,
     false,
   );

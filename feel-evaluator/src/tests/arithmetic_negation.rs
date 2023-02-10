@@ -105,5 +105,20 @@ fn _0014() {
 
 #[test]
 fn _0015() {
-  te_days_and_time_duration(false, &scope!(), r#"duration("-PT1H")"#, true, 3600, 0)
+  te_days_and_time_duration_x(false, &scope!(), r#"duration("-PT1H")"#, "-PT1H")
+}
+
+#[test]
+fn _0016() {
+  te_days_and_time_duration_x(false, &scope!(), r#" - @"PT1H" "#, "-PT1H")
+}
+
+#[test]
+fn _0017() {
+  te_years_and_months_duration_x(false, &scope!(), r#" - @"P1Y" "#, "-P1Y")
+}
+
+#[test]
+fn _0018() {
+  te_null(false, &scope!(), r#" -"a" "#, "unexpected type in arithmetic negation: string")
 }

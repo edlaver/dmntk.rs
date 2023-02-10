@@ -297,7 +297,6 @@ impl Canvas {
             }
             plane.add_cell(row, Cell::HorizontalOutputDoubleLine);
           }
-          plane.add_row();
           row += 1;
         }
       }
@@ -312,7 +311,6 @@ impl Canvas {
             }
             plane.add_cell(row, Cell::HorizontalAnnotationsDoubleLine);
           }
-          plane.add_row();
           row += 1;
         }
       }
@@ -353,11 +351,9 @@ impl Canvas {
       }
       if matched {
         width = plane.row_len(row);
-        plane.add_row();
         row += 1;
       }
     }
-    plane.finalize()?;
     Ok(plane)
   }
 
@@ -393,6 +389,7 @@ impl Canvas {
     })
   }
 
+  ///
   fn recognize_rectangle(&mut self, layer: Layer, top_left: Point) -> Result<Rect> {
     // start in the top left corner of the rectangle
     self.move_to(top_left);
@@ -411,6 +408,7 @@ impl Canvas {
     })
   }
 
+  ///
   fn close_rectangle(&self, closing: Point, top_left: Point, bottom_right: Point) -> Result<Rect> {
     if closing.overlays(top_left) {
       Ok(Rect::new(top_left.x, top_left.y, bottom_right.x + 1, bottom_right.y + 1))
@@ -606,13 +604,12 @@ impl Canvas {
   }
 }
 
-/// Prepares a **canvas** containing the textual definition of **decision table**.
-/// This function traverse the input text line-by-line and adds non empty lines of
-/// text to the canvas.
-/// Adding lines to canvas **begins** with the line starting with the **┌** character
+/// Prepares a `canvas` containing the textual definition of `decision table`.
+/// This function traverse the input text line-by-line and adds non empty lines of text to the canvas.
+/// Adding lines to canvas begins with the line starting with the `┌` character
 /// (U+250C BOX DRAWINGS LIGHT DOWN AND RIGHT), because this is the top left corner
 /// of every decision table definition.
-/// Adding lines to canvas **ends** with the line ending with the **┘** character
+/// Adding lines to canvas ends with the line ending with the `┘` character
 /// (U+2518 BOX DRAWINGS LIGHT UP AND LEFT), because this is the bottom right corner
 /// of every decision table definition.
 /// Shorter lines are filled up with additional characters to form a rectangular area.

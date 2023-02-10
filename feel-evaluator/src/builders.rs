@@ -144,7 +144,7 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           lh.push_str(&rh);
           Value::String(lh)
         } else {
-          value_null!("addition err 2")
+          value_null!("expected string as a second argument in addition")
         }
       }
       Value::Date(lh) => match rhv {
@@ -152,14 +152,14 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(result) = lh + rh {
             Value::Date(result)
           } else {
-            value_null!("addition err 7b")
+            value_null!("invalid result while adding days and time duration to date")
           }
         }
         Value::YearsAndMonthsDuration(rh) => {
           if let Some(a) = lh + rh {
             Value::Date(a)
           } else {
-            value_null!("addition err 7a")
+            value_null!("invalid result while adding years and months duration to date")
           }
         }
         other => invalid_argument_type!("add", "years and months duration", other.type_of()),
@@ -169,14 +169,14 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(a) = lh + rh {
             Value::DateTime(a)
           } else {
-            value_null!("addition err 3a")
+            value_null!("invalid result while adding days and time duration to date and time")
           }
         }
         Value::YearsAndMonthsDuration(rh) => {
           if let Some(a) = lh + rh {
             Value::DateTime(a)
           } else {
-            value_null!("addition err 3b")
+            value_null!("invalid result while adding years and months duration to date and time")
           }
         }
         other => invalid_argument_type!("add", "days and time duration, years and months duration", other.type_of()),
@@ -191,14 +191,14 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(result) = rh + lh {
             Value::Date(result)
           } else {
-            value_null!("addition err 4a")
+            value_null!("invalid result while adding date to days and time duration")
           }
         }
         Value::DateTime(rh) => {
           if let Some(a) = rh + lh {
             Value::DateTime(a)
           } else {
-            value_null!("addition err 4b")
+            value_null!("invalid result while adding date and time to days and time duration")
           }
         }
         Value::Time(rh) => Value::Time(rh + lh),
@@ -209,14 +209,14 @@ fn build_add(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Some(a) = rh + lh {
             Value::Date(a)
           } else {
-            value_null!("addition err 5a")
+            value_null!("invalid result while adding date to years and months duration")
           }
         }
         Value::DateTime(rh) => {
           if let Some(a) = rh + lh {
             Value::DateTime(a)
           } else {
-            value_null!("addition err 5b")
+            value_null!("invalid result while adding date and time to years and months duration")
           }
         }
         Value::YearsAndMonthsDuration(rh) => Value::YearsAndMonthsDuration(lh + rh),
@@ -252,25 +252,45 @@ fn build_at(text: &str) -> Result<Evaluator> {
   Err(err_invalid_at_literal(text))
 }
 
+/// Prepares null value with error message for second argument in `between` operator.
+macro_rules! between_null2 {
+  ($expected:literal, $actual:expr) => {
+    Value::Null(Some(format!(
+      "expected {} as a second argument in 'between' operator, actual value type is {}",
+      $expected, $actual
+    )))
+  };
+}
+
+/// Prepares null value with error message for third argument in `between` operator.
+macro_rules! between_null3 {
+  ($expected:literal, $actual:expr) => {
+    Value::Null(Some(format!(
+      "expected {} as a third argument in 'between' operator, actual value type is {}",
+      $expected, $actual
+    )))
+  };
+}
+
 ///
 fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let mhe = build_evaluator(mhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let mhv = mhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let mhv = mhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
       Value::Number(lh) => {
         if let Value::Number(mh) = mhv {
           if let Value::Number(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 1")
+            between_null3!("number", rhv.type_of())
           }
         } else {
-          value_null!("between err 2")
+          between_null2!("number", mhv.type_of())
         }
       }
       Value::String(lh) => {
@@ -278,10 +298,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::String(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 3")
+            between_null3!("string", rhv.type_of())
           }
         } else {
-          value_null!("between err 4")
+          between_null2!("string", mhv.type_of())
         }
       }
       Value::Date(lh) => {
@@ -289,10 +309,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::Date(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 6")
+            between_null3!("date", rhv.type_of())
           }
         } else {
-          value_null!("between err 7")
+          between_null2!("date", mhv.type_of())
         }
       }
       Value::Time(lh) => {
@@ -300,10 +320,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::Time(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 9")
+            between_null3!("time", rhv.type_of())
           }
         } else {
-          value_null!("between err 10")
+          between_null2!("time", mhv.type_of())
         }
       }
       Value::DateTime(lh) => {
@@ -311,21 +331,10 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::DateTime(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 12")
+            between_null3!("date and time", rhv.type_of())
           }
         } else {
-          value_null!("between err 13")
-        }
-      }
-      Value::YearsAndMonthsDuration(lh) => {
-        if let Value::YearsAndMonthsDuration(mh) = mhv {
-          if let Value::YearsAndMonthsDuration(rh) = rhv {
-            Value::Boolean(mh <= lh && lh <= rh)
-          } else {
-            value_null!("between err 14")
-          }
-        } else {
-          value_null!("between err 15")
+          between_null2!("date and time", mhv.type_of())
         }
       }
       Value::DaysAndTimeDuration(lh) => {
@@ -333,13 +342,24 @@ fn build_between(lhs: &AstNode, mhs: &AstNode, rhs: &AstNode) -> Result<Evaluato
           if let Value::DaysAndTimeDuration(rh) = rhv {
             Value::Boolean(mh <= lh && lh <= rh)
           } else {
-            value_null!("between err 16")
+            between_null3!("days and time duration", rhv.type_of())
           }
         } else {
-          value_null!("between err 17")
+          between_null2!("days and time duration", mhv.type_of())
         }
       }
-      _ => value_null!("between err"),
+      Value::YearsAndMonthsDuration(lh) => {
+        if let Value::YearsAndMonthsDuration(mh) = mhv {
+          if let Value::YearsAndMonthsDuration(rh) = rhv {
+            Value::Boolean(mh <= lh && lh <= rh)
+          } else {
+            between_null3!("years and months duration", rhv.type_of())
+          }
+        } else {
+          between_null2!("years and months duration", mhv.type_of())
+        }
+      }
+      other => value_null!("unexpected value type in 'between' operator: {}", other.type_of()),
     }
   }))
 }
@@ -406,17 +426,21 @@ fn build_context(lhs: &[AstNode]) -> Result<Evaluator> {
     scope.push(FeelContext::default());
     // evaluate context entries
     for evaluator in &evaluators {
-      if let Value::ContextEntry(name, value) = evaluator(scope) {
-        if evaluated_ctx.contains_entry(&name) {
-          // duplicated context entry keys are not allowed
-          scope.pop();
-          return value_null!("duplicated context entry key: {}", name);
-        } else {
-          // add newly evaluated entry to evaluated context
-          evaluated_ctx.set_entry(&name, (*value).clone());
-          // add newly evaluated entry to special context
-          scope.set_value(&name, *value);
+      match evaluator(scope) as Value {
+        Value::ContextEntry(name, value) => {
+          if evaluated_ctx.contains_entry(&name) {
+            // duplicated context entry keys are not allowed
+            scope.pop();
+            return value_null!("duplicated context entry key: {}", name);
+          } else {
+            // add newly evaluated entry to evaluated context
+            evaluated_ctx.set_entry(&name, (*value).clone());
+            // add newly evaluated entry to special context
+            scope.set_value(&name, *value);
+          }
         }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected context entry, actual value type is {}", other.type_of()),
       }
     }
     // remove special context from scope
@@ -430,12 +454,11 @@ fn build_context_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     match lhv {
-      Value::String(s) => Value::ContextEntry(Name::from(s), Box::new(rhv)),
       Value::ContextEntryKey(name) => Value::ContextEntry(name, Box::new(rhv)),
-      _ => value_null!("build_context_entry"),
+      _ => value_null!("expected context entry key, actual value type is {}", lhv.type_of()),
     }
   }))
 }
@@ -455,8 +478,12 @@ fn build_context_type(lhs: &[AstNode]) -> Result<Evaluator> {
   Ok(Box::new(move |scope: &FeelScope| {
     let mut entries = BTreeMap::new();
     for evaluator in &evaluators {
-      if let Value::ContextTypeEntry(name, feel_type) = evaluator(scope) {
-        entries.insert(name, feel_type.clone());
+      match evaluator(scope) as Value {
+        Value::ContextTypeEntry(name, feel_type) => {
+          entries.insert(name, feel_type.clone());
+        }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected context type entry, actual value type is {}", other.type_of()),
       }
     }
     Value::FeelType(FeelType::Context(entries))
@@ -468,8 +495,8 @@ fn build_context_type_entry(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::ContextTypeEntryKey(name) = lhv {
       if let Value::FeelType(feel_type) = rhv {
         Value::ContextTypeEntry(name, feel_type)
@@ -511,11 +538,11 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if rh.is_zero() {
             value_null!("[division] division by zero")
           } else {
-            let vl = FeelNumber::from(lh.as_nanos()) / rh;
-            if let Ok(v) = FeelNumber::try_into(vl) {
+            let lv = FeelNumber::from(lh.as_nanos()) / rh;
+            if let Ok(v) = FeelNumber::try_into(lv) {
               Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
             } else {
-              value_null!("[division] error: {} * {}", lhv, rhv)
+              value_null!("[division] error: {} / {}", lhv, rhv)
             }
           }
         }
@@ -528,7 +555,7 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             Value::Number(lvl / rvl)
           }
         }
-        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
+        _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
       },
       Value::YearsAndMonthsDuration(ref lh) => match rhv {
         Value::Number(rh) => {
@@ -539,7 +566,7 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             if let Ok(v) = FeelNumber::try_into(vl) {
               Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
             } else {
-              value_null!("[division] error: {} * {}", lhv, rhv)
+              value_null!("[division] error: {} / {}", lhv, rhv)
             }
           }
         }
@@ -552,7 +579,7 @@ fn build_div(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             Value::Number(lvl / rvl)
           }
         }
-        _ => value_null!("[division] incompatible types: {} * {}", lhv, rhv),
+        _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
       },
       _ => value_null!("[division] incompatible types: {} / {}", lhv, rhv),
     }
@@ -579,8 +606,8 @@ fn build_exp(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::Number(lh) = lhv {
       if let Value::Number(rh) = rhv {
         if let Some(result) = lh.pow(&rh) {
@@ -651,15 +678,12 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                     if let Ok(u_index) = usize::try_from(index) {
                       u_index
                     } else {
-                      return value_null!("index is out of range {}", index.to_string());
+                      return value_null!("index is out of range 1..2⁶⁴: {}", index.to_string());
                     }
                   };
                   if n > 0 && n <= list_size {
-                    if let Some(value) = values.as_vec().get(n - 1) {
-                      value.to_owned()
-                    } else {
-                      value_null!("no value in filter for index {}", n)
-                    }
+                    // unwrap below is safe, index `n` is checked above, `values` variable is immutable
+                    values.as_vec().get(n - 1).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [1..{}], actual index is {}", list_size, n)
                   }
@@ -668,21 +692,18 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                     if let Ok(u_index) = usize::try_from(index.abs()) {
                       u_index
                     } else {
-                      return value_null!("index is out of range {}", index.to_string());
+                      return value_null!("index is out of range 1..2⁶⁴: {}", index.to_string());
                     }
                   };
                   if n > 0 && n <= list_size {
-                    if let Some(value) = values.as_vec().get(list_size - n) {
-                      value.to_owned()
-                    } else {
-                      value_null!("no value in filter for index -{}", n)
-                    }
+                    // unwrap below is safe, index `n` is checked above, `values` variable is immutable
+                    values.as_vec().get(list_size - n).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [-{}..-1], actual index is -{}", list_size, n)
                   }
                 }
               } else {
-                // return null when the list is empty, no matter what value has the index
+                // return null when the list is empty, no matter what value the index has
                 value_null!()
               }
             } else {
@@ -716,15 +737,15 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           }
         }
         Value::Number(num) => {
-          if num.is_one() {
+          if num.is_one() || (-num).is_one() {
             v
           } else {
-            value_null!("only filter index with value 1 is accepted")
+            value_null!("for singletons, only filter index with value 1 or -1 is accepted")
           }
         }
         _ => value_null!("only number or boolean indexes are allowed in filters"),
       },
-      other => value_null!("fatal error in filter with value: {}", other as Value),
+      other => value_null!("unexpected value type in filter: {}", other.type_of()),
     }
   }))
 }
@@ -736,18 +757,21 @@ fn build_for(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let mut evaluators_range = vec![];
   if let AstNode::IterationContexts(items) = lhs {
     for item in items {
-      if let AstNode::IterationContextSingle(variable_name, expr_node) = item {
-        if let AstNode::Name(name) = variable_name.borrow() {
-          let evaluator_single = build_evaluator(expr_node)?;
-          evaluators_single.push((name.clone(), evaluator_single));
-        }
-      }
-      if let AstNode::IterationContextRange(variable_name, range_start_node, range_end_node) = item {
-        if let AstNode::Name(name) = variable_name.borrow() {
+      match item {
+        AstNode::IterationContextRange(variable_name, range_start_node, range_end_node) => {
           let evaluator_range_start = build_evaluator(range_start_node)?;
           let evaluator_range_end = build_evaluator(range_end_node)?;
-          evaluators_range.push((name.clone(), evaluator_range_start, evaluator_range_end));
+          if let AstNode::Name(name) = variable_name.borrow() {
+            evaluators_range.push((name.clone(), evaluator_range_start, evaluator_range_end));
+          }
         }
+        AstNode::IterationContextSingle(variable_name, expr_node) => {
+          let evaluator_single = build_evaluator(expr_node)?;
+          if let AstNode::Name(name) = variable_name.borrow() {
+            evaluators_single.push((name.clone(), evaluator_single));
+          }
+        }
+        _ => {}
       }
     }
   }
@@ -772,16 +796,16 @@ fn build_formal_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::ParameterName(parameter_name) = lhv {
       if let Value::FeelType(parameter_type) = rhv {
         Value::FormalParameter(parameter_name, parameter_type)
       } else {
-        value_null!("expected type of formal parameter")
+        value_null!("expected type of the formal parameter")
       }
     } else {
-      value_null!("expected name of formal parameter")
+      value_null!("expected name of the formal parameter")
     }
   }))
 }
@@ -793,18 +817,17 @@ fn build_formal_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
     evaluators.push(build_evaluator(node)?);
   }
   Ok(Box::new(move |scope: &FeelScope| {
-    Value::FormalParameters(
-      evaluators
-        .iter()
-        .filter_map(|evaluator| {
-          if let Value::FormalParameter(parameter_name, parameter_type) = evaluator(scope) {
-            Some((parameter_name, parameter_type))
-          } else {
-            None
-          }
-        })
-        .collect::<Vec<(Name, FeelType)>>(),
-    )
+    let mut formal_parameters = vec![];
+    for evaluator in &evaluators {
+      match evaluator(scope) as Value {
+        Value::FormalParameter(parameter_name, parameter_type) => {
+          formal_parameters.push((parameter_name, parameter_type));
+        }
+        null @ Value::Null(_) => return null,
+        other => return value_null!("expected formal parameter, actual value type is: {}", other.type_of()),
+      }
+    }
+    Value::FormalParameters(formal_parameters)
   }))
 }
 
@@ -813,12 +836,12 @@ fn build_function_body(lhs: &AstNode, rhs: &bool) -> Result<Evaluator> {
   if *rhs {
     build_external_function_body(lhs)
   } else {
-    build_fee_function_body(lhs)
+    build_internal_function_body(lhs)
   }
 }
 
 ///
-fn build_fee_function_body(lhs: &AstNode) -> Result<Evaluator> {
+fn build_internal_function_body(lhs: &AstNode) -> Result<Evaluator> {
   let lhe = Arc::new(build_evaluator(lhs)?);
   Ok(Box::new(move |_: &FeelScope| Value::FunctionBody(FunctionBody::LiteralExpression(lhe.clone()), false)))
 }
@@ -873,22 +896,26 @@ fn build_function_definition(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> 
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    if let Value::FormalParameters(parameters) = lhe(scope) {
-      if let Value::FunctionBody(body, external) = rhe(scope) {
-        // evaluate closure context
-        let mut closure_ctx = FeelContext::default();
-        for closure_name in closure.iter() {
-          if let Some(closure_value) = scope.search_entry(closure_name) {
-            closure_ctx.create_entry(closure_name, closure_value);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
+    match lhv {
+      Value::FormalParameters(parameters) => {
+        if let Value::FunctionBody(body, external) = rhv {
+          // evaluate closure context
+          let mut closure_ctx = FeelContext::default();
+          for closure_name in closure.iter() {
+            if let Some(closure_value) = scope.search_entry(closure_name) {
+              closure_ctx.create_entry(closure_name, closure_value);
+            }
           }
+          //TODO is `FeelType::Any` always ok for function result type in function definition?
+          Value::FunctionDefinition(parameters, body, external, closure.clone(), closure_ctx, FeelType::Any)
+        } else {
+          value_null!("invalid body in function definition")
         }
-        //TODO is `FeelType::Any` always ok for function result type in function definition?
-        Value::FunctionDefinition(parameters, body, external, closure.clone(), closure_ctx, FeelType::Any)
-      } else {
-        value_null!("invalid body in function definition")
       }
-    } else {
-      value_null!("invalid formal parameters in function definition")
+      null @ Value::Null(_) => null,
+      other => value_null!("expected formal parameters, actual value type is {}", other.type_of()),
     }
   }))
 }
@@ -939,7 +966,7 @@ fn build_every(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{rhs:?}")))
   }
 }
 
@@ -1030,7 +1057,7 @@ fn build_ge(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::Number(lh) => match rhv {
         Value::Number(rh) => Value::Boolean(lh >= rh),
-        _ => value_null!("eval_greater_or_equal_string"),
+        _ => value_null!("eval_greater_or_equal_number"),
       },
       Value::String(lh) => match rhv {
         Value::String(rh) => Value::Boolean(lh >= rh),
@@ -1122,7 +1149,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     let lhv = lhe(scope) as Value;
     let rhv = rhe(scope) as Value;
     match rhv {
-      inner @ Value::Number(_)
+      inner @ Value::Null(_)
+      | inner @ Value::Number(_)
       | inner @ Value::String(_)
       | inner @ Value::Boolean(_)
       | inner @ Value::Date(_)
@@ -1131,12 +1159,12 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       | inner @ Value::YearsAndMonthsDuration(_)
       | inner @ Value::DaysAndTimeDuration(_)
       | inner @ Value::Context(_) => eval_in_equal(&lhv, &inner),
-      Value::Range(_, _, _, _) => eval_in_range(&lhv, &rhv),
-      Value::List(inner) => {
-        if let Value::List(_) = lhv {
-          eval_in_list_in_list(&lhv, inner.as_vec())
+      Value::Range(l, l_closed, r, r_closed) => eval_in_range(&lhv, &l, l_closed, &r, r_closed),
+      Value::List(r_inner) => {
+        if let Value::List(l_inner) = lhv {
+          eval_in_list_in_list(l_inner.as_vec(), r_inner.as_vec())
         } else {
-          eval_in_list(&lhv, inner.as_vec())
+          eval_in_list(&lhv, r_inner.as_vec())
         }
       }
       Value::ExpressionList(inner) => eval_in_list(&lhv, inner.as_vec()),
@@ -1145,13 +1173,8 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::UnaryLessOrEqual(inner) => eval_in_unary_less_or_equal(&lhv, inner.borrow()),
       Value::UnaryGreater(inner) => eval_in_unary_greater(&lhv, inner.borrow()),
       Value::UnaryGreaterOrEqual(inner) => eval_in_unary_greater_or_equal(&lhv, inner.borrow()),
-      Value::Irrelevant => match lhv {
-        Value::Null(_) => VALUE_FALSE,
-        _ => VALUE_TRUE,
-      },
-      _ => {
-        value_null!("eval_in")
-      }
+      Value::Irrelevant => VALUE_TRUE,
+      _ => value_null!("unexpected argument type in 'in' operator: {}", rhv.type_of()),
     }
   }))
 }
@@ -1186,8 +1209,8 @@ fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   let rhe = build_evaluator(rhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
-    let rhv = rhe(scope);
+    let lhv = lhe(scope) as Value;
+    let rhv = rhe(scope) as Value;
     if let Value::FeelType(feel_type) = rhv {
       match lhv {
         Value::Number { .. } => match feel_type {
@@ -1250,7 +1273,7 @@ fn build_instance_of(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           FeelType::Any => VALUE_TRUE,
           expected => Value::Boolean(value.type_of() == expected),
         },
-        other => value_null!("invalid value type in 'instance of': {}", other as Value),
+        other => value_null!("invalid value in 'instance of' operator: {}", other),
       }
     } else {
       Value::Boolean(lhv.type_of() == rhv.type_of())
@@ -1383,7 +1406,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of days and time duration")
           }
         }
         Value::YearsAndMonthsDuration(ref rh) => {
@@ -1391,7 +1414,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of years and months duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
@@ -1402,7 +1425,7 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_n(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of days and time duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
@@ -1413,13 +1436,13 @@ fn build_mul(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
           if let Ok(v) = FeelNumber::try_into(val) {
             Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_m(v))
           } else {
-            value_null!("[multiplication] error: {} * {}", lhv, rhv)
+            value_null!("multiplication result is out of range of years and months duration")
           }
         }
         _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
       },
       value @ Value::Null(_) => value,
-      _ => value_null!("[multiplication] incompatible types: {} * {}", lhv, rhv),
+      other => value_null!("unexpected value type in multiplication: {}", other.type_of()),
     }
   }))
 }
@@ -1442,13 +1465,12 @@ fn build_named_parameter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
   if let AstNode::ParameterName(name) = lhs {
     let lhv = Value::ParameterName(name.clone());
     let rhe = build_evaluator(rhs)?;
-    Ok(Box::new(move |scope: &FeelScope| {
+    return Ok(Box::new(move |scope: &FeelScope| {
       let rhv = rhe(scope);
       Value::NamedParameter(Box::new(lhv.clone()), Box::new(rhv))
-    }))
-  } else {
-    Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
+    }));
   }
+  Err(err_expected_ast_node_parameter_name(&format!("{lhs:?}")))
 }
 
 fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
@@ -1475,11 +1497,12 @@ fn build_named_parameters(lhs: &[AstNode]) -> Result<Evaluator> {
 fn build_neg(lhs: &AstNode) -> Result<Evaluator> {
   let lhe = build_evaluator(lhs)?;
   Ok(Box::new(move |scope: &FeelScope| {
-    let lhv = lhe(scope);
+    let lhv = lhe(scope) as Value;
     match lhv {
       Value::Number(lh) => Value::Number(-lh),
       Value::DaysAndTimeDuration(lh) => Value::DaysAndTimeDuration(-lh),
-      _ => value_null!("arithmetic negation err 1"),
+      Value::YearsAndMonthsDuration(lh) => Value::YearsAndMonthsDuration(-lh),
+      other => value_null!("unexpected type in arithmetic negation: {}", other.type_of()),
     }
   }))
 }
@@ -1510,7 +1533,7 @@ fn build_numeric(lhs: &str, rhs: &str) -> Result<Evaluator> {
   if let Ok(num) = text.parse::<FeelNumber>() {
     Ok(Box::new(move |_: &FeelScope| Value::Number(num)))
   } else {
-    Ok(Box::new(move |_: &FeelScope| value_null!("failed to convert text '{text}' into number")))
+    Ok(Box::new(move |_: &FeelScope| value_null!("failed to convert text '{}' into number", text)))
   }
 }
 
@@ -1619,7 +1642,7 @@ fn build_qualified_name(lhs: &[AstNode]) -> Result<Evaluator> {
     let mut names = vec![];
     for evaluator in &evaluators {
       if let Value::QualifiedNameSegment(name) = evaluator(scope) {
-        names.push(name.clone());
+        names.push(name);
       }
     }
     scope.search(&names).unwrap_or_else(|| value_null!("no value for qualified name"))
@@ -1633,168 +1656,174 @@ fn build_qualified_name_segment(name: &Name) -> Result<Evaluator> {
 }
 
 ///
-fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
-  if let AstNode::Name(name) = rhs.clone() {
-    let qualified_name: QualifiedName = name.into();
-    let lhe = build_evaluator(lhs)?;
-    Ok(Box::new(move |scope: &FeelScope| {
-      let lhv = lhe(scope) as Value;
-      match lhv {
-        Value::Context(context) => {
-          if let Some(value) = context.search_entry(&qualified_name) {
-            value.clone()
-          } else {
-            value_null!("build_path: no entry {} in context: {}", qualified_name, context)
-          }
+fn get_property_from_value(value: Value, name: &Name) -> Value {
+  let property_name = name.to_string();
+  match value {
+    Value::Date(date) => match property_name.as_str() {
+      "year" => Value::Number(date.year().into()),
+      "month" => Value::Number(date.month().into()),
+      "day" => Value::Number(date.day().into()),
+      "weekday" => {
+        if let Some(day_of_week) = date.day_of_week() {
+          Value::Number(day_of_week.1.into())
+        } else {
+          value_null!("could not retrieve weekday for date")
         }
-        Value::List(items) => {
-          let mut result = vec![];
-          for item in items.as_vec() {
-            if let Value::Context(context) = item {
-              if let Some(value) = context.search_entry(&qualified_name) {
-                result.push(value.clone());
-              }
-            } else {
-              return value_null!("build_path: no context in list");
-            }
-          }
-          Value::List(Values::new(result))
-        }
-        Value::Date(date) => {
-          return match qualified_name.to_string().as_str() {
-            "year" => Value::Number(date.year().into()),
-            "month" => Value::Number(date.month().into()),
-            "day" => Value::Number(date.day().into()),
-            "weekday" => {
-              if let Some(day_of_week) = date.day_of_week() {
-                Value::Number(day_of_week.1.into())
-              } else {
-                value_null!("could not retrieve weekday for date")
-              }
-            }
-            other => value_null!("no such property in date: {}", other),
-          }
-        }
-        Value::DateTime(date_time) => {
-          return match qualified_name.to_string().as_str() {
-            "year" => Value::Number(date_time.year().into()),
-            "month" => Value::Number(date_time.month().into()),
-            "day" => Value::Number(date_time.day().into()),
-            "weekday" => {
-              if let Some(day_of_week) = date_time.day_of_week() {
-                Value::Number(day_of_week.1.into())
-              } else {
-                value_null!("could not retrieve weekday for date and time")
-              }
-            }
-            "hour" => Value::Number(date_time.hour().into()),
-            "minute" => Value::Number(date_time.minute().into()),
-            "second" => Value::Number(date_time.second().into()),
-            "time offset" => {
-              if let Some(offset) = date_time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
-              } else {
-                value_null!("aaaa")
-              }
-            }
-            "timezone" => {
-              if let Some(feel_time_zone) = date_time.feel_time_zone() {
-                return Value::String(feel_time_zone);
-              } else {
-                value_null!("bbb")
-              }
-            }
-            _ => value_null!("no such property in date and time"),
-          }
-        }
-        Value::Time(time) => {
-          return match qualified_name.to_string().as_str() {
-            "hour" => Value::Number(time.hour().into()),
-            "minute" => Value::Number(time.minute().into()),
-            "second" => Value::Number(time.second().into()),
-            "time offset" => {
-              if let Some(offset) = time.feel_time_offset() {
-                return Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64));
-              } else {
-                value_null!("ccc")
-              }
-            }
-            "timezone" => {
-              if let Some(feel_time_zone) = time.feel_time_zone() {
-                return Value::String(feel_time_zone);
-              } else {
-                value_null!("ddd")
-              }
-            }
-            _ => value_null!("no such property in date and time"),
-          }
-        }
-        Value::DaysAndTimeDuration(dt_duration) => {
-          return match qualified_name.to_string().as_str() {
-            "days" => Value::Number(dt_duration.get_days().into()),
-            "hours" => Value::Number(dt_duration.get_hours().into()),
-            "minutes" => Value::Number(dt_duration.get_minutes().into()),
-            "seconds" => Value::Number(dt_duration.get_seconds().into()),
-            _ => value_null!("no such property in days and time duration"),
-          }
-        }
-        Value::YearsAndMonthsDuration(ym_duration) => {
-          return match qualified_name.to_string().as_str() {
-            "years" => Value::Number(ym_duration.years().into()),
-            "months" => Value::Number(ym_duration.months().into()),
-            _ => value_null!("no such property in years and months duration"),
-          }
-        }
-        Value::Range(rs, cs, re, ce) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *rs,
-            "start included" => Value::Boolean(cs),
-            "end" => *re,
-            "end included" => Value::Boolean(ce),
-            other => value_null!("no such property in range: {}", other),
-          }
-        }
-        Value::UnaryGreater(value) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary greater: {}", other),
-          }
-        }
-        Value::UnaryGreaterOrEqual(value) => {
-          return match qualified_name.to_string().as_str() {
-            "start" => *value,
-            "start included" => Value::Boolean(true),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary greater or equal: {}", other),
-          }
-        }
-        Value::UnaryLess(value) => {
-          return match qualified_name.to_string().as_str() {
-            "end" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(false),
-            other => value_null!("no such property in unary less: {}", other),
-          }
-        }
-        Value::UnaryLessOrEqual(value) => {
-          return match qualified_name.to_string().as_str() {
-            "end" => *value,
-            "start included" => Value::Boolean(false),
-            "end included" => Value::Boolean(true),
-            other => value_null!("no such property in unary less or equal: {}", other),
-          }
-        }
-        Value::Null(_) => value_null!(),
-        other => value_null!("build_path: unexpected type :{}, for property: {}", other, qualified_name),
       }
-    }))
-  } else {
-    Ok(Box::new(move |_: &FeelScope| {
-      value_null!("no context (or list of contexts) on the left or no name on the right in path expression")
-    }))
+      other => value_null!("no such property in date: {}", other),
+    },
+    Value::DateTime(date_time) => match property_name.as_str() {
+      "year" => Value::Number(date_time.year().into()),
+      "month" => Value::Number(date_time.month().into()),
+      "day" => Value::Number(date_time.day().into()),
+      "weekday" => {
+        if let Some(day_of_week) = date_time.day_of_week() {
+          Value::Number(day_of_week.1.into())
+        } else {
+          value_null!("could not retrieve weekday for date and time")
+        }
+      }
+      "hour" => Value::Number(date_time.hour().into()),
+      "minute" => Value::Number(date_time.minute().into()),
+      "second" => Value::Number(date_time.second().into()),
+      "time offset" => {
+        if let Some(offset) = date_time.feel_time_offset() {
+          Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
+        } else {
+          value_null!("could not retrieve time offset for date and time")
+        }
+      }
+      "timezone" => {
+        if let Some(feel_time_zone) = date_time.feel_time_zone() {
+          Value::String(feel_time_zone)
+        } else {
+          value_null!("could not retrieve timezone for date and time")
+        }
+      }
+      other => value_null!("no such property in date and time: {}", other),
+    },
+    Value::Time(time) => match property_name.as_str() {
+      "hour" => Value::Number(time.hour().into()),
+      "minute" => Value::Number(time.minute().into()),
+      "second" => Value::Number(time.second().into()),
+      "time offset" => {
+        if let Some(offset) = time.feel_time_offset() {
+          Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(offset as i64))
+        } else {
+          value_null!("could not retrieve time offset for time")
+        }
+      }
+      "timezone" => {
+        if let Some(feel_time_zone) = time.feel_time_zone() {
+          Value::String(feel_time_zone)
+        } else {
+          value_null!("could not retrieve timezone for time")
+        }
+      }
+      other => value_null!("no such property in time: {}", other),
+    },
+    Value::DaysAndTimeDuration(dt_duration) => match property_name.as_str() {
+      "days" => Value::Number(dt_duration.get_days().into()),
+      "hours" => Value::Number(dt_duration.get_hours().into()),
+      "minutes" => Value::Number(dt_duration.get_minutes().into()),
+      "seconds" => Value::Number(dt_duration.get_seconds().into()),
+      other => value_null!("no such property in days and time duration: {}", other),
+    },
+    Value::YearsAndMonthsDuration(ym_duration) => match property_name.as_str() {
+      "years" => Value::Number(ym_duration.years().into()),
+      "months" => Value::Number(ym_duration.months().into()),
+      other => value_null!("no such property in years and months duration: {}", other),
+    },
+    Value::Range(rs, cs, re, ce) => match property_name.as_str() {
+      "start" => *rs,
+      "start included" => Value::Boolean(cs),
+      "end" => *re,
+      "end included" => Value::Boolean(ce),
+      other => value_null!("no such property in range: {}", other),
+    },
+    Value::UnaryGreater(value) => match property_name.as_str() {
+      "start" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary greater: {}", other),
+    },
+    Value::UnaryGreaterOrEqual(value) => match property_name.as_str() {
+      "start" => *value,
+      "start included" => Value::Boolean(true),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary greater or equal: {}", other),
+    },
+    Value::UnaryLess(value) => match property_name.as_str() {
+      "end" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(false),
+      other => value_null!("no such property in unary less: {}", other),
+    },
+    Value::UnaryLessOrEqual(value) => match property_name.as_str() {
+      "end" => *value,
+      "start included" => Value::Boolean(false),
+      "end included" => Value::Boolean(true),
+      other => value_null!("no such property in unary less or equal: {}", other),
+    },
+    v @ Value::Null(_) => v,
+    other => value_null!("unexpected type: {}, for property: {}", other.type_of(), property_name),
   }
+}
+
+///
+fn build_qualified_name_from_path(node: &AstNode) -> Result<QualifiedName> {
+  match node {
+    AstNode::Path(lhs, rhs) => {
+      return if let AstNode::Name(name) = lhs.borrow() {
+        let mut qualified_name = build_qualified_name_from_path(rhs)?;
+        qualified_name.insert(0, name.clone());
+        Ok(qualified_name)
+      } else {
+        Err(err_unexpected_ast_node(&format!("expected Name, found {lhs:?}",)))
+      }
+    }
+    AstNode::Name(name) => return Ok(name.clone().into()),
+    _ => {}
+  }
+  Err(err_unexpected_ast_node(&format!("expected Path or Name, found: {node:?}",)))
+}
+
+///
+fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
+  let qualified_name = build_qualified_name_from_path(rhs)?;
+  let mut property_path = qualified_name.clone();
+  let property_name = property_path.pop().unwrap();
+  let lhe = build_evaluator(lhs)?;
+  Ok(Box::new(move |scope: &FeelScope| {
+    let lhv = lhe(scope) as Value;
+    match lhv {
+      Value::Context(context) => {
+        if let Some(value) = context.search_entry(&qualified_name) {
+          return value.clone();
+        }
+        if let Some(value) = context.search_entry(&property_path) {
+          return get_property_from_value(value.clone(), &property_name);
+        }
+        value_null!("build_path: no entry {} in context: {}", qualified_name, context)
+      }
+      Value::List(items) => {
+        let mut result = vec![];
+        for item in items.as_vec() {
+          if let Value::Context(context) = item {
+            if let Some(value) = context.search_entry(&qualified_name) {
+              result.push(value.clone());
+            } else if let Some(value) = context.search_entry(&property_path) {
+              result.push(get_property_from_value(value.clone(), &property_name));
+            }
+          } else {
+            return value_null!("build_path: no context in list");
+          }
+        }
+        Value::List(Values::new(result))
+      }
+      other => get_property_from_value(other, &property_name),
+    }
+  }))
 }
 
 ///
@@ -1854,7 +1883,7 @@ fn build_some(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       expression_evaluator.evaluate(scope, &satisfies_evaluator)
     }))
   } else {
-    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{lhs:?}")))
+    Err(err_expected_ast_node("AstNode::Satisfies", &format!("{rhs:?}")))
   }
 }
 
@@ -2130,6 +2159,7 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
         }
         Some(false)
       }
+      Value::Null(_) => Some(false),
       _ => None,
     },
     _ => None,
@@ -2179,40 +2209,38 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
           return VALUE_TRUE;
         }
       }
-      inner @ Value::Range(_, _, _, _) => {
-        if let Value::Boolean(true) = eval_in_range(left, inner) {
+      Value::Range(l, l_closed, r, r_closed) => {
+        if let Value::Boolean(true) = eval_in_range(left, l, *l_closed, r, *r_closed) {
           return VALUE_TRUE;
         }
       }
-      _ => return value_null!(),
+      _ => return value_null!("eval_in_list"),
     }
   }
   VALUE_FALSE
 }
 
 /// Checks if all elements from `list` are present in `items`.
-fn eval_in_list_in_list(list: &Value, items: &[Value]) -> Value {
-  if let Value::List(lhs) = list {
-    for item in items {
-      if let Value::List(rhs) = item {
-        let mut available: HashSet<usize> = (0..rhs.as_vec().len()).collect();
-        for l in lhs.as_vec() {
-          let mut found = false;
-          for (index, r) in rhs.as_vec().iter().enumerate() {
-            if available.contains(&index) {
-              if let Value::Boolean(true) = eval_in_equal(l, r) {
-                available.remove(&index);
-                found = true;
-                break;
-              }
+fn eval_in_list_in_list(l_items: &[Value], r_items: &[Value]) -> Value {
+  for item in r_items {
+    if let Value::List(rhs) = item {
+      let mut available: HashSet<usize> = (0..rhs.as_vec().len()).collect();
+      for l in l_items {
+        let mut found = false;
+        for (index, r) in rhs.as_vec().iter().enumerate() {
+          if available.contains(&index) {
+            if let Value::Boolean(true) = eval_in_equal(l, r) {
+              available.remove(&index);
+              found = true;
+              break;
             }
           }
-          if !found {
-            return VALUE_FALSE;
-          }
         }
-        return VALUE_TRUE;
+        if !found {
+          return VALUE_FALSE;
+        }
       }
+      return VALUE_TRUE;
     }
   }
   VALUE_FALSE
@@ -2255,109 +2283,98 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
           return Value::Boolean(false);
         }
       }
-      _ => return value_null!("eval_in_negated_list"),
+      Value::List(inner) => {
+        if let Value::Boolean(true) = eval_in_list(left, inner.as_vec()) {
+          return Value::Boolean(false);
+        }
+      }
+      Value::Range(l, l_closed, r, r_closed) => {
+        if let Value::Boolean(true) = eval_in_range(left, l, *l_closed, r, *r_closed) {
+          return Value::Boolean(false);
+        }
+      }
+      other => return value_null!("unexpected type in negated list: {}", other.type_of()),
     }
   }
   Value::Boolean(true)
 }
 
 ///
-fn eval_in_range(left: &Value, right: &Value) -> Value {
-  match left {
-    Value::Number(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Number(lv) => match r.borrow() {
-          Value::Number(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+fn eval_in_range(lhv: &Value, l: &Value, l_closed: bool, r: &Value, r_closed: bool) -> Value {
+  match lhv {
+    Value::Number(value) => match l.borrow() {
+      Value::Number(lv) => match r.borrow() {
+        Value::Number(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::String(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::String(lv) => match r.borrow() {
-          Value::String(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::String(value) => match l.borrow() {
+      Value::String(lv) => match r.borrow() {
+        Value::String(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::Date(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Date(lv) => match r.borrow() {
-          Value::Date(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::Date(value) => match l.borrow() {
+      Value::Date(lv) => match r.borrow() {
+        Value::Date(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::Time(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::Time(lv) => match r.borrow() {
-          Value::Time(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::Time(value) => match l.borrow() {
+      Value::Time(lv) => match r.borrow() {
+        Value::Time(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::DateTime(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::DateTime(lv) => match r.borrow() {
-          Value::DateTime(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::DateTime(value) => match l.borrow() {
+      Value::DateTime(lv) => match r.borrow() {
+        Value::DateTime(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::YearsAndMonthsDuration(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::YearsAndMonthsDuration(lv) => match r.borrow() {
-          Value::YearsAndMonthsDuration(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::YearsAndMonthsDuration(value) => match l.borrow() {
+      Value::YearsAndMonthsDuration(lv) => match r.borrow() {
+        Value::YearsAndMonthsDuration(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
     },
-    Value::DaysAndTimeDuration(value) => match right {
-      Value::Range(l, l_closed, r, r_closed) => match l.borrow() {
-        Value::DaysAndTimeDuration(lv) => match r.borrow() {
-          Value::DaysAndTimeDuration(rv) => {
-            let l_ok = if *l_closed { value >= lv } else { value > lv };
-            let r_ok = if *r_closed { value <= rv } else { value < rv };
-            Value::Boolean(l_ok && r_ok)
-          }
-          _ => value_null!("eval_in_range"),
-        },
+    Value::DaysAndTimeDuration(value) => match l.borrow() {
+      Value::DaysAndTimeDuration(lv) => match r.borrow() {
+        Value::DaysAndTimeDuration(rv) => {
+          let l_ok = if l_closed { value >= lv } else { value > lv };
+          let r_ok = if r_closed { value <= rv } else { value < rv };
+          Value::Boolean(l_ok && r_ok)
+        }
         _ => value_null!("eval_in_range"),
       },
       _ => value_null!("eval_in_range"),
@@ -2708,7 +2725,22 @@ fn eval_java_function(class_name: &str, method_signature: &str, arguments: &[Val
 /// Mock of PMML function evaluation
 fn eval_pmml_function(document: &str, model_name: &str, _arguments: &[Value]) -> Value {
   match (document, model_name) {
-    ("", "") => value_null!(),
+    ("", _) => value_null!("PMML document not specified"),
+    (_, "") => value_null!("PMML model name not specified"),
     _ => Value::String(format!("PMML, document = {document}, model name = {model_name}")),
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use dmntk_feel::{scope, FeelType};
+
+  #[test]
+  fn test_unimplemented_external_function_kind() {
+    let evaluator = Box::new(move |_: &FeelScope| Value::Boolean(false)) as Evaluator;
+    let body = FunctionBody::External(Arc::new(evaluator));
+    let result = eval_external_function_definition(&scope!(), &[], &body, FeelType::Boolean);
+    assert_eq!("null(expected JAVA or PMML mapping, actual value is false)", result.to_string())
   }
 }

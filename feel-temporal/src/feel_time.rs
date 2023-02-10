@@ -38,7 +38,6 @@ use crate::defs::*;
 use crate::errors::*;
 use crate::feel_date_time::FeelDateTime;
 use crate::feel_dt_duration::FeelDaysAndTimeDuration;
-use chrono::{DateTime, FixedOffset};
 use dmntk_common::{DmntkError, Result};
 use std::cmp::Ordering;
 use std::ops::{Add, Sub};
@@ -78,17 +77,13 @@ impl FromStr for FeelTime {
                   }
                   let nanos = (fractional * 1e9).trunc() as u64;
                   if let Some(zone) = FeelZone::from_captures(&captures) {
-                    if hour == 24 {
-                      if min != 0 || sec != 0 || nanos != 0 {
-                        // fix for hour == 24 //TODO make it more reasonably
-                        return Err(err_invalid_time_literal(s));
+                    if is_valid_time(hour, min, sec) {
+                      if hour == 24 {
+                        hour = 0;
                       }
-                      hour = 0;
+                      let time = FeelTime(hour, min, sec, nanos, zone);
+                      return Ok(time);
                     }
-                    let time = FeelTime(hour, min, sec, nanos, zone);
-                    // even if parsing from string was successful, the time may still be invalid, so another check
-                    let _: DateTime<FixedOffset> = time.clone().try_into().map_err(|_| err_invalid_time_literal(s))?;
-                    return Ok(time);
                   }
                 }
               }
@@ -236,43 +231,7 @@ impl Sub<FeelDaysAndTimeDuration> for FeelTime {
   }
 }
 
-impl TryFrom<FeelTime> for DateTime<FixedOffset> {
-  type Error = DmntkError;
-  /// Converts [FeelTime] into [DateTime] with [FixedOffset].
-  fn try_from(me: FeelTime) -> Result<Self, Self::Error> {
-    let result: DateTime<FixedOffset> = FeelDateTime::new(FeelDate::today(), me).try_into()?;
-    Ok(result)
-  }
-}
-
 impl FeelTime {
-  ///
-  pub fn new_hmsnz_opt(hour: u8, minute: u8, second: u8, nano: u64, zone: FeelZone) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
-    }
-    None
-  }
-
-  ///
-  pub fn new_hmsno_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      if let Ok(zone) = FeelZone::try_from(offset) {
-        return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
-      }
-    }
-    None
-  }
-
-  ///
-  pub fn new_hms_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
-    if is_valid_time(hour, minute, second) {
-      Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
-    } else {
-      None
-    }
-  }
-
   /// Creates UTC time from specified time values.
   pub fn utc(hour: u8, minute: u8, second: u8, nanos: u64) -> Self {
     Self(hour, minute, second, nanos, FeelZone::Utc)
@@ -283,9 +242,36 @@ impl FeelTime {
     Self(hour, minute, second, nanos, FeelZone::Local)
   }
 
+  ///
+  pub fn local_opt(hour: u8, minute: u8, second: u8, nano: u64) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, FeelZone::Local))
+    } else {
+      None
+    }
+  }
+
   /// Creates a time from specified time and offset values.
   pub fn offset(hour: u8, minute: u8, second: u8, nanos: u64, offset: i32) -> Self {
     Self(hour, minute, second, nanos, FeelZone::Offset(offset))
+  }
+
+  ///
+  pub fn offset_opt(hour: u8, minute: u8, second: u8, nano: u64, offset: i32) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      if let Ok(zone) = FeelZone::try_from(offset) {
+        return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
+      }
+    }
+    None
+  }
+
+  ///
+  pub fn zone_opt(hour: u8, minute: u8, second: u8, nano: u64, zone: FeelZone) -> Option<Self> {
+    if is_valid_time(hour, minute, second) {
+      return Some(Self(if hour == 24 { 0 } else { hour }, minute, second, nano, zone));
+    }
+    None
   }
 
   pub fn hour(&self) -> u8 {

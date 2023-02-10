@@ -12,7 +12,9 @@ tasks:
   benchmarks:
     desc: Runs all compatibility benchmarks
     cmds:
-      - cmd: cargo +nightly bench -q compatibility | grep 'bench' > benchmarks.txt
+      - cmd: rm -rf ./target/benchmarks
+      - cmd: mkdir ./target/benchmarks
+      - cmd: cargo +nightly bench -q compatibility | tee ./target/benchmarks/out.txt | grep 'bench' > ./target/benchmarks/benchmarks.txt
 
   build:
     desc: Builds in debug mode
@@ -64,6 +66,16 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-feel-grammar
 
+  cov-feel-temporal:
+    desc: Runs code coverage using grcov for dmntk-feel-temporal
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-temporal
+
+  cov-model:
+    desc: Runs code coverage using grcov for dmntk-model
+    cmds:
+      - cmd: ./coverage.sh dmntk-model
+
   cov-recognizer:
     desc: Runs code coverage using grcov for dmntk-recognizer
     cmds:
@@ -97,12 +109,7 @@ tasks:
   install:
     desc: Builds and installs release version
     cmds:
-      - cmd: cargo uninstall dmntk > /dev/null 2>&1
-        ignore_error: true
-      - cmd: rm ~/.cargo/bin/dmntk > /dev/null 2>&1
-        ignore_error: true
-      - cmd: cargo +stable build --release
-      - cmd: cp ./target/release/dmntk ~/.cargo/bin/
+      - cmd: cargo +stable install dmntk --path dmntk --force
 
   musl:
     desc: Builds the Linux MUSL target

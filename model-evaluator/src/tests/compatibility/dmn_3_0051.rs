@@ -47,7 +47,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision002", &ctx, r#"null(?2)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision002", &ctx, r#"null(sqrt: argument must be positive number or zero)"#);
 }
 
 #[test]
@@ -83,47 +83,47 @@ fn _0007() {
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision008", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision009", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision009", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision010", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision010", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision011", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision011", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision012", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision012", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision013", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision013", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0014() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision014", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision014", &ctx, r#"null(sqrt: argument must be a number)"#);
 }
 
 #[test]
 fn _0015() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision015", &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, "decision015", &ctx, r#"null(sqrt: argument must be a number)"#);
 }

@@ -37,6 +37,7 @@ use dmntk_common::DmntkError;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::convert::TryFrom;
+use std::{fmt, ops};
 
 /// Regular expression pattern for parsing years and months duration.
 const REGEX_YEARS_AND_MONTHS: &str = r#"^(?P<sign>-)?P((?P<years>[0-9]+)Y)?((?P<months>[0-9]+)M)?$"#;
@@ -92,7 +93,7 @@ impl FeelYearsAndMonthsDuration {
   }
 }
 
-impl std::ops::Add<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+impl ops::Add<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
   type Output = Self;
   /// Returns the sum of durations.
   fn add(self, rhs: FeelYearsAndMonthsDuration) -> Self {
@@ -100,7 +101,7 @@ impl std::ops::Add<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
   }
 }
 
-impl std::ops::Sub<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
+impl ops::Sub<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
   type Output = Self;
   /// Returns the subtraction of durations.
   fn sub(self, rhs: FeelYearsAndMonthsDuration) -> Self {
@@ -108,7 +109,7 @@ impl std::ops::Sub<FeelYearsAndMonthsDuration> for FeelYearsAndMonthsDuration {
   }
 }
 
-impl std::ops::Neg for FeelYearsAndMonthsDuration {
+impl ops::Neg for FeelYearsAndMonthsDuration {
   type Output = Self;
   /// Returns the arithmetic negation of this duration.
   fn neg(self) -> Self {
@@ -116,8 +117,8 @@ impl std::ops::Neg for FeelYearsAndMonthsDuration {
   }
 }
 
-impl std::fmt::Display for FeelYearsAndMonthsDuration {
-  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for FeelYearsAndMonthsDuration {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let sign = if self.0 < 0 { "-" } else { "" };
     let mut month = self.0.abs();
     let year = month / MONTHS_IN_YEAR;
@@ -136,24 +137,35 @@ impl TryFrom<&str> for FeelYearsAndMonthsDuration {
   /// Converts a text into [FeelYearsAndMonthsDuration].
   fn try_from(value: &str) -> Result<Self, Self::Error> {
     if let Some(captures) = RE_YEARS_AND_MONTHS.captures(value) {
-      let mut is_valid = false;
       let mut total_months = 0_i64;
+      let mut contains_years = false;
+      let mut contains_months = false;
+      let mut valid_years = false;
+      let mut valid_months = false;
       if let Some(years_match) = captures.name("years") {
-        if let Ok(years) = years_match.as_str().parse::<u64>() {
-          total_months += (years as i64) * MONTHS_IN_YEAR;
-          is_valid = true;
+        contains_years = true;
+        if let Ok(years) = years_match.as_str().parse::<i64>() {
+          if let Some(months) = years.checked_mul(MONTHS_IN_YEAR) {
+            if let Some(total) = total_months.checked_add(months) {
+              total_months = total;
+              valid_years = true;
+            }
+          }
         }
       }
       if let Some(months_match) = captures.name("months") {
-        if let Ok(months) = months_match.as_str().parse::<u64>() {
-          total_months += months as i64;
-          is_valid = true;
+        contains_months = true;
+        if let Ok(months) = months_match.as_str().parse::<i64>() {
+          if let Some(total) = total_months.checked_add(months) {
+            total_months = total;
+            valid_months = true;
+          }
         }
       }
-      if captures.name("sign").is_some() {
-        total_months = -total_months;
-      }
-      if is_valid {
+      if (contains_years && valid_years) || (contains_months && valid_months) {
+        if captures.name("sign").is_some() {
+          total_months = -total_months;
+        }
         return Ok(FeelYearsAndMonthsDuration(total_months));
       }
     }
@@ -312,17 +324,23 @@ mod tests {
 
   #[test]
   fn test_abs_should_pass() {
-    let duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
-    assert_eq!("P2Y3M", duration.abs().to_string());
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    assert_eq!("P2Y3M", ym_duration.abs().to_string());
     let duration = FeelYearsAndMonthsDuration::try_from("-P2Y3M").unwrap();
     assert_eq!("P2Y3M", duration.abs().to_string());
   }
 
   #[test]
   fn test_properties() {
-    let duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
-    assert_eq!(2, duration.years());
-    assert_eq!(3, duration.months());
-    assert_eq!(27, duration.as_months());
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    assert_eq!(2, ym_duration.years());
+    assert_eq!(3, ym_duration.months());
+    assert_eq!(27, ym_duration.as_months());
+  }
+
+  #[test]
+  fn test_eq_receiver() {
+    let ym_duration = FeelYearsAndMonthsDuration::try_from("P2Y3M").unwrap();
+    ym_duration.assert_receiver_is_total_eq();
   }
 }

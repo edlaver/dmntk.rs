@@ -108,26 +108,41 @@ fn _0013() {
 
 #[test]
 fn _0014() {
-  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1DT1H" "#, (2021, 1, 13), (11, 10, 10, 0));
+  te_null(false, &scope!(), r#" "a" + 1 "#, r#"expected string as a second argument in addition"#);
 }
 
 #[test]
 fn _0015() {
-  te_date_time_local(false, &scope!(), r#" @"P1DT1H" + @"2021-01-12T10:10:10" "#, (2021, 1, 13), (11, 10, 10, 0));
+  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1DT1H" "#, (2021, 1, 13), (11, 10, 10, 0));
 }
 
 #[test]
 fn _0016() {
-  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1Y1M" "#, (2022, 2, 12), (10, 10, 10, 0));
+  te_date(false, &scope!(), r#" @"2021-01-12" + @"P1DT1H" "#, 2021, 1, 13);
 }
 
 #[test]
 fn _0017() {
-  te_date_time_local(false, &scope!(), r#" @"P1Y1M" + @"2021-01-12T10:10:10" "#, (2022, 2, 12), (10, 10, 10, 0));
+  te_date(false, &scope!(), r#" @"2021-01-12" + (-@"P1D") "#, 2021, 1, 11);
 }
 
 #[test]
 fn _0018() {
+  te_date_time_local(false, &scope!(), r#" @"P1DT1H" + @"2021-01-12T10:10:10" "#, (2021, 1, 13), (11, 10, 10, 0));
+}
+
+#[test]
+fn _0019() {
+  te_date_time_local(false, &scope!(), r#" @"2021-01-12T10:10:10" + @"P1Y1M" "#, (2022, 2, 12), (10, 10, 10, 0));
+}
+
+#[test]
+fn _0020() {
+  te_date_time_local(false, &scope!(), r#" @"P1Y1M" + @"2021-01-12T10:10:10" "#, (2022, 2, 12), (10, 10, 10, 0));
+}
+
+#[test]
+fn _0021() {
   te_null(
     false,
     &scope!(),
@@ -137,22 +152,22 @@ fn _0018() {
 }
 
 #[test]
-fn _0019() {
+fn _0022() {
   te_years_and_months_duration_x(false, &scope!(), r#" @"P1Y1M" + @"P2Y3M" "#, r#"P3Y4M"#);
 }
 
 #[test]
-fn _0020() {
+fn _0023() {
   te_days_and_time_duration_x(false, &scope!(), r#" @"P1DT2H" + @"P2DT3H" "#, r#"P3DT5H"#);
 }
 
 #[test]
-fn _0021() {
+fn _0024() {
   te_null(false, &scope!(), r#" null + @"P1DT2H" "#, r#""#);
 }
 
 #[test]
-fn _0022() {
+fn _0025() {
   te_null(
     false,
     &scope!(),
@@ -162,7 +177,7 @@ fn _0022() {
 }
 
 #[test]
-fn _0023() {
+fn _0026() {
   te_null(
     false,
     &scope!(),
@@ -172,11 +187,161 @@ fn _0023() {
 }
 
 #[test]
-fn _0024() {
+fn _0027() {
   te_null(
     false,
     &scope!(),
     r#" true + @"P1DT2H" "#,
     r#"[builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean"#,
+  );
+}
+
+#[test]
+fn _0028() {
+  te_date(false, &scope!(), r#" @"2023-02-05" + @"P2D" "#, 2023, 2, 7);
+}
+
+#[test]
+fn _0029() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-06" + @"P999999Y" "#,
+    "invalid result while adding years and months duration to date",
+  );
+}
+
+#[test]
+fn _0030() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-06" + @"P999999999999999Y" "#,
+    "invalid result while adding years and months duration to date",
+  );
+}
+
+#[test]
+fn _0031() {
+  te_date(false, &scope!(), r#" @"P2D" + @"2023-02-05" "#, 2023, 2, 7);
+}
+
+#[test]
+fn _0032() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03" + @"P99999D" "#,
+    r#"invalid result while adding days and time duration to date"#,
+  );
+}
+
+#[test]
+fn _0033() {
+  te_date(false, &scope!(), r#" @"2023-02-05" + @"P2Y1M" "#, 2025, 3, 5);
+}
+
+#[test]
+fn _0034() {
+  te_date(false, &scope!(), r#" @"P2Y1M" + @"2023-02-05" "#, 2025, 3, 5);
+}
+
+#[test]
+fn _0035() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03" + @"P100Y" "#,
+    r#"invalid result while adding years and months duration to date"#,
+  );
+}
+
+#[test]
+fn _0036() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03T10:01:02" + @"P99999D" "#,
+    r#"invalid result while adding days and time duration to date and time"#,
+  );
+}
+
+#[test]
+fn _0037() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"262143-02-03T10:01:02" + @"P100Y" "#,
+    r#"invalid result while adding years and months duration to date and time"#,
+  );
+}
+
+#[test]
+fn _0038() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"2023-02-05" + 1 "#,
+    r#"[builders::add] invalid argument type, expected years and months duration, actual type is number"#,
+  );
+}
+
+#[test]
+fn _0039() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P99999D" + @"262143-02-03" "#,
+    r#"invalid result while adding date to days and time duration"#,
+  );
+}
+
+#[test]
+fn _0040() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P100Y" + @"262143-02-03" "#,
+    r#"invalid result while adding date to years and months duration"#,
+  );
+}
+
+#[test]
+fn _0041() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P99999D" + @"262143-02-03T10:01:02" "#,
+    r#"invalid result while adding date and time to days and time duration"#,
+  );
+}
+
+#[test]
+fn _0042() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"P100Y" + @"262143-02-03T10:01:02" "#,
+    r#"invalid result while adding date and time to years and months duration"#,
+  );
+}
+
+#[test]
+fn _0043() {
+  te_time(false, &scope!(), r#" @"10:11:12" + @"PT2H" "#, FeelTime::local(12, 11, 12, 0));
+}
+
+#[test]
+fn _0044() {
+  te_time(false, &scope!(), r#" @"PT2H" + @"10:11:12" "#, FeelTime::local(12, 11, 12, 0));
+}
+
+#[test]
+fn _0045() {
+  te_null(
+    false,
+    &scope!(),
+    r#" @"10:11:12" + 1 "#,
+    "[builders::add] invalid argument type, expected days and time duration, actual type is number",
   );
 }

@@ -76,29 +76,27 @@ impl TryFrom<&str> for FeelDateTime {
                         if let Ok(min) = min_match.as_str().parse::<u8>() {
                           if let Some(sec_match) = captures.name("seconds") {
                             if let Ok(sec) = sec_match.as_str().parse::<u8>() {
-                              let mut fractional = 0.0;
-                              if let Some(frac_match) = captures.name("fractional") {
-                                if let Ok(frac) = frac_match.as_str().parse::<f64>() {
-                                  fractional = frac;
-                                }
-                              }
+                              let fractional = if let Some(frac_match) = captures.name("fractional") {
+                                frac_match.as_str().parse::<f64>().unwrap_or(0.0)
+                              } else {
+                                0.0
+                              };
                               let nanos = (fractional * 1e9).trunc() as u64;
                               if let Some(mut date) = FeelDate::new_opt(year, month, day) {
                                 if let Some(zone) = FeelZone::from_captures(&captures) {
-                                  if is_valid_time(hour, min, sec) {
-                                    if hour == 24 {
-                                      if min != 0 || sec != 0 || nanos != 0 {
-                                        // fix for hour == 24 //TODO make it more reasonably
-                                        return Err(err_invalid_date_time_literal(s));
-                                      }
+                                  if !is_valid_time(hour, min, sec) {
+                                    return Err(err_invalid_date_time_literal(s));
+                                  }
+                                  if hour == 24 {
+                                    if let Some(updated_date) = date.add_days(1) {
                                       hour = 0;
-                                      if let Some(updated_date) = date.add_days(1) {
-                                        date = updated_date;
-                                      }
+                                      date = updated_date;
+                                    } else {
+                                      return Err(err_invalid_date_time_literal(s));
                                     }
-                                    if let Some(time) = FeelTime::new_hmsnz_opt(hour, min, sec, nanos, zone) {
-                                      return Ok(FeelDateTime(date, time));
-                                    }
+                                  }
+                                  if let Some(time) = FeelTime::zone_opt(hour, min, sec, nanos, zone) {
+                                    return Ok(FeelDateTime(date, time));
                                   }
                                 }
                               }
@@ -167,16 +165,15 @@ impl PartialEq for FeelDateTime {
 impl PartialOrd for FeelDateTime {
   /// Returns the ordering of two date and times.
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-    if let Some(d) = self.0.partial_cmp(&other.0) {
-      if let Some(t) = self.1.partial_cmp(&other.1) {
-        return match (d, t) {
-          (Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
-          (Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
-          (Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
-          (Ordering::Less, _) => Some(Ordering::Less),
-          (Ordering::Greater, _) => Some(Ordering::Greater),
-        };
-      }
+    let d = self.0.cmp(&other.0);
+    if let Some(t) = self.1.partial_cmp(&other.1) {
+      return match (d, t) {
+        (Ordering::Equal, Ordering::Equal) => Some(Ordering::Equal),
+        (Ordering::Equal, Ordering::Less) => Some(Ordering::Less),
+        (Ordering::Equal, Ordering::Greater) => Some(Ordering::Greater),
+        (Ordering::Less, _) => Some(Ordering::Less),
+        (Ordering::Greater, _) => Some(Ordering::Greater),
+      };
     }
     None
   }
@@ -220,19 +217,20 @@ impl Add<FeelDaysAndTimeDuration> for FeelDateTime {
       return self.sub(rhs.abs());
     }
     let zone = self.1.zone().clone();
-    if let Ok(mut date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
-      date_time += Duration::nanoseconds(rhs.as_nanos());
-      return Some(FeelDateTime(
-        FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-        FeelTime::new_hmsnz_opt(
-          date_time.hour() as u8,
-          date_time.minute() as u8,
-          date_time.second() as u8,
-          date_time.nanosecond() as u64,
-          zone,
-        )
-        .unwrap(),
-      ));
+    if let Ok(fixed_date_time) = <FeelDateTime as TryInto<DateTime<FixedOffset>>>::try_into(self) {
+      if let Some(date_time) = fixed_date_time.checked_add_signed(Duration::nanoseconds(rhs.as_nanos())) {
+        return Some(FeelDateTime(
+          FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
+          FeelTime::zone_opt(
+            date_time.hour() as u8,
+            date_time.minute() as u8,
+            date_time.second() as u8,
+            date_time.nanosecond() as u64,
+            zone,
+          )
+          .unwrap(),
+        ));
+      }
     }
     None
   }
@@ -250,7 +248,7 @@ impl Sub<FeelDaysAndTimeDuration> for FeelDateTime {
       date_time -= Duration::nanoseconds(rhs.as_nanos());
       return Some(FeelDateTime(
         FeelDate::new(date_time.year(), date_time.month(), date_time.day()),
-        FeelTime::new_hmsnz_opt(
+        FeelTime::zone_opt(
           date_time.hour() as u8,
           date_time.minute() as u8,
           date_time.second() as u8,

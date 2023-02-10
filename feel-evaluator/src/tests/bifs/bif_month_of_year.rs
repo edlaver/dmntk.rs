@@ -212,3 +212,8 @@ fn _0032() {
     "[core::month of year] invalid argument type, expected date, date and time, actual type is boolean",
   );
 }
+
+#[test]
+fn _0033() {
+  te_null(false, &scope!(), r#"month of year(@"999999999-01-01")"#, "[month of year] no month");
+}

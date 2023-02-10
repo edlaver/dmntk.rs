@@ -52,7 +52,7 @@ fn _0001(b: &mut Bencher) {
 fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision002";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(?2)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be positive number or zero)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -100,7 +100,7 @@ fn _0007(b: &mut Bencher) {
 fn _0008(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision008";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -108,7 +108,7 @@ fn _0008(b: &mut Bencher) {
 fn _0009(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision009";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -116,7 +116,7 @@ fn _0009(b: &mut Bencher) {
 fn _0010(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision010";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -124,7 +124,7 @@ fn _0010(b: &mut Bencher) {
 fn _0011(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision011";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -132,7 +132,7 @@ fn _0011(b: &mut Bencher) {
 fn _0012(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision012";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -140,7 +140,7 @@ fn _0012(b: &mut Bencher) {
 fn _0013(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision013";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -148,7 +148,7 @@ fn _0013(b: &mut Bencher) {
 fn _0014(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision014";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -156,6 +156,6 @@ fn _0014(b: &mut Bencher) {
 fn _0015(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision015";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt)"#);
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(sqrt: argument must be a number)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

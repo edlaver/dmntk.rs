@@ -34,7 +34,7 @@ fn test_debug() {
   let v_number = Value::Number(FeelNumber::new(1, 0));
   let b_number = Box::new(v_number);
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;
@@ -44,7 +44,6 @@ fn test_debug() {
   let v_closure_ctx = FeelContext::default();
   eq_dbg!(r#"Boolean(false)"#, Value::Boolean(false));
   eq_dbg!(r#"BuiltInFunction(Time)"#, Value::BuiltInFunction(Bif::Time));
-  eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
   eq_dbg!(r#"Context(FeelContext({}))"#, Value::Context(FeelContext::default()));
   eq_dbg!(r#"ContextEntry(Name("a"), Number(+1E+0))"#, Value::ContextEntry(name.clone(), b_number.clone()));
   eq_dbg!(r#"ContextEntryKey(Name("a"))"#, Value::ContextEntryKey(name.clone()));
@@ -59,6 +58,15 @@ fn test_debug() {
   eq_dbg!(
     r#"DaysAndTimeDuration(FeelDaysAndTimeDuration(100000000000))"#,
     Value::DaysAndTimeDuration(v_days_and_time_duration)
+  );
+  eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
+  eq_dbg!(
+    r#"ExternalJavaFunction("class", "method")"#,
+    Value::ExternalJavaFunction("class".to_string(), "method".to_string())
+  );
+  eq_dbg!(
+    r#"ExternalPmmlFunction("document", "model")"#,
+    Value::ExternalPmmlFunction("document".to_string(), "model".to_string())
   );
   eq_dbg!(r#"FeelType(Number)"#, Value::FeelType(t_number.clone()));
   eq_dbg!(r#"FormalParameter(Name("a"), Number)"#, Value::FormalParameter(name.clone(), t_number.clone()));
@@ -110,7 +118,7 @@ fn test_display() {
   let v_number = Value::Number(FeelNumber::new(1, 0));
   let b_number = Box::new(v_number);
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;
@@ -120,7 +128,6 @@ fn test_display() {
   let v_closure_ctx = FeelContext::default();
   eq_dsp!(r#"false"#, Value::Boolean(false));
   eq_dsp!(r#"BuiltInFunction"#, Value::BuiltInFunction(Bif::Time));
-  eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
   eq_dsp!(r#"{}"#, Value::Context(FeelContext::default()));
   eq_dsp!(r#"ContextEntry"#, Value::ContextEntry(name.clone(), b_number.clone()));
   eq_dsp!(r#"a"#, Value::ContextEntryKey(name.clone()));
@@ -130,6 +137,15 @@ fn test_display() {
   eq_dsp!(r#"2022-09-27"#, Value::Date(v_date));
   eq_dsp!(r#"2022-09-27T12:13:23"#, Value::DateTime(v_date_time));
   eq_dsp!(r#"PT1M40S"#, Value::DaysAndTimeDuration(v_days_and_time_duration));
+  eq_dsp!(r#"[]"#, Value::ExpressionList(Values::default()));
+  eq_dsp!(
+    r#"ExternalJavaFunction(class, method)"#,
+    Value::ExternalJavaFunction("class".to_string(), "method".to_string())
+  );
+  eq_dsp!(
+    r#"ExternalPmmlFunction(document, model)"#,
+    Value::ExternalPmmlFunction("document".to_string(), "model".to_string())
+  );
   eq_dsp!(r#"type(number)"#, Value::FeelType(t_number.clone()));
   eq_dsp!(r#"FormalParameter"#, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_dsp!(r#"FormalParameters"#, Value::FormalParameters(vec![]));
@@ -154,9 +170,9 @@ fn test_display() {
   eq_dsp!(r#"(1..1]"#, Value::Range(b_number.clone(), false, b_number.clone(), true));
   eq_dsp!(r#""beta""#, Value::String("beta".to_string()));
   eq_dsp!(r#"12:13:23"#, Value::Time(v_time));
-  eq_dsp!(r#"UnaryGreater"#, Value::UnaryGreater(b_number.clone()));
-  eq_dsp!(r#"UnaryGreaterOrEqual"#, Value::UnaryGreaterOrEqual(b_number.clone()));
-  eq_dsp!(r#"UnaryLess"#, Value::UnaryLess(b_number.clone()));
+  eq_dsp!(r#"UnaryGreater(1)"#, Value::UnaryGreater(b_number.clone()));
+  eq_dsp!(r#"UnaryGreaterOrEqual(1)"#, Value::UnaryGreaterOrEqual(b_number.clone()));
+  eq_dsp!(r#"UnaryLess(1)"#, Value::UnaryLess(b_number.clone()));
   eq_dsp!(r#"UnaryLessOrEqual(1)"#, Value::UnaryLessOrEqual(b_number));
   eq_dsp!(r#"P3Y2M"#, Value::YearsAndMonthsDuration(v_years_and_months_duration));
 }
@@ -170,7 +186,7 @@ fn test_type_of() {
   let v_boolean = Value::Boolean(false);
   let b_boolean = Box::new(v_boolean.clone());
   let v_date = FeelDate::new(2022, 9, 27);
-  let v_time = FeelTime::new_hms_opt(12, 13, 23, 0).unwrap();
+  let v_time = FeelTime::local_opt(12, 13, 23, 0).unwrap();
   let v_date_time = FeelDateTime::new(v_date.clone(), v_time.clone());
   let v_function_body = FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(2))));
   let v_external = false;
@@ -180,7 +196,6 @@ fn test_type_of() {
   let v_closure_ctx = FeelContext::default();
   eq_typ!(FeelType::Boolean, Value::Boolean(false));
   eq_typ!(FeelType::Any, Value::BuiltInFunction(Bif::Time));
-  eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
   eq_typ!(FeelType::Context(BTreeMap::new()), Value::Context(FeelContext::default()));
   eq_typ!(FeelType::Any, Value::ContextEntry(name.clone(), b_number.clone()));
   eq_typ!(FeelType::Any, Value::ContextEntryKey(name.clone()));
@@ -190,6 +205,9 @@ fn test_type_of() {
   eq_typ!(FeelType::Date, Value::Date(v_date));
   eq_typ!(FeelType::DateTime, Value::DateTime(v_date_time));
   eq_typ!(FeelType::DaysAndTimeDuration, Value::DaysAndTimeDuration(v_days_and_time_duration));
+  eq_typ!(FeelType::Any, Value::ExpressionList(Values::default()));
+  eq_typ!(FeelType::Any, Value::ExternalJavaFunction("class".to_string(), "method".to_string()));
+  eq_typ!(FeelType::Any, Value::ExternalPmmlFunction("document".to_string(), "model".to_string()));
   eq_typ!(FeelType::Number, Value::FeelType(t_number.clone()));
   eq_typ!(FeelType::Number, Value::FormalParameter(name.clone(), t_number.clone()));
   eq_typ!(FeelType::Any, Value::FormalParameters(vec![]));

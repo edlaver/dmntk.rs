@@ -30,5 +30,11 @@
  * limitations under the License.
  */
 
+mod builtin_aggregator;
+mod decision_table_orientation;
+mod full_model;
+mod hit_policy;
 mod parser;
 mod parser_dmndi;
+mod test_models;
+mod various;

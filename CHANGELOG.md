@@ -7,7 +7,14 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 - Importing models.
-- Code and lines coverage over 90%.
+- Code lines and functions coverage over 90%.
+
+## [v0.1.1 (fixes to 1st beta)] - 2023-02-10
+
+- Fixed minor issues with path names.
+- Improved code coverage.
+- Added more tests.
+- Code lines coverage over 90%.
 
 ## [v0.1.0 (1st beta)] - 2023-01-20
 
