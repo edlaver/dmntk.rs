@@ -2085,12 +2085,7 @@ fn _0286(b: &mut Bencher) {
 #[bench]
 fn _0287(b: &mut Bencher) {
   let invocable_name = "error_when_multiply_lhs_number_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([multiplication] incompatible types: 10 * {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([multiplication] incompatible types: 10 * {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -2108,7 +2103,7 @@ fn _0289(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([multiplication] incompatible types: 10 * FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([multiplication] incompatible types: 10 * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -2872,12 +2867,7 @@ fn _0387(b: &mut Bencher) {
 #[bench]
 fn _0388(b: &mut Bencher) {
   let invocable_name = "error_when_multiply_lhs_dtDuration_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([multiplication] incompatible types: P1D * {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([multiplication] incompatible types: P1D * {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -2909,7 +2899,7 @@ fn _0392(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([multiplication] incompatible types: P1D * FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([multiplication] incompatible types: P1D * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -2971,12 +2961,7 @@ fn _0399(b: &mut Bencher) {
 #[bench]
 fn _0400(b: &mut Bencher) {
   let invocable_name = "error_when_multiply_lhs_ymDuration_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([multiplication] incompatible types: P1Y * {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([multiplication] incompatible types: P1Y * {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3008,7 +2993,7 @@ fn _0404(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([multiplication] incompatible types: P1Y * FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([multiplication] incompatible types: P1Y * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3403,12 +3388,7 @@ fn _0450(b: &mut Bencher) {
 #[bench]
 fn _0451(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_number_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: 10 / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: 10 / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3440,7 +3420,7 @@ fn _0455(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: 10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: 10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3504,12 +3484,7 @@ fn _0463(b: &mut Bencher) {
 #[bench]
 fn _0464(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_string_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: "10" / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: "10" / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3541,7 +3516,7 @@ fn _0468(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: "10" / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: "10" / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3605,12 +3580,7 @@ fn _0476(b: &mut Bencher) {
 #[bench]
 fn _0477(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_boolean_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: true / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: true / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3642,7 +3612,7 @@ fn _0481(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: true / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: true / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3711,12 +3681,7 @@ fn _0489(b: &mut Bencher) {
 #[bench]
 fn _0490(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_date_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: 2021-01-01 / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: 2021-01-01 / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3748,7 +3713,7 @@ fn _0494(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: 2021-01-01 / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: 2021-01-01 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3831,7 +3796,7 @@ fn _0503(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: 2021-01-01T10:10:10 / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
+    r#"null([division] incompatible types: 2021-01-01T10:10:10 / {a: 10})"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3869,7 +3834,7 @@ fn _0507(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: 2021-01-01T10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: 2021-01-01T10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -3938,12 +3903,7 @@ fn _0515(b: &mut Bencher) {
 #[bench]
 fn _0516(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_time_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: 10:10:10 / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: 10:10:10 / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -3975,7 +3935,7 @@ fn _0520(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: 10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: 10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4039,12 +3999,7 @@ fn _0528(b: &mut Bencher) {
 #[bench]
 fn _0529(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_list_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: [10] / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: [10] / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4076,7 +4031,7 @@ fn _0533(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: [10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: [10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4091,48 +4046,28 @@ fn _0534(b: &mut Bencher) {
 #[bench]
 fn _0535(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_number";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / 10)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / 10)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0536(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_string";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / "10")"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / "10")"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0537(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_boolean";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / true)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / true)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0538(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_date";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / 2021-01-01)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / 2021-01-01)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4143,7 +4078,7 @@ fn _0539(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / 2021-01-01T10:10:10)"#,
+    r#"null([division] incompatible types: {a: 10} / 2021-01-01T10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4151,72 +4086,42 @@ fn _0539(b: &mut Bencher) {
 #[bench]
 fn _0540(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_time";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / 10:10:10)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / 10:10:10)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0541(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_list";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / [10])"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / [10])"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0542(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0543(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_dtDuration";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / P1D)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / P1D)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0544(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_ymDuration";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / P1Y)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / P1Y)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0545(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_range";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / [1..10])"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / [1..10])"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4227,7 +4132,7 @@ fn _0546(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: {a: 10} / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4235,12 +4140,7 @@ fn _0546(b: &mut Bencher) {
 #[bench]
 fn _0547(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_context_by_rhs_null";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } / null)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: {a: 10} / null)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4289,12 +4189,7 @@ fn _0553(b: &mut Bencher) {
 #[bench]
 fn _0554(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_dtDuration_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: P1D / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: P1D / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4319,7 +4214,7 @@ fn _0557(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: P1D / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: P1D / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4376,12 +4271,7 @@ fn _0564(b: &mut Bencher) {
 #[bench]
 fn _0565(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_ymDuration_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: P1Y / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: P1Y / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4406,7 +4296,7 @@ fn _0568(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: P1Y / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: P1Y / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4475,12 +4365,7 @@ fn _0576(b: &mut Bencher) {
 #[bench]
 fn _0577(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_range_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: [1..10] / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: [1..10] / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4512,7 +4397,7 @@ fn _0581(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: [1..10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: [1..10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4531,7 +4416,7 @@ fn _0583(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / 10)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4543,7 +4428,7 @@ fn _0584(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / "10")"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / "10")"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4555,7 +4440,7 @@ fn _0585(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / true)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / true)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4567,7 +4452,7 @@ fn _0586(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / 2021-01-01)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 2021-01-01)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4579,7 +4464,7 @@ fn _0587(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / 2021-01-01T10:10:10)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 2021-01-01T10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4591,7 +4476,7 @@ fn _0588(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / 10:10:10)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4603,7 +4488,7 @@ fn _0589(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / [10])"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / [10])"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4615,7 +4500,7 @@ fn _0590(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / {a: 10})"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4627,7 +4512,7 @@ fn _0591(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / P1D)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / P1D)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4639,7 +4524,7 @@ fn _0592(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / P1Y)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / P1Y)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4651,7 +4536,7 @@ fn _0593(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / [1..10])"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / [1..10])"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4663,7 +4548,7 @@ fn _0594(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4675,7 +4560,7 @@ fn _0595(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) / null)"#,
+    r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / null)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4732,12 +4617,7 @@ fn _0602(b: &mut Bencher) {
 #[bench]
 fn _0603(b: &mut Bencher) {
   let invocable_name = "error_when_divide_lhs_null_by_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([division] incompatible types: null / {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([division] incompatible types: null / {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -4769,7 +4649,7 @@ fn _0607(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([division] incompatible types: null / FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([division] incompatible types: null / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4855,7 +4735,7 @@ fn _0615(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null(incompatible types in addition: 10(number) + {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); }(context<a: number>))"#,
+    r#"null(incompatible types in addition: 10(number) + {a: 10}(context<a: number>))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -4903,7 +4783,7 @@ fn _0619(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null(incompatible types in addition: 10(number) + FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any)(function<Any>->Any))"#,
+    r#"null(incompatible types in addition: 10(number) + FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any)(function<Any>->Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6556,12 +6436,7 @@ fn _0769(b: &mut Bencher) {
 #[bench]
 fn _0770(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_number_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: 10 - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: 10 - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -6593,7 +6468,7 @@ fn _0774(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: 10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: 10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6662,12 +6537,7 @@ fn _0782(b: &mut Bencher) {
 #[bench]
 fn _0783(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_string_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: "10" - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: "10" - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -6699,7 +6569,7 @@ fn _0787(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: "10" - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: "10" - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6768,12 +6638,7 @@ fn _0795(b: &mut Bencher) {
 #[bench]
 fn _0796(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_boolean_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: true - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: true - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -6805,7 +6670,7 @@ fn _0800(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: true - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: true - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6855,12 +6720,7 @@ fn _0806(b: &mut Bencher) {
 #[bench]
 fn _0807(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_date_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: 2021-01-01 - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: 2021-01-01 - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -6878,7 +6738,7 @@ fn _0809(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: 2021-01-01 - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: 2021-01-01 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6957,7 +6817,7 @@ fn _0816(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - {a: 10})"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -6981,7 +6841,7 @@ fn _0818(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7048,12 +6908,7 @@ fn _0825(b: &mut Bencher) {
 #[bench]
 fn _0826(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_time_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: 10:10:10 - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: 10:10:10 - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7078,7 +6933,7 @@ fn _0829(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: 10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: 10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7147,12 +7002,7 @@ fn _0837(b: &mut Bencher) {
 #[bench]
 fn _0838(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_list_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: [10] - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: [10] - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7184,7 +7034,7 @@ fn _0842(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: [10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: [10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7199,48 +7049,28 @@ fn _0843(b: &mut Bencher) {
 #[bench]
 fn _0844(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_number";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - 10)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - 10)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0845(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_string";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - "10")"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - "10")"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0846(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_boolean";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - true)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - true)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0847(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_date";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - 2021-01-01)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7251,7 +7081,7 @@ fn _0848(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - 2021-01-01T10:10:10)"#,
+    r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01T10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7259,72 +7089,42 @@ fn _0848(b: &mut Bencher) {
 #[bench]
 fn _0849(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_time";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - 10:10:10)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - 10:10:10)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0850(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_list";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - [10])"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - [10])"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0851(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0852(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_dtDuration";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - P1D)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - P1D)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0853(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_ymDuration";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - P1Y)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - P1Y)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
 #[bench]
 fn _0854(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_range";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - [1..10])"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - [1..10])"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7335,7 +7135,7 @@ fn _0855(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: {a: 10} - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7343,12 +7143,7 @@ fn _0855(b: &mut Bencher) {
 #[bench]
 fn _0856(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_context_minus_rhs_null";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); } - null)"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: {a: 10} - null)"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7409,12 +7204,7 @@ fn _0863(b: &mut Bencher) {
 #[bench]
 fn _0864(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_dtDuration_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: P1D - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: P1D - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7439,7 +7229,7 @@ fn _0867(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: P1D - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: P1D - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7508,12 +7298,7 @@ fn _0875(b: &mut Bencher) {
 #[bench]
 fn _0876(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_ymDuration_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: P1Y - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: P1Y - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7538,7 +7323,7 @@ fn _0879(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: P1Y - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: P1Y - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7607,12 +7392,7 @@ fn _0887(b: &mut Bencher) {
 #[bench]
 fn _0888(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_range_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: [1..10] - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: [1..10] - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7644,7 +7424,7 @@ fn _0892(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: [1..10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: [1..10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7663,7 +7443,7 @@ fn _0894(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - 10)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7675,7 +7455,7 @@ fn _0895(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - "10")"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - "10")"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7687,7 +7467,7 @@ fn _0896(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - true)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - true)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7699,7 +7479,7 @@ fn _0897(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - 2021-01-01)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 2021-01-01)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7711,7 +7491,7 @@ fn _0898(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - 2021-01-01T10:10:10)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 2021-01-01T10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7723,7 +7503,7 @@ fn _0899(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - 10:10:10)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10:10:10)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7735,7 +7515,7 @@ fn _0900(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - [10])"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - [10])"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7747,7 +7527,7 @@ fn _0901(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - {a: 10})"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7759,7 +7539,7 @@ fn _0902(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - P1D)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - P1D)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7771,7 +7551,7 @@ fn _0903(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - P1Y)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - P1Y)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7783,7 +7563,7 @@ fn _0904(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - [1..10])"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - [1..10])"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7795,7 +7575,7 @@ fn _0905(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7807,7 +7587,7 @@ fn _0906(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any) - null)"#,
+    r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - null)"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
@@ -7869,12 +7649,7 @@ fn _0913(b: &mut Bencher) {
 #[bench]
 fn _0914(b: &mut Bencher) {
   let invocable_name = "error_when_subtract_lhs_null_minus_rhs_context";
-  assert_decision(
-    &MODEL_EVALUATOR,
-    invocable_name,
-    &CTX,
-    r#"null([subtraction] incompatible types: null - {a: 10b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); })"#,
-  );
+  assert_decision(&MODEL_EVALUATOR, invocable_name, &CTX, r#"null([subtraction] incompatible types: null - {a: 10})"#);
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
 
@@ -7906,7 +7681,7 @@ fn _0918(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &CTX,
-    r#"null([subtraction] incompatible types: null - FunctionDefinition([(Name("a"), Any)],_,false,[],{b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX)); },Any))"#,
+    r#"null([subtraction] incompatible types: null - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &CTX));
 }
