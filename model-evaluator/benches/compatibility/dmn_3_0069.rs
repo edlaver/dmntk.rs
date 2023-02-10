@@ -217,7 +217,12 @@ fn _0021(b: &mut Bencher) {
 fn _0022(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision021";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -225,7 +230,12 @@ fn _0022(b: &mut Bencher) {
 fn _0023(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision022";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
@@ -233,7 +243,12 @@ fn _0023(b: &mut Bencher) {
 fn _0024(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "decision023";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(only filter index with value 1 is accepted)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    invocable_name,
+    &ctx,
+    r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
+  );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
 
