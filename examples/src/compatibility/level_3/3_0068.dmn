@@ -545,12 +545,12 @@
     -->
 
     <decision name="time_009" id="_time_009">
-        <description>Tests FEEL expression: 'time("10:30:00+01:00") = time("10:30:00@Europe/Paris")' and expects result: 'true (boolean)'</description>
-        <question>Result of FEEL expression 'time("10:30:00+01:00") = time("10:30:00@Europe/Paris")'?</question>
+        <description>Tests FEEL expression: 'time("10:30:00+02:00") = time("10:30:00@Europe/Paris")' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'time("10:30:00+02:00") = time("10:30:00@Europe/Paris")'?</question>
         <allowedAnswers>true (boolean)</allowedAnswers>
         <variable name="time_009"/>
         <literalExpression>
-            <text>time("10:30:00+01:00") = time("10:30:00@Europe/Paris")</text>
+            <text>time("10:30:00+02:00") = time("10:30:00@Europe/Paris")</text>
         </literalExpression>
     </decision>
 
