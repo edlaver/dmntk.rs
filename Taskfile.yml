@@ -160,14 +160,14 @@ tasks:
   test:
     desc: Runs tests in debug mode
     cmds:
-      - cmd: cargo +nightly test --workspace
+      - cmd: cargo +stable test --workspace
 
   testn:
     desc: Runs tests in debug mode using nextest
     cmds:
-      - cmd: cargo +nightly nextest run --workspace
+      - cmd: cargo +stable nextest run --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode
     cmds:
-      - cmd: cargo +nightly test --workspace -q
+      - cmd: cargo +stable test --workspace -q

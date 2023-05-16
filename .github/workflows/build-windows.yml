@@ -17,5 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo build
       - run: cargo test
+      - run: cargo build --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dmntk-windows
+          path: target/release/dmntk
