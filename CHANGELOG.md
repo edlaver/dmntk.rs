@@ -6,8 +6,12 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-- Importing models.
-- 100% code coverage.
+See [Issues](https://github.com/dmntk/dmntk.rs/issues).
+
+## [v0.2.0 (1nd beta)] - tbd
+
+- Refactored parser tests, issue #8
+- Tooling improvements.
 
 ## [v0.1.2 (fixes to 1st beta)] - 2023-05-16
 
