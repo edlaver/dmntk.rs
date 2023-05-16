@@ -123,6 +123,10 @@ pub fn err_recognizing_cross_tab_not_supported_yet() -> DmntkError {
 }
 
 pub fn err_too_many_rows_in_input_clause() -> DmntkError {
+  RecognizerError("too many rows in input clause".to_string()).into()
+}
+
+pub fn err_too_many_rows_in_output_clause() -> DmntkError {
   RecognizerError("too many rows in output clause".to_string()).into()
 }
 

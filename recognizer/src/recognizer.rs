@@ -235,7 +235,7 @@ impl Recognizer {
             }
             self.allowed_output_values.push(self.opt_text(self.plane.region_text(r_out.top + 1, r_out.left)?))
           }
-          _ => return Err(err_too_many_rows_in_input_clause()),
+          _ => return Err(err_too_many_rows_in_output_clause()),
         }
       }
       _ => {
@@ -274,7 +274,7 @@ impl Recognizer {
               self.allowed_output_values.push(self.opt_text(self.plane.region_text(r_out.top + 2, col)?));
             }
           }
-          _ => return Err(err_too_many_rows_in_input_clause()),
+          _ => return Err(err_too_many_rows_in_output_clause()),
         }
       }
     }

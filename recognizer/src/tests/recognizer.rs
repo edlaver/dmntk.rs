@@ -294,3 +294,45 @@ fn test_err_03() {
     Recognizer::recognize(EX_ERR_03, false).err().unwrap().to_string()
   );
 }
+
+#[test]
+fn test_err_04() {
+  assert_eq!(
+    "RecognizerError: too many rows in input clause",
+    Recognizer::recognize(EX_ERR_04, false).err().unwrap().to_string()
+  );
+}
+
+#[test]
+#[ignore]
+fn test_err_05() {
+  assert_eq!(
+    "RecognizerError: too many rows in output clause",
+    Recognizer::recognize(EX_ERR_05, false).err().unwrap().to_string()
+  );
+}
+
+#[test]
+#[ignore]
+fn test_err_06() {
+  assert_eq!(
+    "RecognizerError: too many rows in input clause",
+    Recognizer::recognize(EX_ERR_06, false).err().unwrap().to_string()
+  );
+}
+
+#[test]
+fn test_err_07() {
+  assert_eq!(
+    "RecognizerError: expected right-after rule numbers placement",
+    Recognizer::recognize(EX_ERR_07, false).err().unwrap().to_string()
+  );
+}
+
+#[test]
+fn test_err_08() {
+  assert_eq!(
+    "RecognizerError: expected no rule numbers present",
+    Recognizer::recognize(EX_ERR_08, false).err().unwrap().to_string()
+  );
+}

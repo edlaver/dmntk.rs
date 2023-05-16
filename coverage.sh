@@ -46,7 +46,10 @@ fi
 mkdir ./target/lcov
 mkdir ./target/coverage
 # generate coverage info
-grcov . --llvm -s . -t lcov --branch --ignore-not-existing --excl-line='\s*\}+\)*;?$|\s*/\*\s*$' --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" -o ./target/lcov/lcov.info
+grcov . --llvm -s . -t lcov --branch --ignore-not-existing \
+        --excl-line='\s*\}+\)*;?$|\s*/\*\s*$|\s*\} else \{$' \
+        --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" \
+        -o ./target/lcov/lcov.info
 # generate coverage report in HTML format
 genhtml -t "$CARGO_NAME v$CARGO_VERSION" -q -o ./target/coverage ./target/lcov/lcov.info
 # generate coverage report in PDF format
