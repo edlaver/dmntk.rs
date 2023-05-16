@@ -51,6 +51,7 @@ use dmntk_feel::values::Value;
 use dmntk_model::model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
 use std::collections::HashMap;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use walkdir::WalkDir;
@@ -171,7 +172,7 @@ impl Workspace {
       if entry.file_type().is_file() {
         let file_name = entry.file_name().to_string_lossy();
         if file_name.ends_with(".dmn") {
-          if let Ok(xml) = std::fs::read_to_string(entry.path()) {
+          if let Ok(xml) = fs::read_to_string(entry.path()) {
             match dmntk_model::parse(&xml) {
               Ok(definitions) => {
                 match self.add(definitions) {
