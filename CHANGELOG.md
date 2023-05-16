@@ -9,15 +9,16 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Importing models.
 - 100% code coverage.
 
-## [v0.1.2 (fixes to 1st beta)] - ?
+## [v0.1.2 (fixes to 1st beta)] - 2023-05-16
 
 - Fixed coercion while reading lists containing structures with sparse null values.
 - Fixed parsing error for multiple consecutive comments.
 - Refactored (optimized) collection of values.
 - Improved exporting DMN model to HTML format (alpha stage).
 - Added exporting decision tables to HTML format (alpha stage).
-- Fixed reported users' issues.
+- Fixed issues reported by users.
 - Code lines coverage over 95%.
+- Code refactoring. 
 
 ## [v0.1.1 (fixes to 1st beta)] - 2023-02-10
 
