@@ -150,12 +150,12 @@ tasks:
   run:
     desc: Runs the server in release mode
     cmds:
-      - cmd: cargo +stable run --release -- srv
+      - cmd: cargo +stable run --release -- srv -H 127.0.0.1
 
   run-musl:
     desc: Runs the server in release mode and musl target
     cmds:
-      - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv
+      - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv -H 127.0.0.1
 
   test:
     desc: Runs tests in debug mode
