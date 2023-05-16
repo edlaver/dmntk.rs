@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestTime",
+  "input": [
+    {
+      "name": "WakeUp",
+      "value": {
+        "simple": {
+          "type": "xsd:time",
+          "text": "08:20:15",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

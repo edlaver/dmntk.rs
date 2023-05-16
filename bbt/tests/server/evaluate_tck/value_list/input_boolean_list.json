@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestBooleanList",
+  "input": [
+    {
+      "name": "Boolean List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:boolean",
+                "text": "true",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:boolean",
+                "text": "false",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

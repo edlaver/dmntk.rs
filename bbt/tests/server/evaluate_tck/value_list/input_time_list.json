@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestTimeList",
+  "input": [
+    {
+      "name": "Time List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:time",
+                "text": "10:30:01",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:time",
+                "text": "10:42:56",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

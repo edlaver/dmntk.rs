@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestYearMonthDuration",
+  "input": [
+    {
+      "name": "School",
+      "value": {
+        "simple": {
+          "type": "xsd:duration",
+          "text": "P5Y8M",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

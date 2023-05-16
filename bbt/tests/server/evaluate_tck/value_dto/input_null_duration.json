@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestDayTimeDuration",
+  "input": [
+    {
+      "name": "Wedding",
+      "value": {
+        "simple": {
+          "type": "xsd:duration",
+          "text": null,
+          "isNil": true
+        }
+      }
+    }
+  ]
+}

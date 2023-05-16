@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestStringList",
+  "input": [
+    {
+      "name": "String List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:string",
+                "text": "A",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:string",
+                "text": "B",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

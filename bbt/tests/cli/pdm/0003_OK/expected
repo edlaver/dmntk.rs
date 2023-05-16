@@ -1,0 +1,22 @@
+
+Model
+ ├─ name: 1108-feel-substring-after-function
+ ├─ namespace: http://www.actico.com/spec/DMN/1108-feel-substring-after-function
+ └─ id: _jBcukPUUEeesLuP4RHs4vA
+
+Decisions
+ ├─ feel-substring-after-function_001_f532be66f2
+ ├─ feel-substring-after-function_002_f20d66fc1e
+ ├─ feel-substring-after-function_003_367612fc8b
+ ├─ feel-substring-after-function_004_e448ee2dad
+ ├─ feel-substring-after-function_005_429efdafd0
+ ├─ feel-substring-after-function_006_bf89d6b618
+ ├─ feel-substring-after-function_007_529baaeb0b
+ ├─ feel-substring-after-function_008_1e611924ea
+ ├─ feel-substring-after-function_009_712fe2842f
+ └─ feel-substring-after-function_010_40e159d07a
+
+Input data (none)
+
+MORE DETAILS WILL BE IMPLEMENTED...
+

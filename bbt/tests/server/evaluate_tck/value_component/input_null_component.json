@@ -1,0 +1,18 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestComponent",
+  "input": [
+    {
+      "name": "Component",
+      "value": {
+        "components": [
+          {
+            "name": "pString",
+            "value": null,
+            "isNil": true
+          }
+        ]
+      }
+    }
+  ]
+}

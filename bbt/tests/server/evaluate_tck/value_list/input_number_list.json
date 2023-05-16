@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestNumberList",
+  "input": [
+    {
+      "name": "Number List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:decimal",
+                "text": "1.12",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:decimal",
+                "text": "2.23",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

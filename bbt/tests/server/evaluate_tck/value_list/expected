@@ -1,0 +1,464 @@
+==========================
+ null string list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": {
+        "type": null,
+        "text": null,
+        "isNil": true
+      },
+      "components": null,
+      "list": null
+    }
+  }
+}
+==========================
+ string list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:string",
+              "text": "A",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:string",
+              "text": "B",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ number list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:decimal",
+              "text": "1.12",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:decimal",
+              "text": "2.23",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ boolean list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:boolean",
+              "text": "true",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:boolean",
+              "text": "false",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ date list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:date",
+              "text": "2023-05-13",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:date",
+              "text": "2023-05-14",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ date time list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:dateTime",
+              "text": "2023-05-13T10:30:01",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:dateTime",
+              "text": "2023-05-14T10:42:56",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ time list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:time",
+              "text": "10:30:01",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:time",
+              "text": "10:42:56",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ year month duration list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:duration",
+              "text": "P2Y1M",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:duration",
+              "text": "P3Y2M",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ day time duration list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": {
+              "type": "xsd:duration",
+              "text": "P2DT1H",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": {
+              "type": "xsd:duration",
+              "text": "P3DT2H15M10S",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ component list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": null,
+            "components": [
+              {
+                "name": "Age",
+                "value": {
+                  "simple": {
+                    "type": "xsd:decimal",
+                    "text": "44",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                "isNil": false
+              },
+              {
+                "name": "Name",
+                "value": {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "Adam",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                "isNil": false
+              }
+            ],
+            "list": null
+          },
+          {
+            "simple": null,
+            "components": [
+              {
+                "name": "Age",
+                "value": {
+                  "simple": {
+                    "type": "xsd:decimal",
+                    "text": "72",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                "isNil": false
+              },
+              {
+                "name": "Name",
+                "value": {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "John",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                "isNil": false
+              }
+            ],
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ list list
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": null,
+            "components": null,
+            "list": {
+              "items": [
+                {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "A",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "B",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                }
+              ],
+              "isNil": false
+            }
+          },
+          {
+            "simple": null,
+            "components": null,
+            "list": {
+              "items": [
+                {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "C",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                },
+                {
+                  "simple": {
+                    "type": "xsd:string",
+                    "text": "D",
+                    "isNil": false
+                  },
+                  "components": null,
+                  "list": null
+                }
+              ],
+              "isNil": false
+            }
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}
+==========================
+ function list (nulls)
+==========================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": null,
+      "list": {
+        "items": [
+          {
+            "simple": null,
+            "components": null,
+            "list": null
+          },
+          {
+            "simple": null,
+            "components": null,
+            "list": null
+          }
+        ],
+        "isNil": false
+      }
+    }
+  }
+}

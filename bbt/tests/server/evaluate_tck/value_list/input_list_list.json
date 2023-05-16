@@ -1,0 +1,58 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestListList",
+  "input": [
+    {
+      "name": "List List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "list": {
+                "items": [
+                  {
+                    "simple": {
+                      "type": "xsd:string",
+                      "text": "A",
+                      "isNil": false
+                    }
+                  },
+                  {
+                    "simple": {
+                      "type": "xsd:string",
+                      "text": "B",
+                      "isNil": false
+                    }
+                  }
+                ],
+                "isNil": false
+              }
+            },
+            {
+              "list": {
+                "items": [
+                  {
+                    "simple": {
+                      "type": "xsd:string",
+                      "text": "C",
+                      "isNil": false
+                    }
+                  },
+                  {
+                    "simple": {
+                      "type": "xsd:string",
+                      "text": "D",
+                      "isNil": false
+                    }
+                  }
+                ],
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

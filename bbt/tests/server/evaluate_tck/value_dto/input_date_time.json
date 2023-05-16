@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestDateTime",
+  "input": [
+    {
+      "name": "NextMeeting",
+      "value": {
+        "simple": {
+          "type": "xsd:dateTime",
+          "text": "2023-05-12T18:30:00",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

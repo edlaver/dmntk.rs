@@ -1,0 +1,9 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestString",
+  "input": [
+    {
+      "name": "Full Name"
+    }
+  ]
+}

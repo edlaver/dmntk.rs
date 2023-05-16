@@ -1,0 +1,23 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestComponent",
+  "input": [
+    {
+      "name": "Component",
+      "value": {
+        "components": [
+          {
+            "value": {
+              "simple": {
+                "type": "xsd:string",
+                "text": "string property",
+                "isNil": false
+              }
+            },
+            "isNil": false
+          }
+        ]
+      }
+    }
+  ]
+}

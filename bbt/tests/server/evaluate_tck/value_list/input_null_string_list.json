@@ -1,0 +1,15 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestStringList",
+  "input": [
+    {
+      "name": "String List",
+      "value": {
+        "list": {
+          "items": [],
+          "isNil": true
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestNumber",
+  "input": [
+    {
+      "name": "Age",
+      "value": {
+        "simple": {
+          "type": "xsd:decimal",
+          "text": "23",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

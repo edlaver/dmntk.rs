@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestYearMonthDurationList",
+  "input": [
+    {
+      "name": "Year Month Duration List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:duration",
+                "text": "P2Y1M",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:duration",
+                "text": "P3Y2M",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

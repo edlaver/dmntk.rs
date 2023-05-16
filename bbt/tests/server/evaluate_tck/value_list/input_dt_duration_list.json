@@ -1,0 +1,30 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestDayTimeDurationList",
+  "input": [
+    {
+      "name": "Day Time Duration List",
+      "value": {
+        "list": {
+          "items": [
+            {
+              "simple": {
+                "type": "xsd:duration",
+                "text": "P2DT1H",
+                "isNil": false
+              }
+            },
+            {
+              "simple": {
+                "type": "xsd:duration",
+                "text": "P3DT2H15M10S",
+                "isNil": false
+              }
+            }
+          ],
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

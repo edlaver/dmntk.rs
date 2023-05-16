@@ -1,0 +1,72 @@
+==================================
+ component
+==================================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": [
+        {
+          "name": "pString",
+          "value": {
+            "simple": {
+              "type": "xsd:string",
+              "text": "string property",
+              "isNil": false
+            },
+            "components": null,
+            "list": null
+          },
+          "isNil": false
+        }
+      ],
+      "list": null
+    }
+  }
+}
+==================================
+ null component
+==================================
+{
+  "data": {
+    "value": {
+      "simple": null,
+      "components": [
+        {
+          "name": "pString",
+          "value": {
+            "simple": {
+              "type": null,
+              "text": null,
+              "isNil": true
+            },
+            "components": null,
+            "list": null
+          },
+          "isNil": false
+        }
+      ],
+      "list": null
+    }
+  }
+}
+==================================
+ invalid component (no value)
+==================================
+{
+  "errors": [
+    {
+      "details": "ServerError: invalid parameter 'component should have a value'"
+    }
+  ]
+}
+==================================
+ invalid component (no name)
+==================================
+{
+  "errors": [
+    {
+      "details": "ServerError: invalid parameter 'component should have a name'"
+    }
+  ]
+}

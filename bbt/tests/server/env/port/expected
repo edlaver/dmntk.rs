@@ -1,0 +1,2 @@
+invalid port number specified in environment variable DMNTK_PORT: port
+dmntk 0.0.0.0:22022

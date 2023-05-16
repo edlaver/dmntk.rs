@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestBoolean",
+  "input": [
+    {
+      "name": "Married",
+      "value": {
+        "simple": {
+          "type": "xsd:boolean",
+          "text": "true",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}

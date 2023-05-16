@@ -1,0 +1,16 @@
+{
+  "model": "ValueDto",
+  "invocable": "TestFunction",
+  "input": [
+    {
+      "name": "Full Name",
+      "value": {
+        "simple": {
+          "type": "xsd:string",
+          "text": "Function",
+          "isNil": false
+        }
+      }
+    }
+  ]
+}
