@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "null",
     r#"
        Null
@@ -52,7 +52,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "text" "#,
     r#"
        String
@@ -67,7 +67,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "line \n line" "#,
     r#"
        String
@@ -83,7 +83,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "before\u002Bafter" "#,
     r#"
        String
@@ -98,7 +98,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "before\U00002Bafter" "#,
     r#"
        String
@@ -113,7 +113,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "line \n line \t line \r line" "#,
     "\n       String\n       └─ `line \n       line \t line \r line`\n    ",
     false,
@@ -125,7 +125,7 @@ fn _0007() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "line \' line \" line \\ line" "#,
     r#"
        String
@@ -140,7 +140,7 @@ fn _0008() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "a \u07EF b" "#,
     r#"
        String
@@ -155,7 +155,7 @@ fn _0009() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "a \u0801 b" "#,
     r#"
        String
@@ -170,7 +170,7 @@ fn _0010() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "a \U010001 b" "#,
     r#"
        String
@@ -185,7 +185,7 @@ fn _0011() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "\"a \\U010437 b\"",
     r#"
        String
@@ -200,7 +200,7 @@ fn _0012() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "a \uD801\uDC12 b" "#,
     r#"
        String
@@ -215,7 +215,7 @@ fn _0013() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" "a \u0056 \u00A9 b" "#,
     r#"
        String
@@ -230,7 +230,7 @@ fn _0014() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#""earth""#,
     r#"
        String
@@ -244,7 +244,7 @@ fn _0014() {
 #[should_panic]
 fn _0015() {
   let scope = scope!();
-  accept(&scope, StartTextualExpression, r#" "\u000G" "#, r#"  String `a V © b` "#, false);
+  accept(&scope, StartExpression, r#" "\u000G" "#, r#"  String `a V © b` "#, false);
 }
 
 #[test]
@@ -252,7 +252,7 @@ fn _0016() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "true",
     r#"
        Boolean
@@ -267,7 +267,7 @@ fn _0017() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "false",
     r#"
        Boolean
@@ -282,7 +282,7 @@ fn _0018() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"@"2021-09-23""#,
     r#"
        At
@@ -297,7 +297,7 @@ fn _0019() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"date("2021-09-23")"#,
     r#"
        FunctionInvocation
@@ -316,7 +316,7 @@ fn _0020() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"time("10:23:45")"#,
     r#"
        FunctionInvocation
@@ -335,7 +335,7 @@ fn _0021() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"date and time("2021-09-23 10:23:45")"#,
     r#"
        FunctionInvocation
@@ -354,7 +354,7 @@ fn _0022() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"duration("P1Y")"#,
     r#"
        FunctionInvocation

@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for n in 1..10 return n + 1"#,
     r#"
        For
@@ -66,7 +66,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for n in [1,2,3] return n + 1"#,
     r#"
        For
@@ -97,7 +97,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for n in 1..10, m in 100..200 return n + m"#,
     r#"
        For
@@ -132,7 +132,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for n in [1,5,8], m in [15,18,-3] return n * m"#,
     r#"
        For
@@ -174,7 +174,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for n in [1,5,8], m in [15,18,-3] return (n + 2) * (m -4)"#,
     r#"
        For
@@ -223,7 +223,7 @@ fn _0006() {
   scope.set_name("N".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for i in 0..N return if i = 0 then 1 else i * partial[-1]"#,
     r#"
        For
@@ -267,7 +267,7 @@ fn _0007() {
   scope.set_name("N".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"for i in 0..N return if i = 0 then 1 else i * (partial + 1)"#,
     r#"
        For

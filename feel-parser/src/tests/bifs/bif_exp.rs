@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "exp(100000000000000000000000000000)",
     r#"
        FunctionInvocation

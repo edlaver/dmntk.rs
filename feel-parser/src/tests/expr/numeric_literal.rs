@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "2",
     r#"
        Numeric
@@ -53,7 +53,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "2.3",
     r#"
        Numeric
@@ -68,7 +68,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     ".2",
     r#"
        Numeric
@@ -83,7 +83,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "1",
     r#"
        Numeric
@@ -98,7 +98,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "(1.32983740938573405329458372450983275)",
     r#"
        Numeric
@@ -113,7 +113,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "-14",
     r#"
        Neg

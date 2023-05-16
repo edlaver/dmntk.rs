@@ -32,14 +32,14 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[1..10]",
     r#"
        Range
@@ -59,7 +59,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "(1..10]",
     r#"
        Range
@@ -79,7 +79,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[1..10)",
     r#"
        Range
@@ -99,7 +99,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "(1..10)",
     r#"
        Range
@@ -119,7 +119,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "]1..10]",
     r#"
        Range
@@ -139,7 +139,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[1..10[",
     r#"
        Range
@@ -159,7 +159,7 @@ fn _0007() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "]1..10[",
     r#"
        Range
@@ -181,7 +181,7 @@ fn _0008() {
   scope.set_name("b".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[a..b]",
     r#"
        Range
@@ -207,7 +207,7 @@ fn _0009() {
   scope.set_context("r".into(), ctx);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[r.start..r.end]",
     r#"
        Range
@@ -236,7 +236,7 @@ fn _00010() {
   scope.set_name("end".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[r.start..r.end]",
     r#"
        Range
@@ -266,7 +266,7 @@ fn _00011() {
   scope.set_name("end".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[r.start..r.s.end]",
     r#"
        Range

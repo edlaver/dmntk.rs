@@ -31,12 +31,12 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 use crate::scope::ParsingScope;
 
 /// Compares the given `name` with `expected` name after parsing.
 fn accept_name(scope: &ParsingScope, name: &str, expected: &str) {
-  accept(scope, StartTextualExpression, name, &format!("\n       Name\n       └─ `{expected}`\n    "), false);
+  accept(scope, StartExpression, name, &format!("\n       Name\n       └─ `{expected}`\n    "), false);
 }
 
 #[test]
@@ -45,7 +45,7 @@ fn _0001() {
   scope.set_name("hello world".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "hello world",
     r#"
        Name
@@ -61,7 +61,7 @@ fn _0002() {
   scope.set_name("  \n  \n  \t  thing \n \t \t ".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "thing",
     r#"
        Name
@@ -77,7 +77,7 @@ fn _0003() {
   scope.set_name("income/loss".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "income/loss",
     r#"
        Name
@@ -93,7 +93,7 @@ fn _0004() {
   scope.set_name("fr**n*s".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "fr**n*s",
     r#"
        Name
@@ -108,7 +108,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "book",
     r#"
        Name
@@ -123,7 +123,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "profit/loss",
     r#"
        Name
@@ -139,7 +139,7 @@ fn _0007() {
   scope.set_name("before.after".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "before.after",
     r#"
        Name
@@ -212,7 +212,7 @@ fn _0011() {
   scope.set_name("?".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "?.Rating > 0",
     r#"
        Gt
@@ -233,7 +233,7 @@ fn _0012() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "?",
     r#"
        Name

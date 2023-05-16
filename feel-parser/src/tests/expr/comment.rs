@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::{StartContext, StartTextualExpression};
+use crate::lalr::TokenType::{StartContext, StartExpression};
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"  1  // eol comment
          + 1"#,
     r#"
@@ -57,7 +57,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" 1
           /*
           some intro waffle
@@ -79,7 +79,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"1 + /* 1 + */ 1"#,
     r#"
        Add
@@ -97,7 +97,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" 1
           /*
           some intro waffle
@@ -123,7 +123,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"
             // Some multi-line comment
             // composed from
@@ -147,7 +147,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"
             /*
              * Some multi-line comment

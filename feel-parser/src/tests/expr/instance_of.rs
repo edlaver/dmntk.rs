@@ -32,7 +32,7 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
@@ -40,7 +40,7 @@ fn _0001() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Person instance of number",
     r#"
        InstanceOf
@@ -59,7 +59,7 @@ fn _0002() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Person instance of function<string,string,number>->string",
     r#"
        InstanceOf
@@ -86,7 +86,7 @@ fn _0003() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Person instance of function<string>->string",
     r#"
        InstanceOf
@@ -109,7 +109,7 @@ fn _0004() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Person instance of function<>->number",
     r#"
        InstanceOf
@@ -131,7 +131,7 @@ fn _0005() {
   scope.set_name("Numbers".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Numbers instance of list<number>",
     r#"
        InstanceOf
@@ -151,7 +151,7 @@ fn _0006() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Person instance of context<name:string,age:number>",
     r#"
        InstanceOf
@@ -179,7 +179,7 @@ fn _0006_1() {
   scope.set_name("Person".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "  \nPerson \r instance of \t context  <   name:  string ,  age  : number >  ",
     r#"
        InstanceOf
@@ -207,7 +207,7 @@ fn _0007() {
   scope.set_name("Numbers".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Numbers instance of range<number>",
     r#"
        InstanceOf
@@ -230,7 +230,7 @@ fn _0008() {
   scope.set_context("engine".into(), ctx);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Power instance of engine.power",
     r#"
        InstanceOf
@@ -255,7 +255,7 @@ fn _0009() {
   scope.set_name("engine".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Power instance of engine.power",
     r#"
        InstanceOf
@@ -277,7 +277,7 @@ fn _0010() {
   scope.set_name("Items".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Items instance of list<list<number>>",
     r#"
        InstanceOf
@@ -298,7 +298,7 @@ fn _0011() {
   scope.set_name("Numbers".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "Numbers instance of list <number>",
     r#"
        InstanceOf
@@ -318,7 +318,7 @@ fn _0012() {
   scope.set_name("Numbers".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "  Numbers    instance  of   list    <   number   >   ",
     r#"
        InstanceOf
@@ -338,7 +338,7 @@ fn _0013() {
   scope.set_name("Numbers".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     " Numbers \t     instance  \t of  \t range \r <   \n number \t  >  ",
     r#"
        InstanceOf

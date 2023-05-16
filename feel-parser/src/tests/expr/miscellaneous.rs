@@ -34,7 +34,7 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::lalr::TokenType::{List, StartTextualExpression};
+use crate::lalr::TokenType::{List, StartExpression};
 use crate::parser::Parser;
 
 #[test]
@@ -47,7 +47,7 @@ fn _0001() {
   scope.set_context("loan".into(), ctx);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)"#,
     r#"
        Div

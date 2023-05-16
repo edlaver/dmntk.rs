@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::{StartExpression, StartTextualExpression};
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[1,2,3][2]",
     r#"
        Filter
@@ -61,7 +61,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "[1,2,3][item >= 2]",
     r#"
        Filter
@@ -87,7 +87,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "EmployeeTable[name=LastName]",
     r#"
        Filter
@@ -108,7 +108,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "EmployeeTable[1].deptNum",
     r#"
        Path
@@ -129,7 +129,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"DeptTable[number=EmployeeTable[name=LastName].deptNum[1]].manager[1]"#,
     r#"
        Filter

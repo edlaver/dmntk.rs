@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "1.364 = 2.9483",
     r#"
        Eq
@@ -56,7 +56,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5.678 != 5.679",
     r#"
        Nq
@@ -74,7 +74,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "-23.45 < -5.28374658493",
     r#"
        Lt
@@ -94,7 +94,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "-23.45 <= -5.28374658493",
     r#"
        Le
@@ -114,7 +114,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 > 3",
     r#"
        Gt
@@ -132,7 +132,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 >= 3",
     r#"
        Ge
@@ -150,7 +150,7 @@ fn _0007() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 between 1 and 10",
     r#"
        Between
@@ -170,7 +170,7 @@ fn _0008() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 in 10",
     r#"
        In
@@ -188,7 +188,7 @@ fn _0009() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 in <10",
     r#"
        In
@@ -207,7 +207,7 @@ fn _0010() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 in <=10",
     r#"
        In
@@ -226,7 +226,7 @@ fn _0011() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "18 in >8",
     r#"
        In
@@ -245,7 +245,7 @@ fn _0012() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "18 in >=8",
     r#"
        In
@@ -264,7 +264,7 @@ fn _0013() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "18 in [1..100]",
     r#"
        In
@@ -287,7 +287,7 @@ fn _0014() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "18 in (1..100)",
     r#"
        In
@@ -310,7 +310,7 @@ fn _0015() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "5 in (1,2,3,4,5,6,7)",
     r#"
        In

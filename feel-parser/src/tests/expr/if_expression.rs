@@ -31,14 +31,14 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "if 1 > 2 then 5 else 8",
     r#"
        If
@@ -63,7 +63,7 @@ fn _0002() {
   scope.set_name("b".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "if a > b then a else b",
     r#"
        If

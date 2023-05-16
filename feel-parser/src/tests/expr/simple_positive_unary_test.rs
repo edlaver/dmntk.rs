@@ -32,7 +32,7 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 use dmntk_feel::Name;
 
 #[test]
@@ -40,7 +40,7 @@ fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"<2"#,
     r#"
        UnaryLt
@@ -56,7 +56,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" <= 12.465"#,
     r#"
        UnaryLe
@@ -72,7 +72,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" > 50"#,
     r#"
        UnaryGt
@@ -88,7 +88,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" >= time("10:23")"#,
     r#"
        UnaryGe
@@ -112,7 +112,7 @@ fn _0005() {
   scope.set_context("engine".into(), ctx);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" >= engine.power"#,
     r#"
        UnaryGe
@@ -133,7 +133,7 @@ fn _0006() {
   scope.set_name("power".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#" >= engine.power"#,
     r#"
        UnaryGe
@@ -151,5 +151,5 @@ fn _0006() {
 #[should_panic]
 fn _0007() {
   let scope = scope!();
-  accept(&scope, StartTextualExpression, r#" < null"#, r#""#, false);
+  accept(&scope, StartExpression, r#" < null"#, r#""#, false);
 }

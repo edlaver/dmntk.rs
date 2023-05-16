@@ -45,7 +45,7 @@ macro_rules! scope {
 }
 
 use crate::lalr::TokenType;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 use crate::parser::Parser;
 use crate::ParsingScope;
 use difference::Changeset;
@@ -189,7 +189,7 @@ fn test_not_accept() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "1+2",
     r#"
         Add

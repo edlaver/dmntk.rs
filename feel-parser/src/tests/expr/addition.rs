@@ -31,7 +31,7 @@
  */
 
 use super::super::*;
-use crate::lalr::TokenType::{StartExpression, StartTextualExpression};
+use crate::lalr::TokenType::StartExpression;
 use crate::parser::Parser;
 
 #[test]
@@ -39,7 +39,7 @@ fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "1+2",
     r#"
        Add
@@ -57,7 +57,7 @@ fn _0002() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "1 + 2",
     r#"
        Add
@@ -75,7 +75,7 @@ fn _0003() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     " 5 +2 +1",
     r#"
        Add
@@ -96,7 +96,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "2+20+200",
     r#"
        Add
@@ -117,7 +117,7 @@ fn _0005() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "( 1 + 2 ) + ( 3 + 4 )",
     r#"
        Add
@@ -141,7 +141,7 @@ fn _0006() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "( ( ( 1 + 2 ) ) )",
     r#"
        Add
@@ -159,7 +159,7 @@ fn _0007() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     "(1+2)*(3+4)",
     r#"
        Mul

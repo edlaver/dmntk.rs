@@ -33,14 +33,14 @@
 //! Testing parsing of invalid statements.
 
 use super::super::*;
-use crate::lalr::TokenType::{StartExpression, StartTextualExpression};
+use crate::lalr::TokenType::StartExpression;
 use crate::parser::Parser;
 use dmntk_common::DmntkError;
 use std::str::from_utf8;
 
 /// Utility function to shorten repeatable code in tests.
 fn te(input: &str, source: &str, message: &str) {
-  assert_eq!(Err(DmntkError::new(source, message)), Parser::new(&scope!(), StartTextualExpression, input, false).parse())
+  assert_eq!(Err(DmntkError::new(source, message)), Parser::new(&scope!(), StartExpression, input, false).parse())
 }
 
 #[test]

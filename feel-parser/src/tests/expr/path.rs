@@ -32,14 +32,14 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::lalr::TokenType::StartTextualExpression;
+use crate::lalr::TokenType::StartExpression;
 
 #[test]
 fn _0001() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"1.first"#,
     r#"
        Path
@@ -58,7 +58,7 @@ fn _0002() {
   scope.set_name("Manager".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Manager.Name"#,
     r#"
        Path
@@ -77,7 +77,7 @@ fn _0003() {
   scope.set_name("Manager".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Manager.Address.Street"#,
     r#"
        Path
@@ -95,7 +95,7 @@ fn _0004() {
   let scope = scope!();
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(Manager.Address).Street"#,
     r#"
        Path
@@ -115,7 +115,7 @@ fn _0005() {
   scope.set_name("Address".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Manager.Address.Street"#,
     r#"
        Path
@@ -140,7 +140,7 @@ fn _0006() {
   scope.set_name("Street".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Manager.Address.City.Street"#,
     r#"
        Path
@@ -169,7 +169,7 @@ fn _0007() {
   scope.set_context("Manager".into(), ctx_b);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Manager.Address.Street"#,
     r#"
        Path
@@ -193,7 +193,7 @@ fn _0008() {
   scope.set_context("loan".into(), ctx_1);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(loan.principal)"#,
     r#"
        Path
@@ -214,7 +214,7 @@ fn _0009() {
   scope.set_name("id".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(loan.principal.id)"#,
     r#"
        Path
@@ -239,7 +239,7 @@ fn _0010() {
   scope.set_name("type".into());
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(loan.principal.id.type - 1)"#,
     r#"
        Sub
@@ -271,7 +271,7 @@ fn _0011() {
   scope.set_context("loan".into(), ctx_1);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"(loan.principal) + (loan.rate)"#,
     r#"
        Add
@@ -298,7 +298,7 @@ fn _0012() {
   scope.set_context("Date".into(), ctx_1);
   accept(
     &scope,
-    StartTextualExpression,
+    StartExpression,
     r#"Date.fromString.day"#,
     r#"
        Path
