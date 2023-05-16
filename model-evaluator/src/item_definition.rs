@@ -117,82 +117,66 @@ fn check_allowed_values(value: Value, av_evaluator: Option<&Evaluator>) -> Value
 fn build_simple_type_evaluator(feel_type: FeelType, av_evaluator: Option<Evaluator>) -> Result<ItemDefinitionEvaluatorFn> {
   ///
   fn build_string_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::String(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'string', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::String(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'string', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_number_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::Number(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'number', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::Number(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'number', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_boolean_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::Boolean(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'boolean', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::Boolean(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'boolean', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_date_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::Date(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'date', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::Date(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'date', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_time_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::Time(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'time', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::Time(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'time', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_date_time_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::DateTime(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'date and time', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::DateTime(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'date and time', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_dt_duration_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::DaysAndTimeDuration(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'days and time duration', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::DaysAndTimeDuration(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'days and time duration', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   ///
   fn build_ym_duration_evaluator(av_evaluator: Option<Evaluator>) -> ItemDefinitionEvaluatorFn {
-    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-      if let Value::YearsAndMonthsDuration(_) = value {
-        check_allowed_values(value.to_owned(), av_evaluator.as_ref())
-      } else {
-        value_null!("expected type 'years and months duration', actual type is '{}' in value '{}'", value.type_of(), value)
-      }
+    Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| match value {
+      Value::YearsAndMonthsDuration(_) => check_allowed_values(value.to_owned(), av_evaluator.as_ref()),
+      null @ Value::Null(_) => null.clone(),
+      _ => value_null!("expected type 'years and months duration', actual type is '{}' in value '{}'", value.type_of(), value),
     })
   }
   match feel_type {
@@ -246,9 +230,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::String(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.clone());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected string");
           }
@@ -264,9 +248,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::Number(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.clone());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected number");
           }
@@ -282,9 +266,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::Boolean(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected boolean");
           }
@@ -300,9 +284,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::Date(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected date");
           }
@@ -318,9 +302,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::Time(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected time");
           }
@@ -336,9 +320,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::DateTime(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected date and time");
           }
@@ -354,9 +338,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::DaysAndTimeDuration(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected days and time duration");
           }
@@ -372,9 +356,9 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
     Ok(Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
       if let Value::List(values) = value {
         let mut evaluated_values = Values::default();
-        for item_value in values.as_vec() {
+        for item_value in values {
           if let Value::YearsAndMonthsDuration(_) = item_value {
-            evaluated_values.add(item_value.clone());
+            evaluated_values.push(item_value.to_owned());
           } else {
             return value_null!("item definition evaluator (CollectionOfSimpleType): expected months and years duration");
           }
@@ -404,9 +388,9 @@ fn build_collection_of_referenced_type_evaluator(type_ref: String, av_evaluator:
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
     if let Value::List(values) = value {
       let mut evaluated_values = Values::default();
-      for item_value in values.as_vec() {
+      for item_value in values {
         if let Some(evaluated_value) = evaluators.eval(&type_ref, item_value) {
-          evaluated_values.add(evaluated_value);
+          evaluated_values.push(evaluated_value);
         } else {
           return value_null!("no evaluator defined for type reference '{}'", type_ref);
         }
@@ -428,7 +412,7 @@ fn build_collection_of_component_type_evaluator(item_definition: &DefItemDefinit
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
     if let Value::List(values) = value {
       let mut evaluated_values = Values::default();
-      for item_value in values.as_vec() {
+      for item_value in values {
         if let Value::Context(ctx) = item_value {
           let mut evaluated_ctx = FeelContext::default();
           for (component_name, component_evaluator) in &component_evaluators {
@@ -438,7 +422,7 @@ fn build_collection_of_component_type_evaluator(item_definition: &DefItemDefinit
               return value_null!("name '{}' not found in context '{}'", component_name, ctx);
             }
           }
-          evaluated_values.add(Value::Context(evaluated_ctx))
+          evaluated_values.push(Value::Context(evaluated_ctx))
         } else {
           return value_null!("expected context, actual type is '{}' in value '{}'", item_value.type_of(), item_value);
         }
@@ -462,7 +446,7 @@ mod tests {
   use crate::item_definition::ItemDefinitionEvaluator;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
-  use dmntk_feel::values::{Value, Values};
+  use dmntk_feel::values::Value;
   use dmntk_feel::{value_null, value_number, Name};
   use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 
@@ -632,12 +616,12 @@ mod tests {
     let context_str = r#"{ Items : ["Mercury", "Venus", "Earth", "Mars"] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::String("Mercury".to_string()),
       Value::String("Venus".to_string()),
       Value::String("Earth".to_string()),
       Value::String("Mars".to_string()),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -647,13 +631,13 @@ mod tests {
     let context_str = r#"{ Items : [9000.00, 10000.00, 11000.00, 12000.00, 13000.00] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       value_number!(9_000),
       value_number!(10_000),
       value_number!(11_000),
       value_number!(12_000),
       value_number!(13_000),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -663,13 +647,13 @@ mod tests {
     let context_str = r#"{ Items : [true, false, false, true, true] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::Boolean(true),
       Value::Boolean(false),
       Value::Boolean(false),
       Value::Boolean(true),
       Value::Boolean(true),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -679,11 +663,11 @@ mod tests {
     let context_str = r#"{ Items : [date("2021-10-10"), date("2021-10-11"), date("2021-10-12")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::Date(FeelDate::new(2021, 10, 10)),
       Value::Date(FeelDate::new(2021, 10, 11)),
       Value::Date(FeelDate::new(2021, 10, 12)),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -693,11 +677,11 @@ mod tests {
     let context_str = r#"{ Items : [time("12:21:35"), time("12:21:36"), time("12:21:37")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::Time(FeelTime::local_opt(12, 21, 35, 0).unwrap()),
       Value::Time(FeelTime::local_opt(12, 21, 36, 0).unwrap()),
       Value::Time(FeelTime::local_opt(12, 21, 37, 0).unwrap()),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -707,10 +691,10 @@ mod tests {
     let context_str = r#"{ Items : [date and time("2021-10-10T21:23:18"), date and time("2021-10-11T12:18:59")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 10), FeelTime::local_opt(21, 23, 18, 0).unwrap())),
       Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 11), FeelTime::local_opt(12, 18, 59, 0).unwrap())),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -720,7 +704,7 @@ mod tests {
     let context_str = r#"{ Items : [duration("P2DT3H")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600))]));
+    let expected = Value::List(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600))]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -730,10 +714,10 @@ mod tests {
     let context_str = r#"{ Items : [duration("P2Y3M"), duration("P2Y4M")] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3)),
       Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 4)),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -743,11 +727,11 @@ mod tests {
     let context_str = r#"{ Items : ["Mercury", "Venus", "Earth"] }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
-    let expected = Value::List(Values::new(vec![
+    let expected = Value::List(vec![
       Value::String("Mercury".to_string()),
       Value::String("Venus".to_string()),
       Value::String("Earth".to_string()),
-    ]));
+    ]);
     assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
   }
 
@@ -769,7 +753,7 @@ mod tests {
     ctx_3.set_entry(&"number".into(), value_number!(3));
     ctx_3.set_entry(&"name".into(), Value::String("Three".to_string()));
     ctx_3.set_entry(&"manager".into(), Value::String("Bob".to_string()));
-    let expected = Value::List(Values::new(vec![Value::Context(ctx_1), Value::Context(ctx_2), Value::Context(ctx_3)]));
+    let expected = Value::List(vec![Value::Context(ctx_1), Value::Context(ctx_2), Value::Context(ctx_3)]);
     assert_eq!(Some(expected), evaluator.eval("tItems", value));
   }
 }

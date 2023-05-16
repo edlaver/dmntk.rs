@@ -38,7 +38,7 @@ use dmntk_common::DmntkError;
 struct WorkspaceError(String);
 
 impl From<WorkspaceError> for DmntkError {
-  /// Converts [WorkspaceError] into [DmntkError].
+  /// Converts `WorkspaceError` into [DmntkError].
   fn from(e: WorkspaceError) -> Self {
     DmntkError::new("WorkspaceError", &e.0)
   }

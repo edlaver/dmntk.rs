@@ -72,6 +72,7 @@ fn _0001() {
 }
 
 #[test]
+#[allow(clippy::redundant_clone)]
 fn _0002() {
   let definitions = parse(T_DMN_FULL).unwrap();
   let cloned_definitions = definitions.clone();

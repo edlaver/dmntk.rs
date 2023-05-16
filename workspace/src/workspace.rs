@@ -138,10 +138,7 @@ impl Workspace {
           let name = definitions.name().to_string();
           self.model_evaluators_by_name.insert(name, model_evaluator);
         }
-        Err(reason) => {
-          //TODO prepare status report
-          eprintln!("{reason}");
-        }
+        Err(reason) => return Err(reason),
       }
     }
     Ok(())
@@ -280,17 +277,20 @@ mod tests {
     assert!(workspace.deploy().is_ok());
     assert_state(&workspace, (1, 1, 1, 1));
 
+    let existing_model_name = "Compliance level 2: Test 0001";
+    let non_existing_model_name = "Compliance level 2: Test 0002";
+
     // evaluate existing model and invocable
     let input_data = dmntk_feel_evaluator::evaluate_context(&FeelScope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
-    let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Greeting Message", &input_data).unwrap();
+    let value = workspace.evaluate_invocable(existing_model_name, "Greeting Message", &input_data).unwrap();
     assert_eq!(r#""Hello John Doe""#, value.to_string());
 
     // evaluate non existing model
-    let result = workspace.evaluate_invocable("compliance-level-2-test-0002", "Greeting Message", &input_data);
-    assert_eq!(Err(err_model_evaluator_is_not_deployed("compliance-level-2-test-0002")), result);
+    let result = workspace.evaluate_invocable(non_existing_model_name, "Greeting Message", &input_data);
+    assert_eq!(Err(err_model_evaluator_is_not_deployed(non_existing_model_name)), result);
 
     // evaluate non existing invocable
-    let value = workspace.evaluate_invocable("compliance-level-2-test-0001", "Good bye message", &input_data).unwrap();
+    let value = workspace.evaluate_invocable(existing_model_name, "Good bye message", &input_data).unwrap();
     assert_eq!(r#"null(invocable with name 'Good bye message' not found)"#, value.to_string());
   }
 }

@@ -30,7 +30,9 @@
  * limitations under the License.
  */
 
-//! Recognizer.
+//! # Recognizer
+
+#![doc = include_str!("../docs/algorithm.md")]
 
 use crate::canvas;
 use crate::canvas::Canvas;
@@ -39,11 +41,7 @@ use crate::plane::{HitPolicyPlacement, Plane, RuleNumbersPlacement};
 use dmntk_common::Result;
 use dmntk_model::model::{DecisionTableOrientation, HitPolicy};
 
-/// Global flag indicating if the recognizing process should be verbose
-/// and trace messages should be printed to standard output.
-/// Used only during development.
-const TRACE_ENABLED: bool = false;
-
+/// Decision table recognizer.
 pub struct Recognizer {
   /// Canvas used during recognition process.
   pub canvas: Canvas,
@@ -63,8 +61,8 @@ pub struct Recognizer {
   pub input_clause_count: usize,
   /// List of input expressions.
   pub input_expressions: Vec<String>,
-  /// List of input values.
-  pub input_values: Vec<String>,
+  /// List of allowed input values.
+  pub allowed_input_values: Vec<Option<String>>,
   /// Matrix of input entries.
   pub input_entries: Vec<Vec<String>>,
   /// Number of recognized output clauses.
@@ -72,9 +70,9 @@ pub struct Recognizer {
   /// Detected output label.
   pub output_label: Option<String>,
   /// List of output component names.
-  pub output_components: Vec<String>,
-  /// List of output values.
-  pub output_values: Vec<String>,
+  pub output_components: Vec<Option<String>>,
+  /// List of allowed output values.
+  pub allowed_output_values: Vec<Option<String>>,
   /// Matrix of output entries.
   pub output_entries: Vec<Vec<String>>,
   /// Number of recognized annotation clauses.
@@ -88,11 +86,20 @@ pub struct Recognizer {
 }
 
 impl Recognizer {
-  /// Recognizes the decision table defined as text.
-  pub fn recognize(text: &str) -> Result<Recognizer> {
+  /// Recognizes the decision table defined as plain Unicode text.
+  pub fn recognize(text: &str, trace: bool) -> Result<Recognizer> {
     let mut canvas = canvas::scan(text)?;
+    if trace {
+      canvas.display_text_layer();
+      canvas.display_thin_layer();
+      canvas.display_body_layer();
+      canvas.display_grid_layer();
+    }
     let information_item_name = canvas.information_item_name.clone();
     let plane = canvas.plane()?;
+    if trace {
+      println!("PLANE\n{plane}");
+    }
     let mut recognizer = Recognizer {
       canvas,
       plane,
@@ -103,12 +110,12 @@ impl Recognizer {
       orientation: DecisionTableOrientation::CrossTable,
       input_clause_count: 0,
       input_expressions: vec![],
-      input_values: vec![],
+      allowed_input_values: vec![],
       input_entries: vec![],
       output_clause_count: 0,
       output_label: None,
       output_components: vec![],
-      output_values: vec![],
+      allowed_output_values: vec![],
       output_entries: vec![],
       annotation_clause_count: 0,
       annotations: vec![],
@@ -116,7 +123,9 @@ impl Recognizer {
       rule_count: 0,
     };
     recognizer.recognize_table_components()?;
-    recognizer.trace();
+    if trace {
+      recognizer.trace();
+    }
     Ok(recognizer)
   }
 
@@ -141,43 +150,60 @@ impl Recognizer {
   }
 
   /// Recognizes decision table components from horizontally oriented plane.
-  /// Vertical decision tables are pivot of horizontal decision tables.
+  /// Vertical decision tables are pivoted horizontal decision tables.
   fn recognize_horizontal_table(&mut self) -> Result<()> {
-    let r = self.plane.horz_input_clause_rect()?;
-    // assign the number of recognized input clauses
-    self.input_clause_count = r.width();
-    // detect if the input values are present in decision table
-    let input_values_present = match r.height() {
+    // retrieve the rectangle of the input clause region
+    let r_in = self.plane.horz_input_clause_rect()?;
+
+    // retrieve the number of recognized input clauses
+    self.input_clause_count = r_in.width();
+
+    // retrieve the rectangle of the output clause region
+    let r_out = self.plane.horz_output_clause_rect()?;
+
+    // retrieve the number of recognized output clauses
+    self.output_clause_count = r_out.width();
+
+    // detect if the allowed input and/or allowed output values are present
+    let allowed_values_present = match r_in.height() {
       1 => {
-        // by single row there are no input values, only input expressions
+        // by a single row, there are no allowed values present, only input expressions
         false
       }
       2 => {
-        // by two rows when regions in each column are the same, then there are no input/output values
-        // otherwise the are input/output values provided
-        !self.plane.equal_regions_in_columns(&r)?
+        // by two rows, when regions in each column are the same, then there are no allowed input values
+        !self.plane.equal_regions_in_columns(&r_in)? || (self.input_clause_count == 0 && self.output_clause_count > 1 && !self.plane.equal_regions_in_columns(&r_out)?)
       }
       3 => {
-        // by three rows there must be always input/output values provided, just checking if the
-        // two upper rows contains the same regions - input expressions
-        if !self.plane.unique_regions_in_columns(&r.inc_top(1))? {
+        // by three rows, allowed input or allowed output values are always provided,
+        // just check if the two bottom rows contain the same regions - input and output expressions
+        if !self.plane.unique_regions_in_columns(&r_in.offset_top(1))? {
           return Err(err_invalid_input_expressions());
+        }
+        if !self.plane.unique_regions_in_columns(&r_out.offset_top(1))? {
+          return Err(err_invalid_output_expressions());
         }
         true
       }
-      _ => return Err(err_too_many_rows_in_input_clause()),
+      _ => {
+        // there are to many rows in the input clause (above the double line)
+        return Err(err_too_many_rows_in_input_clause());
+      }
     };
-    // retrieve input expressions from plane
-    for col in r.left..r.right {
+
+    // retrieve input expressions from the plane
+    for col in r_in.left..r_in.right {
       self.input_expressions.push(self.plane.region_text(0, col)?);
     }
-    // retrieve input values from plane
-    if input_values_present {
-      for col in r.left..r.right {
-        self.input_values.push(self.plane.region_text(r.bottom - 1, col)?);
+
+    // retrieve allowed input values (when present) from the plane
+    if allowed_values_present {
+      for col in r_in.left..r_in.right {
+        self.allowed_input_values.push(self.opt_text(self.plane.region_text(r_in.bottom - 1, col)?));
       }
     }
-    // retrieve input entries from plane
+
+    // retrieve input entries from the plane
     let r = self.plane.horz_input_entries_rect()?;
     for row in r.top..r.bottom {
       self.input_entries.push(vec![]);
@@ -185,75 +211,74 @@ impl Recognizer {
         self.input_entries.last_mut().unwrap().push(self.plane.region_text(row, col)?);
       }
     }
-    // retrieve output clause
-    let r = self.plane.horz_output_clause_rect()?;
-    // assign the number of recognized output clauses
-    self.output_clause_count = r.width();
-    match r.width() {
+
+    // process output clause
+    match r_out.width() {
       0 => {
-        // no output columns => report an error
+        // if no output columns are present then report an error
         return Err(err_no_output_clause());
       }
       1 => {
         // single output
-        match r.height() {
+        match r_out.height() {
           1 => {
-            // only output label
-            self.output_label = Some(self.plane.region_text(r.top, r.left)?);
+            // only output label is present
+            self.output_label = self.opt_text(self.plane.region_text(r_out.top, r_out.left)?);
           }
           2 => {
-            if input_values_present && !self.plane.equal_regions(&r)? {
-              // output label and output values
-              self.output_label = Some(self.plane.region_text(r.top, r.left)?);
-              self.output_values.push(self.plane.region_text(r.top + 1, r.left)?)
+            if allowed_values_present && !self.plane.equal_regions(&r_out)? {
+              // output label is present
+              self.output_label = self.opt_text(self.plane.region_text(r_out.top, r_out.left)?);
             } else {
-              // invalid output clause
-              return Err(err_plane_invalid_output_clause());
+              // no output label
+              self.output_label = None;
             }
+            self.allowed_output_values.push(self.opt_text(self.plane.region_text(r_out.top + 1, r_out.left)?))
           }
           _ => return Err(err_too_many_rows_in_input_clause()),
         }
       }
       _ => {
         // multiple outputs
-        match r.height() {
+        match r_out.height() {
           1 => {
-            // only component names
-            for col in r.left..r.right {
-              self.output_components.push(self.plane.region_text(r.top, col)?);
+            // only component names are present
+            for col in r_out.left..r_out.right {
+              self.output_components.push(self.opt_text(self.plane.region_text(r_out.top, col)?));
             }
           }
           2 => {
-            if input_values_present {
+            if allowed_values_present {
               // component names and output values
-              for col in r.left..r.right {
-                self.output_components.push(self.plane.region_text(r.top, col)?);
+              for col in r_out.left..r_out.right {
+                self.output_components.push(self.opt_text(self.plane.region_text(r_out.top, col)?));
               }
-              for col in r.left..r.right {
-                self.output_values.push(self.plane.region_text(r.top + 1, col)?);
+              for col in r_out.left..r_out.right {
+                self.allowed_output_values.push(self.opt_text(self.plane.region_text(r_out.top + 1, col)?));
               }
             } else {
-              // output label and component names
-              self.output_label = Some(self.plane.region_text(r.top, r.left)?);
-              for col in r.left..r.right {
-                self.output_components.push(self.plane.region_text(r.top + 1, col)?);
+              // output label is present and component names are present
+              self.output_label = self.opt_text(self.plane.region_text(r_out.top, r_out.left)?);
+              for col in r_out.left..r_out.right {
+                self.output_components.push(self.opt_text(self.plane.region_text(r_out.top + 1, col)?));
               }
             }
           }
           3 => {
             // output label, component names and output values
-            self.output_label = Some(self.plane.region_text(r.top, r.left)?);
-            for col in r.left..r.right {
-              self.output_components.push(self.plane.region_text(r.top + 1, col)?);
+            self.output_label = self.opt_text(self.plane.region_text(r_out.top, r_out.left)?);
+            for col in r_out.left..r_out.right {
+              self.output_components.push(self.opt_text(self.plane.region_text(r_out.top + 1, col)?));
             }
-            for col in r.left..r.right {
-              self.output_values.push(self.plane.region_text(r.top + 2, col)?);
+            for col in r_out.left..r_out.right {
+              self.allowed_output_values.push(self.opt_text(self.plane.region_text(r_out.top + 2, col)?));
             }
           }
           _ => return Err(err_too_many_rows_in_input_clause()),
         }
       }
     }
+
     // retrieve output entries
     let r = self.plane.horz_output_entries_rect()?;
     for row in r.top..r.bottom {
@@ -262,13 +287,16 @@ impl Recognizer {
         self.output_entries.last_mut().unwrap().push(self.plane.region_text(row, col)?);
       }
     }
+
     // retrieve annotation clauses
     let r = self.plane.horz_annotation_clauses_rect()?;
+
     // assign the number of recognized annotation clauses
     self.annotation_clause_count = r.width();
     for col in r.left..r.right {
       self.annotations.push(self.plane.region_text(r.top, col)?);
     }
+
     // retrieve annotation entries
     let r = self.plane.horz_annotation_entries_rect()?;
     for row in r.top..r.bottom {
@@ -278,6 +306,16 @@ impl Recognizer {
       }
     }
     Ok(())
+  }
+
+  /// Returns text when not empty, otherwise returns [None].
+  fn opt_text(&self, text: String) -> Option<String> {
+    let s = text.trim().to_string();
+    if s.is_empty() {
+      None
+    } else {
+      Some(s)
+    }
   }
 
   /// Recognizes decision table components from crosstab oriented plane.
@@ -356,57 +394,67 @@ impl Recognizer {
     }
   }
 
-  /// Traces the result of decision table recognition.
+  /// Prints to standard output the result of decision table recognition.
   pub fn trace(&self) {
-    if TRACE_ENABLED {
-      print!("\n>> input expressions:\n|");
-      for text in &self.input_expressions {
+    print!("\n>> input expressions:\n|");
+    for text in &self.input_expressions {
+      self.trace_line(text);
+    }
+    print!("\n\n>> allowed input values:\n|");
+    for opt_text in &self.allowed_input_values {
+      if let Some(text) = opt_text {
+        self.trace_line(text);
+      } else {
+        self.trace_line("");
+      }
+    }
+    print!("\n\n>> input entries:\n");
+    for row in &self.input_entries {
+      print!("|");
+      for text in row {
         self.trace_line(text);
       }
-      print!("\n\n>> input values:\n|");
-      for text in &self.input_values {
+      println!()
+    }
+    print!("\n>> output label:\n|");
+    if let Some(text) = &self.output_label {
+      self.trace_line(text);
+    }
+    print!("\n\n>> output components:\n|");
+    for opt_text in &self.output_components {
+      if let Some(text) = opt_text {
+        self.trace_line(text);
+      } else {
+        self.trace_line("");
+      }
+    }
+    print!("\n\n>> allowed output values:\n|");
+    for opt_text in &self.allowed_output_values {
+      if let Some(text) = opt_text {
+        self.trace_line(text);
+      } else {
+        self.trace_line("");
+      }
+    }
+    print!("\n\n>> output entries:\n");
+    for row in &self.output_entries {
+      print!("|");
+      for text in row {
         self.trace_line(text);
       }
-      print!("\n\n>> input entries:\n");
-      for row in &self.input_entries {
-        print!("|");
-        for text in row {
-          self.trace_line(text);
-        }
-        println!()
-      }
-      print!("\n>> output label:\n|");
-      if let Some(text) = &self.output_label {
+      println!()
+    }
+    print!("\n\n>> annotations:\n|");
+    for text in &self.annotations {
+      self.trace_line(text);
+    }
+    print!("\n\n>> annotation entries:\n");
+    for row in &self.annotation_entries {
+      print!("|");
+      for text in row {
         self.trace_line(text);
       }
-      print!("\n\n>> output components:\n|");
-      for text in &self.output_components {
-        self.trace_line(text);
-      }
-      print!("\n\n>> output values:\n|");
-      for text in &self.output_values {
-        self.trace_line(text);
-      }
-      print!("\n\n>> output entries:\n");
-      for row in &self.output_entries {
-        print!("|");
-        for text in row {
-          self.trace_line(text);
-        }
-        println!()
-      }
-      print!("\n\n>> annotations:\n|");
-      for text in &self.annotations {
-        self.trace_line(text);
-      }
-      print!("\n\n>> annotation entries:\n");
-      for row in &self.annotation_entries {
-        print!("|");
-        for text in row {
-          self.trace_line(text);
-        }
-        println!()
-      }
+      println!()
     }
   }
 

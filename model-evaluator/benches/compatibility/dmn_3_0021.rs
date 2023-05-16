@@ -30,17 +30,10 @@
  * limitations under the License.
  */
 
-use super::build_model_evaluator;
-use crate::compatibility::{assert_decision, context};
-use dmntk_feel::context::FeelContext;
-use dmntk_model_evaluator::ModelEvaluator;
-use std::sync::Arc;
-use test::Bencher;
+use super::*;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0021);
-  static ref CTX: FeelContext = context(r#"{Employees: ["Jack","John","Bob","Zack"]}"#);
-}
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0021));
+static CTX: Lazy<FeelContext> = Lazy::new(|| context(r#"{Employees: ["Jack","John","Bob","Zack"]}"#));
 
 #[bench]
 fn _0001(b: &mut Bencher) {

@@ -34,12 +34,13 @@ use crate::errors::*;
 use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
-use dmntk_feel::values::{Value, Values};
+use dmntk_feel::values::Value;
+use serde::{Deserialize, Serialize};
 use std::convert::{TryFrom, TryInto};
 
 pub struct WrappedValue(pub Value);
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct InputNodeDto {
   #[serde(rename = "name")]
   pub name: String,
@@ -47,13 +48,13 @@ pub struct InputNodeDto {
   pub value: Option<ValueDto>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Serialize)]
 pub struct OutputNodeDto {
   #[serde(rename = "value")]
   pub value: Option<ValueDto>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct ValueDto {
   #[serde(rename = "simple")]
   pub simple: Option<SimpleDto>,
@@ -63,7 +64,7 @@ pub struct ValueDto {
   pub list: Option<ListDto>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct SimpleDto {
   #[serde(rename = "type")]
   pub typ: Option<String>,
@@ -88,7 +89,7 @@ impl SimpleDto {
   }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ComponentDto {
   #[serde(rename = "name")]
   pub name: Option<String>,
@@ -98,7 +99,7 @@ pub struct ComponentDto {
   pub nil: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ListDto {
   #[serde(rename = "items")]
   pub items: Vec<ValueDto>,
@@ -190,7 +191,7 @@ impl TryFrom<Value> for OutputNodeDto {
       }
       Value::List(list) => {
         let mut items = vec![];
-        for value in list.as_vec() {
+        for value in &list {
           items.push(value.try_into()?);
         }
         Ok(OutputNodeDto {
@@ -262,7 +263,7 @@ impl TryFrom<&Value> for ValueDto {
       }
       Value::List(list) => {
         let mut items = vec![];
-        for value in list.as_vec() {
+        for value in list {
           items.push(value.try_into()?);
         }
         Ok(ValueDto {
@@ -305,7 +306,7 @@ impl TryFrom<&Vec<ValueDto>> for WrappedValue {
     for item in items {
       values.push(WrappedValue::try_from(item)?.0);
     }
-    Ok(WrappedValue(Value::List(Values::new(values))))
+    Ok(WrappedValue(Value::List(values)))
   }
 }
 

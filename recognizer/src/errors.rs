@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Recognizer error definitions.
+//! # Error definitions for recognizer
 
 use crate::point::Point;
 use crate::rect::Rect;
@@ -40,7 +40,7 @@ use dmntk_common::DmntkError;
 pub struct RecognizerError(String);
 
 impl From<RecognizerError> for DmntkError {
-  /// Converts [RecognizerError] into [DmntkError].
+  /// Converts `RecognizerError` into [DmntkError].
   fn from(e: RecognizerError) -> Self {
     DmntkError::new("RecognizerError", &e.0)
   }
@@ -82,10 +82,6 @@ pub fn err_plane_column_is_out_of_range() -> DmntkError {
   RecognizerError("plane column is out of range".to_string()).into()
 }
 
-pub fn err_plane_invalid_output_clause() -> DmntkError {
-  RecognizerError("plane invalid output clause".to_string()).into()
-}
-
 pub fn err_plane_invalid_rule_number(num: usize) -> DmntkError {
   RecognizerError(format!("plane invalid rule number: {num}")).into()
 }
@@ -96,6 +92,10 @@ pub fn err_expected_no_rule_numbers_present() -> DmntkError {
 
 pub fn err_invalid_input_expressions() -> DmntkError {
   RecognizerError("invalid input expressions".to_string()).into()
+}
+
+pub fn err_invalid_output_expressions() -> DmntkError {
+  RecognizerError("invalid output expressions".to_string()).into()
 }
 
 pub fn err_no_output_clause() -> DmntkError {

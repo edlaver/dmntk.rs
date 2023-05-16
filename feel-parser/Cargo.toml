@@ -12,12 +12,12 @@ edition.workspace = true
 parsing-tables = []
 
 [dependencies]
-ascii_tree = "0.1.1"
+ascii_tree.workspace = true
 dmntk-common.workspace = true
 dmntk-feel.workspace = true
 
 [dev-dependencies]
-difference = "2.0.0"
+difference.workspace = true
 
 [build-dependencies]
 dmntk-feel-grammar.workspace = true

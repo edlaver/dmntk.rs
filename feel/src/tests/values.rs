@@ -1,3 +1,36 @@
+/*
+ * DMNTK - Decision Model and Notation Toolkit
+ *
+ * MIT license
+ *
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * Apache license, Version 2.0
+ *
+ * Copyright (c) 2018-2023 Dariusz Depta Engos Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+use super::*;
 use crate::bif::Bif;
 use crate::closure::Closure;
 use crate::context::FeelContext;
@@ -59,7 +92,7 @@ fn test_debug() {
     r#"DaysAndTimeDuration(FeelDaysAndTimeDuration(100000000000))"#,
     Value::DaysAndTimeDuration(v_days_and_time_duration)
   );
-  eq_dbg!(r#"ExpressionList(Values([]))"#, Value::ExpressionList(Values::default()));
+  eq_dbg!(r#"ExpressionList([])"#, Value::ExpressionList(Values::default()));
   eq_dbg!(
     r#"ExternalJavaFunction("class", "method")"#,
     Value::ExternalJavaFunction("class".to_string(), "method".to_string())
@@ -82,18 +115,18 @@ fn test_debug() {
   eq_dbg!(r#"IntervalEnd(Number(+1E+0), false)"#, Value::IntervalEnd(b_number.clone(), false));
   eq_dbg!(r#"IntervalStart(Number(+1E+0), false)"#, Value::IntervalStart(b_number.clone(), false));
   eq_dbg!(r#"Irrelevant"#, Value::Irrelevant);
-  eq_dbg!(r#"List(Values([]))"#, Value::List(Values::default()));
+  eq_dbg!(r#"List([])"#, Value::List(Values::default()));
   eq_dbg!(
     r#"NamedParameter(ParameterName(Name("a")), Number(+1E+0))"#,
     Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone())
   );
   eq_dbg!(r#"NamedParameters({})"#, Value::NamedParameters(BTreeMap::new()));
-  eq_dbg!(r#"NegatedCommaList(Values([]))"#, Value::NegatedCommaList(Values::default()));
+  eq_dbg!(r#"NegatedCommaList([])"#, Value::NegatedCommaList(Values::default()));
   eq_dbg!(r#"Number(+1E+0)"#, Value::Number(FeelNumber::new(1, 0)));
   eq_dbg!(r#"Null(None)"#, Value::Null(None));
   eq_dbg!(r#"ParameterName(Name("a"))"#, Value::ParameterName(name.clone()));
   eq_dbg!(r#"ParameterTypes([])"#, Value::ParameterTypes(vec![]));
-  eq_dbg!(r#"PositionalParameters(Values([]))"#, Value::PositionalParameters(Values::default()));
+  eq_dbg!(r#"PositionalParameters([])"#, Value::PositionalParameters(Values::default()));
   eq_dbg!(r#"QualifiedNameSegment(Name("a"))"#, Value::QualifiedNameSegment(name));
   eq_dbg!(
     r#"Range(Number(+1E+0), false, Number(+1E+0), true)"#,
@@ -226,9 +259,9 @@ fn test_type_of() {
   eq_typ!(FeelType::Number, Value::IntervalEnd(b_number.clone(), false));
   eq_typ!(FeelType::Number, Value::IntervalStart(b_number.clone(), false));
   eq_typ!(FeelType::Any, Value::Irrelevant);
-  eq_typ!(FeelType::List(Box::new(FeelType::Null)), Value::List(Values::default()));
-  eq_typ!(FeelType::List(Box::new(t_number)), Value::List(Values::new(vec![v_number.clone()])));
-  eq_typ!(FeelType::List(Box::new(FeelType::Any)), Value::List(Values::new(vec![v_number, v_boolean])));
+  eq_typ!(FeelType::List(Box::new(FeelType::Null)), Value::List(vec![]));
+  eq_typ!(FeelType::List(Box::new(t_number)), Value::List(vec![v_number.clone()]));
+  eq_typ!(FeelType::List(Box::new(FeelType::Any)), Value::List(vec![v_number, v_boolean]));
   eq_typ!(FeelType::Any, Value::NamedParameter(Box::new(Value::ParameterName(name.clone())), b_number.clone()));
   eq_typ!(FeelType::Any, Value::NamedParameters(BTreeMap::new()));
   eq_typ!(FeelType::Any, Value::NegatedCommaList(Values::default()));
@@ -257,7 +290,7 @@ fn test_type_of_list_with_context() {
   let mut ctx_b = FeelContext::default();
   ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
   ctx_b.set_entry(&"b".into(), Value::String("gamma".to_string()));
-  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  let list = Value::List(vec![Value::Context(ctx_a), Value::Context(ctx_b)]);
   assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
 }
 
@@ -269,7 +302,7 @@ fn test_type_of_list_with_context_and_nulls() {
   let mut ctx_b = FeelContext::default();
   ctx_b.set_entry(&"a".into(), Value::String("gamma".to_string()));
   ctx_b.set_entry(&"b".into(), value_null!());
-  let list = Value::List(Values::new(vec![Value::Context(ctx_a), Value::Context(ctx_b)]));
+  let list = Value::List(vec![Value::Context(ctx_a), Value::Context(ctx_b)]);
   assert_eq!("list<context<a: string, b: string>>", list.type_of().to_string());
 }
 
@@ -340,23 +373,41 @@ fn test_value_to_feel_string() {
   assert_eq!(r#""\"bar\"""#, Value::String("\"bar\"".to_string()).to_feel_string());
   assert_eq!(r#"{}"#, Value::Context(FeelContext::default()).to_feel_string());
   assert_eq!(r#"[]"#, Value::List(Values::default()).to_feel_string());
+  assert_eq!(
+    r#"[1.2, 2.1]"#,
+    Value::List(vec![Value::Number(FeelNumber::new(12, 1)), Value::Number(FeelNumber::new(21, 1))]).to_feel_string()
+  );
   assert_eq!(r#"true"#, Value::Boolean(true).to_feel_string());
 }
 
 #[test]
 fn test_jsonify() {
   assert_eq!(r#"true"#, Value::Boolean(true).jsonify());
+  assert_eq!(r#"false"#, Value::Boolean(false).jsonify());
+  assert_eq!(r#"1.23"#, Value::Number(FeelNumber::new(123, 2)).jsonify());
+  assert_eq!(r#""beta""#, Value::String("beta".to_string()).jsonify());
+  assert_eq!(r#""2023-02-24""#, Value::Date(FeelDate::new(2023, 2, 24)).jsonify());
+  assert_eq!(r#""18:35:12.000598677Z""#, Value::Time(FeelTime::utc(18, 35, 12, 598677)).jsonify());
+  assert_eq!(
+    r#""2023-02-24T18:35:12.000598677Z""#,
+    Value::DateTime(FeelDateTime::new(FeelDate::new(2023, 2, 24), FeelTime::utc(18, 35, 12, 598677))).jsonify()
+  );
+  assert_eq!(r#""P10DT13H59M18S""#, Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(914358)).jsonify());
+  assert_eq!(r#""P3Y2M""#, Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(3, 2)).jsonify());
   assert_eq!(r#"[]"#, Value::ExpressionList(Values::default()).jsonify());
   assert_eq!(r#"{}"#, Value::Context(FeelContext::default()).jsonify());
   assert_eq!(r#"alpha"#, Value::ContextEntryKey("alpha".into()).jsonify());
   assert_eq!(r#"[]"#, Value::List(Values::default()).jsonify());
-  assert_eq!(r#"1.23"#, Value::Number(FeelNumber::new(123, 2)).jsonify());
-  assert_eq!(r#"null"#, Value::Null(None).jsonify());
-  assert_eq!(r#""beta""#, Value::String("beta".to_string()).jsonify());
   assert_eq!(
-    r#"jsonify not implemented for: P3Y2M"#,
-    Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(3, 2)).jsonify()
+    r#"[1.2, 2.1]"#,
+    Value::List(vec![Value::Number(FeelNumber::new(12, 1)), Value::Number(FeelNumber::new(21, 1))]).jsonify()
   );
+  assert_eq!(r#"null"#, Value::Null(None).jsonify());
+  assert_eq!(r#""null(error details)""#, Value::Null(Some("error details".to_string())).jsonify());
+  let n_start = Box::new(Value::Number(FeelNumber::new(1, 0)));
+  let n_end = Box::new(Value::Number(FeelNumber::new(12, 0)));
+  assert_eq!(r#""(1..12]""#, Value::Range(n_start, false, n_end, true).jsonify());
+  assert_eq!(r#"jsonify trait not implemented for value: Irrelevant"#, Value::Irrelevant.jsonify());
 }
 
 #[test]
@@ -426,61 +477,37 @@ fn test_try_from() {
 }
 
 #[test]
-fn test_values_new() {
-  assert_eq!("Values([])", format!("{:?}", Values::new(vec![])));
-  assert_eq!("Values([])", format!("{:?}", Values::default()));
-  assert!(Values::default().is_empty());
-}
-
-#[test]
-fn test_values_add() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  assert_eq!("Values([Boolean(true)])", format!("{v:?}"));
-}
-
-#[test]
-fn test_values_insert() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  v.insert(0, Value::Boolean(false));
-  assert_eq!("Values([Boolean(false), Boolean(true)])", format!("{v:?}"));
-}
-
-#[test]
-fn test_values_reverse() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  v.insert(0, Value::Boolean(false));
-  v.reverse();
-  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{v:?}"));
-}
-
-#[test]
-fn test_values_remove() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  v.add(Value::Boolean(false));
-  assert_eq!("Values([Boolean(true), Boolean(false)])", format!("{v:?}"));
-  v.remove(0);
-  assert_eq!("Values([Boolean(false)])", format!("{v:?}"));
-  v.add(Value::Boolean(true));
-  v.remove(1);
-  assert_eq!("Values([Boolean(false)])", format!("{v:?}"));
-}
-
-#[test]
-fn test_values_to_feel_string() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  v.add(Value::Boolean(false));
-  assert_eq!("[true, false]", v.to_feel_string());
-}
-
-#[test]
-fn test_values_jsonify() {
-  let mut v = Values::default();
-  v.add(Value::Boolean(true));
-  v.add(Value::Boolean(false));
-  assert_eq!("[true, false]", v.jsonify());
+fn test_coerced() {
+  let v_number = value_number!(10);
+  let v_string = Value::String("a".into());
+  let v_list_number_1 = Value::List(vec![value_number!(1, 0)]);
+  let v_list_number_2 = Value::List(vec![value_number!(1, 0), value_number!(2, 0)]);
+  let v_list_string_1 = Value::List(vec![Value::String("A".to_string())]);
+  let v_function_a = Value::FunctionDefinition(
+    vec![(NAME_A.clone(), T_NUMBER.clone())],
+    FunctionBody::LiteralExpression(Arc::new(Box::new(|_: &FeelScope| value_number!(1)))),
+    false,
+    Closure::default(),
+    FeelContext::default(),
+    T_NUMBER.clone(),
+  );
+  let v_irrelevant = Value::Irrelevant;
+  let mut ctx_d = FeelContext::default();
+  ctx_d.set_entry(&NAME_A, v_string.clone());
+  let v_context_d = Value::Context(ctx_d);
+  assert_eq!(r#"[10]"#, v_number.coerced(&T_LIST_A).to_string());
+  assert_eq!(r#"[10]"#, v_number.coerced(&T_LIST_D).to_string());
+  assert_eq!(r#"1"#, v_list_number_1.coerced(T_NUMBER).to_string());
+  assert_eq!(r#"null(after coercion)"#, v_list_number_2.coerced(T_NUMBER).to_string());
+  assert_eq!(r#"null(after coercion)"#, v_list_string_1.coerced(T_NUMBER).to_string());
+  assert_eq!(r#"["a"]"#, v_string.coerced(&T_LIST_C).to_string());
+  assert_eq!(r#"["a"]"#, v_string.coerced(&T_LIST_D).to_string());
+  assert_eq!(r#""A""#, v_list_string_1.coerced(T_STRING).to_string());
+  assert_eq!(r#"10"#, v_number.coerced(T_NUMBER).to_string());
+  assert_eq!(
+    r#"FunctionDefinition([(Name("a"), Number)],_,false,[],{},number)"#,
+    v_function_a.coerced(T_NUMBER).to_string()
+  );
+  assert_eq!(r#"null(after coercion)"#, v_irrelevant.coerced(T_NUMBER).to_string());
+  assert_eq!(r#"null(after coercion)"#, v_context_d.coerced(&T_CONTEXT_A).to_string());
 }

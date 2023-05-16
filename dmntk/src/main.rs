@@ -30,25 +30,10 @@
  * limitations under the License.
  */
 
-//! Entrypoint of `DMNTK`.
-
-extern crate actix_web;
-extern crate base64;
-extern crate clap;
-extern crate difference;
-extern crate dmntk_common;
-extern crate dmntk_evaluator;
-extern crate dmntk_feel;
-extern crate dmntk_feel_parser;
-extern crate dmntk_gendoc;
-extern crate dmntk_recognizer;
-extern crate serde;
+//! `DMNTK` - Decision Model and Notation Toolkit project.
 
 mod actions;
 mod examples;
-
-const DMNTK_VERSION: &str = env!("CARGO_PKG_VERSION");
-const DMNTK_DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 /// Main entrypoint of `DMNTK`.
 #[actix_web::main]

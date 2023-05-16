@@ -32,9 +32,6 @@
 
 //! Parser for `FEEL` language.
 
-extern crate ascii_tree;
-extern crate dmntk_feel;
-
 mod ast;
 mod closure;
 mod context;

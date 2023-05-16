@@ -11,12 +11,11 @@ edition.workspace = true
 [dependencies]
 actix-web.workspace = true
 base64.workspace = true
+serde.workspace = true
+serde_json.workspace = true
 dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-parser.workspace = true
 dmntk-model.workspace = true
 dmntk-workspace.workspace = true
-serde.workspace = true
-serde_derive.workspace = true
-serde_json.workspace = true

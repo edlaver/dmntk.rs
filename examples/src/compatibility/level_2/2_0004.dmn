@@ -22,6 +22,9 @@
                 <inputExpression typeRef="number">
                     <text>Age</text>
                 </inputExpression>
+                <inputValues>
+                    <text>[10..120]</text>
+                </inputValues>
             </input>
             <input id="_bb73bf86-b399-490a-a635-c6f2c04ff75d" label="RiskCategory">
                 <inputExpression typeRef="string">
@@ -35,6 +38,9 @@
                 <inputExpression typeRef="boolean">
                     <text>isAffordable</text>
                 </inputExpression>
+                <inputValues>
+                    <text>false, true</text>
+                </inputValues>
             </input>
             <output id="_bffba7a1-f0a2-4679-b6e2-50e27bb27968">
                 <outputValues>
@@ -109,31 +115,31 @@
         <variable typeRef="boolean" name="isAffordable"/>
     </inputData>
     <dmndi:DMNDI>
-        <dmndi:DMNDiagram id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_D1">
-            <dmndi:Size height="650.0" width="879.0"/>
+        <dmndi:DMNDiagram  name="Decision Requirement Diagram" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_D1">
+            <dmndi:Size width="550.0" height="240.0"/>
             <dmndi:DMNShape dmnElementRef="_3b2953a3-745f-4d2e-b55d-75c8c5ae653c" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s1">
-                <dc:Bounds height="61.0" width="154.0" x="362.0" y="150.0"/>
+                <dc:Bounds height="60.0" width="150.0" x="200.0" y="20.0"/>
             </dmndi:DMNShape>
             <dmndi:DMNShape dmnElementRef="_41effb45-b3c4-46ac-b1da-122b3e428a98" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s2">
-                <dc:Bounds height="60.0" width="153.0" x="150.0" y="331.0"/>
+                <dc:Bounds height="60.0" width="150.0" x="20.0" y="160.0"/>
             </dmndi:DMNShape>
             <dmndi:DMNShape dmnElementRef="_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s3">
-                <dc:Bounds height="60.0" width="153.0" x="363.0" y="331.0"/>
+                <dc:Bounds height="60.0" width="150.0" x="200.0" y="160.0"/>
             </dmndi:DMNShape>
             <dmndi:DMNShape dmnElementRef="_8ff18665-84e9-49f2-a8df-8981b1844549" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_s4">
-                <dc:Bounds height="60.0" width="153.0" x="576.0" y="331.0"/>
+                <dc:Bounds height="60.0" width="150.0" x="380.0" y="160.0"/>
             </dmndi:DMNShape>
-            <dmndi:DMNEdge dmnElementRef="c565bfc1-53ae-4e25-ad35-b26767a9b1d9" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e1">
-                <di:waypoint x="439.0" y="331.0"/>
-                <di:waypoint x="439.0" y="211.0"/>
-            </dmndi:DMNEdge>
             <dmndi:DMNEdge dmnElementRef="ac23f1ad-562f-47e9-a369-d9cc01f8b415" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e2">
-                <di:waypoint x="226.0" y="331.0"/>
-                <di:waypoint x="439.0" y="211.0"/>
+                <di:waypoint x="95.0" y="160.0"/>
+                <di:waypoint x="225.0" y="80.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c565bfc1-53ae-4e25-ad35-b26767a9b1d9" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e1">
+                <di:waypoint x="275.0" y="160.0"/>
+                <di:waypoint x="275.0" y="80.0"/>
             </dmndi:DMNEdge>
             <dmndi:DMNEdge dmnElementRef="ae239e86-d326-4513-a01b-24e18269de29" id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c_e3">
-                <di:waypoint x="652.0" y="331.0"/>
-                <di:waypoint x="439.0" y="211.0"/>
+                <di:waypoint x="455.0" y="160.0"/>
+                <di:waypoint x="325.0" y="80.0"/>
             </dmndi:DMNEdge>
         </dmndi:DMNDiagram>
     </dmndi:DMNDI>

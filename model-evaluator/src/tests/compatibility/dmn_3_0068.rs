@@ -31,12 +31,8 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0068);
-}
+static_model_evaluator_examples!(DMN_3_0068);
 
 #[test]
 fn _0001() {
@@ -377,7 +373,7 @@ fn _0056() {
 #[test]
 fn _0057() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_009", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, "time_009", &ctx, r#"true"#);
 }
 
 #[test]

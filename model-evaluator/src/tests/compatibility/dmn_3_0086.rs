@@ -31,13 +31,9 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
 use dmntk_examples::*;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluators(&[(Some("myimport".into()), DMN_3_0086_IMPORT), (None, DMN_3_0086)]);
-}
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[(Some("myimport".into()), DMN_3_0086_IMPORT), (None, DMN_3_0086)]));
 
 #[test]
 #[ignore]

@@ -30,7 +30,8 @@
  * limitations under the License.
  */
 
-mod dec_tab;
+mod compatibility;
+mod decision_tables;
 
 use std::fs;
 use std::fs::File;
@@ -39,22 +40,21 @@ use std::io::Write;
 /// Name of the target directory.
 const TARGET_DIR: &str = "../target/gendoc";
 
-#[test]
-fn test_2_0001_html() {
-  let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0001).expect("parsing model 2_0001.dmn failed");
-  let html = crate::definitions_to_html(&definitions);
+/// Utility function for generating HTML file for decision table defined as text.
+fn gen_html_from_model(model: &str, output_file_name: &str) {
+  let definitions = dmntk_model::parse(model).expect("parsing model failed");
+  let html = crate::dmn_model_to_html(&definitions);
   assert_eq!("<!DOCTYPE html>", &html[0..15]);
   fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
-  let mut file = File::create(format!("{TARGET_DIR}/2_0001.html")).expect("creating file 2_0001.html failed");
-  file.write_all(html.as_bytes()).expect("saving file 2_0001.html failed");
+  let mut file = File::create(format!("{TARGET_DIR}/{output_file_name}.html")).expect("creating output file failed");
+  file.write_all(html.as_bytes()).expect("saving output file failed");
 }
 
-#[test]
-fn test_3_0087_html() {
-  let definitions = dmntk_model::parse(dmntk_examples::DMN_3_0087).expect("parsing model 3_0087.dmn failed");
-  let html = crate::definitions_to_html(&definitions);
-  assert_eq!("<!DOCTYPE html>", &html[0..15]);
-  fs::create_dir_all(TARGET_DIR).expect("creating target directories failed");
-  let mut file = File::create(format!("{TARGET_DIR}/3_0087.html")).expect("creating file 3_0087.html failed");
-  file.write_all(html.as_bytes()).expect("saving file 2_0001.html failed");
+/// Utility macro for generating HTML file for DMN™ model.
+macro_rules! export_model {
+  ($t:tt) => {{
+    gen_html_from_model(dmntk_examples::$t, stringify!($t));
+  }};
 }
+
+use export_model;

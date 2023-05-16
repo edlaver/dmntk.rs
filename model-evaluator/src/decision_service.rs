@@ -172,7 +172,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
       let parameter_name = decision_output_variable.name().clone();
       let parameter_type = decision_output_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
-      let evaluator = decision_output_variable.build_evaluator()?;
+      let evaluator = decision_output_variable.build_evaluator();
       input_decision_results_evaluators.push(evaluator);
     }
   }
@@ -210,7 +210,6 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
     });
     // prepare context for evaluated result data for this decision service
     let mut evaluated_ctx = FeelContext::default();
-    // acquire decision evaluator
     // evaluate encapsulated decisions
     encapsulated_decisions.iter().for_each(|id| {
       decision_evaluator.evaluate(id, &evaluated_input_data, model_evaluator, &mut evaluated_ctx);
@@ -226,7 +225,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
     if output_names.len() == 1 {
       if let Some(value) = evaluated_ctx.get_entry(&output_names[0]) {
         let single_result = value.to_owned();
-        let coerced_single_result = output_variable_type.coerced(&single_result);
+        let coerced_single_result = single_result.coerced(&output_variable_type);
         output_data.set_entry(&output_variable_name, coerced_single_result);
       }
     } else {
@@ -237,7 +236,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
         }
       });
       let complex_result = Value::Context(output_ctx);
-      let coerced_complex_result = output_variable_type.coerced(&complex_result);
+      let coerced_complex_result = complex_result.coerced(&output_variable_type);
       output_data.set_entry(&output_variable_name, coerced_complex_result);
     }
     output_variable_name.clone()

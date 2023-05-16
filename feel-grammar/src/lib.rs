@@ -32,9 +32,6 @@
 
 //! `FEEL` grammar definition and `LALR` parsing tables generator.
 
-extern crate convert_case;
-extern crate regex;
-
 mod extractor;
 mod generator;
 

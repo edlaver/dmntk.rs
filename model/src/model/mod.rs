@@ -451,6 +451,51 @@ impl Definitions {
       .collect()
   }
 
+  /// Returns all business knowledge model definitions.
+  pub fn business_knowledge_models(&self) -> Vec<BusinessKnowledgeModel> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::BusinessKnowledgeModel(bkm) = drg_element {
+          Some(bkm.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Returns all decision services definitions.
+  pub fn decision_services(&self) -> Vec<DecisionService> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::DecisionService(decision_service) = drg_element {
+          Some(decision_service.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Returns all knowledge source definitions.
+  pub fn knowledge_sources(&self) -> Vec<KnowledgeSource> {
+    self
+      .drg_elements
+      .iter()
+      .filter_map(|drg_element| {
+        if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
+          Some(knowledge_source.clone())
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
   /// Returns all input data definitions.
   pub fn input_data(&self) -> Vec<InputData> {
     self
@@ -1884,25 +1929,25 @@ pub struct DecisionTable {
   /// Information item name, for which the decision table is its value expression.
   /// This is usually the name of the decision or the name of business knowledge model for
   /// which the decision table provides the decision logic.
-  pub information_item_name: Option<String>,
+  information_item_name: Option<String>,
   /// List of instances of input clause that compose this decision table.
-  pub input_clauses: Vec<InputClause>,
+  input_clauses: Vec<InputClause>,
   /// List of instances of output clause that compose this decision table.
-  pub output_clauses: Vec<OutputClause>,
+  output_clauses: Vec<OutputClause>,
   /// List of instances of rule annotation clause that compose this decision table.
-  pub annotations: Vec<RuleAnnotationClause>,
+  annotations: Vec<RuleAnnotationClause>,
   /// List of instances of decision rule that compose this decision table.
-  pub rules: Vec<DecisionRule>,
+  rules: Vec<DecisionRule>,
   /// Hit policy associated with the instance of the decision table.
-  pub hit_policy: HitPolicy,
+  hit_policy: HitPolicy,
   /// Optional aggregation type when the hit policy is `COLLECT`.
-  pub aggregation: Option<BuiltinAggregator>,
+  aggregation: Option<BuiltinAggregator>,
   /// Preferred representation of the instance of the decision table.
-  pub preferred_orientation: DecisionTableOrientation,
+  preferred_orientation: DecisionTableOrientation,
   /// Optional output label for the description of the decision table output,
   /// may be the same as the name of the information item for which the
   /// decision table is the value expression.
-  pub output_label: Option<String>,
+  output_label: Option<String>,
 }
 
 /// Implementation of [Display](fmt::Display) for [DecisionTable].
@@ -1931,6 +1976,94 @@ impl fmt::Display for DecisionTable {
       buffer.push_str("none\n");
     }
     write!(f, "{buffer}")
+  }
+}
+
+impl DecisionTable {
+  /// Creates a new decision table.
+  #[allow(clippy::too_many_arguments)]
+  pub fn new(
+    information_item_name: Option<String>,
+    input_clauses: Vec<InputClause>,
+    output_clauses: Vec<OutputClause>,
+    annotations: Vec<RuleAnnotationClause>,
+    rules: Vec<DecisionRule>,
+    hit_policy: HitPolicy,
+    aggregation: Option<BuiltinAggregator>,
+    preferred_orientation: DecisionTableOrientation,
+    output_label: Option<String>,
+  ) -> Self {
+    Self {
+      information_item_name,
+      input_clauses,
+      output_clauses,
+      annotations,
+      rules,
+      hit_policy,
+      aggregation,
+      preferred_orientation,
+      output_label,
+    }
+  }
+
+  /// Returns the information item name.
+  pub fn information_item_name(&self) -> &Option<String> {
+    &self.information_item_name
+  }
+
+  /// Returns an iterator over input clauses.
+  pub fn input_clauses(&self) -> Iter<InputClause> {
+    self.input_clauses.iter()
+  }
+
+  /// Returns an iterator over output clauses.
+  pub fn output_clauses(&self) -> Iter<OutputClause> {
+    self.output_clauses.iter()
+  }
+
+  /// Returns an iterator over annotations.
+  pub fn annotations(&self) -> Iter<RuleAnnotationClause> {
+    self.annotations.iter()
+  }
+
+  /// Returns an iterator over rules.
+  pub fn rules(&self) -> Iter<DecisionRule> {
+    self.rules.iter()
+  }
+
+  /// Returns the [HitPolicy] of this decision table.
+  pub fn hit_policy(&self) -> HitPolicy {
+    self.hit_policy
+  }
+
+  /// Returns the aggregation when the [HitPolicy] is `COLLECT`.
+  pub fn aggregation(&self) -> &Option<BuiltinAggregator> {
+    &self.aggregation
+  }
+
+  /// Returns preferred orientation for this decision table.
+  pub fn preferred_orientation(&self) -> &DecisionTableOrientation {
+    &self.preferred_orientation
+  }
+
+  /// Return an output label.
+  pub fn output_label(&self) -> &Option<String> {
+    &self.output_label
+  }
+
+  /// Returns `true` when allowed input and/or allowed output values are present in decision table.
+  pub fn allowed_values_present(&self) -> bool {
+    for input_clause in &self.input_clauses {
+      if input_clause.allowed_input_values.is_some() {
+        return true;
+      }
+    }
+    for output_clause in &self.output_clauses {
+      if output_clause.allowed_output_values.is_some() {
+        return true;
+      }
+    }
+    false
   }
 }
 
@@ -1973,17 +2106,14 @@ impl TryFrom<&str> for DecisionTableOrientation {
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum HitPolicy {
   /// `UNIQUE` hit policy. No overlapping rules are allowed, only single rule can be matched.
-  /// This is the default value for hit policy (DMN 1.2 clause 8.2.10).
-  /// Crosstab decision tables may have only unique hit policy.
+  /// This is the default value for hit policy. Crosstab decision tables may have only unique hit policy.
   Unique,
   /// `ANY` hit policy. Rules may overlap, but all matching rules show equal output entries.
-  /// If matching rules have non-equal output entries, this policy is incorrect and the
-  /// result is undefined.
+  /// If matching rules have non-equal output entries, this policy is incorrect and the result is undefined.
   Any,
   /// `PRIORITY` hit policy. Multiple rules can match, with different output entries for each output.
-  /// This policy returns matching rule with the highest priority.
-  /// Output priorities are specified in the ordered list of output values,
-  /// in decreasing order of priority.
+  /// This policy returns matching rule with the highest priority. Output priorities are specified
+  /// in the ordered list of output values, in decreasing order of priority.
   Priority,
   /// `FIRST` hit policy...
   First,
@@ -1995,7 +2125,7 @@ pub enum HitPolicy {
   RuleOrder,
 }
 
-/// Implementation of [Display](fmt::Display) for HitPolicy.
+/// Implementation of [Display](fmt::Display) for [HitPolicy].
 impl fmt::Display for HitPolicy {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
@@ -2012,7 +2142,7 @@ impl fmt::Display for HitPolicy {
 
 impl TryFrom<&str> for HitPolicy {
   type Error = DmntkError;
-  /// Tries to construct a hit policy from its text representation.
+  /// Creates a hit policy from text.
   fn try_from(value: &str) -> Result<Self, Self::Error> {
     match value.trim() {
       "U" => Ok(HitPolicy::Unique),
@@ -2031,7 +2161,7 @@ impl TryFrom<&str> for HitPolicy {
   }
 }
 
-/// Aggregator function for `COLLECT` hit policy.
+/// Aggregator function for `COLLECT` [hit policy](HitPolicy).
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum BuiltinAggregator {
   /// The result of the decision table is a list of output entries.
@@ -2069,7 +2199,7 @@ pub struct InputClause {
   /// The subject of this input clause, text representation of unary tests.
   pub input_expression: String,
   /// Optional unary tests that constrain the result of input expression of this input clause.
-  pub input_values: Option<String>,
+  pub allowed_input_values: Option<String>,
 }
 
 ///
@@ -2080,7 +2210,7 @@ pub struct OutputClause {
   /// The name of the output component when the decision table contains more than one output clause.
   pub name: Option<String>,
   /// Unary tests that constrain the result of output entries corresponding to this output clause.
-  pub output_values: Option<String>,
+  pub allowed_output_values: Option<String>,
   /// Default output expression, selected in incomplete table when no rules match for the decision table.
   pub default_output_entry: Option<String>,
 }
@@ -2245,7 +2375,7 @@ pub struct Association {}
 #[derive(Debug, Clone)]
 pub struct TextAnnotation {}
 
-/// [DmnStyle] is used to keep some non-normative visual attributes such as colors and font.
+/// [DmnStyle] is used to keep some non-normative visual attributes such as color and font.
 #[derive(Debug, Clone)]
 pub struct DmnStyle {
   /// A unique id for this style so it can be referenced.
@@ -2265,7 +2395,7 @@ pub struct DmnStyle {
   pub font_family: String,
   /// The size in points of the font to use to display the text.
   /// Default is `8`.
-  pub font_size: f64,
+  pub font_size: Option<f64>,
   /// If the text should be displayed in Italic.
   /// Default is `false`.
   pub font_italic: bool,
@@ -2331,7 +2461,7 @@ pub struct DcDimension {
   pub height: f64,
 }
 
-/// Defines element kind alignment.
+/// Defines the king of element alignment.
 #[derive(Debug, Copy, Clone)]
 pub enum DcAlignmentKind {
   Start,

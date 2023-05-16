@@ -55,7 +55,6 @@ const NODE_DMNDI: &str = "DMNDI";
 const NODE_DMNDI_DMN_DIAGRAM: &str = "DMNDiagram";
 const NODE_DMNDI_SIZE: &str = "Size";
 const NODE_DMNDI_STYLE: &str = "DMNStyle";
-// const NODE_DMNDI_SHARED_STYLE: &str = "sharedStyle";
 const NODE_DMNDI_LOCAL_STYLE: &str = "localStyle";
 const NODE_DMNDI_DMN_SHAPE: &str = "DMNShape";
 const NODE_DMNDI_BOUNDS: &str = "Bounds";
@@ -130,6 +129,7 @@ const ATTR_IS_COLLAPSED: &str = "isCollapsed";
 const ATTR_IS_COLLECTION: &str = "isCollection";
 const ATTR_KIND: &str = "kind";
 const ATTR_LABEL: &str = "label";
+const ATTR_LABEL_TEXT: &str = "Text";
 const ATTR_LOCATION_URI: &str = "locationURI";
 const ATTR_NAME: &str = "name";
 const ATTR_NAMESPACE: &str = "namespace";
@@ -138,7 +138,6 @@ const ATTR_OUTPUT_TYPE_REF: &str = "outputTypeRef";
 const ATTR_RED: &str = "red";
 const ATTR_RESOLUTION: &str = "resolution";
 const ATTR_SHARED_STYLE: &str = "sharedStyle";
-const ATTR_TEXT: &str = "text";
 const ATTR_TYPE_LANGUAGE: &str = "typeLanguage";
 const ATTR_TYPE_REF: &str = "typeRef";
 const ATTR_WIDTH: &str = "width";
@@ -600,7 +599,10 @@ impl ModelParser {
     } else {
       None
     };
-    Ok(InputClause { input_expression, input_values })
+    Ok(InputClause {
+      input_expression,
+      allowed_input_values: input_values,
+    })
   }
 
   fn parse_decision_table_outputs(&self, node: &Node) -> Result<Vec<OutputClause>> {
@@ -625,7 +627,7 @@ impl ModelParser {
     Ok(OutputClause {
       type_ref: optional_attribute(node, ATTR_TYPE_REF),
       name: optional_attribute(node, ATTR_NAME),
-      output_values,
+      allowed_output_values: output_values,
       default_output_entry,
     })
   }
@@ -872,7 +874,7 @@ impl ModelParser {
     Ok(())
   }
 
-  /// Parser shared styles defined in [Dmndi].
+  /// Parses shared styles defined in diagram.
   fn parse_styles(&self, node: &Node) -> Result<Vec<DmnStyle>> {
     let mut styles = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == NODE_DMNDI_STYLE) {
@@ -898,7 +900,7 @@ impl ModelParser {
       stroke_color: self.parse_color(node, NODE_DMNDI_STROKE_COLOR)?,
       font_color: self.parse_color(node, NODE_DMNDI_FONT_COLOR)?,
       font_family: optional_string(node, ATTR_FONT_FAMILY, "Arial"),
-      font_size: optional_double(node, ATTR_FONT_SIZE, 8.0),
+      font_size: optional_double(node, ATTR_FONT_SIZE),
       font_italic: optional_bool(node, ATTR_FONT_ITALIC, false),
       font_bold: optional_bool(node, ATTR_FONT_BOLD, false),
       font_underline: optional_bool(node, ATTR_FONT_UNDERLINE, false),
@@ -946,7 +948,7 @@ impl ModelParser {
       id: optional_attribute(node, ATTR_ID),
       name: optional_string(node, ATTR_NAME, ""),
       documentation: "".to_string(),
-      resolution: optional_double(node, ATTR_RESOLUTION, 300.0),
+      resolution: optional_double_default(node, ATTR_RESOLUTION, 300.0),
       diagram_elements: self.parse_diagram_elements(node)?,
       shared_style: optional_attribute(node, ATTR_SHARED_STYLE),
       local_style: self.parse_optional_style(node, NODE_DMNDI_LOCAL_STYLE)?,
@@ -1043,7 +1045,7 @@ impl ModelParser {
     }))
   }
 
-  /// Parses wayPoints.
+  /// Parses way points.
   fn parse_way_points(&self, node: &Node) -> Result<Vec<DcPoint>> {
     let mut way_points = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == NODE_DMNDI_WAYPOINT) {
@@ -1052,7 +1054,7 @@ impl ModelParser {
     Ok(way_points)
   }
 
-  /// Parses DcPoint.
+  /// Parses the point coordinates.
   fn parse_point(&self, node: &Node) -> Result<DcPoint> {
     Ok(DcPoint {
       x: required_double(node, ATTR_X)?,
@@ -1060,12 +1062,12 @@ impl ModelParser {
     })
   }
 
-  /// Parses Label
+  /// Parses the label of the element.
   fn parse_label(&self, node: &Node) -> Result<Option<DmnLabel>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == NODE_DMNDI_LABEL) {
       Ok(Some(DmnLabel {
         bounds: self.parse_optional_bounds(&child_node)?,
-        text: optional_attribute(&child_node, ATTR_TEXT),
+        text: optional_child_optional_content(&child_node, ATTR_LABEL_TEXT),
         shared_style: optional_attribute(&child_node, ATTR_SHARED_STYLE),
       }))
     } else {
@@ -1121,8 +1123,13 @@ mod xml_utils {
     optional_attribute(node, attr_name).map_or(def_value.to_owned(), |value| value)
   }
 
-  /// Returns the value of the optional double attribute or default value, when specified attribute is not defined.
-  pub fn optional_double(node: &Node, attr_name: &str, def_value: f64) -> f64 {
+  /// Returns the value of the optional double attribute.
+  pub fn optional_double(node: &Node, attr_name: &str) -> Option<f64> {
+    optional_attribute(node, attr_name).and_then(|s| f64::from_str(&s).ok())
+  }
+
+  /// Returns the value of the optional double attribute or the default value, when this attribute is not defined.
+  pub fn optional_double_default(node: &Node, attr_name: &str, def_value: f64) -> f64 {
     optional_attribute(node, attr_name).map_or(def_value, |value| f64::from_str(&value).map_or(def_value, |value| value))
   }
 

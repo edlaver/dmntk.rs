@@ -42,7 +42,9 @@ use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_model::model::NamedElement;
 use dmntk_workspace::Workspace;
+use serde::{Deserialize, Serialize};
 use std::env;
+use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
@@ -52,6 +54,9 @@ const DMNTK_VERSION: &str = env!("CARGO_PKG_VERSION");
 const DMNTK_COPYRIGHT: &str = env!("CARGO_PKG_AUTHORS");
 const DMNTK_DEFAULT_PORT: u16 = 22022;
 const DMNTK_DEFAULT_HOST: &str = "0.0.0.0";
+const DMNTK_HOST_VARIABLE: &str = "DMNTK_HOST";
+const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
+const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
 
 /// Shared workspace with decision model definitions.
 struct ApplicationData {
@@ -84,10 +89,10 @@ impl<T> Default for ResultDto<T> {
   }
 }
 
-impl<T: serde::Serialize> ToString for ResultDto<T> {
+impl<T: Serialize> ToString for ResultDto<T> {
   /// Converts [ResultDto] to JSON string.
   fn to_string(&self) -> String {
-    serde_json::to_string(self).unwrap_or_else(|_| "json conversion failed".to_string())
+    serde_json::to_string(self).unwrap_or("conversion to JSON failed for ResultDto".to_string())
   }
 }
 
@@ -133,10 +138,10 @@ impl Default for SystemInfoDto {
   }
 }
 
-/// Parameters for adding DMN™ model definitions to workspace.
+/// Parameters for adding model definitions to workspace.
 #[derive(Deserialize)]
 struct AddDefinitionsParams {
-  /// Content of the DMN™ model, encoded in `Base64`.
+  /// Content of the model, encoded in `Base64`.
   #[serde(rename = "content")]
   content: Option<String>,
 }
@@ -200,10 +205,10 @@ struct TckEvaluateParams {
 struct EvaluateParams {
   /// Name of the model.
   #[serde(rename = "model")]
-  model_name: Option<String>,
+  model_name: String,
   /// Name of the invocable in model.
   #[serde(rename = "invocable")]
-  invocable_name: Option<String>,
+  invocable_name: String,
 }
 
 /// Handler for retrieving system information.
@@ -216,11 +221,7 @@ async fn get_system_info() -> std::io::Result<Json<ResultDto<SystemInfoDto>>> {
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
-  let result = do_clear_definitions(&mut workspace);
-  match result {
-    Ok(result) => Ok(Json(ResultDto::data(result))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
+  Ok(Json(ResultDto::data(do_clear_definitions(&mut workspace))))
 }
 
 /// Handler for adding model definitions to workspace.
@@ -347,68 +348,81 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
 /// - `DMNTK_DEFAULT_HOST` and `DMNTK_DEFAULT_PORT` constants.
 ///
 fn get_server_address(opt_host: Option<String>, opt_port: Option<String>) -> String {
+  // resolve IP address
   let mut host = DMNTK_DEFAULT_HOST.to_string();
-  if let Ok(h) = env::var("HOST") {
-    host = h;
-  }
-  if let Ok(h) = env::var("DMNTK_HOST") {
-    host = h;
-  }
-  if let Some(h) = opt_host {
-    host = h;
-  }
-  let mut port: u16 = DMNTK_DEFAULT_PORT;
-  if let Ok(p_str) = env::var("PORT") {
-    if let Ok(p) = u16::from_str(&p_str) {
-      port = p;
+  if let Ok(host_ip_address) = env::var(DMNTK_HOST_VARIABLE) {
+    if is_valid_ip_address(&host_ip_address) {
+      host = host_ip_address;
+    } else {
+      eprintln!("invalid host address specified in environment variable {}: {}", DMNTK_HOST_VARIABLE, host_ip_address);
     }
   }
-  if let Ok(p_str) = env::var("DMNTK_PORT") {
+  if let Some(host_ip_address) = opt_host {
+    if is_valid_ip_address(&host_ip_address) {
+      host = host_ip_address;
+    } else {
+      eprintln!("invalid host address given as command option: {}", host_ip_address);
+    }
+  }
+  // resolve IP port
+  let mut port: u16 = DMNTK_DEFAULT_PORT;
+  if let Ok(p_str) = env::var(DMNTK_PORT_VARIABLE) {
     if let Ok(p) = u16::from_str(&p_str) {
       port = p;
+    } else {
+      eprintln!("invalid port number specified in environment variable {}: {}", DMNTK_PORT_VARIABLE, p_str);
     }
   }
   if let Some(p_str) = opt_port {
     if let Ok(p) = u16::from_str(&p_str) {
       port = p;
+    } else {
+      eprintln!("invalid port number specified as command option: {}", p_str);
     }
   }
   format!("{host}:{port}")
 }
 
-/// Returns root directory for workspace.
+/// Checks if the specified IP address is correct.
+///
+/// This function may provide more detailed checks
+/// when the [Ipv4Addr](std::net::Ipv4Addr)
+/// and [Ipv6Addr](std::net::Ipv6Addr) stabilize.
+fn is_valid_ip_address(ip: &str) -> bool {
+  ip == "localhost" || ip.parse::<IpAddr>().is_ok()
+}
+
+/// Returns the root directory for workspace.
 fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
   let mut dir: Option<String> = None;
-  if let Ok(d) = env::var("DMNTK_DIR") {
+  if let Ok(d) = env::var(DMNTK_DIR_VARIABLE) {
     let dir_path = Path::new(&d);
     if dir_path.exists() && dir_path.is_dir() {
       dir = Some(d);
-    }
-  }
-  if let Ok(d) = env::var("DIR") {
-    let dir_path = Path::new(&d);
-    if dir_path.exists() && dir_path.is_dir() {
-      dir = Some(d);
+    } else {
+      eprintln!("invalid directory specified in environment variable {}: {}", DMNTK_DIR_VARIABLE, d);
     }
   }
   if let Some(d) = opt_dir {
     let dir_path = Path::new(&d);
     if dir_path.exists() && dir_path.is_dir() {
       dir = Some(d);
+    } else {
+      eprintln!("invalid directory specified as command option: {}", d);
     }
   }
   dir.map(|d| PathBuf::from(&d))
 }
 
-///
-fn do_clear_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
+/// Deletes all model definitions stored in specified workspace.
+fn do_clear_definitions(workspace: &mut Workspace) -> StatusResult {
   workspace.clear();
-  Ok(StatusResult {
+  StatusResult {
     status: "definitions cleared".to_string(),
-  })
+  }
 }
 
-///
+/// Add model definition to workspace.
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = STANDARD.decode(content) {
@@ -433,7 +447,7 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
   }
 }
 
-///
+/// Replace model definition in workspace.
 fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<StatusResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = STANDARD.decode(content) {
@@ -458,7 +472,7 @@ fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitions
   }
 }
 
-///
+/// Removes model definition from workspace.
 fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsParams) -> Result<StatusResult> {
   if let Some(namespace) = &params.namespace {
     if let Some(name) = &params.name {
@@ -474,7 +488,7 @@ fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsPa
   }
 }
 
-///
+/// Deploy all definitions in workspace.
 fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
   match workspace.deploy() {
     Ok(()) => Ok(StatusResult {
@@ -508,28 +522,9 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
 
 /// Evaluates the artifact specified in parameters and returns the result.
 fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
-  if let Some(model_name) = &params.model_name {
-    if let Some(invocable_name) = &params.invocable_name {
-      let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
-      let value = workspace.evaluate_invocable(model_name, invocable_name, &input_data)?;
-      Ok(value)
-    } else {
-      Err(err_missing_parameter("invocable"))
-    }
-  } else {
-    Err(err_missing_parameter("model"))
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn test() {
-    assert_eq!(
-      r#"{"errors":[{"details":"ServerError: unknown"}]}"#,
-      ResultDto::<String>::error(err_internal_error("unknown")).to_string()
-    );
-  }
+  let model_name = &params.model_name;
+  let invocable_name = &params.invocable_name;
+  let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
+  let value = workspace.evaluate_invocable(model_name, invocable_name, &input_data)?;
+  Ok(value)
 }

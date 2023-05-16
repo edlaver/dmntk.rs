@@ -14,19 +14,6 @@
  * SOFTWARE.
  */
 
-extern crate actix_web;
-extern crate base64;
-extern crate dmntk_common;
-extern crate dmntk_evaluator;
-extern crate dmntk_feel;
-extern crate dmntk_feel_parser;
-extern crate dmntk_model;
-extern crate dmntk_workspace;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
 mod dto;
 mod errors;
 mod server;

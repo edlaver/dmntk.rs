@@ -30,12 +30,6 @@
  * limitations under the License.
  */
 
-extern crate dmntk_common;
-extern crate dmntk_examples;
-extern crate dmntk_feel;
-extern crate dmntk_feel_parser;
-extern crate roxmltree;
-
 use crate::model::Definitions;
 use dmntk_common::Result;
 

@@ -4,10 +4,20 @@ silent: true
 
 tasks:
 
+  bbt:
+    desc: Runs all black-box tests
+    cmds:
+      - cmd: cargo +stable build --workspace && cd bbt && ./bbt.sh && cd ..
+
+  bbtt:
+    desc: Runs all black-box test staring in specified directory
+    cmds:
+      - cmd: cargo +stable build --workspace && cd bbt && ./bbt.sh {{.CLI_ARGS}} && cd ..
+
   bench:
     desc: Runs all benchmarks
     cmds:
-      - cmd: cargo +nightly bench -q | grep 'bench'
+      - cmd: cargo +nightly bench
 
   benchmarks:
     desc: Runs all compatibility benchmarks
@@ -36,25 +46,20 @@ tasks:
     cmds:
       - cmd: ./coverage.sh
 
+  cov-pdf:
+    desc: Runs code coverage using grcov and generated PDF report
+    cmds:
+      - cmd: PDF_REPORT=yes ./coverage.sh
+
   cov-common:
     desc: Runs code coverage using grcov for dmntk-common
     cmds:
       - cmd: ./coverage.sh dmntk-common
 
-  cov-feel-number:
-    desc: Runs code coverage using grcov for dmntk-feel-number
-    cmds:
-      - cmd: ./coverage.sh dmntk-feel-number
-
   cov-feel:
     desc: Runs code coverage using grcov for dmntk-feel
     cmds:
       - cmd: ./coverage.sh dmntk-feel
-
-  cov-feel-parser:
-    desc: Runs code coverage using grcov for dmntk-feel-parser
-    cmds:
-      - cmd: ./coverage.sh dmntk-feel-parser
 
   cov-feel-evaluator:
     desc: Runs code coverage using grcov for dmntk-feel-evaluator
@@ -66,10 +71,25 @@ tasks:
     cmds:
       - cmd: ./coverage.sh dmntk-feel-grammar
 
+  cov-feel-number:
+    desc: Runs code coverage using grcov for dmntk-feel-number
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-number
+
+  cov-feel-parser:
+    desc: Runs code coverage using grcov for dmntk-feel-parser
+    cmds:
+      - cmd: ./coverage.sh dmntk-feel-parser
+
   cov-feel-temporal:
     desc: Runs code coverage using grcov for dmntk-feel-temporal
     cmds:
       - cmd: ./coverage.sh dmntk-feel-temporal
+
+  cov-gendoc:
+    desc: Runs code coverage using grcov for dmntk-gendoc
+    cmds:
+      - cmd: ./coverage.sh dmntk-gendoc
 
   cov-model:
     desc: Runs code coverage using grcov for dmntk-model
@@ -80,6 +100,11 @@ tasks:
     desc: Runs code coverage using grcov for dmntk-recognizer
     cmds:
       - cmd: ./coverage.sh dmntk-recognizer
+
+  cov-server:
+    desc: Runs code coverage using grcov for dmntk-server
+    cmds:
+      - cmd: ./coverage.sh dmntk-server
 
   doc:
     desc: Generates documentation
@@ -107,7 +132,7 @@ tasks:
       - cmd: cargo +nightly fmt
 
   install:
-    desc: Builds and installs release version
+    desc: Builds and installs release version from local sources
     cmds:
       - cmd: cargo +stable install dmntk --path dmntk --force
 
@@ -136,6 +161,11 @@ tasks:
     desc: Runs tests in debug mode
     cmds:
       - cmd: cargo +nightly test --workspace
+
+  testn:
+    desc: Runs tests in debug mode using nextest
+    cmds:
+      - cmd: cargo +nightly nextest run --workspace
 
   testq:
     desc: Runs tests in debug and quiet mode

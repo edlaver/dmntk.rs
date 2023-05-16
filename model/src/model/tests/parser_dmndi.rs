@@ -56,15 +56,15 @@ fn _2_0001() {
   assert_eq!("_c910c9ba-c584-4ac9-a773-1e6de185cd85", definitions.id().as_ref().unwrap().as_str());
   let dmndi = definitions.dmndi.unwrap();
   // there are no shared styles defined
-  assert_eq!(0, dmndi.styles.len());
+  assert_eq!(2, dmndi.styles.len());
   // there is a single diagram defined
   assert_eq!(1, dmndi.diagrams.len());
   // there is a diagram id
   assert_eq!("_d3a3312e-5924-4f7b-ac0e-232ef9203ff6", dmndi.diagrams.get(0).unwrap().id.as_ref().unwrap());
   // there is a height of a diagram
-  assert!(650.0_f64.eq(&dmndi.diagrams.get(0).unwrap().size.as_ref().unwrap().height));
+  assert_eq!(240.0_f64, dmndi.diagrams.get(0).unwrap().size.as_ref().unwrap().height);
   // there is a width of a diagram
-  assert!(650.0_f64.eq(&dmndi.diagrams.get(0).unwrap().size.as_ref().unwrap().width));
+  assert_eq!(190.0_f64, dmndi.diagrams.get(0).unwrap().size.as_ref().unwrap().width);
   // there are a 3 diagram elements
   assert_eq!(3, dmndi.diagrams.get(0).unwrap().diagram_elements.len());
   // there is a first shape's id
@@ -77,35 +77,35 @@ fn _2_0001() {
   // there is a first shape's bound - width
   assert_eq!(150.0, shape_0.bounds.width);
   // there is a first shape's bound - x
-  assert_eq!(150.0, shape_0.bounds.x);
+  assert_eq!(20.0, shape_0.bounds.x);
   // there is a first shape's bound - y
-  assert!(150.0_f64.eq(&shape_0.bounds.y));
+  assert_eq!(20.0_f64, shape_0.bounds.y);
   // there is a second shape's id
   let shape_1 = get_shape(&dmndi.diagrams.get(0).unwrap().diagram_elements, 1).unwrap();
   assert_eq!("_48ea7a1d-2575-4cb7-8b63-8baa4cb3b371", shape_1.id.as_ref().unwrap());
   // there is a second shape's dmn_element_ref
   assert_eq!("_cba86e4d-e91c-46a2-9176-e9adf88e15db", shape_1.dmn_element_ref.as_ref().unwrap());
   // there is a second shape's bound - height
-  assert!(60.0_f64.eq(&shape_1.bounds.height));
+  assert_eq!(60.0_f64, shape_1.bounds.height);
   // there is a second shape's bound - width
-  assert!(150.0_f64.eq(&shape_1.bounds.width));
+  assert_eq!(150.0_f64, shape_1.bounds.width);
   // there is a second shape's bound - x
-  assert!(150.0_f64.eq(&shape_1.bounds.x));
+  assert_eq!(20.0_f64, shape_1.bounds.x);
   // there is a second shape's bound - y
-  assert!(330.0_f64.eq(&shape_1.bounds.y));
+  assert_eq!(160.0_f64, shape_1.bounds.y);
   // there is a first edge's id
   let edge_0 = get_edge(&dmndi.diagrams.get(0).unwrap().diagram_elements, 2).unwrap();
   assert_eq!("_e9a73517-0ba2-4b31-b308-82279ae21591", edge_0.id.as_ref().unwrap());
   // there is a first edge's dmn_element_ref
   assert_eq!("_8c935b50-10b7-426b-80a9-dddb4264b4a9", edge_0.dmn_element_ref.as_ref().unwrap());
   // there is a first waypoint's x
-  assert_eq!(225.0, edge_0.way_points.get(0).unwrap().x);
+  assert_eq!(95.0, edge_0.way_points.get(0).unwrap().x);
   // there is a first waypoint's y
-  assert_eq!(330.0, edge_0.way_points.get(0).unwrap().y);
+  assert_eq!(160.0, edge_0.way_points.get(0).unwrap().y);
   // there is a second waypoint's x
-  assert_eq!(225.0, edge_0.way_points.get(1).unwrap().x);
+  assert_eq!(95.0, edge_0.way_points.get(1).unwrap().x);
   // there is a second waypoint's y
-  assert_eq!(210.0, edge_0.way_points.get(1).unwrap().y);
+  assert_eq!(80.0, edge_0.way_points.get(1).unwrap().y);
 }
 
 #[test]
@@ -281,7 +281,7 @@ fn _3_0086_import() {
   // there is a style fontFamily
   assert_eq!("arial,helvetica,sans-serif", style.font_family);
   // there is a style fontSize
-  assert!(11.0_f64.eq(&style.font_size));
+  assert!(11.0_f64.eq(&style.font_size.unwrap()));
   // there is a style fontBold
   assert!(!style.font_bold);
   // there is a style fontItalic
@@ -295,7 +295,7 @@ fn _3_0086_import() {
 #[test]
 fn _3_0087() {
   let definitions = crate::parse(dmntk_examples::DMN_3_0087).unwrap();
-  assert_eq!("_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", definitions.id().as_ref().unwrap().as_str());
+  assert_eq!("_f2e6077a-8960-46e1-bf7a-f555ba7c6701", definitions.id().as_ref().unwrap().as_str());
   let dmndi = definitions.dmndi.unwrap();
   // there are no shared styles defined
   assert_eq!(1, dmndi.styles.len());
@@ -434,7 +434,7 @@ fn _3_0087() {
   // there is a style fontFamily
   assert_eq!("arial,helvetica,sans-serif", style.font_family);
   // there is a style fontSize
-  assert!(14.0_f64.eq(&style.font_size));
+  assert!(14.0_f64.eq(&style.font_size.unwrap()));
   // there is a style fontBold
   assert!(!style.font_bold);
   // there is a style fontItalic

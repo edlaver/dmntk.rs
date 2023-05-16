@@ -34,10 +34,12 @@
 
 use crate::evaluate_equals;
 use crate::macros::invalid_argument_type;
+use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values, VALUE_FALSE, VALUE_TRUE};
 use dmntk_feel::{value_null, value_number, value_string, FeelNumber, FeelScope, Name, ToFeelString};
 use dmntk_feel_temporal::{DayOfWeek, DayOfYear, FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration, MonthOfYear, WeekOfYear};
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::borrow::Borrow;
 use std::cmp::Ordering;
@@ -222,7 +224,7 @@ pub fn append(list: &Value, values: &[Value]) -> Value {
     Value::List(items) => {
       let mut appended = items.clone();
       for value in values {
-        appended.add(value.clone());
+        appended.push(value.clone());
       }
       Value::List(appended)
     }
@@ -447,14 +449,14 @@ pub fn concatenate(values: &[Value]) -> Value {
   let mut concatenated = vec![];
   for value in values {
     if let Value::List(items) = value {
-      for item in items.as_vec() {
+      for item in items {
         concatenated.push(item.clone());
       }
     } else {
       return invalid_argument_type!("concatenate", "list", value.type_of());
     }
   }
-  Value::List(Values::new(concatenated))
+  Value::List(concatenated)
 }
 
 /// Returns `true` when the input string contains the match.
@@ -473,7 +475,7 @@ pub fn contains(input_string_value: &Value, match_string_value: &Value) -> Value
 /// Returns size of list, or zero if list is empty.
 pub fn count(list: &Value) -> Value {
   if let Value::List(items) = list {
-    Value::Number(items.as_vec().len().into())
+    Value::Number(items.len().into())
   } else {
     Value::Number(1.into())
   }
@@ -605,12 +607,12 @@ pub fn decimal(number_value: &Value, scale_value: &Value) -> Value {
 pub fn distinct_values(value: &Value) -> Value {
   if let Value::List(items) = value {
     let mut result = vec![];
-    for item in items.as_vec() {
+    for item in items {
       if result.iter().all(|v| !evaluate_equals(v, item)) {
         result.push(item.clone())
       }
     }
-    Value::List(Values::new(result))
+    Value::List(result)
   } else {
     invalid_argument_type!("distinct values", "list", value.type_of())
   }
@@ -919,7 +921,7 @@ pub fn flatten(value: &Value) -> Value {
   if let Value::List(_) = value {
     let mut flattened = vec![];
     flatten_value(value, &mut flattened);
-    Value::List(Values::new(flattened))
+    Value::List(flattened)
   } else {
     invalid_argument_type!("flatten", "list", value.type_of())
   }
@@ -928,7 +930,7 @@ pub fn flatten(value: &Value) -> Value {
 /// Flattens nested lists.
 fn flatten_value(value: &Value, flattened: &mut Vec<Value>) {
   if let Value::List(items) = value {
-    for item in items.as_vec() {
+    for item in items {
       if let Value::List(_) = item {
         flatten_value(item, flattened);
       } else {
@@ -959,7 +961,7 @@ pub fn get_entries(context: &Value) -> Value {
       key_value_pair.set_entry(&name_value, (**value).clone());
       entries.push(Value::Context(key_value_pair));
     });
-    Value::List(Values::new(entries))
+    Value::List(entries)
   } else {
     invalid_argument_type!("get entries", "context", context.type_of())
   }
@@ -1072,12 +1074,12 @@ pub fn includes(value1: &Value, value2: &Value) -> Value {
 pub fn index_of(list: &Value, element: &Value) -> Value {
   if let Value::List(items) = list {
     let mut indexes = vec![];
-    for (i, item) in items.as_vec().iter().enumerate() {
+    for (i, item) in items.iter().enumerate() {
       if evaluate_equals(item, element) {
         indexes.push(Value::Number((i + 1).into()));
       }
     }
-    Value::List(Values::new(indexes))
+    Value::List(indexes)
   } else {
     invalid_argument_type!("index of", "list", list.type_of())
   }
@@ -1097,7 +1099,7 @@ pub fn insert_before(list: &Value, position_value: &Value, new_item_value: &Valu
       }
       if position.is_negative() {
         if let Ok(i) = <FeelNumber as TryInto<usize>>::try_into(position.abs()) {
-          if i <= items.as_vec().len() {
+          if i <= items.len() {
             items.insert(items.len() - i, new_item_value.clone());
             return Value::List(items);
           }
@@ -1150,7 +1152,7 @@ pub fn is(value1: &Value, value2: &Value) -> Value {
 /// Returns `true` when the list contain the specified element.
 pub fn list_contains(list: &Value, element: &Value) -> Value {
   if let Value::List(items) = list {
-    for item in items.as_vec() {
+    for item in items {
       if evaluate_equals(item, element) {
         return VALUE_TRUE;
       }
@@ -1451,9 +1453,7 @@ pub fn mode(values: &[Value]) -> Value {
   // there is minimum one element in the list, so unwrap is ok
   let max = mode.get(0).unwrap().0;
   // return items with maximum frequency
-  Value::List(Values::new(
-    mode.iter().filter_map(|(c, v)| if *c == max { Some(Value::Number(*v)) } else { None }).collect(),
-  ))
+  Value::List(mode.iter().filter_map(|(c, v)| if *c == max { Some(Value::Number(*v)) } else { None }).collect())
 }
 
 /// Returns the remainder of the division of dividend by divisor.
@@ -1774,7 +1774,7 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
       if position_number.is_positive() {
         if let Ok(mut index) = position_number.try_into() {
           index -= 1;
-          if index < items.as_vec().len() {
+          if index < items.len() {
             items.remove(index);
             return Value::List(items);
           }
@@ -1793,10 +1793,8 @@ pub fn remove(list: &Value, position_value: &Value) -> Value {
   value_null!("probably index is out of range")
 }
 
-lazy_static! {
-  // Rust implementation is eager when parsing matching groups, so place numbers in square brackets.
-  static ref RG_REPLACE_NUM: Regex = Regex::new("\\$([1-9][0-9]*)").unwrap();
-}
+// Rust implementation is eager when parsing matching groups, so place numbers in square brackets.
+static RG_REPLACE_NUM: Lazy<Regex> = Lazy::new(|| Regex::new("\\$([1-9][0-9]*)").unwrap());
 
 /// ???
 pub fn replace(input_string_value: &Value, pattern_string_value: &Value, replacement_string_value: &Value, flags_string_value: &Value) -> Value {
@@ -1870,10 +1868,10 @@ pub fn reverse(list: &Value) -> Value {
 
 ///
 pub fn sort(list: &Value, ordering_function: &Value) -> Value {
-  if let Value::List(items) = list.clone() {
+  if let Value::List(items) = list {
     if let Value::FunctionDefinition(parameters, body, false, _, closure_ctx, _) = ordering_function {
       if parameters.len() == 2 {
-        let mut elements = items.as_vec().clone();
+        let mut elements = items.clone();
         elements.sort_by(|x, y| {
           let mut ctx = closure_ctx.clone();
           ctx.set_entry(&parameters[0].0, x.clone());
@@ -1889,7 +1887,7 @@ pub fn sort(list: &Value, ordering_function: &Value) -> Value {
             Ordering::Equal
           }
         });
-        Value::List(Values::new(elements))
+        Value::List(elements)
       } else {
         value_null!("sort: ordering function should take exactly two arguments")
       }
@@ -1906,7 +1904,7 @@ pub fn split(input_string_value: &Value, delimiter_string_value: &Value) -> Valu
   if let Value::String(input_string) = input_string_value {
     if let Value::String(delimiter_string) = delimiter_string_value {
       if let Ok(re) = Regex::new(delimiter_string) {
-        return Value::List(Values::new(re.split(input_string).map(|s| Value::String(s.to_string())).collect()));
+        return Value::List(re.split(input_string).map(|s| Value::String(s.to_string())).collect());
       } else {
         value_null!("split: invalid delimiter")
       }
@@ -2223,7 +2221,7 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
         if let Ok(position) = <&FeelNumber as TryInto<usize>>::try_into(position_number) {
           let index = position - 1;
           if index < items.len() {
-            return Value::List(Values::new(items.as_vec()[index..].to_vec()));
+            Value::List(items[index..].to_vec())
           } else {
             value_null!("sublist: position is out of range, len = {}, position = {}", items.len(), position)
           }
@@ -2234,7 +2232,7 @@ pub fn sublist2(list: &Value, position_value: &Value) -> Value {
         if let Ok(position) = <FeelNumber as TryInto<usize>>::try_into(position_number.abs()) {
           let index = position;
           if index <= items.len() {
-            return Value::List(Values::new(items.as_vec()[items.len() - index..].to_vec()));
+            Value::List(items[items.len() - index..].to_vec())
           } else {
             value_null!("sublist: position is out of range, len = {}, position = -{}", items.len(), position)
           }
@@ -2263,7 +2261,7 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
               let first = position - 1;
               let last = first + length;
               if first < items.len() && last <= items.len() {
-                return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+                Value::List(items[first..last].to_vec())
               } else {
                 value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
@@ -2275,7 +2273,7 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
               let first = items.len() - position;
               let last = first + length;
               if first < items.len() && last <= items.len() {
-                return Value::List(Values::new(items.as_vec()[first..last].to_vec()));
+                Value::List(items[first..last].to_vec())
               } else {
                 value_null!("sublist: invalid range, len = {}, start position = {}, end position = {}", items.len(), first + 1, last + 1)
               }
@@ -2304,9 +2302,7 @@ pub fn sublist3(list: &Value, position_value: &Value, length_value: &Value) -> V
 pub fn substring(input_string_value: &Value, start_position_value: &Value, length_value: &Value) -> Value {
   if let Value::String(input_string) = input_string_value {
     if let Value::Number(start_position_number) = start_position_value {
-      let position: isize = if let Ok(start_position) = start_position_number.try_into() {
-        start_position
-      } else {
+      let Ok(position): Result<isize, DmntkError> = start_position_number.try_into() else {
         return value_null!("substring: invalid start position value: {}", start_position_number);
       };
       let input_string_len = input_string.chars().count();
@@ -2315,17 +2311,15 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
           if *length_number < FeelNumber::one() {
             return value_null!("substring: length is less than 1");
           }
-          let count: usize = if let Ok(length) = length_number.trunc().try_into() {
-            length
-          } else {
+          let Ok(length): Result<usize, DmntkError> = length_number.trunc().try_into() else {
             return value_null!("substring: invalid length value: {}", length_number);
           };
           match position.cmp(&0) {
             Ordering::Greater => {
               let first = (position - 1) as usize;
-              let last = first + count;
+              let last = first + length;
               if first < input_string_len && last <= input_string_len {
-                return Value::String(input_string.chars().skip(first).take(count).collect());
+                return Value::String(input_string.chars().skip(first).take(length).collect());
               } else {
                 value_null!(
                   "sublist: invalid range, len = {}, start position = {}, end position = {}",
@@ -2337,9 +2331,9 @@ pub fn substring(input_string_value: &Value, start_position_value: &Value, lengt
             }
             Ordering::Less => {
               let first = (input_string_len as isize) + position;
-              let last = first + count as isize;
+              let last = first + length as isize;
               if first >= 0 && (first as usize) < input_string_len && (last as usize) <= input_string_len {
-                return Value::String(input_string.chars().skip(first as usize).take(count).collect());
+                return Value::String(input_string.chars().skip(first as usize).take(length).collect());
               } else {
                 value_null!(
                   "sublist: invalid range, len = {}, start position = {}, end position = {}",
@@ -2514,7 +2508,7 @@ pub fn union(lists: &[Value]) -> Value {
   let mut result = vec![];
   for list in lists {
     if let Value::List(items) = list {
-      for item in items.as_vec() {
+      for item in items {
         if result.iter().all(|a| !evaluate_equals(a, item)) {
           result.push(item.clone())
         }
@@ -2523,7 +2517,7 @@ pub fn union(lists: &[Value]) -> Value {
       return invalid_argument_type!("union", "list", list.type_of());
     }
   }
-  Value::List(Values::new(result))
+  Value::List(result)
 }
 
 /// Returns upper-cased string.

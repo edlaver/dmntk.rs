@@ -31,13 +31,12 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0087);
-  static ref CTX: FeelContext = context(
-    r#"
+static_model_evaluator_examples!(DMN_3_0087);
+
+static_context!(
+  CTX,
+  r#"
     {
       Applicant data: {
         Age: 51,
@@ -60,9 +59,8 @@ lazy_static! {
         Rate: 0.08,
         Term: 36
       }
-    }"#,
-  );
-}
+    }"#
+);
 
 #[test]
 fn _0001() {

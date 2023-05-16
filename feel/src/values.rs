@@ -32,10 +32,10 @@
 
 //! `FEEL` values.
 
-use self::errors::*;
 use crate::bif::Bif;
 use crate::closure::Closure;
 use crate::context::FeelContext;
+use crate::errors::*;
 use crate::names::Name;
 use crate::strings::ToFeelString;
 use crate::types::FeelType;
@@ -261,7 +261,7 @@ pub enum Value {
 }
 
 impl fmt::Display for Value {
-  ///
+  /// Converts [Value] into string.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Value::Boolean(value) => write!(f, "{value}"),
@@ -275,7 +275,7 @@ impl fmt::Display for Value {
       Value::Date(date) => write!(f, "{date}"),
       Value::DateTime(date_time) => write!(f, "{date_time}"),
       Value::DaysAndTimeDuration(dt_duration) => write!(f, "{dt_duration}"),
-      Value::ExpressionList(items) => write!(f, "{items}"),
+      Value::ExpressionList(items) => write!(f, "{}", values_to_string(items)),
       Value::ExternalJavaFunction(class_name, method_signature) => write!(f, "ExternalJavaFunction({class_name}, {method_signature})"),
       Value::ExternalPmmlFunction(iri, model_name) => write!(f, "ExternalPmmlFunction({iri}, {model_name})"),
       Value::FeelType(feel_type) => write!(f, "type({feel_type})"),
@@ -288,7 +288,7 @@ impl fmt::Display for Value {
       Value::IntervalEnd(_, _) => write!(f, "IntervalEnd"),
       Value::IntervalStart(_, _) => write!(f, "IntervalStart"),
       Value::Irrelevant => write!(f, "Irrelevant"),
-      Value::List(items) => write!(f, "{items}"),
+      Value::List(items) => write!(f, "{}", values_to_string(items)),
       Value::NamedParameter(_, _) => write!(f, "NamedParameter"),
       Value::NamedParameters(_) => write!(f, "NamedParameters"),
       Value::NegatedCommaList(_) => write!(f, "NegatedCommaList"),
@@ -315,7 +315,7 @@ impl ToFeelString for Value {
   fn to_feel_string(&self) -> String {
     match self {
       Value::Context(context) => context.to_feel_string(),
-      Value::List(items) => items.to_feel_string(),
+      Value::List(items) => values_to_feel_string(items),
       Value::String(value) => format!("\"{}\"", value.replace('"', "\\\"")),
       other => other.to_string(),
     }
@@ -323,18 +323,30 @@ impl ToFeelString for Value {
 }
 
 impl Jsonify for Value {
-  /// Converts a [Value] to its `JSON` representation.
+  /// Converts a [Value] into `JSON`.
   fn jsonify(&self) -> String {
     match self {
       Value::Boolean(value) => format!("{value}"),
-      Value::ExpressionList(items) => items.to_string(),
+      Value::Number(value) => value.jsonify(),
+      Value::String(s) => format!(r#""{s}""#),
+      Value::Date(date) => format!(r#""{}""#, date),
+      Value::Time(time) => format!(r#""{}""#, time),
+      Value::DateTime(date_time) => format!(r#""{}""#, date_time),
+      Value::DaysAndTimeDuration(dt_duration) => format!(r#""{}""#, dt_duration),
+      Value::YearsAndMonthsDuration(ym_duration) => format!(r#""{}""#, ym_duration),
+      Value::ExpressionList(items) => values_to_jsonify(items),
       Value::Context(ctx) => ctx.jsonify(),
       Value::ContextEntryKey(name) => name.to_string(),
-      Value::List(items) => items.jsonify(),
-      Value::Number(value) => value.jsonify(),
-      Value::Null(_) => "null".to_string(),
-      Value::String(s) => format!("\"{s}\""),
-      _ => format!("jsonify not implemented for: {self}"),
+      Value::List(items) => values_to_jsonify(items),
+      range @ Value::Range(..) => format!(r#""{}""#, range),
+      Value::Null(message) => {
+        if let Some(details) = message {
+          format!(r#""null({details})""#)
+        } else {
+          "null".to_string()
+        }
+      }
+      _ => format!("jsonify trait not implemented for value: {self}"),
     }
   }
 }
@@ -344,14 +356,17 @@ impl Value {
   pub fn is_null(&self) -> bool {
     matches!(self, Value::Null(_))
   }
+
   /// Returns `true` when the value is of type [Value::Boolean] and is equal to `true`.
   pub fn is_true(&self) -> bool {
     matches!(self, Value::Boolean(true))
   }
+
   /// Returns `true` when the value is of type [Value::Number].
   pub fn is_number(&self) -> bool {
     matches!(self, Value::Number(_))
   }
+
   /// Returns the type of this [Value].
   pub fn type_of(&self) -> FeelType {
     match self {
@@ -387,11 +402,11 @@ impl Value {
       Value::IntervalStart(interval_start, _) => interval_start.type_of(),
       Value::Irrelevant => FeelType::Any,
       Value::List(values) => {
-        if values.as_vec().is_empty() {
+        if values.is_empty() {
           FeelType::List(Box::new(FeelType::Null))
         } else {
-          let item_type = values.as_vec()[0].type_of();
-          for item in values.as_vec() {
+          let item_type = values[0].type_of();
+          for item in values {
             if !item.type_of().is_conformant(&item_type) {
               return FeelType::List(Box::new(FeelType::Any));
             }
@@ -425,21 +440,149 @@ impl Value {
       Value::YearsAndMonthsDuration(_) => FeelType::YearsAndMonthsDuration,
     }
   }
+
+  /// Checks if a value is conformant with specified target type.
+  pub fn is_conformant(&self, target_type: &FeelType) -> bool {
+    if matches!(target_type, FeelType::Any) {
+      return true;
+    }
+    match self {
+      Value::Null(_) => true,
+      Value::Boolean(_) => matches!(target_type, FeelType::Boolean),
+      Value::Number(_) => matches!(target_type, FeelType::Number),
+      Value::String(_) => matches!(target_type, FeelType::String),
+      Value::Date(_) => matches!(target_type, FeelType::Date),
+      Value::Time(_) => matches!(target_type, FeelType::Time),
+      Value::DateTime(_) => matches!(target_type, FeelType::DateTime),
+      Value::DaysAndTimeDuration(_) => matches!(target_type, FeelType::DaysAndTimeDuration),
+      Value::YearsAndMonthsDuration(_) => matches!(target_type, FeelType::YearsAndMonthsDuration),
+      Value::Range(r_start, _, r_end, _) => {
+        if let FeelType::Range(range_type) = target_type {
+          return r_start.is_conformant(range_type) && r_end.is_conformant(range_type);
+        }
+        false
+      }
+      Value::List(items) => {
+        if let FeelType::List(list_type) = target_type {
+          for item in items {
+            if !item.is_conformant(list_type) {
+              return false;
+            }
+          }
+          return true;
+        }
+        false
+      }
+      Value::Context(context) => {
+        if let FeelType::Context(type_context) = target_type {
+          for (name, entry_type) in type_context.iter() {
+            if let Some(entry_value) = context.get(name) {
+              if !entry_value.is_conformant(entry_type) {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          }
+          return true;
+        }
+        false
+      }
+      Value::FunctionDefinition(parameters, _, _, _, _, result_type) => {
+        if let FeelType::Function(t_parameters, t_result) = target_type {
+          if parameters.len() != t_parameters.len() {
+            return false;
+          }
+          if !result_type.is_conformant(t_result) {
+            return false;
+          }
+          for (i, (_, parameter_type)) in parameters.iter().enumerate() {
+            if !parameter_type.is_conformant(&t_parameters[i]) {
+              return false;
+            }
+          }
+          return true;
+        }
+        false
+      }
+      _ => false,
+    }
+  }
+
+  /// Returns value coerced to specified type.
+  /// When a value appears in a certain context, it must be compatible
+  /// with a type expected in that context, called the target type.
+  /// After the type of the value is known, an implicit conversion
+  /// from the type of the value to the target type can be performed.
+  /// If an implicit conversion is mandatory but it cannot be performed,
+  /// the result is null.
+  ///
+  /// There are several possible type conversions:
+  ///
+  /// - to singleton list:
+  ///
+  ///      When the type of the value is `T` and the target type is `List<T>`,
+  ///      the simple value is converted to a singleton list.
+  ///
+  /// - from singleton list:
+  ///
+  ///      When the type of the value is `List<T>`, and the value is a singleton list
+  ///      and the target type is T, the value is converted by unwrapping the first element.
+  ///
+  /// - conforms to:
+  ///
+  ///      When the type of the value is T1, the target type is T2, and T1 conforms to T2,
+  ///      the value remains unchanged. Otherwise the result is null.
+  ///
+  /// All these conversion rules are implemented in this function.
+  ///
+  pub fn coerced(&self, target_type: &FeelType) -> Value {
+    if let Value::FunctionDefinition(_, _, _, _, _, _) = self {
+      return self.clone();
+    }
+    if self.is_conformant(target_type) {
+      return self.clone();
+    }
+    match self {
+      // from singleton list
+      Value::List(items) => {
+        if items.len() == 1 {
+          let value = items[0].clone();
+          if value.is_conformant(target_type) {
+            return value;
+          }
+        }
+      }
+      // to singleton list
+      value => {
+        if let FeelType::List(list_type) = target_type {
+          if value.is_conformant(list_type) {
+            return Value::List(vec![value.clone()]);
+          }
+        }
+      }
+    }
+    value_null!("after coercion")
+  }
+
   /// Tries to convert `xsd:integer` string into valid [Value] representing a number.
   pub fn try_from_xsd_integer(text: &str) -> Result<Self> {
     let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_integer(text))?;
     Ok(Value::Number(value))
   }
+
   /// Tries to convert `xsd:decimal` string into valid [Value] representing a number.
   pub fn try_from_xsd_decimal(text: &str) -> Result<Self> {
     let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_decimal(text))?;
     Ok(Value::Number(value))
   }
+
   /// Tries to convert `xsd:double` string into valid [Value] representing a number.
   pub fn try_from_xsd_double(text: &str) -> Result<Self> {
     let value = text.parse::<FeelNumber>().map_err(|_| err_invalid_xsd_double(text))?;
     Ok(Value::Number(value))
   }
+
   /// Tries to convert `xsd:boolean` string into valid [Value] representing a boolean.
   pub fn try_from_xsd_boolean(text: &str) -> Result<Self> {
     match text {
@@ -448,6 +591,7 @@ impl Value {
       _ => Err(err_invalid_xsd_boolean(text)),
     }
   }
+
   /// Tries to convert `xsd:date` string into valid [Value] representing a date.
   /// FEEL date format is fully conformant with `xsd:date`.
   pub fn try_from_xsd_date(text: &str) -> Result<Self> {
@@ -456,6 +600,7 @@ impl Value {
     }
     Err(err_invalid_xsd_date(text))
   }
+
   /// Tries to convert `xsd:time` string into valid [Value] representing a time.
   /// FEEL time format is fully conformant with `xsd:time`.
   pub fn try_from_xsd_time(text: &str) -> Result<Self> {
@@ -464,11 +609,13 @@ impl Value {
     }
     Err(err_invalid_xsd_time(text))
   }
+
   /// Tries to convert `xsd:dateTime` string into valid [Value] representing a date and time.
   /// FEEL date and time format is fully conformant with `xsd:dateTime`.
   pub fn try_from_xsd_date_time(text: &str) -> Result<Self> {
     Ok(Value::DateTime(FeelDateTime::try_from(text).map_err(|_| err_invalid_xsd_date_time(text))?))
   }
+
   /// Tries to convert `xsd:duration` string into valid [Value] representing a date and time.
   /// FEEL durations are conformant with `xsd:duration` but spit into two ranges.
   pub fn try_from_xsd_duration(text: &str) -> Result<Self> {
@@ -482,109 +629,20 @@ impl Value {
   }
 }
 
-/// Collection of values.
-#[derive(Debug, Clone, PartialEq, Default)]
-pub struct Values(Vec<Value>);
+/// Type alias to a collection of values.
+pub type Values = Vec<Value>;
 
-impl Values {
-  ///
-  pub fn new(values: Vec<Value>) -> Self {
-    Self(values)
-  }
-  ///
-  pub fn add(&mut self, value: Value) {
-    self.0.push(value);
-  }
-  ///
-  pub fn insert(&mut self, index: usize, value: Value) {
-    self.0.insert(index, value);
-  }
-  ///
-  pub fn remove(&mut self, index: usize) {
-    self.0.remove(index);
-  }
-  ///
-  pub fn len(&self) -> usize {
-    self.0.len()
-  }
-  ///
-  pub fn is_empty(&self) -> bool {
-    self.0.is_empty()
-  }
-  ///
-  pub fn reverse(&mut self) {
-    self.0.reverse();
-  }
-  ///
-  pub fn as_vec(&self) -> &Vec<Value> {
-    &self.0
-  }
+/// Converts a collection of values into string.
+pub fn values_to_string(values: &Values) -> String {
+  format!("[{}]", values.iter().map(|value| value.to_string()).collect::<Vec<String>>().join(", "))
 }
 
-impl fmt::Display for Values {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "[{}]", self.0.iter().map(|value| value.to_string()).collect::<Vec<String>>().join(", "))
-  }
+/// Converts a collection of values into `FEEL` string.
+pub fn values_to_feel_string(values: &Values) -> String {
+  format!("[{}]", values.iter().map(|value| value.to_feel_string()).collect::<Vec<String>>().join(", "))
 }
 
-impl ToFeelString for Values {
-  /// Converts [Values] into `FEEL` string.
-  fn to_feel_string(&self) -> String {
-    format!("[{}]", self.0.iter().map(|value| value.to_feel_string()).collect::<Vec<String>>().join(", "))
-  }
-}
-
-impl Jsonify for Values {
-  ///
-  fn jsonify(&self) -> String {
-    format!("[{}]", self.0.iter().map(|value| value.jsonify()).collect::<Vec<String>>().join(", "))
-  }
-}
-
-/// Definitions of value errors.
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Value errors.
-  struct ValueError(String);
-
-  impl From<ValueError> for DmntkError {
-    /// Converts [ValueError] into [DmntkError].
-    fn from(e: ValueError) -> Self {
-      DmntkError::new("ValueError", &e.0)
-    }
-  }
-
-  /// Error used when parsed text is not acceptable `xsd:integer` representation.
-  pub fn err_invalid_xsd_integer(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:integer representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:decimal` representation.
-  pub fn err_invalid_xsd_decimal(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:decimal representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:double` representation.
-  pub fn err_invalid_xsd_double(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:double representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:boolean` representation.
-  pub fn err_invalid_xsd_boolean(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:boolean representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:date` representation.
-  pub fn err_invalid_xsd_date(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:date representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:time` representation.
-  pub fn err_invalid_xsd_time(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:time representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:dateTime` representation.
-  pub fn err_invalid_xsd_date_time(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:dateTime representation")).into()
-  }
-  /// Error used when parsed text is not acceptable `xsd:duration` representation.
-  pub fn err_invalid_xsd_duration(text: &str) -> DmntkError {
-    ValueError(format!("'{text}' is not valid xsd:duration representation")).into()
-  }
+/// Converts a collection of values into `JSON` string.
+pub fn values_to_jsonify(values: &Values) -> String {
+  format!("[{}]", values.iter().map(|value| value.jsonify()).collect::<Vec<String>>().join(", "))
 }

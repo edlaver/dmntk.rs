@@ -31,13 +31,10 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0031);
-  static ref CTX: FeelContext = context(r#"{inputA: 10, inputB: 5}"#);
-}
+static_model_evaluator_examples!(DMN_3_0031);
+
+static_context!(CTX, r#"{inputA: 10, inputB: 5}"#);
 
 #[test]
 fn _0001() {

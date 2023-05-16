@@ -11,5 +11,5 @@ edition.workspace = true
 [features]
 
 [dependencies]
+dfp-number-sys.workspace = true
 dmntk-common.workspace = true
-dfp-number-sys = "0.0.13"

@@ -32,9 +32,7 @@
 
 use super::super::*;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0085);
-}
+static_model_evaluator_examples!(DMN_3_0085);
 
 #[test]
 fn _0001() {

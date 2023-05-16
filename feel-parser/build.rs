@@ -30,8 +30,6 @@
  * limitations under the License.
  */
 
-extern crate dmntk_feel_grammar;
-
 use dmntk_feel_grammar::lalr_rust_tables;
 
 fn main() {

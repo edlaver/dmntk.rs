@@ -17,6 +17,6 @@ dmntk-feel-temporal.workspace = true
 dmntk-model.workspace = true
 
 [dev-dependencies]
-lazy_static = "1.4.0"
+once_cell.workspace = true
 dmntk-examples.workspace = true
 dmntk-recognizer.workspace = true

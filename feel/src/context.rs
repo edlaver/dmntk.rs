@@ -32,13 +32,14 @@
 
 //! `FEEL` context.
 
-use self::errors::*;
+use crate::errors::*;
 use crate::names::Name;
 use crate::qualified_names::QualifiedName;
 use crate::strings::ToFeelString;
 use crate::value_null;
 use crate::values::Value;
 use dmntk_common::{DmntkError, Jsonify};
+use std::collections::btree_map::Iter;
 use std::collections::BTreeMap;
 use std::convert::TryFrom;
 use std::fmt;
@@ -131,44 +132,58 @@ impl FeelContext {
   pub fn contains_entry(&self, name: &Name) -> bool {
     self.0.contains_key(name)
   }
+
   /// Checks if this [FeelContext] contains an entry pointed by [QualifiedName].
   pub fn contains_entries(&self, qname: &QualifiedName) -> bool {
     self.contains_deep(qname.as_slice())
   }
+
   /// Sets a single value for specified entry name in this [FeelContext].
   pub fn set_entry(&mut self, name: &Name, value: Value) {
     self.0.insert(name.clone(), value);
   }
+
   /// Sets a null value for specified entry name in this [FeelContext].
   pub fn set_null(&mut self, name: Name) {
     self.0.insert(name, value_null!());
   }
+
   /// Returns a value of an entry specified by name.
   pub fn get_entry(&self, name: &Name) -> Option<&Value> {
     self.0.get(name)
   }
+
   /// Returns a list of key-value pairs.
   pub fn get_entries(&self) -> Vec<(&Name, &Value)> {
     self.0.iter().collect::<Vec<(&Name, &Value)>>()
   }
+
+  pub fn iter(&self) -> Iter<Name, Value> {
+    self.0.iter()
+  }
+
   /// Returns a first value contained by context.
   pub fn get_first(&self) -> Option<&Value> {
     self.0.values().take(1).next()
   }
+
   /// Returns the number of entries in this context.
   pub fn len(&self) -> usize {
     self.0.len()
   }
+
   /// Returns `true` when this context is empty.
   pub fn is_empty(&self) -> bool {
     self.0.is_empty()
   }
+
   ///
   pub fn zip(&mut self, other: &FeelContext) {
     for (name, value) in &other.0 {
       self.0.insert(name.clone(), value.clone());
     }
   }
+
   ///
   pub fn overwrite(&mut self, other: &FeelContext) {
     for (name, value) in &other.0 {
@@ -177,6 +192,7 @@ impl FeelContext {
       }
     }
   }
+
   /// Creates an entry with a value for specified [QualifiedName].
   /// All non existing intermediary contexts will be created.
   pub fn create_entry(&mut self, qname: &QualifiedName, value: Value) {
@@ -231,6 +247,7 @@ impl FeelContext {
     sub_ctx.create_deep(tail, value);
     self.0.insert(key, sub_ctx.into());
   }
+
   /// Deep search for a value pointed by names.
   pub fn search_deep(&self, names: &[Name]) -> Option<&Value> {
     if !names.is_empty() {
@@ -244,25 +261,5 @@ impl FeelContext {
       }
     }
     None
-  }
-}
-
-/// Definitions of context errors.
-mod errors {
-  use crate::values::Value;
-  use dmntk_common::DmntkError;
-
-  /// Context errors.
-  struct ContextError(String);
-
-  impl From<ContextError> for DmntkError {
-    fn from(e: ContextError) -> Self {
-      DmntkError::new("ContextError", &e.0)
-    }
-  }
-
-  /// Creates an instance of `value is not a context` error.
-  pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
-    ContextError(format!("'{value}' is not a value containing context")).into()
   }
 }

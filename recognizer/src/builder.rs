@@ -30,10 +30,12 @@
  * limitations under the License.
  */
 
+//! # Decision table builder
+
 use crate::errors::*;
 use crate::recognizer::Recognizer;
 use dmntk_common::Result;
-use dmntk_model::model::{AnnotationEntry, DecisionRule, DecisionTable, HitPolicy, InputClause, InputEntry, OutputClause, OutputEntry, RuleAnnotationClause};
+use dmntk_model::model::*;
 
 struct Size {
   input_clauses_count: usize,
@@ -61,7 +63,7 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
     ));
   }
   // when input values are present, then the number of input values must be equal to the number input expressions
-  let input_values_count = recognizer.input_values.len();
+  let input_values_count = recognizer.allowed_input_values.len();
   if input_values_count > 0 && input_values_count != input_clauses_count {
     return size_err(&format!(
       "number of input values ({input_values_count}) must be equal to the number of input clauses ({input_clauses_count})"
@@ -84,7 +86,7 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
     return size_err("number of output components must be zero");
   }
   // when output values are present, then the number of output values must be equal to the number of output clauses
-  let output_values_count = recognizer.output_values.len();
+  let output_values_count = recognizer.allowed_output_values.len();
   if output_values_count > 0 && output_values_count != output_clauses_count {
     return size_err(&format!(
       "number of output values ({output_values_count}) must be equal to the number of output clauses ({output_clauses_count})"
@@ -160,11 +162,12 @@ fn validate_size(recognizer: &Recognizer) -> Result<Size> {
   })
 }
 
-/// Builds a decision table from text.
-pub fn build(text: &str) -> Result<DecisionTable> {
-  // recognize the components of decision table
-  let recognizer = Recognizer::recognize(text)?;
-  // validate the sizes of the individual components of the decision table
+/// Recognizes a decision table from plain Unicode text.
+pub fn recognize_decision_table(text: &str, trace: bool) -> Result<DecisionTable> {
+  // recognize the decision table
+  let recognizer = Recognizer::recognize(text, trace)?;
+
+  // validate the sizes of the individual parts of the decision table
   let size = validate_size(&recognizer)?;
 
   let information_item_name = recognizer.information_item_name.clone();
@@ -177,25 +180,29 @@ pub fn build(text: &str) -> Result<DecisionTable> {
   let preferred_orientation = recognizer.orientation;
   let output_label = recognizer.output_label.clone();
 
-  let mut inputs = vec![];
+  let mut input_clauses = vec![];
   for i in 0..size.input_clauses_count {
-    inputs.push(InputClause {
+    input_clauses.push(InputClause {
       input_expression: recognizer.input_expressions[i].clone(),
-      input_values: if size.input_values_count > 0 { Some(recognizer.input_values[i].clone()) } else { None },
-    });
-  }
-
-  let mut outputs = vec![];
-  for i in 0..size.output_clauses_count {
-    outputs.push(OutputClause {
-      type_ref: None,
-      name: if size.output_components_count > 0 {
-        Some(recognizer.output_components[i].clone())
+      allowed_input_values: if size.input_values_count > 0 {
+        recognizer.allowed_input_values[i].clone()
       } else {
         None
       },
-      output_values: if size.output_values_count > 0 {
-        Some(recognizer.output_values[i].clone())
+    });
+  }
+
+  let mut output_clauses = vec![];
+  for i in 0..size.output_clauses_count {
+    output_clauses.push(OutputClause {
+      type_ref: None,
+      name: if size.output_components_count > 0 {
+        recognizer.output_components[i].clone()
+      } else {
+        None
+      },
+      allowed_output_values: if size.output_values_count > 0 {
+        recognizer.allowed_output_values[i].clone()
       } else {
         None
       },
@@ -240,15 +247,15 @@ pub fn build(text: &str) -> Result<DecisionTable> {
     });
   }
 
-  Ok(DecisionTable {
+  Ok(DecisionTable::new(
     information_item_name,
-    input_clauses: inputs,
-    output_clauses: outputs,
+    input_clauses,
+    output_clauses,
     annotations,
     rules,
     hit_policy,
     aggregation,
     preferred_orientation,
     output_label,
-  })
+  ))
 }

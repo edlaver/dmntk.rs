@@ -31,14 +31,13 @@
  */
 
 use crate::examples::*;
-use crate::{DMNTK_DESCRIPTION, DMNTK_VERSION};
-use clap::{arg, command, ArgAction, ArgMatches, Command};
+use clap::{arg, command, crate_description, crate_version, ArgAction, ArgMatches, Command};
 use difference::Changeset;
-use dmntk_common::ascii_ctrl::*;
-use dmntk_common::{ascii256, ascii_none, Jsonify};
+use dmntk_common::*;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
+use std::fs;
 
 /// Available command-line actions.
 enum Action {
@@ -174,7 +173,7 @@ pub async fn do_action() -> std::io::Result<()> {
 /// Parses CLI argument matches.
 #[rustfmt::skip]
 fn get_matches() -> ArgMatches {
-  command!().name("dmntk").version(DMNTK_VERSION).about(DMNTK_DESCRIPTION)
+  command!()
     // pfe
     .subcommand(Command::new("pfe").about("Parse FEEL Expression").display_order(7)
       .arg(arg!(<CONTEXT_FILE>).help("File containing context for parsed FEEL expression").required(true).index(1))
@@ -363,8 +362,8 @@ fn get_cli_action() -> Action {
     }
     _ => {}
   }
-  println!("dmntk {DMNTK_VERSION}");
-  println!("{DMNTK_DESCRIPTION}");
+  println!("dmntk {}", crate_version!());
+  println!("{}", crate_description!());
   println!("dmntk: missing subcommand");
   println!("Try 'dmntk --help' for more information.");
   Action::DoNothing
@@ -372,8 +371,8 @@ fn get_cli_action() -> Action {
 
 /// Parses `FEEL` expression loaded from file and prints the parsed `AST` to standard output.
 fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
-  match std::fs::read_to_string(feel_file_name) {
-    Ok(feel_expression) => match std::fs::read_to_string(ctx_file_name) {
+  match fs::read_to_string(feel_file_name) {
+    Ok(feel_expression) => match fs::read_to_string(ctx_file_name) {
       Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.into(), &feel_expression, false) {
           Ok(ast_root_node) => {
@@ -391,8 +390,8 @@ fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
 
 /// Evaluates `FEEL` expression loaded from file and prints the result to standard output.
 fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
-  match std::fs::read_to_string(feel_file_name) {
-    Ok(textual_expression) => match std::fs::read_to_string(ctx_file_name) {
+  match fs::read_to_string(feel_file_name) {
+    Ok(textual_expression) => match fs::read_to_string(ctx_file_name) {
       Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.clone().into(), &textual_expression, false) {
           Ok(ast_root_node) => match dmntk_evaluator::evaluate(&ctx.into(), &ast_root_node) {
@@ -413,8 +412,8 @@ fn evaluate_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
 
 /// Tests `FEEL` expression loaded from file and prints the test result to standard output.
 fn test_feel_expression(test_file_name: &str, feel_file_name: &str, summary_only: bool, color: &str) {
-  match std::fs::read_to_string(feel_file_name) {
-    Ok(feel_file_content) => match std::fs::read_to_string(test_file_name) {
+  match fs::read_to_string(feel_file_name) {
+    Ok(feel_file_content) => match fs::read_to_string(test_file_name) {
       Ok(test_file_content) => match dmntk_evaluator::evaluate_test_cases(&test_file_content) {
         Ok(test_cases) => {
           let mut passed = 0_usize;
@@ -441,23 +440,14 @@ fn test_feel_expression(test_file_name: &str, feel_file_name: &str, summary_only
 
 /// Exports `FEEL` expression loaded from file to HTML output file.
 fn export_feel_expression(_input_file_name: &str, _feel_file_name: &str, html_file_name: &str) {
-  let _ = std::fs::write(html_file_name, "not implemented\n");
+  let _ = fs::write(html_file_name, "not implemented\n");
 }
 
 /// Parses decision table loaded from text file.
 fn parse_decision_table(dectab_file_name: &str) {
-  match std::fs::read_to_string(dectab_file_name) {
-    Ok(text) => match dmntk_recognizer::scan(&text) {
-      Ok(mut canvas) => {
-        canvas.display_text_layer();
-        canvas.display_thin_layer();
-        canvas.display_body_layer();
-        canvas.display_grid_layer();
-        match canvas.plane() {
-          Ok(plane) => println!("PLANE\n{plane}"),
-          Err(reason) => eprintln!("ERROR: {reason}"),
-        };
-      }
+  match fs::read_to_string(dectab_file_name) {
+    Ok(text) => match dmntk_recognizer::recognize_decision_table(&text, true) {
+      Ok(_) => {}
       Err(reason) => eprintln!("ERROR: {reason}"),
     },
     Err(reason) => eprintln!("loading decision table file `{dectab_file_name}` failed with reason: {reason}"),
@@ -466,7 +456,7 @@ fn parse_decision_table(dectab_file_name: &str) {
 
 /// Evaluates context and decision table loaded from files.
 fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
-  let input_file_content = match std::fs::read_to_string(input_file_name) {
+  let input_file_content = match fs::read_to_string(input_file_name) {
     Ok(input_file_content) => input_file_content,
     Err(reason) => {
       eprintln!("loading input file `{input_file_name}` failed with reason: {reason}");
@@ -480,14 +470,14 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
       return;
     }
   };
-  let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
+  let dtb_file_content = match fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
       eprintln!("loading input file `{dectab_file_name}` failed with reason: {reason}");
       return;
     }
   };
-  let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
+  let decision_table = match dmntk_recognizer::recognize_decision_table(&dtb_file_content, false) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
       eprintln!("building decision table failed with reason: {reason}");
@@ -508,21 +498,21 @@ fn evaluate_decision_table(input_file_name: &str, dectab_file_name: &str) {
 
 /// Tests decision table loaded from file.
 fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_only: bool, color: &str) {
-  let dtb_file_content = match std::fs::read_to_string(dectab_file_name) {
+  let dtb_file_content = match fs::read_to_string(dectab_file_name) {
     Ok(dtb_file_content) => dtb_file_content,
     Err(reason) => {
       eprintln!("loading decision table file `{dectab_file_name}` failed with reason: {reason}");
       return;
     }
   };
-  let decision_table = match dmntk_recognizer::build(&dtb_file_content) {
+  let decision_table = match dmntk_recognizer::recognize_decision_table(&dtb_file_content, false) {
     Ok(decision_table) => decision_table,
     Err(reason) => {
       eprintln!("building decision table failed with reason: {reason}");
       return;
     }
   };
-  let test_file_content = match std::fs::read_to_string(test_file_name) {
+  let test_file_content = match fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
       eprintln!("loading test file `{test_file_name}` failed with reason: {reason}");
@@ -555,11 +545,11 @@ fn test_decision_table(test_file_name: &str, dectab_file_name: &str, summary_onl
 
 /// Exports decision table loaded from text file to HTML output file.
 fn export_decision_table(dectab_file_name: &str, html_file_name: &str) {
-  match std::fs::read_to_string(dectab_file_name) {
-    Ok(text) => match dmntk_recognizer::build(&text) {
+  match fs::read_to_string(dectab_file_name) {
+    Ok(text) => match dmntk_recognizer::recognize_decision_table(&text, false) {
       Ok(decision_table) => {
-        let output = dmntk_gendoc::decision_table_to_html(&decision_table);
-        if let Err(reason) = std::fs::write(html_file_name, output) {
+        let html_output = dmntk_gendoc::decision_table_to_html(&decision_table);
+        if let Err(reason) = fs::write(html_file_name, html_output) {
           println!("writing output HTML file `{html_file_name}` failed with reason: {reason}")
         }
       }
@@ -569,12 +559,14 @@ fn export_decision_table(dectab_file_name: &str, html_file_name: &str) {
   }
 }
 
-/// Recognizes the decision table loaded from text file.
+/// Recognizes the decision table loaded from text file
+/// and generates DMN model containing recognized decision table.
 fn recognize_decision_table(dtb_file_name: &str) {
-  match std::fs::read_to_string(dtb_file_name) {
-    Ok(ref text) => match dmntk_recognizer::Recognizer::recognize(text) {
-      Ok(recognizer) => {
-        recognizer.trace();
+  match fs::read_to_string(dtb_file_name) {
+    Ok(text) => match dmntk_recognizer::recognize_decision_table(&text, false) {
+      Ok(_decision_table) => {
+        println!("Recognized.");
+        //TODO Generate DMN model with recognized decision table to be ready to deploy on server.
       }
       Err(reason) => eprintln!("ERROR: {reason}"),
     },
@@ -592,7 +584,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   let color_e = if use_color { ASCII_RED } else { "" };
   let color_r = if use_color { ASCII_RESET } else { "" };
   let none = "(none)".to_string();
-  match std::fs::read_to_string(dmn_file_name) {
+  match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match &dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
         println!("\n{color_a}Model{color_r}");
@@ -651,8 +643,8 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
 
 /// Evaluates `DMN` model loaded from XML file.
 fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name: &str) {
-  match std::fs::read_to_string(dmn_file_name) {
-    Ok(dmn_file_content) => match std::fs::read_to_string(input_file_name) {
+  match fs::read_to_string(dmn_file_name) {
+    Ok(dmn_file_content) => match fs::read_to_string(input_file_name) {
       Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
         Ok(input_data) => match dmntk_model::parse(&dmn_file_content) {
           Ok(definitions) => match dmntk_evaluator::ModelEvaluator::new(&definitions) {
@@ -674,7 +666,7 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
 
 /// Tests `DMN` model loaded from XML file.
 fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &str, summary_only: bool, color: &str) {
-  let dmn_file_content = match std::fs::read_to_string(dmn_file_name) {
+  let dmn_file_content = match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => dmn_file_content,
     Err(reason) => {
       eprintln!("loading model file `{dmn_file_name}` failed with reason: {reason}");
@@ -695,7 +687,7 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
       return;
     }
   };
-  let test_file_content = match std::fs::read_to_string(test_file_name) {
+  let test_file_content = match fs::read_to_string(test_file_name) {
     Ok(test_file_content) => test_file_content,
     Err(reason) => {
       eprintln!("loading test file `{test_file_name}` failed with reason: {reason}");
@@ -718,19 +710,30 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   display_test_summary(passed, failed, summary_only, color);
 }
 
-/// Exports `DMN` model loaded from XML file to HTML output file.
-fn export_dmn_model(_dmn_file_name: &str, html_file_name: &str) {
-  let _ = std::fs::write(html_file_name, "not implemented\n");
+/// Exports `DMN` model loaded from `XML` file to `HTML` output file.
+fn export_dmn_model(dmn_file_name: &str, html_file_name: &str) {
+  match fs::read_to_string(dmn_file_name) {
+    Ok(dmn_file_content) => match dmntk_model::parse(&dmn_file_content) {
+      Ok(definitions) => {
+        let html_output = dmntk_gendoc::dmn_model_to_html(&definitions);
+        if let Err(reason) = fs::write(html_file_name, html_output) {
+          println!("writing output HTML file `{html_file_name}` failed with reason: {reason}")
+        }
+      }
+      Err(reason) => eprintln!("ERROR: {reason}"),
+    },
+    Err(reason) => eprintln!("loading model file `{dmn_file_name}` failed with reason: {reason}"),
+  }
 }
 
 /// Generates examples in current directory.
 fn generate_examples() -> std::io::Result<()> {
   let create_dir = |path| -> std::io::Result<()> {
-    std::fs::create_dir_all(path)?;
+    fs::create_dir_all(path)?;
     Ok(())
   };
   let write_file = |path, contents| -> std::io::Result<()> {
-    std::fs::write(path, contents)?;
+    fs::write(path, contents)?;
     Ok(())
   };
   create_dir("examples")?;

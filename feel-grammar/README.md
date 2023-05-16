@@ -2,34 +2,32 @@
 
 # dmntk-feel-grammar
 
+![Release][release-badge]
 [![Crates.io][crates-badge]][crates-url]
-[![MIT licensed][mit-badge]][mit-url]
-[![Apache 2.0 licensed][apache-badge]][apache-url]
+![Code coverage][coverage-badge]
 ![build Linux][build-badge-linux]
 ![build Windows][build-badge-windows]
 ![build MacOs][build-badge-macos]
-![Code coverage][coverage-badge]
-
+[![MIT licensed][mit-badge]][mit-url]
+[![Apache 2.0 licensed][apache-badge]][apache-url]
 [![Contributor Covenant][coc-badge]](https://github.com/dmntk/dmntk.rs/blob/main/CODE_OF_CONDUCT.md)
 
-![Release][release-badge]
-
+[release-badge]: https://img.shields.io/badge/BETA-16A085.svg
 [crates-badge]: https://img.shields.io/crates/v/dmntk-feel-grammar.svg
 [crates-url]: https://crates.io/crates/dmntk-feel-grammar
+[coverage-badge]: https://img.shields.io/badge/Code%20coverage-100%25-green.svg
+[build-badge-linux]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-linux.yml/badge.svg
+[build-badge-windows]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-windows.yml/badge.svg
+[build-badge-macos]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-macos.yml/badge.svg
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg
 [mit-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-MIT
 [apache-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
 [apache-url]: https://github.com/dmntk/dmntk.rs/blob/main/LICENSE-APACHE
-[build-badge-linux]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-linux.yml/badge.svg
-[build-badge-windows]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-windows.yml/badge.svg
-[build-badge-macos]: https://github.com/dmntk/dmntk.rs/actions/workflows/build-macos.yml/badge.svg
-[coverage-badge]: https://img.shields.io/badge/Coverage-100%25-green.svg
 [coc-badge]: https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg
-[release-badge]: https://img.shields.io/badge/BETA-16A085.svg
 
 ## Overview
 
-FEEL grammar and parsing tables generator used in [dmntk](https://github.com/dmntk) project.
+FEEL grammar and parsing tables generator used in [DMNTK](https://github.com/dmntk) project.
 
 This crate implements: 
 
@@ -278,5 +276,7 @@ at your option.
 
 ## Contribution
 
+We **appreciate any contributions** from the community to help improve our project.
+If you would like to get involved, please don't hesitate to reach out to us.
 All contributions intentionally submitted for inclusion in the work by you,
 shall be dual licensed as above, without any additional terms or conditions.

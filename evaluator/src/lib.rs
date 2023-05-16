@@ -30,14 +30,8 @@
  * limitations under the License.
  */
 
-extern crate dmntk_common;
-extern crate dmntk_feel;
-extern crate dmntk_feel_evaluator;
-extern crate dmntk_feel_parser;
-extern crate dmntk_model_evaluator;
-
 mod test_files;
 
-pub use crate::dmntk_feel_evaluator::{evaluate, evaluate_context, evaluate_equals, evaluate_max, evaluate_min, evaluate_sum};
-pub use crate::dmntk_model_evaluator::{build_decision_table_evaluator, ModelEvaluator};
+pub use dmntk_feel_evaluator::{evaluate, evaluate_context, evaluate_equals, evaluate_max, evaluate_min, evaluate_sum};
+pub use dmntk_model_evaluator::{build_decision_table_evaluator, ModelEvaluator};
 pub use test_files::evaluate_test_cases;

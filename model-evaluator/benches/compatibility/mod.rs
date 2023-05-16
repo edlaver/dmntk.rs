@@ -34,7 +34,9 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_model_evaluator::ModelEvaluator;
+use once_cell::sync::Lazy;
 use std::sync::Arc;
+use test::Bencher;
 
 mod dmn_2_0001;
 mod dmn_2_0002;

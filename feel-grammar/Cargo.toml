@@ -9,5 +9,5 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-convert_case = "0.6.0"
-regex = "1.7.0"
+convert_case.workspace = true
+regex.workspace = true

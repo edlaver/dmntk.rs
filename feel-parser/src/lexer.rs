@@ -428,8 +428,13 @@ impl<'lexer> Lexer<'lexer> {
   /// Reads characters from input.
   fn read_input(&mut self) -> [char; BUF_SIZE] {
     self.consume_whitespace();
-    self.consume_comment();
-    self.consume_whitespace();
+    loop {
+      let consumed_comment = self.consume_comment();
+      self.consume_whitespace();
+      if !consumed_comment {
+        break;
+      }
+    }
     let mut buffer: [char; BUF_SIZE] = [WS; BUF_SIZE];
     for (offset, value) in buffer.iter_mut().enumerate() {
       if let Some(ch) = self.char_at(offset) {
@@ -453,16 +458,17 @@ impl<'lexer> Lexer<'lexer> {
     }
   }
 
-  /// Consumes comments starting from current position.
-  /// After consuming a comment, the current position is advanced.
-  fn consume_comment(&mut self) {
+  /// Consumes single comment starting from the current position.
+  /// After consuming a comment, the current position is advanced
+  /// to the next character after comment.
+  fn consume_comment(&mut self) -> bool {
     let pair = (self.char_at(0), self.char_at(1));
     match pair {
       (Some('/'), Some('/')) => {
         self.position += 2;
         while let Some(ch) = self.char_at(0) {
           if ch == '\n' {
-            return;
+            return true;
           }
           self.position += 1;
         }
@@ -473,7 +479,7 @@ impl<'lexer> Lexer<'lexer> {
           if ch == '*' {
             if let Some('/') = self.char_at(1) {
               self.position += 2;
-              return;
+              return true;
             }
           }
           self.position += 1;
@@ -481,6 +487,7 @@ impl<'lexer> Lexer<'lexer> {
       }
       _ => {}
     }
+    false
   }
 
   /// Consumes the string literal.

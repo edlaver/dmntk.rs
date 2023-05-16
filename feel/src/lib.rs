@@ -32,26 +32,10 @@
 
 //! FEEL definitions.
 
-extern crate ascii_tree;
-extern crate chrono;
-extern crate chrono_tz;
-extern crate dmntk_common;
-extern crate dmntk_feel_number;
-extern crate dmntk_feel_temporal;
-extern crate regex;
-
-pub use dmntk_feel_number::FeelNumber;
-pub use evaluator::Evaluator;
-pub use function::FunctionBody;
-pub use names::Name;
-pub use qualified_names::QualifiedName;
-pub use scope::FeelScope;
-pub use strings::ToFeelString;
-pub use types::*;
-
 pub mod bif;
 pub mod closure;
 pub mod context;
+mod errors;
 mod evaluator;
 mod function;
 mod names;
@@ -63,3 +47,12 @@ pub mod values;
 
 #[cfg(test)]
 mod tests;
+
+pub use dmntk_feel_number::FeelNumber;
+pub use evaluator::Evaluator;
+pub use function::FunctionBody;
+pub use names::Name;
+pub use qualified_names::QualifiedName;
+pub use scope::FeelScope;
+pub use strings::ToFeelString;
+pub use types::*;

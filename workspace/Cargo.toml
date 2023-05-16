@@ -9,12 +9,12 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+walkdir.workspace = true
 dmntk-common.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-evaluator.workspace = true
 dmntk-model.workspace = true
 dmntk-model-evaluator.workspace = true
-walkdir = "2.3.2"
 
 [dev-dependencies]
 dmntk-examples.workspace = true

@@ -29,8 +29,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-//! Canvas.
+//! # Canvas
 
 use crate::errors::*;
 use crate::plane::{Cell, Plane};
@@ -40,18 +39,23 @@ use dmntk_common::Result;
 
 /// Number of layers in canvas.
 pub const LAYER_COUNT: usize = 4;
+
 /// Names of layers in canvas.
 pub const LAYER_NAMES: [&str; LAYER_COUNT] = ["TEXT", "THIN", "BODY", "GRID"];
+
 /// Layer containing original text of the decision table.
 pub const LAYER_TEXT: usize = 0;
+
 /// Layer containing all the regions with single lines.
 pub const LAYER_THIN: usize = 1;
+
 /// Layer containing decision table body without information item name.
 pub const LAYER_BODY: usize = 2;
+
 /// Layer containing grid of single lines.
 pub const LAYER_GRID: usize = 3;
 
-const CHAR_WHITE: char = ' ';
+const CHAR_WS: char = ' ';
 const CHAR_OUTER: char = '░';
 
 const CORNER_TOP_LEFT: char = '┌';
@@ -116,7 +120,7 @@ impl Canvas {
             })
           })
         } else {
-          // TODO report error when the left top corner is below top edge
+          // TODO Report an error when the left top corner is below top edge.
           Ok(())
         }
       })
@@ -136,7 +140,7 @@ impl Canvas {
       if let Ok((_, p)) = self.search_down(LAYER_TEXT, &['╬'], &['║', '╫']) {
         self.cross_vert = Some(p)
       }
-      // TODO add validation if two crosses exist
+      // TODO Add validation checking whether two crossings exist.
     })
   }
 
@@ -179,7 +183,7 @@ impl Canvas {
           '╞' | '╟' => col[dst] = '├',
           '╡' | '╢' => col[dst] = '┤',
           '╫' | '╪' | '╬' => col[1] = '┼',
-          _ => col[dst] = CHAR_WHITE,
+          _ => col[dst] = CHAR_WS,
         }
       }
     }
@@ -188,7 +192,7 @@ impl Canvas {
   /// Removes the information item name region.
   fn remove_information_item_region(&mut self, src: Layer, dst: Layer) {
     if let Some(body_rect) = self.body_rect {
-      let (left, top, right, bottom) = body_rect.unpack();
+      let (left, top, right, bottom) = body_rect.into_inner();
       if top > 0 {
         for y in 0..top - 1 {
           for x in left..right {
@@ -219,7 +223,7 @@ impl Canvas {
   fn make_grid(&mut self, src: Layer, dst: Layer) {
     if let Some(body_rect) = self.body_rect {
       self.copy_layer(src, dst);
-      let (left, top, right, bottom) = body_rect.unpack();
+      let (left, top, right, bottom) = body_rect.into_inner();
       for y in top..bottom {
         let mut has_horz_line = false;
         for x in left..right {
@@ -236,7 +240,7 @@ impl Canvas {
               '│' => self.content[y][x][dst] = '┼',
               '┤' if x < right - 1 => self.content[y][x][dst] = '┼',
               '├' if x > 0 => self.content[y][x][dst] = '┼',
-              CHAR_WHITE => self.content[y][x][dst] = '─',
+              CHAR_WS => self.content[y][x][dst] = '─',
               _ => {}
             }
           }
@@ -258,7 +262,7 @@ impl Canvas {
               '─' => self.content[y][x][dst] = '┼',
               '┴' if y < bottom - 1 => self.content[y][x][dst] = '┼',
               '┬' if y > top => self.content[y][x][dst] = '┼',
-              CHAR_WHITE => self.content[y][x][dst] = '│',
+              CHAR_WS => self.content[y][x][dst] = '│',
               _ => {}
             }
           }
@@ -410,7 +414,7 @@ impl Canvas {
 
   ///
   fn close_rectangle(&self, closing: Point, top_left: Point, bottom_right: Point) -> Result<Rect> {
-    if closing.overlays(top_left) {
+    if closing == top_left {
       Ok(Rect::new(top_left.x, top_left.y, bottom_right.x + 1, bottom_right.y + 1))
     } else {
       Err(err_canvas_rectangle_not_closed(closing, top_left))
@@ -453,14 +457,14 @@ impl Canvas {
     self.cursor = Point::new(x, y);
   }
 
-  /// Searches for characters specified in **searched** array.
+  /// Searches for characters specified in `searched` array.
   /// The search starts at the current cursor position and continues from left to right
   /// and from top to bottom of specified layer in canvas.
   /// When any of the specified character is found, the cursor position is updated
   /// and the function returns successfully.
   /// Otherwise the function reports an error.
   fn search(&mut self, layer: Layer, searched: &[char]) -> Result<(char, Point)> {
-    let (x, y) = self.cursor.unwrap();
+    let (x, y) = self.cursor.into_inner();
     for c in x..self.content[y].len() {
       let ch = self.content[y][c][layer];
       if searched.contains(&ch) {
@@ -481,7 +485,7 @@ impl Canvas {
   }
 
   fn search_up(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
-    let (x, mut y) = self.cursor.unwrap();
+    let (x, mut y) = self.cursor.into_inner();
     while y > 0 {
       y -= 1;
       let ch = self.content[y][x][layer];
@@ -497,7 +501,7 @@ impl Canvas {
   }
 
   fn search_left(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
-    let (mut x, y) = self.cursor.unwrap();
+    let (mut x, y) = self.cursor.into_inner();
     while x > 0 {
       x -= 1;
       let ch = self.content[y][x][layer];
@@ -513,7 +517,7 @@ impl Canvas {
   }
 
   fn search_right(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
-    let (mut x, y) = self.cursor.unwrap();
+    let (mut x, y) = self.cursor.into_inner();
     while x < self.content[y].len() - 1 {
       x += 1;
       let ch = self.content[y][x][layer];
@@ -529,7 +533,7 @@ impl Canvas {
   }
 
   fn search_down(&mut self, layer: usize, searched: &[char], allowed: &[char]) -> Result<(char, Point)> {
-    let (x, mut y) = self.cursor.unwrap();
+    let (x, mut y) = self.cursor.into_inner();
     while y < self.content.len() - 1 {
       y += 1;
       let ch = self.content[y][x][layer];
@@ -544,7 +548,7 @@ impl Canvas {
     Err(err_canvas_expected_characters_not_found(searched.to_vec()))
   }
 
-  /// Retrieves the text enclosed inside a **rectangle** in selected **layer**.
+  /// Retrieves the text enclosed inside a rectangle `r` in selected `layer`.
   fn text_from_rect(&self, layer: usize, r: &Rect) -> String {
     let mut text = String::new();
     let mut new_line = false;
@@ -561,7 +565,7 @@ impl Canvas {
     text
   }
 
-  /// Copies characters from source layer into destination layer.
+  /// Copies characters from source layer to destination layer.
   fn copy_layer(&mut self, src: Layer, dst: Layer) {
     for y in 0..self.content.len() {
       for x in 0..self.content[y].len() {
@@ -591,7 +595,7 @@ impl Canvas {
   }
 
   /// Displays the content of the specified layer.
-  pub fn display_layer(&self, l: Layer) {
+  fn display_layer(&self, l: Layer) {
     if l < LAYER_COUNT {
       println!("{}", LAYER_NAMES[l]);
       for row in &self.content {
@@ -607,11 +611,9 @@ impl Canvas {
 /// Prepares a `canvas` containing the textual definition of `decision table`.
 /// This function traverse the input text line-by-line and adds non empty lines of text to the canvas.
 /// Adding lines to canvas begins with the line starting with the `┌` character
-/// (U+250C BOX DRAWINGS LIGHT DOWN AND RIGHT), because this is the top left corner
-/// of every decision table definition.
-/// Adding lines to canvas ends with the line ending with the `┘` character
-/// (U+2518 BOX DRAWINGS LIGHT UP AND LEFT), because this is the bottom right corner
-/// of every decision table definition.
+/// (U+250C BOX DRAWINGS LIGHT DOWN AND RIGHT), because this is the top-left corner of every decision table.
+/// Adding lines to canvas ends with the line that ends with the `┘` character
+/// (U+2518 BOX DRAWINGS LIGHT UP AND LEFT), because this is the bottom right corner of every decision table.
 /// Shorter lines are filled up with additional characters to form a rectangular area.
 pub fn scan(text: &str) -> Result<Canvas> {
   let mut width: usize = 0;
@@ -632,7 +634,7 @@ pub fn scan(text: &str) -> Result<Canvas> {
         content.push(vec![]);
         height += 1;
         let mut count = 0;
-        let mut layers = [CHAR_WHITE; LAYER_COUNT];
+        let mut layers = [CHAR_WS; LAYER_COUNT];
         for chr in line.chars() {
           layers[0] = chr;
           content[height - 1].push(layers);

@@ -30,18 +30,15 @@
  * limitations under the License.
  */
 
-//! Common definitions for components of Decision Model and Notation Toolkit.
+//! Common definitions for components of Decision Model and Notation Toolkit project.
 
-extern crate serde;
-extern crate uriparse;
-extern crate uuid;
-
-pub mod ascii_ctrl;
+mod ascii_ctrl;
 mod errors;
 mod href;
 mod idents;
 mod jsonify;
 
+pub use ascii_ctrl::*;
 pub use errors::{DmntkError, Result};
 pub use href::{HRef, OptHRef};
 pub use idents::gen_id;

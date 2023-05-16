@@ -3,6 +3,7 @@ use crate::{value_number, FeelScope, FunctionBody};
 use std::sync::Arc;
 
 #[test]
+#[allow(clippy::redundant_clone)]
 fn test_function_body_context() {
   let scope = &FeelScope::default();
   let fun_body = FunctionBody::Context(Arc::new(Box::new(|_: &FeelScope| value_number!(1))));

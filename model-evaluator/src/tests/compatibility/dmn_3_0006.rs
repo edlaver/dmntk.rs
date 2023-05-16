@@ -31,12 +31,8 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0006);
-}
+static_model_evaluator_examples!(DMN_3_0006);
 
 const INPUT_DATA: &str = r#"
   {

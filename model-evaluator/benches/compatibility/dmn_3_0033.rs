@@ -14,15 +14,9 @@
  * SOFTWARE.
  */
 
-use super::build_model_evaluator;
-use crate::compatibility::{assert_decision, context};
-use dmntk_model_evaluator::ModelEvaluator;
-use std::sync::Arc;
-use test::Bencher;
+use super::*;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_3_0033);
-}
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0033));
 
 #[bench]
 fn _0001(b: &mut Bencher) {

@@ -150,7 +150,7 @@ impl ModelEvaluator {
       }
       parameters_ctx.zip(&evaluated_ctx);
       let result = body.evaluate(&parameters_ctx.into());
-      result_type.coerced(&result)
+      result.coerced(result_type)
     } else {
       value_null!()
     }

@@ -35,7 +35,7 @@
 use crate::feel_date_time::FeelDateTime;
 use crate::feel_zone::FeelZone;
 use chrono::{DateTime, Datelike, FixedOffset, Local, LocalResult, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 /// Regular expression pattern for parsing dates.
@@ -66,16 +66,14 @@ pub type WeekOfYear = u8;
 /// Type alias for month in year.
 pub type MonthOfYear = (String, u8);
 
-lazy_static! {
-  /// Regular expression pattern for parsing time zone.
-  pub static ref TIME_ZONE_PATTERN: String = format!("{ZULU_PATTERN}|{ZONE_PATTERN}|{OFFSET_PATTERN}");
-  /// Regular expression for parsing date.
-  pub static ref RE_DATE: Regex = Regex::new(&format!("^{DATE_PATTERN}$")).unwrap();
-  /// Regular expression for parsing time.
-  pub static ref RE_TIME: Regex = Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str()) ).unwrap();
-  /// Regular expression for parsing date and time.
-  pub static ref RE_DATE_AND_TIME: Regex = Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$",TIME_ZONE_PATTERN.as_str())).unwrap();
-}
+/// Regular expression pattern for parsing time zone.
+pub static TIME_ZONE_PATTERN: Lazy<String> = Lazy::new(|| format!("{ZULU_PATTERN}|{ZONE_PATTERN}|{OFFSET_PATTERN}"));
+/// Regular expression for parsing date.
+pub static RE_DATE: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{DATE_PATTERN}$")).unwrap());
+/// Regular expression for parsing time.
+pub static RE_TIME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str())).unwrap());
+/// Regular expression for parsing date and time.
+pub static RE_DATE_AND_TIME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{DATE_PATTERN}T{TIME_PATTERN}({})?$", TIME_ZONE_PATTERN.as_str())).unwrap());
 
 pub fn feel_time_offset(me: &FeelDateTime) -> Option<i32> {
   let me_date_tuple = me.date().as_tuple();

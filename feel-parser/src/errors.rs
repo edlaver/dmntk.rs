@@ -63,7 +63,7 @@ pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
 struct ParserError(String);
 
 impl From<ParserError> for DmntkError {
-  /// Creates [DmntkError] from [ParserError].
+  /// Converts `ParserError` into [DmntkError].
   fn from(e: ParserError) -> Self {
     DmntkError::new("ParserError", &e.0)
   }

@@ -30,101 +30,50 @@
  * limitations under the License.
  */
 
-//! Examples of horizontal decision tables in text format.
-//!
-//! Naming convention:
-//!
-//! ```text
-//! ┌────────────── table orientation: h - horizontal (rules as rows)
-//! │ ┌──────────── flag indicating if information item name is: absent (0) or present (1)
-//! │ │┌─────────── flag indicating if output label is: absent (0) or present (1)
-//! │ ││┌────────── flag indicating if allowed values are: absent (0) or present (1)
-//! │ │││┌───────── number of input clauses: 0,1,2...
-//! │ ││││┌──────── number of output clauses: 1,2...
-//! │ │││││┌─────── number of annotation clauses: 0,1,2...  
-//! h_000010.dtb
-//! ```
+#[doc = include_str!("H_000010.md")]
+pub const H_000010: &str = include_str!("H_000010.md");
 
-/// Horizontal, no information item name, no output label, no allowed values, no inputs, single output, no annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: 0 - absent
-///          OUTPUT LABEL: 0 - absent
-///        ALLOWED VALUES: 0 - absent
-///                INPUTS: 0 - absent
-///               OUTPUTS: 1 - single
-///           ANNOTATIONS: 0 - absent
-/// ```
-pub const H_000010: &str = H_000010_DTB;
-const H_000010_DTB: &str = include_str!("h_000010.dtb");
+#[doc = include_str!("H_000011.md")]
+pub const H_000011: &str = include_str!("H_000011.md");
 
-/// Horizontal, no information item name, no output label, no allowed values, double inputs, single output, no annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: absent
-///          OUTPUT LABEL: absent
-///        ALLOWED VALUES: absent
-///                INPUTS: double
-///               OUTPUTS: single
-///           ANNOTATIONS: absent
-/// ```
-pub const H_000210: &str = H_000210_DTB;
-const H_000210_DTB: &str = include_str!("h_000210.dtb");
+#[doc = include_str!("H_000020.md")]
+pub const H_000020: &str = include_str!("H_000020.md");
 
-/// Horizontal, no information item name, output label, no allowed values, no inputs, single output, no annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: 0 - absent
-///          OUTPUT LABEL: 1 - present
-///        ALLOWED VALUES: 0 - absent
-///                INPUTS: 0 - absent
-///               OUTPUTS: 1 - single
-///           ANNOTATIONS: 0 - absent
-/// ```
-pub const H_010010: &str = H_010010_DTB;
-const H_010010_DTB: &str = include_str!("h_010010.dtb");
+#[doc = include_str!("H_000021.md")]
+pub const H_000021: &str = include_str!("H_000021.md");
 
-/// Horizontal, no information item name, output label, no allowed values, double inputs, single output, no annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: 0 - absent
-///          OUTPUT LABEL: 1 - present
-///        ALLOWED VALUES: 0 - absent
-///                INPUTS: 2 - double
-///               OUTPUTS: 1 - single
-///           ANNOTATIONS: 0 - absent
-/// ```
-pub const H_010210: &str = H_010210_DTB;
-const H_010210_DTB: &str = include_str!("h_010210.dtb");
+#[doc = include_str!("H_000210.md")]
+pub const H_000210: &str = include_str!("H_000210.md");
 
-/// Horizontal, no information item name, output label, allowed values, double inputs, double outputs, double annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: 0 - absent
-///          OUTPUT LABEL: 1 - present
-///        ALLOWED VALUES: 1 - present
-///                INPUTS: 2 - double
-///               OUTPUTS: 2 - double
-///           ANNOTATIONS: 2 - double
-/// ```
-pub const H_011222: &str = H_011222_DTB;
-const H_011222_DTB: &str = include_str!("h_011222.dtb");
+#[doc = include_str!("H_001010.md")]
+pub const H_001010: &str = include_str!("H_001010.md");
 
-/// Horizontal, information item name, output label, no allowed values, no inputs, single output, no annotations.
-///
-/// ```text
-/// PREFERRED ORIENTATION: horizontal
-/// INFORMATION ITEM NAME: 1 - present
-///          OUTPUT LABEL: 1 - present
-///        ALLOWED VALUES: 0 - absent
-///                INPUTS: 0 - absent
-///               OUTPUTS: 1 - single
-///           ANNOTATIONS: 0 - absent
-/// ```
-pub const H_110010: &str = H_110010_DTB;
-const H_110010_DTB: &str = include_str!("h_110010.dtb");
+#[doc = include_str!("H_001020.md")]
+pub const H_001020: &str = include_str!("H_001020.md");
+
+#[doc = include_str!("H_001210.md")]
+pub const H_001210: &str = include_str!("H_001210.md");
+
+#[doc = include_str!("H_010010.md")]
+pub const H_010010: &str = include_str!("H_010010.md");
+
+#[doc = include_str!("H_010210.md")]
+pub const H_010210: &str = include_str!("H_010210.md");
+
+#[doc = include_str!("H_011221.md")]
+pub const H_011221: &str = include_str!("H_011221.md");
+
+#[doc = include_str!("H_101222.md")]
+pub const H_101222: &str = include_str!("H_101222.md");
+
+#[doc = include_str!("H_011222.md")]
+pub const H_011222: &str = include_str!("H_011222.md");
+
+#[doc = include_str!("H_110010.md")]
+pub const H_110010: &str = include_str!("H_110010.md");
+
+#[doc = include_str!("H_110222.md")]
+pub const H_110222: &str = include_str!("H_110222.md");
+
+#[doc = include_str!("H_111222.md")]
+pub const H_111222: &str = include_str!("H_111222.md");

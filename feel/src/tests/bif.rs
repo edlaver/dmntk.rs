@@ -2,6 +2,7 @@ use crate::bif::{is_built_in_date_time_function_name, is_built_in_function_name,
 use std::str::FromStr;
 
 #[test]
+#[allow(clippy::redundant_clone)]
 fn test_clone() {
   let bif_a = Bif::Abs;
   let bif_b = bif_a.clone();

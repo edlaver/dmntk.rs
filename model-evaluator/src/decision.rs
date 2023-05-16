@@ -213,7 +213,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // place the result under the name of the output variable
     let scope: FeelScope = required_input_ctx.into();
     let decision_result = evaluator(&scope) as Value;
-    let coerced_decision_result = output_variable_type.coerced(&decision_result);
+    let coerced_decision_result = decision_result.coerced(&output_variable_type);
     output_data_ctx.set_entry(&output_variable_name, coerced_decision_result);
 
     // return the name of the output variable

@@ -41,43 +41,53 @@ pub use compatibility::*;
 pub use examples::valid::*;
 pub use examples::*;
 
-#[cfg(test)]
-mod tests {
-  #[test]
-  fn test_calculate_decision_table_variants() {
-    let decision_table_orientation = ["horizontal", "vertical", "crosstab"];
-    let information_item_name = ["present", "absent"];
-    let output_label = ["present", "absent"];
-    let allowed_values = ["absent", "present"];
-    let inputs = ["absent", "single", "double", "multiple"];
-    let outputs = ["single", "double", "multiple"];
-    let annotations = ["absent", "single", "double", "multiple"];
-    let total_variants =
-      decision_table_orientation.len() * information_item_name.len() * output_label.len() * allowed_values.len() * inputs.len() * outputs.len() * annotations.len();
-    assert_eq!(1152, total_variants);
-    println!("┌─────────────┬─────────────┬─────────┬─────────┬──────────┬──────────┬─────────────┬─────────┬────────┐",);
-    println!("│  Preferred  │ Information │ Output  │ Allowed │  Inputs  │ Outputs  │ Annotations │ Example │ Status │",);
-    println!("│ orientation │  item name  │  label  │ values  │          │          │             │         │        │",);
-    println!("├─────────────┼─────────────┼─────────┼─────────┼──────────┼──────────┼─────────────┼─────────┼────────┤",);
-    let mut counter = 1;
-    for v_decision_table_orientation in decision_table_orientation {
-      for v_information_item_name in information_item_name {
-        for v_output_label in output_label {
-          for v_allowed_values in allowed_values {
-            for v_inputs in inputs {
-              for v_outputs in outputs {
-                for v_annotations in annotations {
-                  println!(
-                    "│{v_decision_table_orientation:^13}│{v_information_item_name:^13}│{v_output_label:^9}│{v_allowed_values:^9}│{v_inputs:^10}│{v_outputs:^10}│{v_annotations:^13}│ DT_{counter:04} │        │"
-                  );
-                  counter += 1;
-                }
+use std::fmt::Write;
+
+/// Generates possible decision table variants.
+#[rustfmt::skip]
+pub fn generate_decision_table_variants() -> String {
+  let mut buffer = String::new();
+  let orientation = ["horizontal", "vertical", "crosstab"];
+  let information_item = ["present", "absent"];
+  let output_label = ["present", "absent"];
+  let allowed_values = ["absent", "present"];
+  let inputs = ["absent", "single", "double", "multiple"];
+  let outputs = ["single", "double", "multiple"];
+  let annotations = ["absent", "single", "double", "multiple"];
+  let total_variants = orientation.len() * information_item.len() * output_label.len() * allowed_values.len() * inputs.len() * outputs.len() * annotations.len();
+  assert_eq!(1152, total_variants);
+  let _ = writeln!(&mut buffer, "┌─────────────┬─────────────┬─────────┬─────────┬──────────┬──────────┬─────────────┬─────────┬────────┐");
+  let _ = writeln!(&mut buffer, "│  Preferred  │ Information │ Output  │ Allowed │  Inputs  │ Outputs  │ Annotations │ Example │ Status │");
+  let _ = writeln!(&mut buffer, "│ orientation │  item name  │  label  │ values  │          │          │             │         │        │");
+  let _ = writeln!(&mut buffer, "├─────────────┼─────────────┼─────────┼─────────┼──────────┼──────────┼─────────────┼─────────┼────────┤");
+  let mut counter = 1;
+  for v_decision_table_orientation in orientation {
+    for v_information_item_name in information_item {
+      for v_output_label in output_label {
+        for v_allowed_values in allowed_values {
+          for v_inputs in inputs {
+            for v_outputs in outputs {
+              for v_annotations in annotations {
+                let _ = writeln!(&mut buffer, "│{v_decision_table_orientation:^13}│{v_information_item_name:^13}│{v_output_label:^9}│{v_allowed_values:^9}│{v_inputs:^10}│{v_outputs:^10}│{v_annotations:^13}│ DT_{counter:04} │        │");
+                counter += 1;
               }
             }
           }
         }
       }
     }
-    println!("└─────────────┴─────────────┴─────────┴─────────┴──────────┴──────────┴─────────────┴─────────┴────────┘",);
+  }
+  let _ = writeln!(&mut buffer, "└─────────────┴─────────────┴─────────┴─────────┴──────────┴──────────┴─────────────┴─────────┴────────┘");
+  buffer
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_generate_decision_table_variants() {
+    let text = generate_decision_table_variants();
+    assert_eq!(1157, text.lines().count());
   }
 }

@@ -30,7 +30,9 @@
  * limitations under the License.
  */
 
-//! Point.
+//! # Point
+
+use std::fmt;
 
 /// Point with coordinates set to `(0,0)`.
 pub const POINT_ZERO: Point = Point { x: 0, y: 0 };
@@ -41,8 +43,24 @@ pub type Points = Vec<Point>;
 /// Point.
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct Point {
+  /// Left coordinate.
   pub x: usize,
+  /// Top coordinate.
   pub y: usize,
+}
+
+impl fmt::Display for Point {
+  /// Implements [Display](fmt::Display) trait for [Point].
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{:?}", self)
+  }
+}
+
+impl fmt::Debug for Point {
+  /// Implements [Debug](fmt::Debug) trait for [Point].
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "({},{})", self.x, self.y)
+  }
 }
 
 impl Point {
@@ -50,28 +68,11 @@ impl Point {
   pub fn new(x: usize, y: usize) -> Point {
     Point { x, y }
   }
-  /// Compares the coordinates of two points and returns **true**
-  /// when both coordinates are pointing the same position.
-  /// Another words, the point **p** overlays this point.
-  pub fn overlays(&self, p: Point) -> bool {
-    self.x == p.x && self.y == p.y
-  }
-  /// Unwraps the point coordinates to tuple with two integers.
-  pub fn unwrap(&self) -> (usize, usize) {
+
+  /// Converts this point's coordinates to tuple of integers.
+  pub fn into_inner(self) -> (usize, usize) {
     (self.x, self.y)
   }
 }
 
-/// Implementation of Display trait for point.
-impl std::fmt::Display for Point {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "({},{})", self.x, self.y)
-  }
-}
-
-/// Implementation of Debug trait for point.
-impl std::fmt::Debug for Point {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "({},{})", self.x, self.y)
-  }
-}
+// granskade

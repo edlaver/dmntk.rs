@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 
+set -e
+
 ###############################################################################
 # Dependencies:
 #
 # $ sudo dnf install lcov
 # $ rustup component add llvm-tools-preview
 # $ cargo install grcov
+# $ cargo install htop
 #
 ###############################################################################
 
 WORKING_DIRECTORY=$(pwd)
-DMNTK_BINARY_PATH="$WORKING_DIRECTORY"/target/debug
-MANUAL_TESTS_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.manual.tests
-TEST_RUNNER_DIRECTORY="$WORKING_DIRECTORY"/../dmntk.test.runner
+CARGO_NAME=$(grep -oE '^name = "[^"]+"' ./dmntk/Cargo.toml | grep -oE '"[^"]+"' | grep -oE '[^"]+' | tr '[:lower:]' '[:upper:]')
+CARGO_VERSION=$(grep -oE '^version = "[^"]+"' Cargo.toml | grep -oE '"[^"]+"' | grep -oE '[^"]+')
 
 # clean before proceeding
 cargo clean
@@ -28,45 +30,38 @@ if [ -n "$1" ]; then
   # run tests only for specified package
   cargo +nightly test -p "$1"
 else
-  # run all tests including including manual tests
+  # run all tests
   cargo +nightly test
-  # build the whole binary before running tests
+  # build the binary again
   cargo +nightly build
-  # run manual tests to collect the coverage of the code executed from command-line
-  echo "$MANUAL_TESTS_DIRECTORY"
-  if [[ -d "$MANUAL_TESTS_DIRECTORY" ]]
-  then
-    export PATH=$DMNTK_BINARY_PATH:$PATH
-    cd "$MANUAL_TESTS_DIRECTORY" || exit 1
-    ./run.sh
-    cd "$WORKING_DIRECTORY" || exit 1
-  fi
-  # collect the coverage from TCK tests
-  echo "$TEST_RUNNER_DIRECTORY"
-  if [[ -d "$TEST_RUNNER_DIRECTORY" ]]
-  then
-    export PATH=$DMNTK_BINARY_PATH:$PATH
-    dmntk srv > /dev/null 2>&1 &
-    _pid=$!
-    sleep 0.1
-    cd "$TEST_RUNNER_DIRECTORY" || exit 1
-    dmntk-test-runner config-all.yml
-    cd "$WORKING_DIRECTORY" || exit 1
-    kill -s SIGINT "$_pid"
-    sleep 0.1
-  fi
+  # run black-box tests
+  cd "$WORKING_DIRECTORY"/bbt || exit 1
+  ./bbt.sh
+  cd "$WORKING_DIRECTORY" || exit 1
+  # give some time to collect all data
+  sleep 0.5
 fi
 
 # prepare output directories for coverage results
 mkdir ./target/lcov
 mkdir ./target/coverage
 # generate coverage info
-grcov . --llvm -s . -t lcov --branch --ignore-not-existing --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" -o ./target/lcov/lcov.info
-# generate coverage report
-genhtml -t "DMNTK v0.1.1" -q -o ./target/coverage ./target/lcov/lcov.info
+grcov . --llvm -s . -t lcov --branch --ignore-not-existing --excl-line='\s*\}+\)*;?$|\s*/\*\s*$' --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" -o ./target/lcov/lcov.info
+# generate coverage report in HTML format
+genhtml -t "$CARGO_NAME v$CARGO_VERSION" -q -o ./target/coverage ./target/lcov/lcov.info
+# generate coverage report in PDF format
+if [ "$PDF_REPORT" != "" ]; then
+  echo ""
+  echo "Generating PDF report..."
+  htop -bl -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
+fi
 # display final message
 echo ""
-echo "Open coverage report: file://$WORKING_DIRECTORY/target/coverage/index.html"
+echo "Open coverage report:"
+echo "  HTML file://$WORKING_DIRECTORY/target/coverage/index.html"
+if [ "$PDF_REPORT" != "" ]; then
+  echo "   PDF file://$WORKING_DIRECTORY/target/coverage/coverage.pdf"
+fi
 echo ""
 
 # reformat generated code

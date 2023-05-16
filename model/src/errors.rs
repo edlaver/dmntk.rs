@@ -21,7 +21,7 @@ pub fn err_invalid_decision_table_hit_policy(hit_policy: &str) -> DmntkError {
 struct ModelParserError(String);
 
 impl From<ModelParserError> for DmntkError {
-  /// Creates [DmntkError] from [ModelParserError].
+  /// Converts `ModelParserError` into [DmntkError].
   fn from(e: ModelParserError) -> Self {
     DmntkError::new("ModelParserError", &e.0)
   }

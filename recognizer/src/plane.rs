@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Plane.
+//! # Plane
 
 use crate::errors::*;
 use crate::point::Point;
@@ -42,7 +42,7 @@ use std::convert::TryFrom;
 use std::fmt;
 use std::str::FromStr;
 
-/// Cell on the plane.
+/// Cell of the plane.
 #[derive(Debug, PartialEq, Eq)]
 pub enum Cell {
   /// Rectangular region with unique number, bounded by coordinates defined in **Rect**
@@ -82,17 +82,19 @@ pub enum Cell {
 }
 
 impl Cell {
-  /// Checks whether this cell is main double crossing,
+  /// Checks whether this cell is a main double crossing.
   pub fn is_main_double_crossing(&self) -> bool {
-    *self == Cell::MainDoubleCrossing
+    matches!(self, Cell::MainDoubleCrossing)
   }
-  /// Checks whether this cell is horizontal double crossing,
-  pub fn is_horizontal_double_crossing(&self) -> bool {
-    *self == Cell::HorizontalDoubleCrossing
+
+  /// Checks whether this cell is a horizontal double crossing.
+  pub fn is_horz_double_crossing(&self) -> bool {
+    matches!(self, Cell::HorizontalDoubleCrossing)
   }
-  /// Checks whether this cell is vertical double crossing,
-  pub fn is_vertical_double_crossing(&self) -> bool {
-    *self == Cell::VerticalDoubleCrossing
+
+  /// Checks whether this cell is a vertical double crossing.
+  pub fn is_vert_double_crossing(&self) -> bool {
+    matches!(self, Cell::VerticalDoubleCrossing)
   }
 }
 
@@ -111,20 +113,16 @@ pub enum HitPolicyPlacement {
 }
 
 impl HitPolicyPlacement {
-  /// Checks whether this policy placement is the **TopLeft** variant.
+  /// Checks whether this policy placement is the [HitPolicyPlacement::TopLeft] variant.
   pub fn is_top_left(&self) -> bool {
-    if let HitPolicyPlacement::TopLeft(_) = self {
-      return true;
-    }
-    false
+    matches!(self, HitPolicyPlacement::TopLeft(_))
   }
-  /// Checks whether this policy placement is the **BottomLeft** variant.
+
+  /// Checks whether this policy placement is the [HitPolicyPlacement::BottomLeft] variant.
   pub fn is_bottom_left(&self) -> bool {
-    if let HitPolicyPlacement::BottomLeft(_) = self {
-      return true;
-    }
-    false
+    matches!(self, HitPolicyPlacement::BottomLeft(_))
   }
+
   /// Returns hit policy associated with this placement.
   pub fn hit_policy(&self) -> HitPolicy {
     match self {
@@ -153,25 +151,19 @@ pub enum RuleNumbersPlacement {
 impl RuleNumbersPlacement {
   /// Checks whether this rule numbers placement is the **LeftBelow** variant.
   pub fn is_left_below(&self) -> bool {
-    if let RuleNumbersPlacement::LeftBelow(_) = self {
-      return true;
-    }
-    false
+    matches!(self, RuleNumbersPlacement::LeftBelow(_))
   }
+
   /// Checks whether this rule numbers placement is the **RightAfter** variant.
   pub fn is_right_after(&self) -> bool {
-    if let RuleNumbersPlacement::RightAfter(_) = self {
-      return true;
-    }
-    false
+    matches!(self, RuleNumbersPlacement::RightAfter(_))
   }
+
   /// Checks whether this rule numbers placement is the **NotPresent** variant.
   pub fn is_not_present(&self) -> bool {
-    if let RuleNumbersPlacement::NotPresent = self {
-      return true;
-    }
-    false
+    matches!(self, RuleNumbersPlacement::NotPresent)
   }
+
   /// Returns the amount of recognized rules numbers.
   pub fn rule_count(&self) -> usize {
     match self {
@@ -212,11 +204,11 @@ impl Plane {
     Ok(&self.content[row][col])
   }
 
-  /// Returns the text contained in a region pointed by `row` and `col`.
+  /// Returns the text contained in a region pointed by `row` and `col` coordinates.
   pub fn region_text(&self, row: usize, col: usize) -> Result<String> {
     let cell = self.cell(row, col)?;
     if let Cell::Region(_, _, text) = cell {
-      Ok(text.clone())
+      Ok(text.trim().to_string())
     } else {
       Err(err_plane_cell_is_not_region(&format!("row={row} col={col} cell={cell:?}")))
     }
@@ -414,7 +406,7 @@ impl Plane {
   pub fn horizontal_double_crossing(&self) -> Option<Point> {
     for (y, row) in self.content.iter().enumerate() {
       for (x, cell) in row.iter().enumerate() {
-        if cell.is_horizontal_double_crossing() {
+        if cell.is_horz_double_crossing() {
           return Some(Point::new(x, y));
         }
       }
@@ -427,7 +419,7 @@ impl Plane {
   pub fn vertical_double_crossing(&self) -> Option<Point> {
     for (y, row) in self.content.iter().enumerate() {
       for (x, cell) in row.iter().enumerate() {
-        if cell.is_vertical_double_crossing() {
+        if cell.is_vert_double_crossing() {
           return Some(Point::new(x, y));
         }
       }
@@ -447,17 +439,18 @@ impl Plane {
     // check if the hit policy is placed in the top-left corner of the plane
     if let Cell::Region(_, _, text) = &self.content.first().unwrap().first().unwrap() {
       if let Ok(hit_policy) = HitPolicy::try_from(text.as_str()) {
-        // top-left corner
+        // hit policy is placed in top-left corner
         return Ok(HitPolicyPlacement::TopLeft(hit_policy));
       }
     }
     // check if the hit policy is placed in the bottom-left corner of the plane
     if let Cell::Region(_, _, text) = &self.content.last().unwrap().first().unwrap() {
       if let Ok(hit_policy) = HitPolicy::try_from(text.as_str()) {
+        // hit policy is placed in bottom-left corner
         return Ok(HitPolicyPlacement::BottomLeft(hit_policy));
       }
     }
-    // hit policy was not found in the top-left nor bottom-right corner if the plane
+    // hit policy was not found in the top-left or bottom-right corner of the plane
     Ok(HitPolicyPlacement::NotPresent)
   }
 
@@ -534,21 +527,19 @@ impl Plane {
     }
   }
 
-  /// Checks if the cell pointed by coordinates **row** and **col**
-  /// is a horizontal output double line.
+  /// Checks if the cell pointed by coordinates `row` and `col` is a horizontal output double line.
   fn is_horizontal_output_double_line(&self, row: usize, col: usize) -> bool {
     self.content[row][col] == Cell::HorizontalOutputDoubleLine
   }
 
-  /// Checks if the cell pointed by coordinates **row** and **col**
-  /// is a vertical output double line.
+  /// Checks if the cell pointed by coordinates `row` and `col` is a vertical output double line.
   fn is_vertical_output_double_line(&self, row: usize, col: usize) -> bool {
     self.content[row][col] == Cell::VerticalOutputDoubleLine
   }
 }
 
-/// Implementation of Display trait for Plane.
 impl fmt::Display for Plane {
+  /// Implements [Display](fmt::Display) trait for [Plane].
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     let mut buffer = String::new();
     for row in &self.content {

@@ -134,7 +134,7 @@ fn bif_all(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::all(values.as_vec()),
+      Value::List(values) => core::all(values),
       _ => core::all(parameters),
     },
     _ => core::all(parameters),
@@ -145,7 +145,7 @@ fn bif_any(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::any(values.as_vec()),
+      Value::List(values) => core::any(values),
       _ => core::any(parameters),
     },
     _ => core::any(parameters),
@@ -386,7 +386,7 @@ fn bif_max(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::max(values.as_vec()),
+      Value::List(values) => core::max(values),
       _ => core::max(parameters),
     },
     _ => core::max(parameters),
@@ -397,7 +397,7 @@ fn bif_mean(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::mean(values.as_vec()),
+      Value::List(values) => core::mean(values),
       _ => core::mean(parameters),
     },
     _ => core::mean(parameters),
@@ -415,7 +415,7 @@ fn bif_median(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::median(values.as_vec()),
+      Value::List(values) => core::median(values),
       _ => core::median(parameters),
     },
     _ => core::median(parameters),
@@ -433,7 +433,7 @@ fn bif_min(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::min(values.as_vec()),
+      Value::List(values) => core::min(values),
       _ => core::min(parameters),
     },
     _ => core::min(parameters),
@@ -444,7 +444,7 @@ fn bif_mode(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::mode(values.as_vec()),
+      Value::List(values) => core::mode(values),
       _ => core::mode(parameters),
     },
     _ => core::mode(parameters),
@@ -511,7 +511,7 @@ fn bif_product(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::product(values.as_vec()),
+      Value::List(values) => core::product(values),
       _ => core::product(parameters),
     },
     _ => core::product(parameters),
@@ -586,7 +586,7 @@ fn bif_stddev(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::stddev(values.as_vec()),
+      Value::List(values) => core::stddev(values),
       _ => value_null!("[positional::stddev] invalid argument type, expected list, actual type is {}", parameters[0].type_of()),
     },
     _ => core::stddev(parameters),
@@ -641,7 +641,7 @@ fn bif_sum(parameters: &[Value]) -> Value {
   match parameters.len() {
     0 => invalid_number_of_parameters!("1+", 0),
     1 => match &parameters[0] {
-      Value::List(values) => core::sum(values.as_vec()),
+      Value::List(values) => core::sum(values),
       _ => core::sum(parameters),
     },
     _ => core::sum(parameters),

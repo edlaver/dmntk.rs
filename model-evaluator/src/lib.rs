@@ -30,17 +30,6 @@
  * limitations under the License.
  */
 
-extern crate dmntk_common;
-extern crate dmntk_feel;
-extern crate dmntk_feel_parser;
-extern crate dmntk_feel_temporal;
-extern crate dmntk_model;
-#[cfg(test)]
-extern crate dmntk_recognizer;
-#[cfg(test)]
-#[macro_use]
-extern crate lazy_static;
-
 mod boxed_expressions;
 mod business_knowledge_model;
 mod decision;

@@ -30,22 +30,11 @@
  * limitations under the License.
  */
 
-extern crate dmntk_examples;
-extern crate dmntk_model;
-
-mod dec_tab;
-mod decision_table;
+mod defs;
 mod generator;
-mod svg;
+mod horizontal_decision_table;
 
 #[cfg(test)]
 mod tests;
 
-const NL: char = '\n';
-const WS: &str = "";
-const INDENT: usize = 2;
-const INDENT_2: usize = INDENT + INDENT;
-const INDENT_3: usize = INDENT_2 + INDENT;
-
-pub use dec_tab::decision_table_to_html;
-pub use generator::definitions_to_html;
+pub use generator::{decision_table_to_html, dmn_model_to_html};

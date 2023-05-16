@@ -95,7 +95,6 @@ mod errors {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use std::borrow::Borrow;
   use std::convert::TryFrom;
 
   fn assert_href(expected: &str, uri: &str) {
@@ -147,7 +146,7 @@ mod tests {
   fn test_href_clone() {
     let href_src = HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
     let href_dst = href_src.clone();
-    let actual: String = href_dst.borrow().into();
+    let actual: String = (&href_dst).into();
     assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
   }
 }

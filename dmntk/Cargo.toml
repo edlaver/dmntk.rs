@@ -5,18 +5,15 @@ authors.workspace = true
 description = "DMNTK | Decision Model and Notation Toolkit"
 documentation = "https://docs.rs/dmntk"
 repository = "https://github.com/dmntk/dmntk.rs.git"
-license = "MIT OR Apache-2.0"
-edition = "2021"
-
-[features]
-default = []
-tck = []
+license.workspace = true
+edition.workspace = true
 
 [dependencies]
 actix-web.workspace = true
 base64.workspace = true
-clap = { version = "4.1.1", features = ["cargo"] }
-difference = "2.0.0"
+clap.workspace = true
+difference.workspace = true
+serde.workspace = true
 dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
 dmntk-feel.workspace = true
@@ -26,5 +23,3 @@ dmntk-model.workspace = true
 dmntk-recognizer.workspace = true
 dmntk-server.workspace = true
 dmntk-workspace.workspace = true
-serde.workspace = true
-serde_derive.workspace = true

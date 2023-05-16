@@ -36,10 +36,31 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, Name};
 use dmntk_model::model::Definitions;
+use once_cell::sync::Lazy;
 use std::sync::Arc;
 
 mod compatibility;
 mod various;
+
+macro_rules! static_model_evaluator_examples {
+  ($model_name:tt) => {
+    static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::$model_name));
+  };
+}
+
+macro_rules! static_model_evaluator {
+  ($model_name:tt) => {
+    static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator($model_name));
+  };
+}
+
+macro_rules! static_context {
+  ($name:tt, $content:tt) => {
+    static $name: Lazy<FeelContext> = Lazy::new(|| context($content));
+  };
+}
+
+use {static_context, static_model_evaluator, static_model_evaluator_examples};
 
 /// Utility function that creates a `FEEL` context from specified input expression.
 pub fn context(input: &str) -> FeelContext {

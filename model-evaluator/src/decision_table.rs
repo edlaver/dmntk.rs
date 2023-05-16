@@ -34,7 +34,7 @@
 
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::{Value, Values};
+use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::{BuiltinAggregator, DecisionTable, HitPolicy};
@@ -126,7 +126,7 @@ impl EvaluatedDecisionTable {
     for evaluated_rule in evaluated_rules {
       values.push(self.get_result(evaluated_rule));
     }
-    Value::List(Values::new(values))
+    Value::List(values)
   }
   ///
   fn evaluate_default_output_value(&self) -> Value {
@@ -261,9 +261,9 @@ impl EvaluatedDecisionTable {
 fn parse_decision_table(scope: &FeelScope, decision_table: &DecisionTable) -> Result<ParsedDecisionTable> {
   // parse input expressions and input values
   let mut input_expressions_and_values = vec![];
-  for input_clause in &decision_table.input_clauses {
+  for input_clause in decision_table.input_clauses() {
     let input_expression = dmntk_feel_parser::parse_expression(scope, &input_clause.input_expression, false)?;
-    let input_values = if let Some(input) = &input_clause.input_values {
+    let input_values = if let Some(input) = &input_clause.allowed_input_values {
       let node = dmntk_feel_parser::parse_unary_tests(scope, input, false)?;
       Some(node)
     } else {
@@ -275,8 +275,8 @@ fn parse_decision_table(scope: &FeelScope, decision_table: &DecisionTable) -> Re
   let mut component_names = vec![];
   let mut output_values_nodes = vec![];
   let mut default_output_values_nodes = vec![];
-  for output_clause in &decision_table.output_clauses {
-    if let Some(text) = &output_clause.output_values {
+  for output_clause in decision_table.output_clauses() {
+    if let Some(text) = &output_clause.allowed_output_values {
       let node = dmntk_feel_parser::parse_unary_tests(scope, text, false)?;
       output_values_nodes.push(Some(node));
     } else {
@@ -294,7 +294,7 @@ fn parse_decision_table(scope: &FeelScope, decision_table: &DecisionTable) -> Re
   }
   // parse all rules
   let mut parsed_rules = vec![];
-  for rule in &decision_table.rules {
+  for rule in decision_table.rules() {
     // parse input clause
     let mut input_entries_evaluators = vec![];
     for (i, (input_expression, input_values)) in input_expressions_and_values.iter().enumerate() {
@@ -356,14 +356,14 @@ fn evaluate_parsed_decision_table(scope: &FeelScope, parsed_decision_table: &Par
   for evaluator in parsed_decision_table.output_values_evaluators.iter().flatten() {
     let value = evaluator(scope);
     if let Value::ExpressionList(values) = value {
-      output_values.append(&mut values.as_vec().to_owned());
+      output_values.append(&mut values.to_owned());
     }
   }
   // evaluate only non-empty default output values
   let mut default_output_values = vec![];
   for evaluator in parsed_decision_table.default_output_values_evaluators.iter().flatten() {
     if let Value::ExpressionList(values) = evaluator(scope) {
-      default_output_values.append(&mut values.as_vec().to_owned());
+      default_output_values.append(&mut values.to_owned());
     }
   }
   // evaluate all rules
@@ -394,7 +394,7 @@ fn evaluate_parsed_decision_table(scope: &FeelScope, parsed_decision_table: &Par
 
 ///
 pub fn build_decision_table_evaluator(scope: &FeelScope, decision_table: &DecisionTable) -> Result<Evaluator> {
-  let hit_policy = decision_table.hit_policy;
+  let hit_policy = decision_table.hit_policy();
   let parsed_decision_table = parse_decision_table(scope, decision_table)?;
   Ok(Box::new(move |scope: &FeelScope| {
     let evaluated_decision_table = evaluate_parsed_decision_table(scope, &parsed_decision_table);
@@ -426,7 +426,7 @@ mod tests {
 
   #[test]
   fn test() {
-    let decision_table = dmntk_recognizer::build(H_000210).unwrap();
+    let decision_table = dmntk_recognizer::recognize_decision_table(H_000210, false).unwrap();
     let scope = context(r#"{Customer:"Business", Order:-3.23 }"#).into();
     let evaluator = build_decision_table_evaluator(&scope, &decision_table).unwrap();
     assert_eq!(value_number!(10, 2), evaluator(&scope));

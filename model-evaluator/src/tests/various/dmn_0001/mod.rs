@@ -36,9 +36,7 @@ use super::super::*;
 
 const DMN_0001: &str = include_str!("_0001.dmn");
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(DMN_0001);
-}
+static_model_evaluator!(DMN_0001);
 
 #[test]
 fn _0001() {

@@ -39,7 +39,7 @@ use crate::model_definitions::DefDefinitions;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
-use dmntk_feel::values::{Value, Values};
+use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody};
 use dmntk_feel_parser::ClosureBuilder;
 use dmntk_model::model::*;
@@ -106,7 +106,7 @@ pub fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evalu
     let mut evaluated_context = FeelContext::default();
     for (opt_variable_name, variable_type, evaluator) in &entry_evaluators {
       let value = evaluator(scope) as Value;
-      let coerced_value = variable_type.coerced(&value);
+      let coerced_value = value.coerced(variable_type);
       match opt_variable_name {
         Some(variable_name) => {
           scope.set_value(variable_name, coerced_value.clone());
@@ -253,7 +253,7 @@ pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, mo
     let mut params_ctx = FeelContext::default();
     bindings.iter().for_each(|(param_name, param_type, evaluator)| {
       let param_value = evaluator(scope) as Value;
-      params_ctx.set_entry(param_name, param_type.coerced(&param_value))
+      params_ctx.set_entry(param_name, param_value.coerced(param_type))
     });
     if let Value::FunctionDefinition(_, body, false, _, closure_ctx, result_type) = function_evaluator(scope) {
       scope.push(closure_ctx);
@@ -261,7 +261,7 @@ pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, mo
       let value = body.evaluate(scope);
       scope.pop(); // params_ctx
       scope.pop(); // closure_ctx
-      result_type.coerced(&value)
+      value.coerced(&result_type)
     } else {
       value_null!("expected Value::FunctionDefinition in invocation evaluator")
     }
@@ -301,7 +301,7 @@ pub fn build_relation_evaluator(scope: &FeelScope, relation: &Relation, model_ev
       }
       results.push(Value::Context(evaluated_context));
     }
-    Value::List(Values::new(results))
+    Value::List(results)
   });
   Ok((relation_evaluator, Closure::default()))
 }

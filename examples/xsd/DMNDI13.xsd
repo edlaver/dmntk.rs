@@ -99,7 +99,7 @@
 				<xsd:attribute name="fontBold" type="xsd:boolean"/>
 				<xsd:attribute name="fontUnderline" type="xsd:boolean"/>
 				<xsd:attribute name="fontStrikeThrough" type="xsd:boolean"/>
-				<xsd:attribute name="labelHorizontalAlignement" type="dc:AlignmentKind"/>
+				<xsd:attribute name="labelHorizontalAlignment" type="dc:AlignmentKind"/>
 				<xsd:attribute name="labelVerticalAlignment" type="dc:AlignmentKind"/>
 			</xsd:extension>
 		</xsd:complexContent>

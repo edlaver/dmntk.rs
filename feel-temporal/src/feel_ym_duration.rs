@@ -34,7 +34,7 @@
 
 use crate::errors::*;
 use dmntk_common::DmntkError;
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::convert::TryFrom;
 use std::{fmt, ops};
@@ -45,10 +45,8 @@ const REGEX_YEARS_AND_MONTHS: &str = r#"^(?P<sign>-)?P((?P<years>[0-9]+)Y)?((?P<
 /// Number of months in a year.
 const MONTHS_IN_YEAR: i64 = 12;
 
-lazy_static! {
-  /// Regular expression for parsing years and months duration.
-  static ref RE_YEARS_AND_MONTHS: Regex = Regex::new(REGEX_YEARS_AND_MONTHS).unwrap();
-}
+/// Regular expression for parsing years and months duration.
+static RE_YEARS_AND_MONTHS: Lazy<Regex> = Lazy::new(|| Regex::new(REGEX_YEARS_AND_MONTHS).unwrap());
 
 /// Years and months duration in FEEL.
 ///

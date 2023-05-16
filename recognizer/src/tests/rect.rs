@@ -30,12 +30,10 @@
  * limitations under the License.
  */
 
-//! ???
-
 use super::super::rect::*;
 
 #[test]
-fn rect_zero() {
+fn test_rect_zero() {
   let r = RECT_ZERO;
   assert_eq!(r.left, 0);
   assert_eq!(r.top, 0);
@@ -44,7 +42,7 @@ fn rect_zero() {
 }
 
 #[test]
-fn rect_new() {
+fn test_rect_new() {
   let r = Rect::new(10, 0, 50, 100);
   assert_eq!(r.left, 10);
   assert_eq!(r.top, 0);
@@ -54,9 +52,9 @@ fn rect_new() {
 }
 
 #[test]
-fn rect_offset_top() {
+fn test_rect_offset_top() {
   let r = Rect::new(10, 0, 50, 100);
-  let s = r.inc_top(2);
+  let s = r.offset_top(2);
   assert_eq!(s.left, 10);
   assert_eq!(s.top, 2);
   assert_eq!(s.right, 50);
@@ -64,9 +62,9 @@ fn rect_offset_top() {
 }
 
 #[test]
-fn rect_unpack() {
+fn test_rect_into_inner() {
   let r = Rect::new(10, 11, 12, 13);
-  let (left, top, right, bottom) = r.unpack();
+  let (left, top, right, bottom) = r.into_inner();
   assert_eq!(left, 10);
   assert_eq!(top, 11);
   assert_eq!(right, 12);
@@ -74,7 +72,7 @@ fn rect_unpack() {
 }
 
 #[test]
-fn rect_contains() {
+fn test_rect_contains() {
   let r = Rect::new(10, 10, 20, 20);
   let s1 = Rect::new(10, 10, 20, 20);
   assert!(r.contains(&s1));
@@ -89,7 +87,7 @@ fn rect_contains() {
 }
 
 #[test]
-fn rect_width_height() {
+fn test_rect_width_height() {
   assert_eq!(RECT_ZERO.width(), 0);
   assert_eq!(Rect::new(0, 0, 0, 0).width(), 0);
   assert_eq!(Rect::new(0, 0, 1, 0).width(), 1);
@@ -104,17 +102,17 @@ fn rect_width_height() {
 }
 
 #[test]
-fn rect_display() {
+fn test_rect_display() {
   assert_eq!("(10,11;12,13)", format!("{}", Rect::new(10, 11, 12, 13)));
 }
 
 #[test]
-fn rect_debug() {
+fn test_rect_debug() {
   assert_eq!("(10,11;12,13)", format!("{:?}", Rect::new(10, 11, 12, 13)));
 }
 
 #[test]
-fn rect_compare() {
+fn test_rect_compare() {
   let r1 = Rect::new(10, 10, 20, 20);
   let r2 = Rect::new(10, 10, 20, 20);
   let r3 = Rect::new(15, 15, 19, 19);
@@ -124,7 +122,7 @@ fn rect_compare() {
 
 #[test]
 #[allow(clippy::clone_on_copy)]
-fn rect_clone() {
+fn test_rect_clone() {
   let r1 = Rect::new(10, 10, 20, 20);
   let r2 = r1.clone();
   assert!((r1 == r2));

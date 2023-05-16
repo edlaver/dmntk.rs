@@ -35,50 +35,50 @@ use dmntk_feel::bif::Bif;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
 
-lazy_static! {
-  static ref NAME_DATE: Name = Name::from("date");
-  static ref NAME_DECIMAL_SEPARATOR: Name = Name::new(&["decimal", "separator"]);
-  static ref NAME_DELIMITER: Name = Name::from("delimiter");
-  static ref NAME_GROUPING_SEPARATOR: Name = Name::new(&["grouping", "separator"]);
-  static ref NAME_DAY: Name = Name::from("day");
-  static ref NAME_DIVIDEND: Name = Name::from("dividend");
-  static ref NAME_DIVISOR: Name = Name::from("divisor");
-  static ref NAME_FLAGS: Name = Name::from("flags");
-  static ref NAME_FROM: Name = Name::from("from");
-  static ref NAME_HOUR: Name = Name::from("hour");
-  static ref NAME_INPUT: Name = Name::from("input");
-  static ref NAME_KEY: Name = Name::from("key");
-  static ref NAME_LENGTH: Name = Name::from("length");
-  static ref NAME_LIST: Name = Name::from("list");
-  static ref NAME_MATCH: Name = Name::from("match");
-  static ref NAME_MONTH: Name = Name::from("month");
-  static ref NAME_MINUTE: Name = Name::from("minute");
-  static ref NAME_N: Name = Name::from("n");
-  static ref NAME_M: Name = Name::from("m");
-  static ref NAME_NEGAND: Name = Name::from("negand");
-  static ref NAME_NEW_ITEM: Name = Name::from("newItem");
-  static ref NAME_NUMBER: Name = Name::from("number");
-  static ref NAME_OFFSET: Name = Name::from("offset");
-  static ref NAME_PATTERN: Name = Name::from("pattern");
-  static ref NAME_POINT: Name = Name::from("point");
-  static ref NAME_POINT_1: Name = Name::from("point1");
-  static ref NAME_POINT_2: Name = Name::from("point2");
-  static ref NAME_POSITION: Name = Name::from("position");
-  static ref NAME_PRECEDES: Name = Name::from("precedes");
-  static ref NAME_RANGE: Name = Name::from("range");
-  static ref NAME_RANGE_1: Name = Name::from("range1");
-  static ref NAME_RANGE_2: Name = Name::from("range2");
-  static ref NAME_REPLACEMENT: Name = Name::from("replacement");
-  static ref NAME_SCALE: Name = Name::from("scale");
-  static ref NAME_SECOND: Name = Name::from("second");
-  static ref NAME_START_POSITION: Name = Name::new(&["start", "position"]);
-  static ref NAME_STRING: Name = Name::from("string");
-  static ref NAME_TIME: Name = Name::from("time");
-  static ref NAME_TO: Name = Name::from("to");
-  static ref NAME_VALUE1: Name = Name::from("value1");
-  static ref NAME_VALUE2: Name = Name::from("value2");
-  static ref NAME_YEAR: Name = Name::from("year");
-}
+use once_cell::sync::Lazy;
+
+static NAME_DATE: Lazy<Name> = Lazy::new(|| Name::from("date"));
+static NAME_DECIMAL_SEPARATOR: Lazy<Name> = Lazy::new(|| Name::new(&["decimal", "separator"]));
+static NAME_DELIMITER: Lazy<Name> = Lazy::new(|| Name::from("delimiter"));
+static NAME_GROUPING_SEPARATOR: Lazy<Name> = Lazy::new(|| Name::new(&["grouping", "separator"]));
+static NAME_DAY: Lazy<Name> = Lazy::new(|| Name::from("day"));
+static NAME_DIVIDEND: Lazy<Name> = Lazy::new(|| Name::from("dividend"));
+static NAME_DIVISOR: Lazy<Name> = Lazy::new(|| Name::from("divisor"));
+static NAME_FLAGS: Lazy<Name> = Lazy::new(|| Name::from("flags"));
+static NAME_FROM: Lazy<Name> = Lazy::new(|| Name::from("from"));
+static NAME_HOUR: Lazy<Name> = Lazy::new(|| Name::from("hour"));
+static NAME_INPUT: Lazy<Name> = Lazy::new(|| Name::from("input"));
+static NAME_KEY: Lazy<Name> = Lazy::new(|| Name::from("key"));
+static NAME_LENGTH: Lazy<Name> = Lazy::new(|| Name::from("length"));
+static NAME_LIST: Lazy<Name> = Lazy::new(|| Name::from("list"));
+static NAME_MATCH: Lazy<Name> = Lazy::new(|| Name::from("match"));
+static NAME_MONTH: Lazy<Name> = Lazy::new(|| Name::from("month"));
+static NAME_MINUTE: Lazy<Name> = Lazy::new(|| Name::from("minute"));
+static NAME_N: Lazy<Name> = Lazy::new(|| Name::from("n"));
+static NAME_M: Lazy<Name> = Lazy::new(|| Name::from("m"));
+static NAME_NEGAND: Lazy<Name> = Lazy::new(|| Name::from("negand"));
+static NAME_NEW_ITEM: Lazy<Name> = Lazy::new(|| Name::from("newItem"));
+static NAME_NUMBER: Lazy<Name> = Lazy::new(|| Name::from("number"));
+static NAME_OFFSET: Lazy<Name> = Lazy::new(|| Name::from("offset"));
+static NAME_PATTERN: Lazy<Name> = Lazy::new(|| Name::from("pattern"));
+static NAME_POINT: Lazy<Name> = Lazy::new(|| Name::from("point"));
+static NAME_POINT_1: Lazy<Name> = Lazy::new(|| Name::from("point1"));
+static NAME_POINT_2: Lazy<Name> = Lazy::new(|| Name::from("point2"));
+static NAME_POSITION: Lazy<Name> = Lazy::new(|| Name::from("position"));
+static NAME_PRECEDES: Lazy<Name> = Lazy::new(|| Name::from("precedes"));
+static NAME_RANGE: Lazy<Name> = Lazy::new(|| Name::from("range"));
+static NAME_RANGE_1: Lazy<Name> = Lazy::new(|| Name::from("range1"));
+static NAME_RANGE_2: Lazy<Name> = Lazy::new(|| Name::from("range2"));
+static NAME_REPLACEMENT: Lazy<Name> = Lazy::new(|| Name::from("replacement"));
+static NAME_SCALE: Lazy<Name> = Lazy::new(|| Name::from("scale"));
+static NAME_SECOND: Lazy<Name> = Lazy::new(|| Name::from("second"));
+static NAME_START_POSITION: Lazy<Name> = Lazy::new(|| Name::new(&["start", "position"]));
+static NAME_STRING: Lazy<Name> = Lazy::new(|| Name::from("string"));
+static NAME_TIME: Lazy<Name> = Lazy::new(|| Name::from("time"));
+static NAME_TO: Lazy<Name> = Lazy::new(|| Name::from("to"));
+static NAME_VALUE1: Lazy<Name> = Lazy::new(|| Name::from("value1"));
+static NAME_VALUE2: Lazy<Name> = Lazy::new(|| Name::from("value2"));
+static NAME_YEAR: Lazy<Name> = Lazy::new(|| Name::from("year"));
 
 type NamedParameters = Value;
 
@@ -202,7 +202,7 @@ fn bif_after(parameters: &NamedParameters) -> Value {
 
 fn bif_all(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::all(list.as_vec())
+    core::all(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -210,7 +210,7 @@ fn bif_all(parameters: &NamedParameters) -> Value {
 
 fn bif_any(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::any(list.as_vec())
+    core::any(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -547,7 +547,7 @@ fn bif_matches(parameters: &NamedParameters) -> Value {
 
 fn bif_max(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::max(list.as_vec())
+    core::max(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -555,7 +555,7 @@ fn bif_max(parameters: &NamedParameters) -> Value {
 
 fn bif_mean(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::mean(list.as_vec())
+    core::mean(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -575,7 +575,7 @@ fn bif_meets(parameters: &NamedParameters) -> Value {
 
 fn bif_median(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::median(list.as_vec())
+    core::median(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -595,7 +595,7 @@ fn bif_met_by(parameters: &NamedParameters) -> Value {
 
 fn bif_min(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::min(list.as_vec())
+    core::min(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -623,7 +623,7 @@ fn bif_month_of_year(parameters: &NamedParameters) -> Value {
 
 fn bif_mode(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::mode(list.as_vec())
+    core::mode(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -699,7 +699,7 @@ fn bif_overlaps_before(parameters: &NamedParameters) -> Value {
 
 fn bif_product(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::product(list.as_vec())
+    core::product(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -814,7 +814,7 @@ fn bif_starts_with(parameters: &NamedParameters) -> Value {
 
 fn bif_stddev(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::stddev(list.as_vec())
+    core::stddev(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }
@@ -910,7 +910,7 @@ fn bif_substring_before(parameters: &NamedParameters) -> Value {
 
 fn bif_sum(parameters: &NamedParameters) -> Value {
   if let Some((Value::List(list), _)) = get_param(parameters, &NAME_LIST) {
-    core::sum(list.as_vec())
+    core::sum(list)
   } else {
     parameter_not_found!(NAME_LIST)
   }

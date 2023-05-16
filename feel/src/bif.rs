@@ -32,6 +32,7 @@
 
 //! Definitions of built-in functions.
 
+use crate::errors::*;
 use dmntk_common::DmntkError;
 use std::str::FromStr;
 
@@ -192,7 +193,7 @@ impl FromStr for Bif {
       "upper case" => Ok(Self::UpperCase),
       "week of year" => Ok(Self::WeekOfYear),
       "years and months duration" => Ok(Self::YearsAndMonthsDuration),
-      _ => Err(errors::err_unknown_function_name(s)),
+      _ => Err(err_unknown_function_name(s)),
     }
   }
 }
@@ -213,25 +214,5 @@ pub fn is_built_in_date_time_function_name(name: &str) -> bool {
     matches!(built_in_function, Bif::Date | Bif::Time | Bif::DateAndTime | Bif::Duration)
   } else {
     false
-  }
-}
-
-/// Definitions of errors raised in built-in functions module.
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Built-in functions errors.
-  struct BifError(String);
-
-  impl From<BifError> for DmntkError {
-    /// Converts [BifError] into [DmntkError].
-    fn from(e: BifError) -> Self {
-      DmntkError::new("BifError", &e.0)
-    }
-  }
-
-  /// Creates an instance of `UnknownFunctionName` error.
-  pub fn err_unknown_function_name(name: &str) -> DmntkError {
-    BifError(format!("unknown built-in function name: {name}")).into()
   }
 }

@@ -46,6 +46,13 @@ fn eq_vectors(actual: &[String], expected: &[&str]) {
   }
 }
 
+fn eq_opt_vectors(actual: &[Option<String>], expected: &[Option<&str>]) {
+  assert_eq!(actual.len(), expected.len());
+  for (index, value) in actual.iter().enumerate() {
+    assert_eq!(*value, expected[index].map(|s| s.to_string()));
+  }
+}
+
 fn eq_matrices(actual: &[Vec<String>], expected: &[&[&str]]) {
   assert_eq!(actual.len(), expected.len());
   for (r, row) in actual.iter().enumerate() {

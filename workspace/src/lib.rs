@@ -30,12 +30,7 @@
  * limitations under the License.
  */
 
-extern crate dmntk_common;
-extern crate dmntk_feel;
-extern crate dmntk_feel_evaluator;
-extern crate dmntk_model;
-extern crate dmntk_model_evaluator;
-extern crate walkdir;
+//! # Workspace
 
 mod errors;
 mod workspace;

@@ -597,7 +597,7 @@ fn build_expression_list(lhs: &[AstNode]) -> Result<Evaluator> {
     for evaluator in &evaluators {
       values.push(evaluator(scope))
     }
-    Value::ExpressionList(Values::new(values))
+    Value::ExpressionList(values)
   }))
 }
 
@@ -640,7 +640,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
     match lhv {
       Value::List(values) => {
         let mut filtered_values = vec![];
-        for value in values.as_vec() {
+        for value in &values {
           let (added_local_context, has_item_entry) = if let Value::Context(local_context) = value {
             scope.push(local_context.clone());
             if local_context.contains_entry(&name_item) {
@@ -671,7 +671,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
         match rhv {
           Value::Number(index) => {
             if index.is_integer() {
-              let list_size = values.as_vec().len();
+              let list_size = values.len();
               if list_size > 0 {
                 if !index.is_negative() {
                   let n = {
@@ -683,7 +683,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                   };
                   if n > 0 && n <= list_size {
                     // unwrap below is safe, index `n` is checked above, `values` variable is immutable
-                    values.as_vec().get(n - 1).unwrap().to_owned()
+                    values.get(n - 1).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [1..{}], actual index is {}", list_size, n)
                   }
@@ -697,7 +697,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
                   };
                   if n > 0 && n <= list_size {
                     // unwrap below is safe, index `n` is checked above, `values` variable is immutable
-                    values.as_vec().get(list_size - n).unwrap().to_owned()
+                    values.get(list_size - n).unwrap().to_owned()
                   } else {
                     value_null!("index in filter is out of range [-{}..-1], actual index is -{}", list_size, n)
                   }
@@ -715,7 +715,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             if filtered_values.len() == 1 {
               filtered_values[0].to_owned()
             } else {
-              Value::List(Values::new(filtered_values))
+              Value::List(filtered_values)
             }
           }
         }
@@ -731,7 +731,7 @@ fn build_filter(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       | v @ Value::Context(_) => match rhe(scope) {
         Value::Boolean(flag) => {
           if flag {
-            Value::List(Values::new(vec![v]))
+            Value::List(vec![v])
           } else {
             Value::List(Values::default())
           }
@@ -1162,13 +1162,13 @@ fn build_in(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       Value::Range(l, l_closed, r, r_closed) => eval_in_range(&lhv, &l, l_closed, &r, r_closed),
       Value::List(r_inner) => {
         if let Value::List(l_inner) = lhv {
-          eval_in_list_in_list(l_inner.as_vec(), r_inner.as_vec())
+          eval_in_list_in_list(&l_inner, &r_inner)
         } else {
-          eval_in_list(&lhv, r_inner.as_vec())
+          eval_in_list(&lhv, &r_inner)
         }
       }
-      Value::ExpressionList(inner) => eval_in_list(&lhv, inner.as_vec()),
-      Value::NegatedCommaList(inner) => eval_in_negated_list(&lhv, inner.as_vec()),
+      Value::ExpressionList(inner) => eval_in_list(&lhv, &inner),
+      Value::NegatedCommaList(inner) => eval_in_negated_list(&lhv, &inner),
       Value::UnaryLess(inner) => eval_in_unary_less(&lhv, inner.borrow()),
       Value::UnaryLessOrEqual(inner) => eval_in_unary_less_or_equal(&lhv, inner.borrow()),
       Value::UnaryGreater(inner) => eval_in_unary_greater(&lhv, inner.borrow()),
@@ -1374,7 +1374,7 @@ fn build_list(lhs: &[AstNode]) -> Result<Evaluator> {
     for evaluator in &evaluators {
       values.push(evaluator(scope))
     }
-    Value::List(Values::new(values))
+    Value::List(values)
   }))
 }
 
@@ -1518,7 +1518,7 @@ fn build_negated_list(lhs: &[AstNode]) -> Result<Evaluator> {
     for evaluator in &evaluators {
       values.push(evaluator(scope))
     }
-    Value::NegatedCommaList(Values::new(values))
+    Value::NegatedCommaList(values)
   }))
 }
 
@@ -1808,7 +1808,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
       }
       Value::List(items) => {
         let mut result = vec![];
-        for item in items.as_vec() {
+        for item in items {
           if let Value::Context(context) = item {
             if let Some(value) = context.search_entry(&qualified_name) {
               result.push(value.clone());
@@ -1819,7 +1819,7 @@ fn build_path(lhs: &AstNode, rhs: &AstNode) -> Result<Evaluator> {
             return value_null!("build_path: no context in list");
           }
         }
-        Value::List(Values::new(result))
+        Value::List(result)
       }
       other => get_property_from_value(other, &property_name),
     }
@@ -2095,8 +2095,8 @@ pub fn eval_ternary_equality(lhs: &Value, rhs: &Value) -> Option<bool> {
     },
     Value::List(ls) => match rhs {
       Value::List(rs) => {
-        if ls.as_vec().len() == rs.as_vec().len() {
-          for (l, r) in ls.as_vec().iter().zip(rs.as_vec().iter()) {
+        if ls.len() == rs.len() {
+          for (l, r) in ls.iter().zip(rs.iter()) {
             if let Some(true) = eval_ternary_equality(l, r) {
             } else {
               return Some(false);
@@ -2205,7 +2205,7 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
         }
       }
       Value::List(inner) => {
-        if let Value::Boolean(true) = eval_in_list(left, inner.as_vec()) {
+        if let Value::Boolean(true) = eval_in_list(left, inner) {
           return VALUE_TRUE;
         }
       }
@@ -2224,10 +2224,10 @@ fn eval_in_list(left: &Value, items: &[Value]) -> Value {
 fn eval_in_list_in_list(l_items: &[Value], r_items: &[Value]) -> Value {
   for item in r_items {
     if let Value::List(rhs) = item {
-      let mut available: HashSet<usize> = (0..rhs.as_vec().len()).collect();
+      let mut available: HashSet<usize> = (0..rhs.len()).collect();
       for l in l_items {
         let mut found = false;
-        for (index, r) in rhs.as_vec().iter().enumerate() {
+        for (index, r) in rhs.iter().enumerate() {
           if available.contains(&index) {
             if let Value::Boolean(true) = eval_in_equal(l, r) {
               available.remove(&index);
@@ -2284,7 +2284,7 @@ fn eval_in_negated_list(left: &Value, items: &[Value]) -> Value {
         }
       }
       Value::List(inner) => {
-        if let Value::Boolean(true) = eval_in_list(left, inner.as_vec()) {
+        if let Value::Boolean(true) = eval_in_list(left, inner) {
           return Value::Boolean(false);
         }
       }
@@ -2578,7 +2578,7 @@ fn eval_function_with_positional_parameters(
     return value_null!("invalid number of arguments");
   }
   for (argument_value, (parameter_name, parameter_type)) in args.iter().zip(params) {
-    params_ctx.set_entry(parameter_name, parameter_type.coerced(argument_value))
+    params_ctx.set_entry(parameter_name, argument_value.coerced(parameter_type))
   }
   eval_function_definition(scope, params_ctx, body, closure_ctx, result_type)
 }
@@ -2599,7 +2599,7 @@ fn eval_function_with_named_parameters(
     }
     for (parameter_name, parameter_type) in params {
       if let Some((argument, _)) = argument_map.get(parameter_name) {
-        params_ctx.set_entry(parameter_name, parameter_type.coerced(argument))
+        params_ctx.set_entry(parameter_name, argument.coerced(parameter_type))
       } else {
         return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
@@ -2631,7 +2631,7 @@ fn eval_function_definition(scope: &FeelScope, params_ctx: FeelContext, body: &F
   }
   scope.pop(); // params_ctx
   scope.pop(); // closure_ctx
-  result_type.coerced(&result)
+  result.coerced(&result_type)
 }
 
 /// Evaluates external function definition with positional parameters.
@@ -2651,7 +2651,7 @@ fn eval_external_function_with_named_parameters(scope: &FeelScope, args: &Value,
     }
     for (parameter_name, parameter_type) in params {
       if let Some((argument, _)) = argument_map.get(parameter_name) {
-        args1.push(parameter_type.coerced(argument));
+        args1.push(argument.coerced(parameter_type));
       } else {
         return value_null!("parameter with name {} not found in arguments", parameter_name);
       }
@@ -2667,7 +2667,7 @@ fn eval_external_function_definition(scope: &FeelScope, arguments: &[Value], bod
     Value::ExternalPmmlFunction(document, model_name) => eval_pmml_function(document, model_name, arguments),
     other => value_null!("expected JAVA or PMML mapping, actual value is {}", other),
   };
-  result_type.coerced(&result)
+  result.coerced(&result_type)
 }
 
 /// Mock of Java function evaluation

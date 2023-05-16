@@ -33,14 +33,14 @@
 use super::super::point::*;
 
 #[test]
-fn point_zero() {
+fn test_point_zero() {
   let p = POINT_ZERO;
   assert_eq!(p.x, 0);
   assert_eq!(p.y, 0);
 }
 
 #[test]
-fn point_new() {
+fn test_point_new() {
   let p = Point::new(1, 2);
   assert_eq!(p.x, 1);
   assert_eq!(p.y, 2);
@@ -48,28 +48,19 @@ fn point_new() {
 }
 
 #[test]
-fn point_overlays() {
-  let p1 = Point::new(1, 2);
-  let p2 = Point::new(1, 2);
-  let p3 = Point::new(2, 1);
-  assert!(p2.overlays(p1));
-  assert!(!p3.overlays(p2));
-}
-
-#[test]
-fn point_display() {
+fn test_point_display() {
   assert_eq!("(10,20)", format!("{}", Point::new(10, 20)));
   assert_eq!("(0,0)", format!("{}", Point::new(0, 0)));
 }
 
 #[test]
-fn point_debug() {
+fn test_point_debug() {
   assert_eq!("(10,20)", format!("{:?}", Point::new(10, 20)));
   assert_eq!("(0,0)", format!("{:?}", Point::new(0, 0)));
 }
 
 #[test]
-fn point_compare() {
+fn test_point_compare() {
   let p1 = Point::new(1, 2);
   let p2 = Point::new(1, 2);
   let p3 = Point::new(2, 1);
@@ -78,8 +69,13 @@ fn point_compare() {
 }
 
 #[test]
+fn test_point_into_inner() {
+  assert_eq!((21, 22), Point::new(21, 22).into_inner());
+}
+
+#[test]
 #[allow(clippy::clone_on_copy)]
-fn point_clone() {
+fn test_point_clone() {
   let p1 = Point::new(1, 2);
   let p2 = p1.clone();
   assert!((p1 == p2));

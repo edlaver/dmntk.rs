@@ -32,11 +32,11 @@
 
 //! `FEEL` types.
 
-use self::errors::*;
 use crate::context::FeelContext;
+use crate::errors::*;
 use crate::names::Name;
 use crate::value_null;
-use crate::values::{Value, Values};
+use crate::values::Value;
 use dmntk_common::{DmntkError, Result};
 use std::collections::BTreeMap;
 use std::fmt;
@@ -180,71 +180,15 @@ pub fn is_built_in_type_name(name: &str) -> bool {
 }
 
 impl FeelType {
-  /// When a value appears in a certain context, it must be compatible
-  /// with a type expected in that context, called the target type.
-  /// After the type of the value is known, an implicit conversion
-  /// from the type of the value to the target type can be performed.
-  /// If an implicit conversion is mandatory but it cannot be performed,
-  /// the result is null.
-  ///
-  /// There are several possible type conversions:
-  ///
-  /// - to singleton list:
-  ///
-  ///      When the type of the value is `T` and the target type is `List<T>`,
-  ///      the simple value is converted to a singleton list.
-  ///
-  /// - from singleton list:
-  ///
-  ///      When the type of the value is `List<T>`, and the value is a singleton list
-  ///      and the target type is T, the value is converted by unwrapping the first element.
-  ///
-  /// - conforms to:
-  ///
-  ///      When the type of the value is T1, the target type is T2, and T1 conforms to T2,
-  ///      the value remains unchanged. Otherwise the result is null.
-  ///
-  /// All these conversion rules are implemented in this function.
-  ///
-  pub fn coerced(&self, actual_value: &Value) -> Value {
-    if let Value::FunctionDefinition(_, _, _, _, _, _) = actual_value {
-      return actual_value.clone();
-    }
-    // conforms to
-    if actual_value.type_of().is_conformant(self) {
-      return actual_value.clone();
-    }
-    match self {
-      // to singleton list
-      FeelType::List(target_type) => {
-        if actual_value.type_of().is_conformant(target_type) {
-          return Value::List(Values::new(vec![actual_value.clone()]));
-        }
-      }
-      // from singleton list
-      target_type => {
-        if let FeelType::List(actual_type) = actual_value.type_of() {
-          if actual_type.is_conformant(target_type) {
-            if let Value::List(values) = actual_value {
-              if values.len() == 1 {
-                return values.as_vec()[0].clone();
-              }
-            }
-          }
-        }
-      }
-    }
-    value_null!("after coercion")
-  }
-
   ///
   pub fn get_conformant_value(&self, actual_value: &Value) -> Value {
-    let actual_type = actual_value.type_of();
-    if actual_type.is_conformant(self) {
-      // unwrap is ok, all non-conformant combinations are filtered in the condition above
+    if let FeelType::Null = self {
+      return value_null!();
+    }
+    if actual_value.is_conformant(self) {
       self.get_value_checked(actual_value).unwrap()
     } else {
-      value_null!("type '{}' is not conformant with value of type '{}'", self.to_string(), actual_type.to_string())
+      value_null!("type '{}' is not conformant with value '{}'", self.to_string(), actual_value)
     }
   }
 
@@ -297,10 +241,10 @@ impl FeelType {
       FeelType::List(items_type) => {
         if let Value::List(items) = value {
           let mut result = vec![];
-          for item in items.as_vec() {
+          for item in items {
             result.push(items_type.get_value_checked(item)?);
           }
-          return Ok(Value::List(Values::new(result)));
+          return Ok(Value::List(result));
         }
       }
       FeelType::Number => {
@@ -361,89 +305,37 @@ impl FeelType {
     FeelType::Function(parameter_types.iter().map(|typ| (*typ).clone()).collect(), Box::new((*result_type).clone()))
   }
 
-  ///
-  pub fn is_equivalent(&self, other: &FeelType) -> bool {
-    match other {
-      FeelType::Any => matches!(self, FeelType::Any),
-      FeelType::Boolean => matches!(self, FeelType::Boolean),
-      FeelType::Context(entries_other) => {
-        if let FeelType::Context(entries_self) = self {
-          if entries_self.keys().len() == entries_other.len() {
-            for (name, type_self) in entries_self {
-              if let Some(type_other) = entries_other.get(name) {
-                if !type_self.is_equivalent(type_other) {
-                  return false;
-                }
-              } else {
-                return false;
-              }
-            }
-            return true;
-          }
-        }
-        false
-      }
-      FeelType::Date => matches!(self, FeelType::Date),
-      FeelType::DateTime => matches!(self, FeelType::DateTime),
-      FeelType::DaysAndTimeDuration => matches!(self, FeelType::DaysAndTimeDuration),
-      FeelType::Function(params_other, result_other) => {
-        if let FeelType::Function(params_self, result_self) = self {
-          if params_self.len() == params_other.len() {
-            for (i, param_self) in params_self.iter().enumerate() {
-              if !param_self.is_equivalent(&params_other[i]) {
-                return false;
-              }
-              if !result_self.is_equivalent(result_other) {
-                return false;
-              }
-            }
-            return true;
-          }
-        }
-        false
-      }
-      FeelType::List(type_other) => {
-        if let FeelType::List(type_self) = self {
-          type_self.is_equivalent(type_other)
-        } else {
-          false
-        }
-      }
-      FeelType::Null => matches!(self, FeelType::Null),
-      FeelType::Number => matches!(self, FeelType::Number),
+  /// Checks if this type is conformant with specified target type.
+  pub fn is_conformant(&self, target_type: &FeelType) -> bool {
+    if matches!(self, FeelType::Null) {
+      return true;
+    }
+    match target_type {
+      FeelType::Any => return true,
+      FeelType::Null => return matches!(self, FeelType::Null),
+      FeelType::Boolean => return matches!(self, FeelType::Boolean),
+      FeelType::Number => return matches!(self, FeelType::Number),
+      FeelType::String => return matches!(self, FeelType::String),
+      FeelType::Date => return matches!(self, FeelType::Date),
+      FeelType::Time => return matches!(self, FeelType::Time),
+      FeelType::DateTime => return matches!(self, FeelType::DateTime),
+      FeelType::DaysAndTimeDuration => return matches!(self, FeelType::DaysAndTimeDuration),
+      FeelType::YearsAndMonthsDuration => return matches!(self, FeelType::YearsAndMonthsDuration),
       FeelType::Range(type_other) => {
         if let FeelType::Range(type_self) = self {
-          type_self.is_equivalent(type_other)
-        } else {
-          false
+          return type_self.is_conformant(type_other);
         }
       }
-      FeelType::String => matches!(self, FeelType::String),
-      FeelType::Time => matches!(self, FeelType::Time),
-      FeelType::YearsAndMonthsDuration => matches!(self, FeelType::YearsAndMonthsDuration),
-    }
-  }
-
-  ///
-  pub fn is_conformant(&self, other: &FeelType) -> bool {
-    if self.is_equivalent(other) {
-      return true;
-    }
-    if let FeelType::Null = self {
-      return true;
-    }
-    match other {
-      FeelType::Any => return true,
       FeelType::List(type_other) => {
         if let FeelType::List(type_self) = self {
           return type_self.is_conformant(type_other);
         }
       }
-      FeelType::Context(entries_other) => {
-        if let FeelType::Context(entries_self) = self {
-          for (name, type_other) in entries_other {
-            if let Some(type_self) = entries_self.get(name) {
-              if !type_self.is_conformant(type_other) {
+      FeelType::Context(target_entries) => {
+        if let FeelType::Context(self_entries) = self {
+          for (name, type_target) in target_entries {
+            if let Some(type_self) = self_entries.get(name) {
+              if !type_self.is_conformant(type_target) {
                 return false;
               }
             } else {
@@ -470,38 +362,7 @@ impl FeelType {
         }
         return false;
       }
-      FeelType::Range(type_other) => {
-        if let FeelType::Range(type_self) = self {
-          return type_self.is_conformant(type_other);
-        }
-      }
-      _ => {}
     }
     false
-  }
-}
-
-/// Definitions of errors raised by `types` module.
-mod errors {
-  use dmntk_common::DmntkError;
-
-  /// Definition of errors raised in `types` module.
-  struct TypesError(String);
-
-  impl From<TypesError> for DmntkError {
-    /// Converts `TypesError` into [DmntkError].
-    fn from(e: TypesError) -> Self {
-      DmntkError::new("TypesError", &e.0)
-    }
-  }
-
-  /// Creates an invalid `FEEL` type name error.
-  pub fn err_invalid_feel_type_name(s: &str) -> DmntkError {
-    TypesError(format!("invalid FEEL type name: {s}")).into()
-  }
-
-  /// Creates an error indicating value non conformant with type.
-  pub fn err_invalid_value_for_retrieving_using_feel_type(s1: &str, s2: &str) -> DmntkError {
-    TypesError(format!("invalid value for retrieving with type check, type = '{s1}', value = '{s2}'")).into()
   }
 }

@@ -31,13 +31,12 @@
  */
 
 use super::super::*;
-use crate::ModelEvaluator;
-use std::sync::Arc;
 
-lazy_static! {
-  static ref MODEL_EVALUATOR: Arc<ModelEvaluator> = build_model_evaluator(dmntk_examples::DMN_N_0019);
-  static ref CTX: FeelContext = context(
-    r#"{
+static_model_evaluator_examples!(DMN_N_0019);
+
+static_context!(
+  CTX,
+  r#"{
     "Flight List": [
       { "Flight Number": "UA123",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T18:00:00", "Arrival": @"2017-01-01T19:00:00", "Capacity": 5, "Status": "cancelled" },
       { "Flight Number": "UA456",  "From": "SFO", "To": "SNA", "Departure": @"2017-01-01T19:00:00", "Arrival": @"2017-01-01T20:00:00", "Capacity": 2, "Status": "scheduled" },
@@ -53,8 +52,7 @@ lazy_static! {
       { "Name": "Dick",  "Status": "silver", "Miles": 100,    "Flight Number": "UA123" }
     ]
   }"#
-  );
-}
+);
 
 #[test]
 fn _0001() {

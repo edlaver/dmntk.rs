@@ -57,7 +57,7 @@ impl InputDataEvaluator {
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id();
       let variable = Variable::try_from(input_data.variable())?;
-      let evaluator = variable.build_evaluator()?;
+      let evaluator = variable.build_evaluator();
       self
         .evaluators
         .write()
@@ -66,6 +66,7 @@ impl InputDataEvaluator {
     }
     Ok(())
   }
+
   /// Evaluates input data with specified identifier.
   pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
     self
@@ -75,6 +76,7 @@ impl InputDataEvaluator {
       .get(input_data_id)
       .map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
+
   /// Returns the name and type of the input variable of input data definition with specified identifier.
   pub fn get_input_variable(&self, input_data_id: &str) -> Option<Variable> {
     self.evaluators.read().ok()?.get(input_data_id).map(|entry| (entry.0).clone())

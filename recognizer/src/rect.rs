@@ -30,14 +30,16 @@
  * limitations under the License.
  */
 
-//! Rectangle.
+//! # Rectangle
+
+use std::fmt;
 
 /// Rectangle with coordinates set to zeros `(0,0,0,0)`.
 pub const RECT_ZERO: Rect = Rect {
+  left: 0,
   top: 0,
   right: 0,
   bottom: 0,
-  left: 0,
 };
 
 /// Vector of rectangles.
@@ -56,24 +58,33 @@ pub struct Rect {
   pub bottom: usize,
 }
 
+impl fmt::Display for Rect {
+  /// Implements [Display](fmt::Display) trait for [Rect].
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{:?}", self)
+  }
+}
+
+impl fmt::Debug for Rect {
+  /// Implements [Debug](fmt::Debug) trait for [Rect].
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "({},{};{},{})", self.left, self.top, self.right, self.bottom)
+  }
+}
+
 impl Rect {
-  /// Creates a new rectangle from four coordinates.
-  pub fn new(left: usize, top: usize, right: usize, bottom: usize) -> Rect {
-    Rect { left, top, right, bottom }
+  /// Creates a new rectangle with specified coordinates.
+  pub fn new(left: usize, top: usize, right: usize, bottom: usize) -> Self {
+    Self { left, top, right, bottom }
   }
 
-  /// Return a copy of the rectangle with top value incremented with offset.
-  pub fn inc_top(&self, offset: usize) -> Rect {
-    Rect {
-      left: self.left,
-      top: self.top + offset,
-      right: self.right,
-      bottom: self.bottom,
-    }
+  /// Returns a copy of the rectangle with top value incremented by specified offset.
+  pub fn offset_top(&self, offset: usize) -> Self {
+    Self { top: self.top + offset, ..*self }
   }
 
-  /// Unpacks the rectangle coordinates to a tuple of four integers.
-  pub fn unpack(&self) -> (usize, usize, usize, usize) {
+  /// Converts the rectangle's coordinates into tuple of integers.
+  pub fn into_inner(self) -> (usize, usize, usize, usize) {
     (self.left, self.top, self.right, self.bottom)
   }
 
@@ -93,16 +104,4 @@ impl Rect {
   }
 }
 
-/// Implementation of Display trait for Rect.
-impl std::fmt::Display for Rect {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "({},{};{},{})", self.left, self.top, self.right, self.bottom)
-  }
-}
-
-/// Implementation of Debug trait for Rect.
-impl std::fmt::Debug for Rect {
-  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-    write!(f, "({},{};{},{})", self.left, self.top, self.right, self.bottom)
-  }
-}
+// granskade

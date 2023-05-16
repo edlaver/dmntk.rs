@@ -30,10 +30,9 @@
  * limitations under the License.
  */
 
-extern crate dfp_number_sys;
+//! Implementation of the `FEEL` number type.
 
 mod dfp_number;
-
 mod errors;
 
 pub use dfp_number::FeelNumber;

@@ -4,7 +4,7 @@ use dmntk_common::DmntkError;
 struct FeelNumberError(String);
 
 impl From<FeelNumberError> for DmntkError {
-  /// Converts [FeelNumberError] into [DmntkError].
+  /// Converts `FeelNumberError` into [DmntkError].
   fn from(e: FeelNumberError) -> Self {
     DmntkError::new("FeelNumberError", &e.0)
   }

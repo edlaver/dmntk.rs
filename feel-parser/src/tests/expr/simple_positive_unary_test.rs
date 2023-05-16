@@ -32,8 +32,8 @@
 
 use super::super::*;
 use crate::context::ParsingContext;
-use crate::dmntk_feel::Name;
 use crate::lalr::TokenType::StartTextualExpression;
+use dmntk_feel::Name;
 
 #[test]
 fn _0001() {

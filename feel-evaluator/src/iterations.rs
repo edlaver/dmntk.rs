@@ -111,7 +111,7 @@ impl FeelIterator {
             FeelIterationType::List => {
               if let Some(values) = &iteration_state.values {
                 let index = iteration_state.index as usize;
-                if let Some(value) = values.as_vec().get(index) {
+                if let Some(value) = values.get(index) {
                   iteration_context.set_entry(&iteration_state.name, value.clone());
                   is_empty_iteration = false;
                 }
@@ -182,7 +182,7 @@ impl ForExpressionEvaluator {
   pub fn add_single(&mut self, name: Name, value: Value) {
     let values = match value {
       Value::List(values) => values,
-      other => Values::new(vec![other]),
+      other => vec![other],
     };
     self.feel_iterator.add_list(name, values);
   }
@@ -203,13 +203,13 @@ impl ForExpressionEvaluator {
     let mut results = vec![];
     self.feel_iterator.run(|ctx| {
       let mut iteration_context = ctx.clone();
-      iteration_context.set_entry(&self.name_partial, Value::List(Values::new(results.clone())));
+      iteration_context.set_entry(&self.name_partial, Value::List(results.clone()));
       scope.push(iteration_context.clone());
       let iteration_value = evaluator(scope);
       scope.pop();
       results.push(iteration_value);
     });
-    Values::new(results)
+    results
   }
 }
 
@@ -229,7 +229,7 @@ impl SomeExpressionEvaluator {
   pub fn add(&mut self, name: Name, value: Value) {
     let values = match value {
       Value::List(values) => values,
-      other => Values::new(vec![other]),
+      other => vec![other],
     };
     self.feel_iterator.add_list(name, values);
   }
@@ -263,7 +263,7 @@ impl EveryExpressionEvaluator {
   pub fn add(&mut self, name: Name, value: Value) {
     let values = match value {
       Value::List(values) => values,
-      other => Values::new(vec![other]),
+      other => vec![other],
     };
     self.feel_iterator.add_list(name, values);
   }

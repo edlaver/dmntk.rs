@@ -38,9 +38,9 @@ const DMNTK_NAMESPACE: &str = "https://dmntk.io";
 fn _2_0001() {
   let definitions = &crate::parse(dmntk_examples::DMN_2_0001).unwrap();
   assert_eq!("_c910c9ba-c584-4ac9-a773-1e6de185cd85", definitions.id().as_ref().unwrap().as_str());
-  assert_eq!("Compliance level 2. Test 0001.", definitions.description().as_ref().unwrap().as_str());
+  assert_eq!("Compliance level 2: Test 0001", &definitions.description().as_ref().unwrap().trim()[..29]);
   assert!(definitions.label().is_none());
-  assert_eq!("compliance-level-2-test-0001", definitions.name());
+  assert_eq!("Compliance level 2: Test 0001", definitions.name());
   assert_eq!("https://dmntk.io/2_0001", definitions.namespace());
   assert!(definitions.expression_language().is_none());
   assert!(definitions.type_language().is_none());
@@ -56,7 +56,7 @@ fn _2_0001() {
   let decision_variable = decision.variable();
   assert!(decision_variable.id().is_none());
   assert!(decision_variable.description().is_none());
-  assert!(decision_variable.label().is_none());
+  assert_eq!("GREETING MESSAGE", decision_variable.label().as_ref().unwrap().as_str());
   assert_eq!("Greeting Message", decision_variable.name().to_string());
   assert_eq!("string", decision_variable.type_ref().as_ref().unwrap().as_str());
   // <decision>.<informationRequirement>
@@ -86,7 +86,10 @@ fn _2_0001() {
   // <inputData>.<variable>
   let input_data_variable = input_data.variable();
   assert!(input_data_variable.id().is_none());
-  assert!(input_data_variable.description().is_none());
+  assert_eq!(
+    "Full name of the person that will be greeted by this decision model.",
+    input_data_variable.description().as_ref().unwrap().as_str()
+  );
   assert!(input_data_variable.label().is_none());
   assert_eq!("Full Name", input_data_variable.name().to_string());
   assert_eq!("string", input_data_variable.type_ref().as_ref().unwrap().as_str());
@@ -430,7 +433,7 @@ fn _3_0086_import() {
 #[test]
 fn _3_0087() {
   let definitions = &crate::parse(dmntk_examples::DMN_3_0087).unwrap();
-  assert_eq!("_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", definitions.id().as_ref().unwrap().as_str());
+  assert_eq!("_f2e6077a-8960-46e1-bf7a-f555ba7c6701", definitions.id().as_ref().unwrap().as_str());
   // <definitions>.<knowledgeSource>
   let knowledge_source = definitions.get_knowledge_source("_989d137f-86ff-4249-813f-af67c08a2762").unwrap();
   assert_eq!("_989d137f-86ff-4249-813f-af67c08a2762", knowledge_source.id().as_ref().unwrap().as_str());
