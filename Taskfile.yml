@@ -23,7 +23,7 @@ tasks:
     desc: Runs all compatibility benchmarks
     cmds:
       - cmd: rm -rf ./target/benchmarks
-      - cmd: mkdir ./target/benchmarks
+      - cmd: mkdir -p ./target/benchmarks
       - cmd: cargo +nightly bench -q compatibility | tee ./target/benchmarks/out.txt | grep 'bench' > ./target/benchmarks/benchmarks.txt
 
   build:
