@@ -14,7 +14,7 @@ set -e
 
 WORKING_DIRECTORY=$(pwd)
 CARGO_NAME=$(grep -oE '^name = "[^"]+"' ./dmntk/Cargo.toml | grep -oE '"[^"]+"' | grep -oE '[^"]+' | tr '[:lower:]' '[:upper:]')
-CARGO_VERSION=$(grep -oE '^version = "[^"]+"' Cargo.toml | grep -oE '"[^"]+"' | grep -oE '[^"]+')
+CARGO_VERSION=$(grep -oE '^version = "[^"]+"' Cargo.toml | grep -oE '"[^"]+"' | grep -oE '[0-9\.]+')
 
 # clean before proceeding
 cargo clean
@@ -53,7 +53,7 @@ genhtml -t "$CARGO_NAME v$CARGO_VERSION" -q -o ./target/coverage ./target/lcov/l
 if [ "$PDF_REPORT" != "" ]; then
   echo ""
   echo "Generating PDF report..."
-  htop -bl -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
+  htop -b -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
 fi
 # display final message
 echo ""
