@@ -235,9 +235,9 @@ fn get_matches() -> ArgMatches {
       .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be recognized").required(true).index(1)))
     // srv
     .subcommand(Command::new("srv").about("Run DMNTK as a service").display_order(1)
-      .arg(arg!(-H --host).help("Host name").action(ArgAction::Set).display_order(1))
-      .arg(arg!(-P --port).help("Port number").action(ArgAction::Set).display_order(2))
-      .arg(arg!(-D --dir).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3)))
+      .arg(arg!(-H --host <HOST>).help("Host name").action(ArgAction::Set).display_order(1))
+      .arg(arg!(-P --port <PORT>).help("Port number").action(ArgAction::Set).display_order(2))
+      .arg(arg!(-D --dir <DIR>).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3)))
     // exs
     .subcommand(Command::new("exs").about("Generate examples in current directory").display_order(15))
     .get_matches()
