@@ -30,19 +30,12 @@
  * limitations under the License.
  */
 
-//! Container for DMN™ models.
+//! # Container for DMN models
 //!
-//! Workspace has two *virtual* states:
-//! - `STASHING`: all model evaluators are deleted but model definitions can be freely modified,
-//! - `DEPLOYED`: model evaluators are deployed, model definitions remain unmodified.
+//! Workspace has two _virtual_ states:
+//! - `STASHING`: all model evaluators are deleted, model definitions can be freely modified,
+//! - `DEPLOYED`: model evaluators are deployed, model definitions should remain unmodified.
 //!
-//! ### Remarks
-//!
-//! **Importing rules** require, that the `namespace` attribute in [Definitions] is globally unique.
-//! It is assumed, that attributes `Definitions.namespace` and `Definitions.name` are both
-//! unique inside [Workspace]. In consequence, the same [Definitions] can be accessed using
-//! either a `namespace` or `name` attribute, so there will be an error reported, when two definitions
-//! deployed in a single workspace have the same `namespace` or `name` attributes.
 
 use crate::errors::*;
 use dmntk_common::Result;
@@ -56,7 +49,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use walkdir::WalkDir;
 
-/// Structure representing the container for DMN™ models.
+/// Structure representing the container for DMN models.
 pub struct Workspace {
   /// Collection of [Definitions] stashed in [Workspace].
   definitions: Vec<Arc<Definitions>>,
@@ -69,21 +62,21 @@ pub struct Workspace {
 }
 
 impl Workspace {
-  /// Creates a [Workspace] and loads DMN models.
+  /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
   pub fn new(opt_dir: Option<PathBuf>) -> Self {
-    // create empty workspace
+    // create an empty workspace
     let mut workspace = Self {
       definitions: vec![],
       definitions_by_namespace: HashMap::new(),
       definitions_by_name: HashMap::new(),
       model_evaluators_by_name: HashMap::new(),
     };
-    // load and deploy all DMN models from specified directory
+    // load and deploy all DMN models from specified directory (recursive)
     if let Some(dir) = opt_dir {
       let count = workspace.load_and_deploy_models(&dir);
       println!("Loaded {} file(s) from directory: {}", count, dir.to_string_lossy());
     }
-    // workspace is ready to use
+    // workspace is now ready to use
     workspace
   }
 
