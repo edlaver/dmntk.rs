@@ -88,7 +88,7 @@ impl Workspace {
 
   /// Adds a definition to workspace, deletes all model evaluators,
   /// and switches a workspace to state `STASHING`.
-  pub fn add(&mut self, definitions: Definitions) -> Result<()> {
+  pub fn add(&mut self, definitions: Definitions) -> Result<(String, String)> {
     // get the namespace from definitions (always provided)
     let Some(namespace) = to_rdnn(definitions.namespace()) else {
       return Err(err_invalid_namespace(definitions.namespace()));
@@ -105,7 +105,7 @@ impl Workspace {
     let definitions_arc = Arc::new(definitions);
     self
       .definitions
-      .entry(namespace)
+      .entry(namespace.clone())
       .and_modify(|definitions_by_name| {
         // add definitions with specified name to existing namespace
         definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
@@ -113,12 +113,12 @@ impl Workspace {
       .or_insert({
         // add definitions with specified name to namespace that will be created
         let mut definitions_by_name = HashMap::new();
-        definitions_by_name.insert(name, Arc::clone(&definitions_arc));
+        definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
         definitions_by_name
       });
     // delete all evaluators
     self.clear_evaluators();
-    Ok(())
+    Ok((namespace, name))
   }
 
   /// Removes a definition from workspace, deletes all model evaluators,
@@ -132,7 +132,7 @@ impl Workspace {
 
   /// Replaces a definition in workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
-  pub fn replace(&mut self, definitions: Definitions) -> Result<()> {
+  pub fn replace(&mut self, definitions: Definitions) -> Result<(String, String)> {
     if let Some(namespace) = to_rdnn(definitions.namespace()) {
       self.remove(&namespace, definitions.name());
     }
@@ -198,7 +198,7 @@ impl Workspace {
             match dmntk_model::parse(&xml) {
               Ok(definitions) => {
                 match self.add(definitions) {
-                  Ok(()) => {
+                  Ok((_, _)) => {
                     // TODO update status report
                   }
                   Err(reason) => {

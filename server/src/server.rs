@@ -40,7 +40,6 @@ use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
-use dmntk_model::model::NamedElement;
 use dmntk_workspace::Workspace;
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -149,7 +148,7 @@ struct AddDefinitionsParams {
 /// Result data sent back to caller after adding definitions.
 #[derive(Serialize)]
 struct AddDefinitionsResult {
-  /// Namespace of added definitions.
+  /// Namespace of the added definitions.
   #[serde(rename = "namespace")]
   namespace: String,
   /// Name of added definitions.
@@ -435,9 +434,7 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
-            let namespace = definitions.namespace().to_string();
-            let name = definitions.name().to_string();
-            workspace.add(definitions)?;
+            let (namespace, name) = workspace.add(definitions)?;
             Ok(AddDefinitionsResult { namespace, name })
           }
           Err(reason) => Err(reason),
