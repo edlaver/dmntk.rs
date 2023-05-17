@@ -12,3 +12,4 @@ edition.workspace = true
 serde.workspace = true
 uuid.workspace = true
 uriparse.workspace = true
+url = "2.3.1"

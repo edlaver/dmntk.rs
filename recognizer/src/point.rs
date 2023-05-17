@@ -76,3 +76,10 @@ impl Point {
 }
 
 // granskade
+
+/***********************************************************************************************
+ *
+ * "Granskade" is a Swedish word that translates to "reviewed" or "examined" in English.
+ * It signifies that something has been carefully inspected or evaluated.
+ *
+ ***********************************************************************************************/

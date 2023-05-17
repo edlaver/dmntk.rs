@@ -581,6 +581,7 @@ version = "0.2.0-dev"
 dependencies = [
  "serde",
  "uriparse",
+ "url",
  "uuid",
 ]
 

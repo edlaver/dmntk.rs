@@ -37,9 +37,11 @@ mod errors;
 mod href;
 mod idents;
 mod jsonify;
+mod namespace;
 
 pub use ascii_ctrl::*;
 pub use errors::{DmntkError, Result};
 pub use href::{HRef, OptHRef};
 pub use idents::gen_id;
 pub use jsonify::Jsonify;
+pub use namespace::to_rdnn;
