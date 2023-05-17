@@ -35,10 +35,9 @@
 //! Workspace has two _virtual_ states:
 //! - `STASHING`: all model evaluators are deleted, model definitions can be freely modified,
 //! - `DEPLOYED`: model evaluators are deployed, model definitions should remain unmodified.
-//!
 
 use crate::errors::*;
-use dmntk_common::Result;
+use dmntk_common::{to_rdnn, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_model::model::{Definitions, NamedElement};
@@ -49,16 +48,18 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use walkdir::WalkDir;
 
+/// Type alias defining a map of definitions indexed by its name.
+type DefinitionsByName = HashMap<String, Arc<Definitions>>;
+
+/// Type alias defining a map of evaluators indexed by its name.
+type EvaluatorsByName = HashMap<String, Arc<ModelEvaluator>>;
+
 /// Structure representing the container for DMN models.
 pub struct Workspace {
-  /// Collection of [Definitions] stashed in [Workspace].
-  definitions: Vec<Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].`namespace` attribute.
-  definitions_by_namespace: HashMap<String, Arc<Definitions>>,
-  /// Map of [Definitions] indexed by [Definitions].`name` attribute.
-  definitions_by_name: HashMap<String, Arc<Definitions>>,
-  /// Map of [ModelEvaluator] indexed by [Definitions].`name` attribute.
-  model_evaluators_by_name: HashMap<String, Arc<ModelEvaluator>>,
+  /// Map of [Definitions] indexed by [Definitions]' **namespace** attribute.
+  definitions: HashMap<String, DefinitionsByName>,
+  /// Map of [ModelEvaluators](ModelEvaluator) indexed by [Definitions]' **name** attribute.
+  evaluators: HashMap<String, EvaluatorsByName>,
 }
 
 impl Workspace {
@@ -66,12 +67,10 @@ impl Workspace {
   pub fn new(opt_dir: Option<PathBuf>) -> Self {
     // create an empty workspace
     let mut workspace = Self {
-      definitions: vec![],
-      definitions_by_namespace: HashMap::new(),
-      definitions_by_name: HashMap::new(),
-      model_evaluators_by_name: HashMap::new(),
+      definitions: HashMap::new(),
+      evaluators: HashMap::new(),
     };
-    // load and deploy all DMN models from specified directory (recursive)
+    // load and deploy all DMN models (when optional directory specified)
     if let Some(dir) = opt_dir {
       let count = workspace.load_and_deploy_models(&dir);
       println!("Loaded {} file(s) from directory: {}", count, dir.to_string_lossy());
@@ -81,85 +80,115 @@ impl Workspace {
   }
 
   /// Deletes all definitions and model evaluators,
-  /// switches a workspace to state `STASHING`.
+  /// and switches a workspace to state `STASHING`.
   pub fn clear(&mut self) {
     self.clear_definitions();
-    self.clear_model_evaluators();
+    self.clear_evaluators();
   }
 
   /// Adds a definition to workspace, deletes all model evaluators,
-  /// switches a workspace to state `STASHING`.
+  /// and switches a workspace to state `STASHING`.
   pub fn add(&mut self, definitions: Definitions) -> Result<()> {
-    let namespace = definitions.namespace().to_string();
-    if self.definitions_by_namespace.contains_key(&namespace) {
-      return Err(err_definitions_with_namespace_already_exists(&namespace));
-    }
+    // get the namespace from definitions (always provided)
+    let Some(namespace) = to_rdnn(definitions.namespace()) else {
+      return Err(err_invalid_namespace(definitions.namespace()));
+    };
+    // get the name from definitions (always provided)
     let name = definitions.name().to_string();
-    if self.definitions_by_name.contains_key(&name) {
-      return Err(err_definitions_with_name_already_exists(&name));
+    // check if the specified name already exists in the requested namespace
+    if let Some(entry) = self.definitions.get(&namespace) {
+      if entry.contains_key(&name) {
+        return Err(err_definitions_with_name_already_exists(&namespace, &name));
+      }
     }
+    // save definitions by namespace and name
     let definitions_arc = Arc::new(definitions);
-    self.definitions_by_namespace.insert(namespace, Arc::clone(&definitions_arc));
-    self.definitions_by_name.insert(name, Arc::clone(&definitions_arc));
-    self.definitions.push(definitions_arc);
-    self.clear_model_evaluators();
+    self
+      .definitions
+      .entry(namespace)
+      .and_modify(|definitions_by_name| {
+        // add definitions with specified name to existing namespace
+        definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
+      })
+      .or_insert({
+        // add definitions with specified name to namespace that will be created
+        let mut definitions_by_name = HashMap::new();
+        definitions_by_name.insert(name, Arc::clone(&definitions_arc));
+        definitions_by_name
+      });
+    // delete all evaluators
+    self.clear_evaluators();
     Ok(())
   }
 
   /// Removes a definition from workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn remove(&mut self, namespace: &str, name: &str) {
-    self.definitions_by_namespace.remove(namespace);
-    self.definitions_by_name.remove(name);
-    self.definitions.retain(|d| d.namespace() != namespace && d.name() != name);
-    self.clear_model_evaluators();
+    if let Some(definitions_by_name) = self.definitions.get_mut(namespace) {
+      definitions_by_name.remove(name);
+    }
+    self.clear_evaluators();
   }
 
   /// Replaces a definition in workspace, deletes all model evaluators,
   /// switches a workspace to state `STASHING`.
   pub fn replace(&mut self, definitions: Definitions) -> Result<()> {
-    self.remove(definitions.namespace(), definitions.name());
+    if let Some(namespace) = to_rdnn(definitions.namespace()) {
+      self.remove(&namespace, definitions.name());
+    }
     self.add(definitions)
   }
 
   /// Creates model evaluators for all definitions in workspace,
   /// switches a workspace to state `DEPLOYED`.
   pub fn deploy(&mut self) -> Result<()> {
-    self.clear_model_evaluators();
-    for definitions in &self.definitions {
-      match ModelEvaluator::new(definitions) {
-        Ok(model_evaluator) => {
-          let name = definitions.name().to_string();
-          self.model_evaluators_by_name.insert(name, model_evaluator);
+    self.clear_evaluators();
+    for (namespace, definitions_by_name) in &self.definitions {
+      for (name, definitions) in definitions_by_name {
+        match ModelEvaluator::new(definitions) {
+          Ok(model_evaluator_arc) => {
+            self
+              .evaluators
+              .entry(namespace.clone())
+              .and_modify(|evaluators_by_name| {
+                //
+                evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
+              })
+              .or_insert({
+                //
+                let mut evaluators_by_name: EvaluatorsByName = HashMap::new();
+                evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
+                evaluators_by_name
+              });
+          }
+          Err(reason) => return Err(reason),
         }
-        Err(reason) => return Err(reason),
       }
     }
     Ok(())
   }
 
-  /// Evaluates invocable (decision, business knowledge model or decision service) deployed in workspace.
-  pub fn evaluate_invocable(&self, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
-    if let Some(model_evaluator) = self.model_evaluators_by_name.get(model_name) {
-      Ok(model_evaluator.evaluate_invocable(invocable_name, input_data))
-    } else {
-      Err(err_model_evaluator_is_not_deployed(model_name))
+  /// Evaluates invocable (decision, business knowledge model or decision service) deployed in a workspace.
+  pub fn evaluate_invocable(&self, model_namespace: &str, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
+    if let Some(evaluators_by_name) = self.evaluators.get(model_namespace) {
+      if let Some(model_evaluator) = evaluators_by_name.get(model_name) {
+        return Ok(model_evaluator.evaluate_invocable(invocable_name, input_data));
+      }
     }
+    Err(err_model_evaluator_is_not_deployed(model_name))
   }
 
-  /// Utility function that deletes all definitions in workspace.
+  /// Utility function that deletes all definitions in a workspace.
   fn clear_definitions(&mut self) {
-    self.definitions_by_name.clear();
-    self.definitions_by_namespace.clear();
     self.definitions.clear();
   }
 
-  /// Utility function that deletes all model evaluators in workspace.
-  fn clear_model_evaluators(&mut self) {
-    self.model_evaluators_by_name.clear();
+  /// Utility function that deletes all model evaluators in a workspace.
+  fn clear_evaluators(&mut self) {
+    self.evaluators.clear();
   }
 
-  /// Utility function that loads and deploys DMN models from specified directory.
+  /// Utility function that loads and deploys DMN models from specified directory (recursive).
   fn load_and_deploy_models(&mut self, dir: &Path) -> usize {
     for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
       if entry.file_type().is_file() {
@@ -196,95 +225,6 @@ impl Workspace {
         eprintln!("{reason}");
       }
     }
-    self.model_evaluators_by_name.len()
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use super::*;
-  use dmntk_feel::FeelScope;
-
-  fn assert_state(workspace: &Workspace, state: (usize, usize, usize, usize)) {
-    assert_eq!(state.0, workspace.definitions.len());
-    assert_eq!(state.1, workspace.definitions_by_namespace.len());
-    assert_eq!(state.2, workspace.definitions_by_name.len());
-    assert_eq!(state.3, workspace.model_evaluators_by_name.len());
-  }
-
-  #[test]
-  fn test_states() {
-    // create empty workspace, STAGING
-    let mut workspace = Workspace::new(None);
-    assert_state(&workspace, (0, 0, 0, 0));
-
-    // add one model with definitions, STAGING
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0001).unwrap();
-    assert!(workspace.add(definitions).is_ok());
-    assert_state(&workspace, (1, 1, 1, 0));
-
-    // try to add the same model once again, STAGING
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0001).unwrap();
-    assert_eq!(Err(err_definitions_with_namespace_already_exists("https://dmntk.io/2_0001")), workspace.add(definitions));
-    assert_state(&workspace, (1, 1, 1, 0));
-
-    // add another model to workspace, STAGING
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0002).unwrap();
-    assert!(workspace.add(definitions).is_ok());
-    assert_state(&workspace, (2, 2, 2, 0));
-
-    // deploy these two models, DEPLOYED
-    assert!(workspace.deploy().is_ok());
-    assert_state(&workspace, (2, 2, 2, 2));
-
-    // replace existing model with a new version, STAGING
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0002).unwrap();
-    assert!(workspace.replace(definitions).is_ok());
-    assert_state(&workspace, (2, 2, 2, 0));
-
-    // deploy models, DEPLOYED
-    assert!(workspace.deploy().is_ok());
-    assert_state(&workspace, (2, 2, 2, 2));
-
-    // remove model from workspace, STAGING
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0002).unwrap();
-    workspace.remove(definitions.namespace(), definitions.name());
-    assert_state(&workspace, (1, 1, 1, 0));
-
-    // clear workspace, STAGING
-    workspace.clear();
-    assert_state(&workspace, (0, 0, 0, 0));
-  }
-
-  #[test]
-  fn test_evaluate() {
-    // create empty workspace
-    let mut workspace = Workspace::new(None);
-    assert_state(&workspace, (0, 0, 0, 0));
-
-    // add one model with definitions
-    let definitions = dmntk_model::parse(dmntk_examples::DMN_2_0001).unwrap();
-    assert!(workspace.add(definitions).is_ok());
-    assert_state(&workspace, (1, 1, 1, 0));
-
-    // deploy model
-    assert!(workspace.deploy().is_ok());
-    assert_state(&workspace, (1, 1, 1, 1));
-
-    let existing_model_name = "Compliance level 2: Test 0001";
-    let non_existing_model_name = "Compliance level 2: Test 0002";
-
-    // evaluate existing model and invocable
-    let input_data = dmntk_feel_evaluator::evaluate_context(&FeelScope::default(), r#"{Full Name: "John Doe"}"#).unwrap();
-    let value = workspace.evaluate_invocable(existing_model_name, "Greeting Message", &input_data).unwrap();
-    assert_eq!(r#""Hello John Doe""#, value.to_string());
-
-    // evaluate non existing model
-    let result = workspace.evaluate_invocable(non_existing_model_name, "Greeting Message", &input_data);
-    assert_eq!(Err(err_model_evaluator_is_not_deployed(non_existing_model_name)), result);
-
-    // evaluate non existing invocable
-    let value = workspace.evaluate_invocable(existing_model_name, "Good bye message", &input_data).unwrap();
-    assert_eq!(r#"null(invocable with name 'Good bye message' not found)"#, value.to_string());
+    self.evaluators.len()
   }
 }

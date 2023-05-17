@@ -23,7 +23,7 @@ rm data.json
 curl -s -X POST http://0.0.0.0:22022/definitions/deploy > /dev/null 2>&1
 
 # evaluate invocable in model
-curl -s -d '{"Full Name":"John Doe"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/evaluate/compliance-level-2-test-0001/Greeting%20Message
+curl -s -d '{"Full Name":"John Doe"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/evaluate/io.dmntk/compliance-level-2-test-0001/Greeting%20Message
 
 # stop dmntk server
 kill -s SIGINT "$_pid"

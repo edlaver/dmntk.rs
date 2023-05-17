@@ -4,7 +4,7 @@
              xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
              xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
              namespace="https://dmntk.io/2_0001"
-             name="model-2"
+             name="model-1"
              id="_c910c9ba-c584-4ac9-a773-1e6de185cd85">
     <description>Compliance level 2. Test 0001.</description>
     <decision name="Greeting Message" id="_75b3add2-4d36-4a19-a76c-268b49b2f436">

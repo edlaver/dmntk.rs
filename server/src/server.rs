@@ -189,7 +189,10 @@ struct StatusResult {
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[derive(Deserialize)]
 struct TckEvaluateParams {
-  /// Name of the model where the invocable will be searched.
+  /// Name of the namespace where the model will be searched.
+  #[serde(rename = "namespace")]
+  model_namespace: Option<String>,
+  /// Name of the model in which the invocable will be searched.
   #[serde(rename = "model")]
   model_name: Option<String>,
   /// Name of the invocable to be evaluated.
@@ -203,10 +206,13 @@ struct TckEvaluateParams {
 /// Parameters for evaluating invocable in DMN™ model definitions.
 #[derive(Deserialize)]
 struct EvaluateParams {
-  /// Name of the model.
+  /// Name of the namespace where the model will be searches.
+  #[serde(rename = "namespace")]
+  model_namespace: String,
+  /// Name of the model in which the invocable will be searched.
   #[serde(rename = "model")]
   model_name: String,
-  /// Name of the invocable in model.
+  /// Name of the invocable to be evaluated.
   #[serde(rename = "invocable")]
   invocable_name: String,
 }
@@ -283,7 +289,7 @@ async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<Appl
 ///
 /// Input values may be defined in `JSON` or `FEEL` context format.
 /// Result is always in JSON format.
-#[post("/evaluate/{model}/{invocable}")]
+#[post("/evaluate/{namespace}/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace = data.workspace.read().unwrap();
   let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
@@ -502,29 +508,34 @@ fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
 /// Input and output data format is compatible with
 /// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<OutputNodeDto, DmntkError> {
-  if let Some(model_name) = &params.model_name {
-    if let Some(invocable_name) = &params.invocable_name {
-      if let Some(input_values) = &params.input_values {
-        // convert input values into FEEL context
-        let input_data = FeelContext::try_from(WrappedValue::try_from(input_values)?.0)?;
-        // evaluate artifact with specified name
-        workspace.evaluate_invocable(model_name, invocable_name, &input_data)?.try_into()
+  if let Some(model_namespace) = &params.model_namespace {
+    if let Some(model_name) = &params.model_name {
+      if let Some(invocable_name) = &params.invocable_name {
+        if let Some(input_values) = &params.input_values {
+          // convert input values into FEEL context
+          let input_data = FeelContext::try_from(WrappedValue::try_from(input_values)?.0)?;
+          // evaluate artifact with specified name
+          workspace.evaluate_invocable(model_namespace, model_name, invocable_name, &input_data)?.try_into()
+        } else {
+          Err(err_missing_parameter("input"))
+        }
       } else {
-        Err(err_missing_parameter("input"))
+        Err(err_missing_parameter("invocable"))
       }
     } else {
-      Err(err_missing_parameter("invocable"))
+      Err(err_missing_parameter("model"))
     }
   } else {
-    Err(err_missing_parameter("model"))
+    Err(err_missing_parameter("namespace"))
   }
 }
 
 /// Evaluates the artifact specified in parameters and returns the result.
 fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
+  let model_namespace = &params.model_namespace;
   let model_name = &params.model_name;
   let invocable_name = &params.invocable_name;
   let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
-  let value = workspace.evaluate_invocable(model_name, invocable_name, &input_data)?;
+  let value = workspace.evaluate_invocable(model_namespace, model_name, invocable_name, &input_data)?;
   Ok(value)
 }

@@ -10,8 +10,12 @@ See [Issues](https://github.com/dmntk/dmntk.rs/issues).
 
 ## [v0.2.0 (1nd beta)] - tbd
 
-- Refactored parser tests, issue #8
+### Added
 - Tooling improvements.
+ 
+### Changed
+- Refactored parser tests, issue #8.
+- Model deployment path now contains also the namespace in RDNN format. (add issue).
 
 ## [v0.1.2 (fixes to 1st beta)] - 2023-05-16
 

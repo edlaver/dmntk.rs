@@ -1,3 +1,3 @@
-WorkspaceError: definitions with namespace 'https://dmntk.io/2_0001' already exist in workspace
+WorkspaceError: definitions with name 'model-1' already exist in namespace 'io.dmntk.2_0001'
 Loaded 1 file(s) from directory: .
 dmntk 0.0.0.0:22022
