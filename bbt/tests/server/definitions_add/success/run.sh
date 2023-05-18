@@ -14,7 +14,7 @@ base64 --wrap=0 2_0001.dmn >> data.json
 echo -n '"}' >> data.json
 
 # add model to workspace
-curl -s -d '@data.json' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/definitions/add
+curl -s -d '@data.json' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/definitions/add | jq
 
 # delete data file
 rm data.json

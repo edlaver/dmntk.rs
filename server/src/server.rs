@@ -40,7 +40,7 @@ use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
-use dmntk_workspace::Workspace;
+use dmntk_workspace::{EvaluatorStatus, Workspace};
 use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
@@ -148,12 +148,29 @@ struct AddDefinitionsParams {
 /// Result data sent back to caller after adding definitions.
 #[derive(Serialize)]
 struct AddDefinitionsResult {
+  /// RDNN of the added definitions.
+  #[serde(rename = "rdnn")]
+  model_rdnn: String,
   /// Namespace of the added definitions.
   #[serde(rename = "namespace")]
-  namespace: String,
+  model_namespace: String,
   /// Name of added definitions.
   #[serde(rename = "name")]
-  name: String,
+  model_name: String,
+}
+
+/// Result data sent back to caller after replacing definitions.
+#[derive(Serialize)]
+struct ReplaceDefinitionsResult {
+  /// RDNN of the replaced definitions.
+  #[serde(rename = "rdnn")]
+  model_rdnn: String,
+  /// Namespace of the replaced definitions.
+  #[serde(rename = "namespace")]
+  model_namespace: String,
+  /// Name of replaced definitions.
+  #[serde(rename = "name")]
+  model_name: String,
 }
 
 /// Parameters for replacing DMN™ model definitions in workspace.
@@ -242,7 +259,7 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
 
 /// Handler for replacing model definitions in workspace.
 #[post("/definitions/replace")]
-async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<ReplaceDefinitionsResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_replace_definitions(&mut workspace, &params.into_inner());
   match result {
@@ -264,7 +281,7 @@ async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: we
 
 /// Handler for deploying model definitions stashed in workspace.
 #[post("/definitions/deploy")]
-async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<Vec<EvaluatorStatus>>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_deploy_definitions(&mut workspace);
   match result {
@@ -434,8 +451,12 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
-            let (namespace, name) = workspace.add(definitions)?;
-            Ok(AddDefinitionsResult { namespace, name })
+            let (rdnn, namespace, name) = workspace.add(definitions)?;
+            Ok(AddDefinitionsResult {
+              model_rdnn: rdnn,
+              model_namespace: namespace,
+              model_name: name,
+            })
           }
           Err(reason) => Err(reason),
         }
@@ -451,15 +472,17 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
 }
 
 /// Replace model definition in workspace.
-fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<StatusResult> {
+fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<ReplaceDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = STANDARD.decode(content) {
       if let Ok(xml) = String::from_utf8(bytes) {
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
-            workspace.replace(definitions)?;
-            Ok(StatusResult {
-              status: "definitions replaced".to_string(),
+            let (rdnn, namespace, name) = workspace.replace(definitions)?;
+            Ok(ReplaceDefinitionsResult {
+              model_rdnn: rdnn,
+              model_namespace: namespace,
+              model_name: name,
             })
           }
           Err(reason) => Err(reason),
@@ -492,13 +515,8 @@ fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsPa
 }
 
 /// Deploy all definitions in workspace.
-fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
-  match workspace.deploy() {
-    Ok(()) => Ok(StatusResult {
-      status: "definitions deployed".to_string(),
-    }),
-    Err(reason) => Err(reason),
-  }
+fn do_deploy_definitions(workspace: &mut Workspace) -> Result<Vec<EvaluatorStatus>> {
+  Ok(workspace.deploy())
 }
 
 /// Evaluates the invocable in model and returns the result.

@@ -31,7 +31,7 @@ curl -s -d '@data.json' -H "Content-Type: application/json" -X POST http://0.0.0
 rm data.json
 
 # deploy models
-curl -s -X POST http://0.0.0.0:22022/definitions/deploy
+curl -s -X POST http://0.0.0.0:22022/definitions/deploy | jq
 
 # stop dmntk server
 kill -s SIGINT "$_pid"

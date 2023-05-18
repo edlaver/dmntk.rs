@@ -1,1 +1,7 @@
-{"data":{"status":"definitions replaced"}}
+{
+  "data": {
+    "rdnn": "io.dmntk.2_0001",
+    "namespace": "https://dmntk.io/2_0001",
+    "name": "compliance-level-2-test-0001"
+  }
+}

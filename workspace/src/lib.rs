@@ -35,4 +35,4 @@
 mod errors;
 mod workspace;
 
-pub use workspace::Workspace;
+pub use workspace::{DefinitionsStatus, EvaluatorStatus, Workspace, WorkspaceStatus};
