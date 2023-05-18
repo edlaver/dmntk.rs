@@ -536,3 +536,57 @@ fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> R
   let value = workspace.evaluate_invocable(model_namespace, model_name, invocable_name, &input_data)?;
   Ok(value)
 }
+
+/*
+ All tests below are only for maximizing dead code coverage.
+ Remove all these tests when better coverage method is used.
+*/
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_deserialize_add_definitions_params() {
+    assert!(serde_json::from_str::<Vec<AddDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
+    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
+    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_replace_definitions_params() {
+    assert!(serde_json::from_str::<Vec<ReplaceDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
+    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
+    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_remove_definitions_params() {
+    assert!(serde_json::from_str::<Vec<RemoveDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
+    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
+    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_tck_evaluate_params() {
+    assert!(serde_json::from_str::<Vec<TckEvaluateParams>>(r#"{"namespace": "a"}"#).is_err());
+    assert!(serde_json::from_str::<TckEvaluateParams>(r#"{"namespace":"a"}"#).is_ok());
+    assert!(serde_json::from_str::<TckEvaluateParams>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<TckEvaluateParams>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<TckEvaluateParams>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_evaluate_params() {
+    assert!(serde_json::from_str::<Vec<EvaluateParams>>(r#"{"namespace": "a"}"#).is_err());
+    assert!(serde_json::from_str::<EvaluateParams>(r#"{"namespace":"a","model":"b","invocable":"c"}"#).is_ok());
+    assert!(serde_json::from_str::<EvaluateParams>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<EvaluateParams>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<EvaluateParams>(r#"1"#).is_err());
+  }
+}

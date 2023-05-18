@@ -390,3 +390,57 @@ impl TryFrom<&ListDto> for WrappedValue {
     WrappedValue::try_from(&value.items)
   }
 }
+
+/*
+ All tests below are only for maximizing dead code coverage.
+ Remove all these tests when better coverage method is used.
+*/
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn test_deserialize_add_input_node_dto() {
+    assert!(serde_json::from_str::<Vec<InputNodeDto>>(r#"{"name": "a"}"#).is_err());
+    assert!(serde_json::from_str::<InputNodeDto>(r#"{"name":"a"}"#).is_ok());
+    assert!(serde_json::from_str::<InputNodeDto>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<InputNodeDto>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<InputNodeDto>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_component_dto() {
+    assert!(serde_json::from_str::<Vec<ComponentDto>>(r#"{"name": "a"}"#).is_err());
+    assert!(serde_json::from_str::<ComponentDto>(r#"{"name":"a","isNil":false}"#).is_ok());
+    assert!(serde_json::from_str::<ComponentDto>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<ComponentDto>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<ComponentDto>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_value_dto() {
+    assert!(serde_json::from_str::<Vec<ValueDto>>(r#"{"name": "a"}"#).is_err());
+    assert!(serde_json::from_str::<ValueDto>(r#"{}"#).is_ok());
+    assert!(serde_json::from_str::<ValueDto>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<ValueDto>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<ValueDto>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_simple_dto() {
+    assert!(serde_json::from_str::<Vec<SimpleDto>>(r#"{"name": "a"}"#).is_err());
+    assert!(serde_json::from_str::<SimpleDto>(r#"{"isNil":false}"#).is_ok());
+    assert!(serde_json::from_str::<SimpleDto>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<SimpleDto>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<SimpleDto>(r#"1"#).is_err());
+  }
+
+  #[test]
+  fn test_deserialize_list_dto() {
+    assert!(serde_json::from_str::<Vec<ListDto>>(r#"{"name": "a"}"#).is_err());
+    assert!(serde_json::from_str::<ListDto>(r#"{"items":[],"isNil":false}"#).is_ok());
+    assert!(serde_json::from_str::<ListDto>(r#"{ {"inner": 10} }"#).is_err());
+    assert!(serde_json::from_str::<ListDto>(r#"[1]"#).is_err());
+    assert!(serde_json::from_str::<ListDto>(r#"1"#).is_err());
+  }
+}
