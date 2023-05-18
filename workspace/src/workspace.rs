@@ -171,16 +171,10 @@ impl Workspace {
   }
 
   /// Creates model evaluators for all definitions in workspace.
-  pub fn deploy(&mut self) -> Vec<EvaluatorStatus> {
+  pub fn deploy(&mut self) -> Result<()> {
     self.evaluators.clear();
-    let mut evaluator_status_list = vec![];
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
-        let mut evaluator_status = EvaluatorStatus {
-          model_rdnn: rdnn.to_string(),
-          model_name: name.to_string(),
-          ..Default::default()
-        };
         match ModelEvaluator::new(definitions) {
           Ok(model_evaluator_arc) => {
             self
@@ -196,19 +190,13 @@ impl Workspace {
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
                 evaluators_by_name
               });
-            evaluator_status.deployment_path = Some(format!("{}/{}", rdnn, name));
-            evaluator_status.status = StatusMessage::Ok;
           }
-          Err(reason) => {
-            evaluator_status.status = StatusMessage::Failure;
-            evaluator_status.reason = Some(reason.to_string());
-          }
+          Err(reason) => return Err(reason),
         }
         evaluator_status_list.push(evaluator_status);
       }
     }
-    evaluator_status_list.sort_by_key(|k| (k.model_rdnn.clone(), k.model_name.clone()));
-    evaluator_status_list
+    Ok(())
   }
 
   /// Evaluates invocable deployed in workspace.
@@ -222,52 +210,29 @@ impl Workspace {
   }
 
   /// Utility function that loads and deploys DMN models from specified directory (recursive).
-  fn load_and_deploy_models(&mut self, dir: &Path) -> WorkspaceStatus {
-    let mut definitions_status_list = vec![];
+  fn load_and_deploy_models(&mut self, dir: &Path) {
     for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
       if entry.file_type().is_file() {
         let file_name = entry.file_name().to_string_lossy();
         if file_name.ends_with(".dmn") {
-          let mut definitions_status = DefinitionsStatus {
-            model_file: file_name.to_string(),
-            ..Default::default()
-          };
           match fs::read_to_string(entry.path()) {
             Ok(xml) => match dmntk_model::parse(&xml) {
-              Ok(definitions) => {
-                definitions_status.model_namespace = Some(definitions.namespace().to_string());
-                definitions_status.model_name = Some(definitions.name().to_string());
-                match self.add(definitions) {
-                  Ok((rdnn, _, _)) => {
-                    definitions_status.model_rdnn = Some(rdnn);
-                    definitions_status.status = StatusMessage::Ok;
-                    definitions_status.reason = None;
-                  }
-                  Err(reason) => {
-                    definitions_status.status = StatusMessage::Failure;
-                    definitions_status.reason = Some(reason.to_string());
-                  }
+              Ok(definitions) => match self.add(definitions) {
+                Ok((_rdnn, _namespace, _name)) => {
+                  //
                 }
-              }
-              Err(reason) => {
-                definitions_status.status = StatusMessage::Failure;
-                definitions_status.reason = Some(reason.to_string());
-              }
+                Err(reason) => eprintln!("{}", reason),
+              },
+              Err(reason) => eprintln!("{}", reason),
             },
-            Err(reason) => {
-              definitions_status.status = StatusMessage::Failure;
-              definitions_status.reason = Some(reason.to_string());
-            }
+            Err(reason) => eprintln!("{}", reason),
           }
-          definitions_status_list.push(definitions_status);
         }
       }
     }
-    definitions_status_list.sort_by_key(|k| k.model_file.to_string());
-    let evaluator_status_list = self.deploy();
-    WorkspaceStatus {
-      definitions: definitions_status_list,
-      evaluators: evaluator_status_list,
+    match self.deploy() {
+      Ok(_) => println!("Deployed {} model(s).", self.evaluators.len()),
+      Err(reason) => eprintln!("{}", reason),
     }
   }
 }
