@@ -93,7 +93,7 @@ impl Workspace {
     // check if the specified name already exists in the requested namespace
     if let Some(entry) = self.definitions.get(&rdnn) {
       if entry.contains_key(&name) {
-        return Err(err_definitions_with_name_already_exists(&rdnn, &name));
+        return Err(err_definitions_already_exists(&rdnn, &name));
       }
     }
     // save definitions by namespace and name
@@ -139,7 +139,7 @@ impl Workspace {
           }
           Err(reason) => {
             self.evaluators.clear();
-            return Err(reason);
+            return Err(err_deployment_failure(rdnn, name, &reason.to_string()));
           }
         }
       }
@@ -154,7 +154,7 @@ impl Workspace {
         return Ok(model_evaluator.evaluate_invocable(invocable_name, input_data));
       }
     }
-    Err(err_model_evaluator_is_not_deployed(model_name))
+    Err(err_evaluator_not_deployed(model_name))
   }
 
   /// Utility function that loads and deploys DMN models from specified directory (recursive).

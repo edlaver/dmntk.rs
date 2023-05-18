@@ -1,1 +1,1 @@
-{"errors":[{"details":"ModelEvaluatorError: invalid item definition type for 'tEmploymentStatus'"}]}
+{"errors":[{"details":"WorkspaceError: deployment failed for io.dmntk/compliance-level-2-test-0003, reason: ModelEvaluatorError: invalid item definition type for 'tEmploymentStatus'"}]}

@@ -44,14 +44,18 @@ impl From<WorkspaceError> for DmntkError {
   }
 }
 
-pub fn err_model_evaluator_is_not_deployed(s: &str) -> DmntkError {
-  WorkspaceError(format!("model evaluator for definitions '{s}' is not deployed")).into()
+pub fn err_evaluator_not_deployed(name: &str) -> DmntkError {
+  WorkspaceError(format!("evaluator for definitions {name} is not deployed")).into()
 }
 
-pub fn err_invalid_namespace(s: &str) -> DmntkError {
-  WorkspaceError(format!("invalid namespace '{s}'")).into()
+pub fn err_invalid_namespace(namespace: &str) -> DmntkError {
+  WorkspaceError(format!("invalid namespace {namespace}")).into()
 }
 
-pub fn err_definitions_with_name_already_exists(namespace: &str, name: &str) -> DmntkError {
-  WorkspaceError(format!("definitions with name '{name}' already exist in namespace '{namespace}'")).into()
+pub fn err_definitions_already_exists(rdnn: &str, name: &str) -> DmntkError {
+  WorkspaceError(format!("definitions {name} already exist in {rdnn}")).into()
+}
+
+pub fn err_deployment_failure(rdnn: &str, name: &str, reason: &str) -> DmntkError {
+  WorkspaceError(format!("deployment failed for {rdnn}/{name}, reason: {reason}")).into()
 }
