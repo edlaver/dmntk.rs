@@ -148,7 +148,7 @@ mod tests {
   }
 
   fn test_macro() {
-    print!("{}9{} ", ascii256!(9), ASCII_RESET);
+    print!("{}8{} ", ascii256!(9), ASCII_RESET);
     print!("{}104{} ", ascii256!(104), ASCII_RESET);
     print!("{}220{}", ascii256!(220), ASCII_RESET);
     print!("\n\n");

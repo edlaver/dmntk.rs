@@ -33,6 +33,7 @@
 //! Common definitions for components of Decision Model and Notation Toolkit project.
 
 mod ascii_ctrl;
+mod ascii_tree;
 mod errors;
 mod href;
 mod idents;
