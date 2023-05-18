@@ -449,11 +449,7 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
         match dmntk_model::parse(&xml) {
           Ok(definitions) => {
             let (rdnn, namespace, name) = workspace.add(definitions)?;
-            Ok(AddDefinitionsResult {
-              rdnn: rdnn,
-              namespace: namespace,
-              name: name,
-            })
+            Ok(AddDefinitionsResult { rdnn, namespace, name })
           }
           Err(reason) => Err(reason),
         }
