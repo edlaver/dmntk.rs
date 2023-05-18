@@ -156,39 +156,6 @@ struct AddDefinitionsResult {
   name: String,
 }
 
-/// Result data sent back to caller after replacing definitions.
-#[derive(Serialize)]
-struct ReplaceDefinitionsResult {
-  /// RDNN of the replaced definitions.
-  #[serde(rename = "rdnn")]
-  model_rdnn: String,
-  /// Namespace of the replaced definitions.
-  #[serde(rename = "namespace")]
-  model_namespace: String,
-  /// Name of replaced definitions.
-  #[serde(rename = "name")]
-  model_name: String,
-}
-
-/// Parameters for replacing DMN™ model definitions in workspace.
-#[derive(Deserialize)]
-struct ReplaceDefinitionsParams {
-  /// Content of the DMN™ model, encoded in `Base64`.
-  #[serde(rename = "content")]
-  content: Option<String>,
-}
-
-/// Parameters for removing DMN™ model definitions from workspace.
-#[derive(Deserialize)]
-struct RemoveDefinitionsParams {
-  /// Namespace of the definitions to be removed.
-  #[serde(rename = "namespace")]
-  namespace: Option<String>,
-  /// Name of the definitions to be removed.
-  #[serde(rename = "name")]
-  name: Option<String>,
-}
-
 /// Operation status sent back to caller after request completion.
 #[derive(Serialize)]
 struct StatusResult {
@@ -230,20 +197,20 @@ struct EvaluateParams {
   invocable_name: String,
 }
 
-/// Handler for retrieving system information.
+/// Handler for retrieving the system information.
 #[get("/system/info")]
 async fn get_system_info() -> io::Result<Json<ResultDto<SystemInfoDto>>> {
   Ok(Json(ResultDto::data(SystemInfoDto::default())))
 }
 
-/// Handler for deleting all model definitions from workspace.
+/// Handler for clearing definitions.
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
-  Ok(Json(ResultDto::data(do_clear_workspace(&mut workspace))))
+  Ok(Json(ResultDto::data(do_clear_definitions(&mut workspace))))
 }
 
-/// Handler for adding model definitions to the workspace.
+/// Handler for adding definitions.
 #[post("/definitions/add")]
 async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<AddDefinitionsResult>>> {
   let mut workspace = data.workspace.write().unwrap();
@@ -254,29 +221,7 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
   }
 }
 
-/// Handler for replacing model definitions in workspace.
-#[post("/definitions/replace")]
-async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<ReplaceDefinitionsResult>>> {
-  let mut workspace = data.workspace.write().unwrap();
-  let result = do_replace_definitions(&mut workspace, &params.into_inner());
-  match result {
-    Ok(result) => Ok(Json(ResultDto::data(result))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
-}
-
-/// Handler for removing model definitions from workspace.
-#[post("/definitions/remove")]
-async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
-  let mut workspace = data.workspace.write().unwrap();
-  let result = do_remove_definitions(&mut workspace, &params.into_inner());
-  match result {
-    Ok(result) => Ok(Json(ResultDto::data(result))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
-}
-
-/// Handler for deploying model definitions stashed in workspace.
+/// Handler for deploying definitions.
 #[post("/definitions/deploy")]
 async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<Vec<EvaluatorStatus>>>> {
   let mut workspace = data.workspace.write().unwrap();
@@ -287,7 +232,7 @@ async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result
   }
 }
 
-/// Handler for evaluating models with input values in format compatible with test cases
+/// Handler for evaluating models with input data in the format compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[post("/tck/evaluate")]
 async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
@@ -300,8 +245,8 @@ async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<Appl
 
 /// Handler for evaluating invocable in model.
 ///
-/// Input values may be defined in `JSON` or `FEEL` context format.
-/// Result is always in JSON format.
+/// Input data may be provided in `JSON` format or `FEEL` context format.
+/// The result value is always converted to JSON format.
 #[post("/evaluate/{namespace}/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace = data.workspace.read().unwrap();
@@ -340,8 +285,6 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
       .service(get_system_info)
       .service(post_definitions_clear)
       .service(post_definitions_add)
-      .service(post_definitions_replace)
-      .service(post_definitions_remove)
       .service(post_definitions_deploy)
       .service(post_tck_evaluate)
       .service(post_evaluate)
@@ -433,15 +376,15 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
   dir.map(|d| PathBuf::from(&d))
 }
 
-/// Deletes all model definitions stored in specified workspace.
-fn do_clear_workspace(workspace: &mut Workspace) -> StatusResult {
+/// Deletes all definitions in workspace.
+fn do_clear_definitions(workspace: &mut Workspace) -> StatusResult {
   workspace.clear();
   StatusResult {
     status: "definitions cleared".to_string(),
   }
 }
 
-/// Adds model definition to the workspace.
+/// Adds definitions to workspace.
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = STANDARD.decode(content) {
@@ -464,50 +407,7 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
   }
 }
 
-/// Replace model definition in workspace.
-fn do_replace_definitions(workspace: &mut Workspace, params: &ReplaceDefinitionsParams) -> Result<ReplaceDefinitionsResult> {
-  if let Some(content) = &params.content {
-    if let Ok(bytes) = STANDARD.decode(content) {
-      if let Ok(xml) = String::from_utf8(bytes) {
-        match dmntk_model::parse(&xml) {
-          Ok(definitions) => {
-            let (rdnn, namespace, name) = workspace.replace(definitions)?;
-            Ok(ReplaceDefinitionsResult {
-              model_rdnn: rdnn,
-              model_namespace: namespace,
-              model_name: name,
-            })
-          }
-          Err(reason) => Err(reason),
-        }
-      } else {
-        Err(err_invalid_utf8_content())
-      }
-    } else {
-      Err(err_invalid_base64_encoding())
-    }
-  } else {
-    Err(err_missing_parameter("content"))
-  }
-}
-
-/// Removes model definition from workspace.
-fn do_remove_definitions(workspace: &mut Workspace, params: &RemoveDefinitionsParams) -> Result<StatusResult> {
-  if let Some(namespace) = &params.namespace {
-    if let Some(name) = &params.name {
-      workspace.remove(namespace, name);
-      Ok(StatusResult {
-        status: "definitions removed".to_string(),
-      })
-    } else {
-      Err(err_missing_parameter("name"))
-    }
-  } else {
-    Err(err_missing_parameter("namespace"))
-  }
-}
-
-/// Deploy all definitions in workspace.
+/// Deploys definitions in workspace.
 fn do_deploy_definitions(workspace: &mut Workspace) -> Result<Vec<EvaluatorStatus>> {
   Ok(workspace.deploy())
 }
@@ -563,24 +463,6 @@ mod tests {
     assert!(serde_json::from_str::<AddDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
     assert!(serde_json::from_str::<AddDefinitionsParams>(r#"[1]"#).is_err());
     assert!(serde_json::from_str::<AddDefinitionsParams>(r#"1"#).is_err());
-  }
-
-  #[test]
-  fn test_deserialize_replace_definitions_params() {
-    assert!(serde_json::from_str::<Vec<ReplaceDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
-    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
-    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
-    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"[1]"#).is_err());
-    assert!(serde_json::from_str::<ReplaceDefinitionsParams>(r#"1"#).is_err());
-  }
-
-  #[test]
-  fn test_deserialize_remove_definitions_params() {
-    assert!(serde_json::from_str::<Vec<RemoveDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
-    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
-    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
-    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"[1]"#).is_err());
-    assert!(serde_json::from_str::<RemoveDefinitionsParams>(r#"1"#).is_err());
   }
 
   #[test]
