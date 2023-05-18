@@ -40,7 +40,7 @@ use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
-use dmntk_workspace::{EvaluatorStatus, Workspace};
+use dmntk_workspace::Workspace;
 use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
@@ -223,7 +223,7 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
 
 /// Handler for deploying definitions.
 #[post("/definitions/deploy")]
-async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<Vec<EvaluatorStatus>>>> {
+async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_deploy_definitions(&mut workspace);
   match result {
@@ -408,8 +408,13 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
 }
 
 /// Deploys definitions in workspace.
-fn do_deploy_definitions(workspace: &mut Workspace) -> Result<Vec<EvaluatorStatus>> {
-  Ok(workspace.deploy())
+fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
+  match workspace.deploy() {
+    Ok(count) => Ok(StatusResult {
+      status: format!("deployed {} models(s)", count),
+    }),
+    Err(reason) => Err(reason),
+  }
 }
 
 /// Evaluates the invocable in model and returns the result.

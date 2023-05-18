@@ -739,7 +739,6 @@ dependencies = [
  "dmntk-feel-evaluator",
  "dmntk-model",
  "dmntk-model-evaluator",
- "serde",
  "walkdir",
 ]
 

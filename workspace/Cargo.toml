@@ -9,7 +9,6 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-serde.workspace = true
 walkdir.workspace = true
 dmntk-common.workspace = true
 dmntk-feel.workspace = true

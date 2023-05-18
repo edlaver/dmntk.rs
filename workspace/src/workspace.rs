@@ -38,12 +38,10 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_model::model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
-use serde::Serialize;
 use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::{fmt, fs};
 use walkdir::WalkDir;
 
 /// Type alias defining a map of definitions indexed by its name.
@@ -51,58 +49,6 @@ type DefinitionsByName = HashMap<String, Arc<Definitions>>;
 
 /// Type alias defining a map of evaluators indexed by its name.
 type EvaluatorsByName = HashMap<String, Arc<ModelEvaluator>>;
-
-#[derive(Serialize, Default)]
-pub enum StatusMessage {
-  #[default]
-  Ok,
-  Failure,
-}
-
-#[derive(Serialize, Default)]
-pub struct DefinitionsStatus {
-  #[serde(rename = "file")]
-  model_file: String,
-  #[serde(rename = "rdnn", skip_serializing_if = "Option::is_none")]
-  model_rdnn: Option<String>,
-  #[serde(rename = "namespace", skip_serializing_if = "Option::is_none")]
-  model_namespace: Option<String>,
-  #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
-  model_name: Option<String>,
-  #[serde(rename = "status")]
-  status: StatusMessage,
-  #[serde(rename = "reason", skip_serializing_if = "Option::is_none")]
-  reason: Option<String>,
-}
-
-#[derive(Serialize, Default)]
-pub struct EvaluatorStatus {
-  #[serde(rename = "rdnn")]
-  model_rdnn: String,
-  #[serde(rename = "name")]
-  model_name: String,
-  #[serde(rename = "path", skip_serializing_if = "Option::is_none")]
-  deployment_path: Option<String>,
-  #[serde(rename = "status")]
-  status: StatusMessage,
-  #[serde(rename = "reason", skip_serializing_if = "Option::is_none")]
-  reason: Option<String>,
-}
-
-#[derive(Serialize, Default)]
-pub struct WorkspaceStatus {
-  #[serde(rename = "models")]
-  definitions: Vec<DefinitionsStatus>,
-  #[serde(rename = "evaluators")]
-  evaluators: Vec<EvaluatorStatus>,
-}
-
-impl Display for WorkspaceStatus {
-  ///
-  fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-    write!(f, "a")
-  }
-}
 
 /// Structure representing the container for DMN models.
 pub struct Workspace {
@@ -122,8 +68,7 @@ impl Workspace {
     };
     // load and deploy all DMN models (when optional directory specified)
     if let Some(dir) = opt_dir {
-      let workspace_status = workspace.load_and_deploy_models(&dir);
-      println!("Deployed {} model(s) from directory: {}", workspace_status.evaluators.len(), dir.to_string_lossy());
+      workspace.load_and_deploy_models(&dir);
     }
     // workspace is now ready to use
     workspace
@@ -171,7 +116,8 @@ impl Workspace {
   }
 
   /// Creates model evaluators for all definitions in workspace.
-  pub fn deploy(&mut self) -> Result<()> {
+  pub fn deploy(&mut self) -> Result<usize> {
+    let mut counter = 0;
     self.evaluators.clear();
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
@@ -190,13 +136,13 @@ impl Workspace {
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
                 evaluators_by_name
               });
+            counter += 1;
           }
           Err(reason) => return Err(reason),
         }
-        evaluator_status_list.push(evaluator_status);
       }
     }
-    Ok(())
+    Ok(counter)
   }
 
   /// Evaluates invocable deployed in workspace.
@@ -218,9 +164,7 @@ impl Workspace {
           match fs::read_to_string(entry.path()) {
             Ok(xml) => match dmntk_model::parse(&xml) {
               Ok(definitions) => match self.add(definitions) {
-                Ok((_rdnn, _namespace, _name)) => {
-                  //
-                }
+                Ok(_) => {}
                 Err(reason) => eprintln!("{}", reason),
               },
               Err(reason) => eprintln!("{}", reason),
@@ -231,7 +175,7 @@ impl Workspace {
       }
     }
     match self.deploy() {
-      Ok(_) => println!("Deployed {} model(s).", self.evaluators.len()),
+      Ok(count) => println!("Deployed {count} model(s)."),
       Err(reason) => eprintln!("{}", reason),
     }
   }
