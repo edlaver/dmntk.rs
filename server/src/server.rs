@@ -243,7 +243,7 @@ async fn get_system_info() -> io::Result<Json<ResultDto<SystemInfoDto>>> {
 #[post("/definitions/clear")]
 async fn post_definitions_clear(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
-  Ok(Json(ResultDto::data(do_clear_definitions(&mut workspace))))
+  Ok(Json(ResultDto::data(do_clear_workspace(&mut workspace))))
 }
 
 /// Handler for adding model definitions to workspace.
@@ -437,14 +437,14 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
 }
 
 /// Deletes all model definitions stored in specified workspace.
-fn do_clear_definitions(workspace: &mut Workspace) -> StatusResult {
+fn do_clear_workspace(workspace: &mut Workspace) -> StatusResult {
   workspace.clear();
   StatusResult {
     status: "definitions cleared".to_string(),
   }
 }
 
-/// Add model definition to workspace.
+/// Adds model definition to the workspace.
 fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
   if let Some(content) = &params.content {
     if let Ok(bytes) = STANDARD.decode(content) {
