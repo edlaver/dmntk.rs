@@ -10,7 +10,7 @@ curl -s -X POST http://0.0.0.0:22022/definitions/clear > /dev/null 2>&1
 
 # prepare JSON data file containing a model to be added to workspace
 echo -n '{"content":"' > data.json
-base64 --wrap=0 2_000_UTF_16.dmn >> data.json
+base64 --wrap=0 2_0001_UTF_16.dmn >> data.json
 echo -n '"}' >> data.json
 
 # add model to workspace
