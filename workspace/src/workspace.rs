@@ -31,10 +31,6 @@
  */
 
 //! # Container for DMN models
-//!
-//! Workspace has two _virtual_ states:
-//! - `STASHING`: all model evaluators are deleted, model definitions can be freely modified,
-//! - `DEPLOYED`: model evaluators are deployed, model definitions should remain unmodified.
 
 use crate::errors::*;
 use dmntk_common::{to_rdnn, Result};
@@ -133,15 +129,13 @@ impl Workspace {
     workspace
   }
 
-  /// Deletes all definitions and model evaluators,
-  /// and switches a workspace to state `STASHING`.
+  /// Deletes all definitions and model evaluators.
   pub fn clear(&mut self) {
-    self.clear_definitions();
-    self.clear_evaluators();
+    self.definitions.clear();
+    self.evaluators.clear();
   }
 
-  /// Adds a definition to workspace, deletes all model evaluators,
-  /// and switches a workspace to state `STASHING`.
+  /// Adds new definitions to workspace, deletes all model evaluators.
   pub fn add(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
     let namespace = definitions.namespace().to_string();
     // create the rdnn from definitions namespace
@@ -172,32 +166,13 @@ impl Workspace {
         definitions_by_name
       });
     // delete all evaluators
-    self.clear_evaluators();
+    self.evaluators.clear();
     Ok((rdnn, namespace, name))
   }
 
-  /// Removes a definition from workspace, deletes all model evaluators,
-  /// switches a workspace to state `STASHING`.
-  pub fn remove(&mut self, namespace: &str, name: &str) {
-    if let Some(definitions_by_name) = self.definitions.get_mut(namespace) {
-      definitions_by_name.remove(name);
-    }
-    self.clear_evaluators();
-  }
-
-  /// Replaces a definition in workspace, deletes all model evaluators,
-  /// switches a workspace to state `STASHING`.
-  pub fn replace(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
-    if let Some(namespace) = to_rdnn(definitions.namespace()) {
-      self.remove(&namespace, definitions.name());
-    }
-    self.add(definitions)
-  }
-
-  /// Creates model evaluators for all definitions in workspace,
-  /// switches a workspace to state `DEPLOYED`.
+  /// Creates model evaluators for all definitions in workspace.
   pub fn deploy(&mut self) -> Vec<EvaluatorStatus> {
-    self.clear_evaluators();
+    self.evaluators.clear();
     let mut evaluator_status_list = vec![];
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
@@ -236,7 +211,7 @@ impl Workspace {
     evaluator_status_list
   }
 
-  /// Evaluates invocable (decision, business knowledge model or decision service) deployed in a workspace.
+  /// Evaluates invocable deployed in workspace.
   pub fn evaluate_invocable(&self, model_namespace: &str, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
     if let Some(evaluators_by_name) = self.evaluators.get(model_namespace) {
       if let Some(model_evaluator) = evaluators_by_name.get(model_name) {
@@ -244,16 +219,6 @@ impl Workspace {
       }
     }
     Err(err_model_evaluator_is_not_deployed(model_name))
-  }
-
-  /// Utility function that deletes all definitions in a workspace.
-  fn clear_definitions(&mut self) {
-    self.definitions.clear();
-  }
-
-  /// Utility function that deletes all model evaluators in a workspace.
-  fn clear_evaluators(&mut self) {
-    self.evaluators.clear();
   }
 
   /// Utility function that loads and deploys DMN models from specified directory (recursive).
