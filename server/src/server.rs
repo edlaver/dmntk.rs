@@ -42,11 +42,11 @@ use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
 use serde::{Deserialize, Serialize};
-use std::env;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
+use std::{env, io};
 
 const DMNTK_NAME: &str = env!("CARGO_PKG_NAME");
 const DMNTK_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -218,20 +218,20 @@ struct EvaluateParams {
 
 /// Handler for retrieving system information.
 #[get("/system/info")]
-async fn get_system_info() -> std::io::Result<Json<ResultDto<SystemInfoDto>>> {
+async fn get_system_info() -> io::Result<Json<ResultDto<SystemInfoDto>>> {
   Ok(Json(ResultDto::data(SystemInfoDto::default())))
 }
 
 /// Handler for deleting all model definitions from workspace.
 #[post("/definitions/clear")]
-async fn post_definitions_clear(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_clear(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   Ok(Json(ResultDto::data(do_clear_definitions(&mut workspace))))
 }
 
 /// Handler for adding model definitions to workspace.
 #[post("/definitions/add")]
-async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<AddDefinitionsResult>>> {
+async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<AddDefinitionsResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_add_definitions(&mut workspace, &params.into_inner());
   match result {
@@ -242,7 +242,7 @@ async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Dat
 
 /// Handler for replacing model definitions in workspace.
 #[post("/definitions/replace")]
-async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_replace_definitions(&mut workspace, &params.into_inner());
   match result {
@@ -253,7 +253,7 @@ async fn post_definitions_replace(params: Json<ReplaceDefinitionsParams>, data: 
 
 /// Handler for removing model definitions from workspace.
 #[post("/definitions/remove")]
-async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_remove_definitions(&mut workspace, &params.into_inner());
   match result {
@@ -264,7 +264,7 @@ async fn post_definitions_remove(params: Json<RemoveDefinitionsParams>, data: we
 
 /// Handler for deploying model definitions stashed in workspace.
 #[post("/definitions/deploy")]
-async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<StatusResult>>> {
+async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
   let mut workspace = data.workspace.write().unwrap();
   let result = do_deploy_definitions(&mut workspace);
   match result {
@@ -276,7 +276,7 @@ async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> std::io::R
 /// Handler for evaluating models with input values in format compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[post("/tck/evaluate")]
-async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> std::io::Result<Json<ResultDto<OutputNodeDto>>> {
+async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
   let workspace = data.workspace.read().unwrap();
   match do_evaluate_tck(&workspace, &params.into_inner()) {
     Ok(response) => Ok(Json(ResultDto::data(response))),
@@ -299,12 +299,12 @@ async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, 
 }
 
 /// Handler for 404 errors.
-async fn not_found() -> std::io::Result<Json<ResultDto<()>>> {
+async fn not_found() -> io::Result<Json<ResultDto<()>>> {
   Ok(Json(ResultDto::error(err_endpoint_not_found())))
 }
 
 /// Starts the server.
-pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, opt_dir: Option<String>) -> std::io::Result<()> {
+pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, opt_dir: Option<String>) -> io::Result<()> {
   let workspace = Workspace::new(get_workspace_dir(opt_dir));
   let application_data = web::Data::new(ApplicationData {
     workspace: RwLock::new(workspace),
