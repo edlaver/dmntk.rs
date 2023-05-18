@@ -145,18 +145,15 @@ struct AddDefinitionsParams {
   content: Option<String>,
 }
 
-/// Result data sent back to caller after adding definitions.
+/// Result data sent back to caller after successfully added new definitions.
 #[derive(Serialize)]
 struct AddDefinitionsResult {
-  /// RDNN of the added definitions.
-  #[serde(rename = "rdnn")]
-  model_rdnn: String,
-  /// Namespace of the added definitions.
-  #[serde(rename = "namespace")]
-  model_namespace: String,
-  /// Name of added definitions.
-  #[serde(rename = "name")]
-  model_name: String,
+  /// RDNN of the definitions.
+  rdnn: String,
+  /// Namespace of the definitions.
+  namespace: String,
+  /// Name of the definitions.
+  name: String,
 }
 
 /// Result data sent back to caller after replacing definitions.
@@ -246,7 +243,7 @@ async fn post_definitions_clear(data: web::Data<ApplicationData>) -> io::Result<
   Ok(Json(ResultDto::data(do_clear_workspace(&mut workspace))))
 }
 
-/// Handler for adding model definitions to workspace.
+/// Handler for adding model definitions to the workspace.
 #[post("/definitions/add")]
 async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<AddDefinitionsResult>>> {
   let mut workspace = data.workspace.write().unwrap();
@@ -453,9 +450,9 @@ fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) 
           Ok(definitions) => {
             let (rdnn, namespace, name) = workspace.add(definitions)?;
             Ok(AddDefinitionsResult {
-              model_rdnn: rdnn,
-              model_namespace: namespace,
-              model_name: name,
+              rdnn: rdnn,
+              namespace: namespace,
+              name: name,
             })
           }
           Err(reason) => Err(reason),
