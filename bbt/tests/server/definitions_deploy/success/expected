@@ -1,16 +1,1 @@
-{
-  "data": [
-    {
-      "rdnn": "io.dmntk",
-      "name": "compliance-level-2-test-0001",
-      "path": "io.dmntk/compliance-level-2-test-0001",
-      "status": "Ok"
-    },
-    {
-      "rdnn": "io.dmntk",
-      "name": "compliance-level-2-test-0001_a",
-      "path": "io.dmntk/compliance-level-2-test-0001_a",
-      "status": "Ok"
-    }
-  ]
-}
+{"data":{"status":"deployed 2 models(s)"}}

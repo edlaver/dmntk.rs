@@ -82,6 +82,7 @@ impl Workspace {
 
   /// Adds new definitions to workspace, deletes all model evaluators.
   pub fn add(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
+    self.evaluators.clear();
     let namespace = definitions.namespace().to_string();
     // create the rdnn from definitions namespace
     let Some(rdnn) = to_rdnn(&namespace) else {
@@ -110,15 +111,13 @@ impl Workspace {
         definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
         definitions_by_name
       });
-    // delete all evaluators
-    self.evaluators.clear();
     Ok((rdnn, namespace, name))
   }
 
   /// Creates model evaluators for all definitions in workspace.
   pub fn deploy(&mut self) -> Result<usize> {
-    let mut counter = 0;
     self.evaluators.clear();
+    let mut counter = 0;
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
         match ModelEvaluator::new(definitions) {
@@ -138,7 +137,10 @@ impl Workspace {
               });
             counter += 1;
           }
-          Err(reason) => return Err(reason),
+          Err(reason) => {
+            self.evaluators.clear();
+            return Err(reason);
+          }
         }
       }
     }
@@ -176,7 +178,11 @@ impl Workspace {
     }
     match self.deploy() {
       Ok(count) => println!("Deployed {count} model(s)."),
-      Err(reason) => eprintln!("{}", reason),
+      Err(reason) => {
+        eprintln!("{}", reason);
+        println!("Deployed 0 model(s).");
+        self.evaluators.clear();
+      }
     }
   }
 }

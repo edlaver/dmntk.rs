@@ -1,10 +1,1 @@
-{
-  "data": [
-    {
-      "rdnn": "io.dmntk",
-      "name": "compliance-level-2-test-0003",
-      "status": "Failure",
-      "reason": "ModelEvaluatorError: invalid item definition type for 'tEmploymentStatus'"
-    }
-  ]
-}
+{"errors":[{"details":"ModelEvaluatorError: invalid item definition type for 'tEmploymentStatus'"}]}

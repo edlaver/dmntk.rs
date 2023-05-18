@@ -1,2 +1,3 @@
-Deployed 0 model(s) from directory: .
+ModelParserError: parsing model from XML failed with reason: expected 'description' tag, not 'definitions' at 37:1
+Deployed 0 model(s).
 dmntk 0.0.0.0:22022
