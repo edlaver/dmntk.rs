@@ -40,7 +40,7 @@ use dmntk_model::model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
 use std::collections::HashMap;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::Arc;
 use walkdir::WalkDir;
 
@@ -61,16 +61,11 @@ pub struct Workspace {
 impl Workspace {
   /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
   pub fn new(opt_dir: Option<PathBuf>) -> Self {
-    // create an empty workspace
     let mut workspace = Self {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
     };
-    // load and deploy all DMN models (when optional directory specified)
-    if let Some(dir) = opt_dir {
-      workspace.load_and_deploy_models(&dir);
-    }
-    // workspace is now ready to use
+    workspace.load_and_deploy(opt_dir);
     workspace
   }
 
@@ -158,30 +153,32 @@ impl Workspace {
   }
 
   /// Utility function that loads and deploys DMN models from specified directory (recursive).
-  fn load_and_deploy_models(&mut self, dir: &Path) {
-    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
-      if entry.file_type().is_file() {
-        let file_name = entry.file_name().to_string_lossy();
-        if file_name.ends_with(".dmn") {
-          match fs::read_to_string(entry.path()) {
-            Ok(xml) => match dmntk_model::parse(&xml) {
-              Ok(definitions) => match self.add(definitions) {
-                Ok(_) => {}
-                Err(reason) => eprintln!("{}", reason),
+  fn load_and_deploy(&mut self, opt_dir: Option<PathBuf>) {
+    if let Some(dir) = opt_dir {
+      for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+        if entry.file_type().is_file() {
+          let file_name = entry.file_name().to_string_lossy();
+          if file_name.ends_with(".dmn") {
+            match fs::read_to_string(entry.path()) {
+              Ok(xml) => match dmntk_model::parse(&xml) {
+                Ok(definitions) => match self.add(definitions) {
+                  Ok(_) => {}
+                  Err(reason) => eprintln!("{}: {}", file_name, reason),
+                },
+                Err(reason) => eprintln!("{}: {}", file_name, reason),
               },
-              Err(reason) => eprintln!("{}", reason),
-            },
-            Err(reason) => eprintln!("{}", reason),
+              Err(reason) => eprintln!("{}: {}", file_name, reason),
+            }
           }
         }
       }
-    }
-    match self.deploy() {
-      Ok(count) => println!("Deployed {count} model(s)."),
-      Err(reason) => {
-        eprintln!("{}", reason);
-        println!("Deployed 0 model(s).");
-        self.evaluators.clear();
+      match self.deploy() {
+        Ok(count) => println!("Deployed {count} model(s)."),
+        Err(reason) => {
+          eprintln!("{}", reason);
+          eprintln!("Deployed 0 model(s).");
+          self.evaluators.clear();
+        }
       }
     }
   }
