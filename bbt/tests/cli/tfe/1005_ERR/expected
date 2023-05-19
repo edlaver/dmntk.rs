@@ -1,5 +1,5 @@
-evaluating expression failed with reason: FeelEvaluatorError: invalid at (@) literal 'airbus'
-evaluating expression failed with reason: FeelEvaluatorError: invalid at (@) literal 'airbus'
-evaluating expression failed with reason: FeelEvaluatorError: invalid at (@) literal 'airbus'
+evaluating expression failed with reason: <FeelEvaluatorError> invalid at (@) literal 'airbus'
+evaluating expression failed with reason: <FeelEvaluatorError> invalid at (@) literal 'airbus'
+evaluating expression failed with reason: <FeelEvaluatorError> invalid at (@) literal 'airbus'
 test result: ok. 0 passed; 0 failed.
 

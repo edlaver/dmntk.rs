@@ -1,1 +1,1 @@
-{"errors":[{"details":"ModelParserError: parsing model from XML failed with reason: expected 'description' tag, not 'definitions' at 37:1"}]}
+{"errors":[{"details":"<ModelParserError> parsing model from XML failed with reason: expected 'description' tag, not 'definitions' at 37:1"}]}

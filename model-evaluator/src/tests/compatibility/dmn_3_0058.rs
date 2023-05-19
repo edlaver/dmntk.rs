@@ -59,7 +59,7 @@ fn _0004() {
     &MODEL_EVALUATOR,
     "decision003_a",
     &ctx,
-    r#"null([core::number] FeelNumberError: invalid number literal '1,000,000.01')"#,
+    r#"null([core::number] <FeelNumberError> invalid number literal '1,000,000.01')"#,
   );
 }
 
@@ -194,7 +194,7 @@ fn _0019() {
     &MODEL_EVALUATOR,
     "decision015",
     &ctx,
-    r#"null([core::number] FeelNumberError: invalid number literal 'foo.bar001')"#,
+    r#"null([core::number] <FeelNumberError> invalid number literal 'foo.bar001')"#,
   );
 }
 

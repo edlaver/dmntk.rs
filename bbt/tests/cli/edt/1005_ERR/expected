@@ -1,1 +1,1 @@
-building decision table evaluator failed with reason: ParserError: syntax error: `Business"
+building decision table evaluator failed with reason: <ParserError> syntax error: `Business"

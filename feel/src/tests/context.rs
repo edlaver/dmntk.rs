@@ -384,7 +384,7 @@ fn test_clone() {
 #[test]
 fn test_value_is_not_a_context() {
   assert_eq!(
-    "ContextError: 'true' is not a value containing context",
+    "<ContextError> 'true' is not a value containing context",
     <Value as TryInto<FeelContext>>::try_into(Value::Boolean(true)).err().unwrap().to_string()
   );
 }

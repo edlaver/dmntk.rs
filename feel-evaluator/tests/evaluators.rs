@@ -24,7 +24,7 @@ fn _0003() {
   let scope = FeelScope::default();
   let node = AstNode::Boolean(true);
   assert_eq!(
-    "FeelEvaluatorError: expected FEEL context as an input",
+    "<FeelEvaluatorError> expected FEEL context as an input",
     evaluate_context_node(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -64,7 +64,7 @@ fn _0008() {
   let scope = FeelScope::default();
   let node = AstNode::FunctionInvocation(Box::new(AstNode::Name("calculate".into())), Box::new(AstNode::Boolean(true)));
   assert_eq!(
-    "FeelEvaluatorError: expected positional or named parameter",
+    "<FeelEvaluatorError> expected positional or named parameter",
     evaluate(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -80,7 +80,7 @@ fn _0009() {
     )])),
   );
   assert_eq!(
-    "FeelEvaluatorError: expected AstNode::ParameterName, actual node is Boolean(true)",
+    "<FeelEvaluatorError> expected AstNode::ParameterName, actual node is Boolean(true)",
     evaluate(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -90,7 +90,7 @@ fn _0010() {
   let scope = FeelScope::default();
   let node = AstNode::Every(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   assert_eq!(
-    "FeelEvaluatorError: expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
+    "<FeelEvaluatorError> expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
     evaluate(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -100,7 +100,7 @@ fn _0011() {
   let scope = FeelScope::default();
   let node = AstNode::Some(Box::new(AstNode::Boolean(true)), Box::new(AstNode::Boolean(false)));
   assert_eq!(
-    "FeelEvaluatorError: expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
+    "<FeelEvaluatorError> expected AST node AstNode::QuantifiedContexts, actual AST node is Boolean(true)",
     evaluate(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -110,7 +110,7 @@ fn _0012() {
   let scope = FeelScope::default();
   let node = AstNode::CommaList(vec![]);
   assert_eq!(
-    "FeelEvaluatorError: unexpected AST node in evaluator builder CommaList([])",
+    "<FeelEvaluatorError> unexpected AST node in evaluator builder CommaList([])",
     evaluate(&scope, &node).err().unwrap().to_string()
   );
 }

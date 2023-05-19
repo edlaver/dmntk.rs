@@ -42,4 +42,4 @@ GRID
 │   │            │       │      │
 └───┴────────────┴───────┴──────┘
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-ERROR: RecognizerError: character ' ' is not allowed in ['│', '├']
+ERROR: <RecognizerError> character ' ' is not allowed in ['│', '├']

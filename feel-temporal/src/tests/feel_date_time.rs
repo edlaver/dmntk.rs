@@ -45,7 +45,7 @@ fn _0001() {
 fn _0002() {
   let date_time: Result<FeelDateTime> = "999999999-01-10T24:00:00".try_into();
   assert_eq!(
-    "TemporalError: invalid date and time literal '999999999-01-10T24:00:00'",
+    "<TemporalError> invalid date and time literal '999999999-01-10T24:00:00'",
     date_time.err().unwrap().to_string()
   );
 }
@@ -53,14 +53,14 @@ fn _0002() {
 #[test]
 fn _0003() {
   let date_time: Result<FeelDateTime> = "2023-02-09T24:01:00".try_into();
-  assert_eq!("TemporalError: invalid date and time literal '2023-02-09T24:01:00'", date_time.err().unwrap().to_string());
+  assert_eq!("<TemporalError> invalid date and time literal '2023-02-09T24:01:00'", date_time.err().unwrap().to_string());
 }
 
 #[test]
 fn _0004() {
   let date_time: Result<FeelDateTime> = "2023-02-09T24:01:00@Europe/Sofa".try_into();
   assert_eq!(
-    "TemporalError: invalid date and time literal '2023-02-09T24:01:00@Europe/Sofa'",
+    "<TemporalError> invalid date and time literal '2023-02-09T24:01:00@Europe/Sofa'",
     date_time.err().unwrap().to_string()
   );
 }

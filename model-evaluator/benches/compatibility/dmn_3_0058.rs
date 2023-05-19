@@ -66,7 +66,7 @@ fn _0004(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &ctx,
-    r#"null([core::number] FeelNumberError: invalid number literal '1,000,000.01')"#,
+    r#"null([core::number] <FeelNumberError> invalid number literal '1,000,000.01')"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }
@@ -231,7 +231,7 @@ fn _0019(b: &mut Bencher) {
     &MODEL_EVALUATOR,
     invocable_name,
     &ctx,
-    r#"null([core::number] FeelNumberError: invalid number literal 'foo.bar001')"#,
+    r#"null([core::number] <FeelNumberError> invalid number literal 'foo.bar001')"#,
   );
   b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
 }

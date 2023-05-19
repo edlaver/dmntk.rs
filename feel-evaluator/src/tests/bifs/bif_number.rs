@@ -109,7 +109,7 @@ fn _0012() {
     false,
     &scope!(),
     r#"number("123a56",null,null)"#,
-    r#"[core::number] FeelNumberError: invalid number literal '123a56'"#,
+    r#"[core::number] <FeelNumberError> invalid number literal '123a56'"#,
   );
 }
 

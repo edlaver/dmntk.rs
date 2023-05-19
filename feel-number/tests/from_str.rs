@@ -14,7 +14,7 @@ fn test_from_str_002() {
 
 #[test]
 fn test_from_str_003() {
-  eqs!("FeelNumberError: invalid number literal '1234a5'", "1234a5".parse::<FeelNumber>().unwrap_err().to_string());
+  eqs!("<FeelNumberError> invalid number literal '1234a5'", "1234a5".parse::<FeelNumber>().unwrap_err().to_string());
 }
 
 #[test]

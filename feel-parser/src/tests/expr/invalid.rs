@@ -118,7 +118,7 @@ fn _0010() {
 fn _0011() {
   let scope = scope!();
   assert_eq!(
-    "ParserError: syntax error: 1 += 2",
+    "<ParserError> syntax error: 1 += 2",
     Parser::new(&scope, StartExpression, "1 += 2", false).parse().err().unwrap().to_string().as_str()
   );
 }

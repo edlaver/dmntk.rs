@@ -274,7 +274,7 @@ fn general_cross_tab() {
 #[test]
 fn test_err_01() {
   assert_eq!(
-    "RecognizerError: expected characters not found: ['╬']",
+    "<RecognizerError> expected characters not found: ['╬']",
     Recognizer::recognize(EX_ERR_01, false).err().unwrap().to_string()
   );
 }
@@ -282,7 +282,7 @@ fn test_err_01() {
 #[test]
 fn test_err_02() {
   assert_eq!(
-    "RecognizerError: character ' ' is not allowed in ['─', '┴']",
+    "<RecognizerError> character ' ' is not allowed in ['─', '┴']",
     Recognizer::recognize(EX_ERR_02, false).err().unwrap().to_string()
   );
 }
@@ -290,7 +290,7 @@ fn test_err_02() {
 #[test]
 fn test_err_03() {
   assert_eq!(
-    "RecognizerError: rectangle is not closed, start point: (0,1), end point: (0,0)",
+    "<RecognizerError> rectangle is not closed, start point: (0,1), end point: (0,0)",
     Recognizer::recognize(EX_ERR_03, false).err().unwrap().to_string()
   );
 }
@@ -298,7 +298,7 @@ fn test_err_03() {
 #[test]
 fn test_err_04() {
   assert_eq!(
-    "RecognizerError: too many rows in input clause",
+    "<RecognizerError> too many rows in input clause",
     Recognizer::recognize(EX_ERR_04, false).err().unwrap().to_string()
   );
 }
@@ -307,7 +307,7 @@ fn test_err_04() {
 #[ignore]
 fn test_err_05() {
   assert_eq!(
-    "RecognizerError: too many rows in output clause",
+    "<RecognizerError> too many rows in output clause",
     Recognizer::recognize(EX_ERR_05, false).err().unwrap().to_string()
   );
 }
@@ -316,7 +316,7 @@ fn test_err_05() {
 #[ignore]
 fn test_err_06() {
   assert_eq!(
-    "RecognizerError: too many rows in input clause",
+    "<RecognizerError> too many rows in input clause",
     Recognizer::recognize(EX_ERR_06, false).err().unwrap().to_string()
   );
 }
@@ -324,7 +324,7 @@ fn test_err_06() {
 #[test]
 fn test_err_07() {
   assert_eq!(
-    "RecognizerError: expected right-after rule numbers placement",
+    "<RecognizerError> expected right-after rule numbers placement",
     Recognizer::recognize(EX_ERR_07, false).err().unwrap().to_string()
   );
 }
@@ -332,7 +332,7 @@ fn test_err_07() {
 #[test]
 fn test_err_08() {
   assert_eq!(
-    "RecognizerError: expected no rule numbers present",
+    "<RecognizerError> expected no rule numbers present",
     Recognizer::recognize(EX_ERR_08, false).err().unwrap().to_string()
   );
 }

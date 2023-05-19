@@ -57,7 +57,7 @@ fn test_0004() {
 }
 
 #[test]
-#[should_panic(expected = "building evaluator for textual expression failed with reason: FeelEvaluatorError: invalid at (@) literal 'airbus'")]
+#[should_panic(expected = "building evaluator for textual expression failed with reason: <FeelEvaluatorError> invalid at (@) literal 'airbus'")]
 fn test_0005() {
   let scope = &te_scope(r#"{}"#);
   te_value(false, scope, r#"@"airbus""#, r#"should_panic"#);

@@ -32,14 +32,15 @@
 
 //! Implementation of errors for FEEL parser.
 
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 
-/// Lexer errors.
+/// Lexer error.
 struct LexerError(String);
 
-impl From<LexerError> for DmntkError {
-  fn from(e: LexerError) -> Self {
-    DmntkError::new("LexerError", &e.0)
+impl ToErrorMessage for LexerError {
+  /// Converts [LexerError] to error message.
+  fn message(self) -> String {
+    self.0
   }
 }
 
@@ -59,7 +60,7 @@ pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
   LexerError(format!("surrogate value is out of allowed range 0xD800..0xDFFF : {value:X}")).into()
 }
 
-/// Parser errors.
+/// Parser error.
 struct ParserError(String);
 
 impl From<ParserError> for DmntkError {

@@ -148,7 +148,7 @@
 {
   "errors": [
     {
-      "details": "ServerError: missing parameter 'InputNodeDto.value'"
+      "details": "<ServerError> missing parameter 'InputNodeDto.value'"
     }
   ]
 }
@@ -158,7 +158,7 @@
 {
   "errors": [
     {
-      "details": "ServerError: missing parameter 'no `simple`, `components` or `list` attribute in ValueTypeDto'"
+      "details": "<ServerError> missing parameter 'no `simple`, `components` or `list` attribute in ValueTypeDto'"
     }
   ]
 }
@@ -168,7 +168,7 @@
 {
   "errors": [
     {
-      "details": "ServerError: invalid parameter 'ValueDto'"
+      "details": "<ServerError> invalid parameter 'ValueDto'"
     }
   ]
 }

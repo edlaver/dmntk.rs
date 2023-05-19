@@ -1,1 +1,1 @@
-parsing expression failed with reason: ParserError: syntax error: a =+ b - c
+parsing expression failed with reason: <ParserError> syntax error: a =+ b - c

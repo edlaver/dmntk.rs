@@ -53,7 +53,7 @@ fn test_from_string() {
   assert_eq!(FeelType::DateTime, FeelType::from_str("date and time").unwrap());
   assert_eq!(FeelType::DaysAndTimeDuration, FeelType::from_str("days and time duration").unwrap());
   assert_eq!(FeelType::YearsAndMonthsDuration, FeelType::from_str("years and months duration").unwrap());
-  assert_eq!("TypesError: invalid FEEL type name: range", FeelType::from_str("range").err().unwrap().to_string());
+  assert_eq!("<TypesError> invalid FEEL type name: range", FeelType::from_str("range").err().unwrap().to_string());
 }
 
 #[test]
@@ -85,7 +85,7 @@ fn test_get_value_checked() {
   assert_eq!("true", T_ANY.get_value_checked(&v_boolean).unwrap().to_string());
   assert!(T_BOOLEAN.get_value_checked(&v_string).is_err());
   assert_eq!(
-    r#"TypesError: invalid value for retrieving with type check, type = 'boolean', value = '"hello"'"#,
+    r#"<TypesError> invalid value for retrieving with type check, type = 'boolean', value = '"hello"'"#,
     format!("{}", T_BOOLEAN.get_value_checked(&v_string).err().unwrap()).as_str()
   );
 }

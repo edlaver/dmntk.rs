@@ -169,7 +169,7 @@ mod tests {
   }
 
   #[test]
-  #[should_panic(expected = r#"DmntkError("Evaluator: expected expression list, but found '\n       Irrelevant\n    '"#)]
+  #[should_panic(expected = r#"DmntkError("<Evaluator> expected expression list, but found '\n       Irrelevant\n    '"#)]
   fn test_evaluate_invalid_test_file() {
     let input = r#"
       % -

@@ -182,7 +182,7 @@ fn _0007() {
 fn _0008() {
   let scope = scope!();
   assert_eq!(
-    "ParserError: syntax error: +1",
+    "<ParserError> syntax error: +1",
     Parser::new(&scope, StartExpression, "+1", false).parse().err().unwrap().to_string().as_str()
   );
 }

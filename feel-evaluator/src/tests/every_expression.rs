@@ -61,7 +61,7 @@ fn _0005() {
   let scope = FeelScope::default();
   let node = AstNode::Every(Box::new(AstNode::Name("n".into())), Box::new(AstNode::Name("n".into())));
   assert_eq!(
-    r#"FeelEvaluatorError: expected AST node AstNode::QuantifiedContexts, actual AST node is Name(Name("n"))"#,
+    r#"<FeelEvaluatorError> expected AST node AstNode::QuantifiedContexts, actual AST node is Name(Name("n"))"#,
     crate::evaluate(&scope, &node).err().unwrap().to_string()
   );
 }
@@ -71,7 +71,7 @@ fn _0006() {
   let scope = FeelScope::default();
   let node = AstNode::Every(Box::new(AstNode::QuantifiedContexts(vec![])), Box::new(AstNode::Name("n".into())));
   assert_eq!(
-    r#"FeelEvaluatorError: expected AST node AstNode::Satisfies, actual AST node is Name(Name("n"))"#,
+    r#"<FeelEvaluatorError> expected AST node AstNode::Satisfies, actual AST node is Name(Name("n"))"#,
     crate::evaluate(&scope, &node).err().unwrap().to_string()
   );
 }

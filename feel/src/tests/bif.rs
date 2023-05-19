@@ -90,7 +90,7 @@ fn test_built_in_function_from_string() {
 
 #[test]
 fn test_built_in_function_from_invalid_string() {
-  assert_eq!("BifError: unknown built-in function name: powering", Bif::from_str("powering").err().unwrap().to_string());
+  assert_eq!("<BifError> unknown built-in function name: powering", Bif::from_str("powering").err().unwrap().to_string());
 }
 
 #[test]

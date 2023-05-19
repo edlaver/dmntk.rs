@@ -416,21 +416,21 @@ fn test_try_from() {
   assert!(Value::try_from_xsd_integer("1").is_ok());
   assert!(Value::try_from_xsd_integer("1a").is_err());
   assert_eq!(
-    "ValueError: '1a' is not valid xsd:integer representation",
+    "<ValueError> '1a' is not valid xsd:integer representation",
     Value::try_from_xsd_integer("1a").err().unwrap().to_string()
   );
   // xsd::decimal
   assert!(Value::try_from_xsd_decimal("1").is_ok());
   assert!(Value::try_from_xsd_decimal("1a").is_err());
   assert_eq!(
-    "ValueError: '1a' is not valid xsd:decimal representation",
+    "<ValueError> '1a' is not valid xsd:decimal representation",
     Value::try_from_xsd_decimal("1a").err().unwrap().to_string()
   );
   // xsd::double
   assert!(Value::try_from_xsd_double("1.2").is_ok());
   assert!(Value::try_from_xsd_double("1.2a").is_err());
   assert_eq!(
-    "ValueError: '1.2a' is not valid xsd:double representation",
+    "<ValueError> '1.2a' is not valid xsd:double representation",
     Value::try_from_xsd_double("1.2a").err().unwrap().to_string()
   );
   // xsd::boolean
@@ -442,28 +442,28 @@ fn test_try_from() {
   assert!(Value::try_from_xsd_boolean("False").is_err());
   assert!(Value::try_from_xsd_boolean("True").is_err());
   assert_eq!(
-    "ValueError: 'TRUE' is not valid xsd:boolean representation",
+    "<ValueError> 'TRUE' is not valid xsd:boolean representation",
     Value::try_from_xsd_boolean("TRUE").err().unwrap().to_string()
   );
   // xsd::date
   assert!(Value::try_from_xsd_date("2022-09-27").is_ok());
   assert!(Value::try_from_xsd_date("2022-02-31").is_err());
   assert_eq!(
-    "ValueError: '2022-02-31' is not valid xsd:date representation",
+    "<ValueError> '2022-02-31' is not valid xsd:date representation",
     Value::try_from_xsd_date("2022-02-31").err().unwrap().to_string()
   );
   // xsd::time
   assert!(Value::try_from_xsd_time("13:29:23").is_ok());
   assert!(Value::try_from_xsd_time("26:12:34").is_err());
   assert_eq!(
-    "ValueError: '26:12:34' is not valid xsd:time representation",
+    "<ValueError> '26:12:34' is not valid xsd:time representation",
     Value::try_from_xsd_time("26:12:34").err().unwrap().to_string()
   );
   // xsd::dateTime
   assert!(Value::try_from_xsd_date_time("2022-09-27T13:29:23").is_ok());
   assert!(Value::try_from_xsd_date_time("2022-02-31T23:12:34").is_err());
   assert_eq!(
-    "ValueError: '2022-02-31T23:12:34' is not valid xsd:dateTime representation",
+    "<ValueError> '2022-02-31T23:12:34' is not valid xsd:dateTime representation",
     Value::try_from_xsd_date_time("2022-02-31T23:12:34").err().unwrap().to_string()
   );
   // xsd::duration
@@ -471,7 +471,7 @@ fn test_try_from() {
   assert!(Value::try_from_xsd_duration("P2DT2H").is_ok());
   assert!(Value::try_from_xsd_duration("PYD").is_err());
   assert_eq!(
-    "ValueError: 'PYD' is not valid xsd:duration representation",
+    "<ValueError> 'PYD' is not valid xsd:duration representation",
     Value::try_from_xsd_duration("PYD").err().unwrap().to_string()
   );
 }

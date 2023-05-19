@@ -117,7 +117,7 @@ mod tests {
   fn test_invalid_references() {
     assert!(HRef::try_from("##").is_err());
     assert!(HRef::try_from(":alfa").is_err());
-    assert_eq!("HRefError: invalid reference '##'", HRef::try_from("##").err().unwrap().to_string());
+    assert_eq!("<HRefError> invalid reference '##'", HRef::try_from("##").err().unwrap().to_string());
   }
 
   #[test]

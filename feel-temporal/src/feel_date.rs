@@ -508,9 +508,9 @@ mod tests {
     assert_eq!("2023-02-08 00:00:00 +00:00", date_time.to_string());
     let date = FeelDate(262144, 2, 8);
     let date_time: Result<DateTime<FixedOffset>> = date.try_into();
-    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
+    assert_eq!("<TemporalError> invalid date 262144-2-8", date_time.err().unwrap().to_string());
     let date = FeelDate(262144, 2, 8);
     let date_time: Result<NaiveDate> = date.try_into();
-    assert_eq!("TemporalError: invalid date 262144-2-8", date_time.err().unwrap().to_string());
+    assert_eq!("<TemporalError> invalid date 262144-2-8", date_time.err().unwrap().to_string());
   }
 }

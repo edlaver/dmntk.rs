@@ -84,7 +84,7 @@ fn _0006() {
   let scope = te_scope(r#"{ a: [{ b: @"P1DT5H" }, { b: @"P2DT6H" }, { b: @"P3DT7H" }] }"#);
   let result = crate::evaluate(&scope, &node);
   assert_eq!(
-    r#"FeelEvaluatorError: unexpected AST node in evaluator builder expected Name, found Boolean(false)"#,
+    r#"<FeelEvaluatorError> unexpected AST node in evaluator builder expected Name, found Boolean(false)"#,
     result.err().unwrap().to_string()
   );
 }
@@ -95,7 +95,7 @@ fn _0007() {
   let scope = te_scope(r#"{ a: [{ b: @"P1DT5H" }, { b: @"P2DT6H" }, { b: @"P3DT7H" }] }"#);
   let result = crate::evaluate(&scope, &node);
   assert_eq!(
-    r#"FeelEvaluatorError: unexpected AST node in evaluator builder expected Path or Name, found: Boolean(false)"#,
+    r#"<FeelEvaluatorError> unexpected AST node in evaluator builder expected Path or Name, found: Boolean(false)"#,
     result.err().unwrap().to_string()
   );
 }

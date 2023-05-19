@@ -1,3 +1,3 @@
-2_0002.dmn: WorkspaceError: definitions model-1 already exist in io.dmntk.2_0001
+2_0002.dmn: <WorkspaceError> definitions model-1 already exist in io.dmntk.2_0001
 Deployed 1 model(s).
 dmntk 0.0.0.0:22022
