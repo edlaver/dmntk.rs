@@ -12,7 +12,6 @@ edition.workspace = true
 parsing-tables = []
 
 [dependencies]
-ascii_tree.workspace = true
 dmntk-common.workspace = true
 dmntk-feel.workspace = true
 

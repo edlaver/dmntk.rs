@@ -295,12 +295,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ascii_tree"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca6c635b3aa665c649ad1415f1573c85957dfa47690ec27aebe7ec17efe3c643"
-
-[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -604,7 +598,6 @@ version = "0.2.0-dev"
 name = "dmntk-feel"
 version = "0.2.0-dev"
 dependencies = [
- "ascii_tree",
  "chrono",
  "chrono-tz",
  "dmntk-common",
@@ -648,7 +641,6 @@ dependencies = [
 name = "dmntk-feel-parser"
 version = "0.2.0-dev"
 dependencies = [
- "ascii_tree",
  "difference",
  "dmntk-common",
  "dmntk-feel",

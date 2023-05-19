@@ -9,7 +9,6 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
-ascii_tree.workspace = true
 chrono.workspace = true
 chrono-tz.workspace = true
 serde.workspace = true

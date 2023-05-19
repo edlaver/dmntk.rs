@@ -44,7 +44,7 @@ mod scope;
 #[cfg(test)]
 mod tests;
 
-pub use ast::AstNode;
+pub use ast::{ast_tree, AstNode};
 pub use closure::ClosureBuilder;
 pub use scope::ParsingScope;
 

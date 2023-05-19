@@ -36,6 +36,7 @@ use difference::Changeset;
 use dmntk_common::*;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
+use dmntk_feel_parser::ast_tree;
 use std::fs;
 
 /// Available command-line actions.
@@ -112,7 +113,7 @@ enum Action {
 pub async fn do_action() -> std::io::Result<()> {
   match get_cli_action() {
     Action::ParseFeelExpression(ctx_file_name, feel_file_name) => {
-      parse_feel_expression(&ctx_file_name, &feel_file_name);
+      parse_feel_expression(&ctx_file_name, &feel_file_name, ColorMode::Off);
       Ok(())
     }
     Action::EvaluateFeelExpression(input_file_name, feel_file_name) => {
@@ -369,13 +370,13 @@ fn get_cli_action() -> Action {
 }
 
 /// Parses `FEEL` expression loaded from file and prints the parsed `AST` to standard output.
-fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str) {
+fn parse_feel_expression(ctx_file_name: &str, feel_file_name: &str, color_mode: ColorMode) {
   match fs::read_to_string(feel_file_name) {
     Ok(feel_expression) => match fs::read_to_string(ctx_file_name) {
       Ok(context_definition) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &context_definition) {
         Ok(ctx) => match dmntk_feel_parser::parse_expression(&ctx.into(), &feel_expression, false) {
           Ok(ast_root_node) => {
-            println!("    AST:{}", ast_root_node.to_string().trim_end());
+            println!("    AST:{}", ast_tree(&ast_root_node, &color_mode).trim_end());
           }
           Err(reason) => eprintln!("parsing expression failed with reason: {reason}"),
         },

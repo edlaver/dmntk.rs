@@ -32,7 +32,7 @@
 
 //! Implementation of a node in Abstract Syntax Tree for `FEEL` grammar.
 
-use ascii_tree::*;
+use dmntk_common::{write_ascii_tree, AsciiLine, AsciiNode, ColorMode};
 use dmntk_feel::{FeelType, Name};
 use std::fmt;
 
@@ -328,7 +328,7 @@ pub enum AstNode {
 impl fmt::Display for AstNode {
   /// Converts [AstNode] to textual representation, including child nodes.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "{}\n    ", ast_tree(self))
+    write!(f, "{}\n    ", ast_tree(self, &ColorMode::Off))
   }
 }
 
@@ -342,15 +342,15 @@ impl AstNode {
 }
 
 /// Returns ASCII tree representation of the specified node.
-pub fn ast_tree(node: &AstNode) -> String {
-  let mut ascii_tree = String::new();
+pub fn ast_tree(node: &AstNode, color_mode: &ColorMode) -> String {
+  let mut output = String::new();
   let tree = ast_node_to_tree(node);
-  let _ = write_tree(&mut ascii_tree, &tree);
-  ascii_tree.lines().map(|line| format!("\n      {line}")).collect()
+  let _ = write_ascii_tree(&mut output, &tree, color_mode);
+  output.lines().map(|line| format!("\n      {line}")).collect()
 }
 
-/// Converts [AstNode] into ASCII [Tree] node.
-fn ast_node_to_tree(node: &AstNode) -> Tree {
+/// Converts [AstNode] into ASCII [AsciiNode] node.
+fn ast_node_to_tree(node: &AstNode) -> AsciiNode {
   match node {
     AstNode::Add(lhs, rhs) => node_2("Add", lhs, rhs),
     AstNode::And(lhs, rhs) => node_2("And", lhs, rhs),
@@ -427,43 +427,56 @@ fn ast_node_to_tree(node: &AstNode) -> Tree {
 }
 
 /// Creates a tree node with one child node.
-fn node_1(name: &str, mid: &AstNode) -> Tree {
-  Tree::Node(name.to_owned(), vec![ast_node_to_tree(mid)])
+fn node_1(name: &str, mid: &AstNode) -> AsciiNode {
+  AsciiNode::node_builder(AsciiLine::builder().text(name).build()).child(ast_node_to_tree(mid)).build()
 }
 
 /// Creates a tree node with two child nodes.
-fn node_2(name: &str, lhs: &AstNode, rhs: &AstNode) -> Tree {
-  Tree::Node(name.to_owned(), vec![ast_node_to_tree(lhs), ast_node_to_tree(rhs)])
+fn node_2(name: &str, lhs: &AstNode, rhs: &AstNode) -> AsciiNode {
+  AsciiNode::node_builder(AsciiLine::builder().text(name).build())
+    .child(ast_node_to_tree(lhs))
+    .child(ast_node_to_tree(rhs))
+    .build()
 }
 
 /// Creates a tree node with three child nodes.
-fn node_3(name: &str, lhs: &AstNode, mid: &AstNode, rhs: &AstNode) -> Tree {
-  Tree::Node(name.to_owned(), vec![ast_node_to_tree(lhs), ast_node_to_tree(mid), ast_node_to_tree(rhs)])
+fn node_3(name: &str, lhs: &AstNode, mid: &AstNode, rhs: &AstNode) -> AsciiNode {
+  AsciiNode::node_builder(AsciiLine::builder().text(name).build())
+    .child(ast_node_to_tree(lhs))
+    .child(ast_node_to_tree(mid))
+    .child(ast_node_to_tree(rhs))
+    .build()
 }
 
 /// Creates a tree node with multiple child nodes.
-fn node_n(name: &str, items: &[AstNode]) -> Tree {
-  Tree::Node(
-    name.to_owned(),
-    if !items.is_empty() {
-      items.iter().map(ast_node_to_tree).collect()
-    } else {
-      vec![Tree::Leaf(vec!["(empty)".to_string()])]
-    },
-  )
+fn node_n(name: &str, items: &[AstNode]) -> AsciiNode {
+  let mut node_builder = AsciiNode::node_builder(AsciiLine::builder().text(name).build());
+  if items.is_empty() {
+    node_builder.add_child(AsciiNode::leaf_builder().line(AsciiLine::builder().text("(empty)").build()).build());
+  } else {
+    for item in items {
+      node_builder.add_child(ast_node_to_tree(item));
+    }
+  }
+  node_builder.build()
 }
 
 /// Creates a node with single leaf node.
-fn node_and_leaf(name: &str, leaf: &str) -> Tree {
-  Tree::Node(name.to_owned(), vec![Tree::Leaf(vec![leaf.to_string()])])
+fn node_and_leaf(name: &str, leaf: &str) -> AsciiNode {
+  AsciiNode::node_builder(AsciiLine::builder().text(name).build())
+    .child(AsciiNode::leaf_builder().line(AsciiLine::builder().text(leaf).build()).build())
+    .build()
 }
 
 /// Creates a single node with additional label.
-fn node_and_label(name: &str, lhs: &AstNode, label_true: &str, label_false: &str, label_flag: bool) -> Tree {
-  Tree::Node(format!("{}{}", name, if label_flag { label_true } else { label_false }), vec![ast_node_to_tree(lhs)])
+fn node_and_label(name: &str, lhs: &AstNode, label_true: &str, label_false: &str, label_flag: bool) -> AsciiNode {
+  let name_label = if label_flag { label_true } else { label_false };
+  AsciiNode::node_builder(AsciiLine::builder().text(name).text(name_label).build())
+    .child(ast_node_to_tree(lhs))
+    .build()
 }
 
 /// Creates a leaf node.
-fn leaf(leaf: &str) -> Tree {
-  Tree::Leaf(vec![leaf.to_owned()])
+fn leaf(leaf: &str) -> AsciiNode {
+  AsciiNode::leaf_builder().line(AsciiLine::builder().text(leaf).build()).build()
 }
