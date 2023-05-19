@@ -35,9 +35,21 @@ use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
 use dmntk_feel::values::Value;
+use dmntk_feel_parser::parse_longest_name;
 use serde::{Deserialize, Serialize};
 use std::convert::{TryFrom, TryInto};
 
+const XSD_STRING: &str = "xsd:string";
+const XSD_INTEGER: &str = "xsd:integer";
+const XSD_DECIMAL: &str = "xsd:decimal";
+const XSD_DOUBLE: &str = "xsd:double";
+const XSD_BOOLEAN: &str = "xsd:boolean";
+const XSD_DATE: &str = "xsd:date";
+const XSD_DATE_TIME: &str = "xsd:dateTime";
+const XSD_TIME: &str = "xsd:time";
+const XSD_DURATION: &str = "xsd:duration";
+
+///
 pub struct WrappedValue(pub Value);
 
 #[derive(Deserialize)]
@@ -121,49 +133,49 @@ impl TryFrom<Value> for OutputNodeDto {
     match value {
       Value::String(inner) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:string", &inner),
+          simple: SimpleDto::some(XSD_STRING, &inner),
           ..Default::default()
         }),
       }),
       v @ Value::Number(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:decimal", &v.to_string()),
+          simple: SimpleDto::some(XSD_DECIMAL, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::Boolean(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:boolean", &v.to_string()),
+          simple: SimpleDto::some(XSD_BOOLEAN, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::Date(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:date", &v.to_string()),
+          simple: SimpleDto::some(XSD_DATE, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::DateTime(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:dateTime", &v.to_string()),
+          simple: SimpleDto::some(XSD_DATE_TIME, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::Time(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:time", &v.to_string()),
+          simple: SimpleDto::some(XSD_TIME, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::YearsAndMonthsDuration(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:duration", &v.to_string()),
+          simple: SimpleDto::some(XSD_DURATION, &v.to_string()),
           ..Default::default()
         }),
       }),
       v @ Value::DaysAndTimeDuration(_) => Ok(OutputNodeDto {
         value: Some(ValueDto {
-          simple: SimpleDto::some("xsd:duration", &v.to_string()),
+          simple: SimpleDto::some(XSD_DURATION, &v.to_string()),
           ..Default::default()
         }),
       }),
@@ -212,35 +224,35 @@ impl TryFrom<&Value> for ValueDto {
   fn try_from(value: &Value) -> Result<Self, Self::Error> {
     match value {
       Value::String(inner) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:string", inner),
+        simple: SimpleDto::some(XSD_STRING, inner),
         ..Default::default()
       }),
       v @ Value::Number(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:decimal", &v.to_string()),
+        simple: SimpleDto::some(XSD_DECIMAL, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::Boolean(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:boolean", &v.to_string()),
+        simple: SimpleDto::some(XSD_BOOLEAN, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::Date(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:date", &v.to_string()),
+        simple: SimpleDto::some(XSD_DATE, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::DateTime(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:dateTime", &v.to_string()),
+        simple: SimpleDto::some(XSD_DATE_TIME, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::Time(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:time", &v.to_string()),
+        simple: SimpleDto::some(XSD_TIME, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::YearsAndMonthsDuration(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:duration", &v.to_string()),
+        simple: SimpleDto::some(XSD_DURATION, &v.to_string()),
         ..Default::default()
       }),
       v @ Value::DaysAndTimeDuration(_) => Ok(ValueDto {
-        simple: SimpleDto::some("xsd:duration", &v.to_string()),
+        simple: SimpleDto::some(XSD_DURATION, &v.to_string()),
         ..Default::default()
       }),
       Value::Null(_) => Ok(ValueDto {
@@ -281,7 +293,7 @@ impl TryFrom<&Vec<InputNodeDto>> for WrappedValue {
   fn try_from(items: &Vec<InputNodeDto>) -> Result<Self, Self::Error> {
     let mut ctx: FeelContext = Default::default();
     for item in items {
-      let name = dmntk_feel_parser::parse_longest_name(&item.name)?;
+      let name = parse_longest_name(&item.name)?;
       ctx.set_entry(&name, WrappedValue::try_from(item)?.0);
     }
     Ok(WrappedValue(ctx.into()))
@@ -336,15 +348,15 @@ impl TryFrom<&SimpleDto> for WrappedValue {
     if let Some(typ) = &value.typ {
       if let Some(text) = &value.text {
         return match typ.as_str() {
-          "xsd:string" => Ok(WrappedValue(Value::String(text.clone()))),
-          "xsd:integer" => Ok(WrappedValue(Value::try_from_xsd_integer(text)?)),
-          "xsd:decimal" => Ok(WrappedValue(Value::try_from_xsd_decimal(text)?)),
-          "xsd:double" => Ok(WrappedValue(Value::try_from_xsd_double(text)?)),
-          "xsd:boolean" => Ok(WrappedValue(Value::try_from_xsd_boolean(text)?)),
-          "xsd:date" => Ok(WrappedValue(Value::try_from_xsd_date(text)?)),
-          "xsd:time" => Ok(WrappedValue(Value::try_from_xsd_time(text)?)),
-          "xsd:dateTime" => Ok(WrappedValue(Value::try_from_xsd_date_time(text)?)),
-          "xsd:duration" => Ok(WrappedValue(Value::try_from_xsd_duration(text)?)),
+          XSD_STRING => Ok(WrappedValue(Value::String(text.clone()))),
+          XSD_INTEGER => Ok(WrappedValue(Value::try_from_xsd_integer(text)?)),
+          XSD_DECIMAL => Ok(WrappedValue(Value::try_from_xsd_decimal(text)?)),
+          XSD_DOUBLE => Ok(WrappedValue(Value::try_from_xsd_double(text)?)),
+          XSD_BOOLEAN => Ok(WrappedValue(Value::try_from_xsd_boolean(text)?)),
+          XSD_DATE => Ok(WrappedValue(Value::try_from_xsd_date(text)?)),
+          XSD_TIME => Ok(WrappedValue(Value::try_from_xsd_time(text)?)),
+          XSD_DATE_TIME => Ok(WrappedValue(Value::try_from_xsd_date_time(text)?)),
+          XSD_DURATION => Ok(WrappedValue(Value::try_from_xsd_duration(text)?)),
           _ => Err(err_invalid_parameter(&format!("unrecognized type: `{typ}` in value"))),
         };
       }
@@ -360,7 +372,7 @@ impl TryFrom<&Vec<ComponentDto>> for WrappedValue {
     for item in items {
       let item_name = item.name.as_ref().ok_or_else(|| err_invalid_parameter("component should have a name"))?;
       let value = WrappedValue::try_from(item)?;
-      let key = dmntk_feel_parser::parse_longest_name(item_name)?;
+      let key = parse_longest_name(item_name)?;
       ctx.set_entry(&key, value.0);
     }
     Ok(WrappedValue(ctx.into()))
