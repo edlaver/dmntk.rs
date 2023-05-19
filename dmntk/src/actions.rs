@@ -81,11 +81,11 @@ enum Action {
   ),
   /// Recognize decision table.
   RecognizeDecisionTable(String),
-  /// Parse `DMN` model`.
+  /// Parse DMN model`.
   ParseDmnModel(String, String),
-  /// Evaluate `DMN` model`.
+  /// Evaluate DMN model`.
   EvaluateDmnModel(String, String, String),
-  /// Test `DMN` model`.
+  /// Test DMN model`.
   TestDmnModel(
     /// Test file name.
     String,
@@ -98,7 +98,7 @@ enum Action {
     /// Value indicating the requested color mode.
     String,
   ),
-  /// Export `DMN` model`.
+  /// Export DMN model`.
   ExportDmnModel(String, String),
   /// Start `dmntk` as a service.
   StartService(Option<String>, Option<String>, Option<String>),
@@ -587,7 +587,7 @@ fn parse_dmn_model(dmn_file_name: &str, color: &str) {
   }
 }
 
-/// Evaluates `DMN` model loaded from XML file.
+/// Evaluates DMN model loaded from XML file.
 fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name: &str) {
   match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match fs::read_to_string(input_file_name) {
@@ -610,7 +610,7 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
   }
 }
 
-/// Tests `DMN` model loaded from XML file.
+/// Tests DMN model loaded from XML file.
 fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &str, summary_only: bool, color: &str) {
   let dmn_file_content = match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => dmn_file_content,
@@ -656,7 +656,7 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   display_test_summary(passed, failed, summary_only, color);
 }
 
-/// Exports `DMN` model loaded from `XML` file to `HTML` output file.
+/// Exports DMN model loaded from `XML` file to `HTML` output file.
 fn export_dmn_model(dmn_file_name: &str, html_file_name: &str) {
   match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match dmntk_model::parse(&dmn_file_content) {
