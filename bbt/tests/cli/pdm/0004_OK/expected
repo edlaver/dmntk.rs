@@ -1,19 +1,16 @@
-
-Model
+ Model
  ├─ name: compliance-level-3-test-0002
  ├─ namespace: https://dmntk.io
  └─ id: _536af77f-8f8b-4339-b00d-28116bb0c3f8
 
-Decisions
+ Decisions
  ├─ Basic
  ├─ Matches
  ├─ Replace
  └─ Constructor
 
-Input data
+ Input data
  ├─ A (string)
  ├─ B (string)
  └─ NumC (number)
-
-MORE DETAILS WILL BE IMPLEMENTED...
 

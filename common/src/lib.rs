@@ -41,6 +41,7 @@ mod jsonify;
 mod namespace;
 
 pub use ascii_ctrl::*;
+pub use ascii_tree::*;
 pub use errors::{DmntkError, Result};
 pub use href::{HRef, OptHRef};
 pub use idents::gen_id;

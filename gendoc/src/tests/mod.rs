@@ -30,6 +30,7 @@
  * limitations under the License.
  */
 
+mod ascii_model;
 mod compatibility;
 mod decision_tables;
 

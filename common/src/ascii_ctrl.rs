@@ -70,6 +70,15 @@ pub const ASCII_BG_BRIGHT_WHITE: &str = "\u{001b}[47;1m";
 
 pub const ASCII_RESET: &str = "\u{001b}[0m";
 
+/// Color mode to switch terminal colouring on and off.
+#[derive(PartialEq)]
+pub enum ColorMode {
+  /// Switch the terminal color on.
+  On,
+  /// Switch the terminal color off.
+  Off,
+}
+
 #[macro_export]
 macro_rules! ascii256 {
   ($l:literal) => {{

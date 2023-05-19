@@ -36,7 +36,6 @@ use difference::Changeset;
 use dmntk_common::*;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
-use dmntk_model::model::{DmnElement, NamedElement, RequiredVariable};
 use std::fs;
 
 /// Available command-line actions.
@@ -574,66 +573,13 @@ fn recognize_decision_table(dtb_file_name: &str) {
   }
 }
 
-/// Parses `DMN` model loaded from XML file.
+/// Parses DMN model loaded from XML file and prints ASCII report.
 fn parse_dmn_model(dmn_file_name: &str, color: &str) {
-  let use_color = color.to_lowercase() != "never";
-  let color_a = if use_color { ascii256!(255) } else { ascii_none!() };
-  let color_b = if use_color { ascii256!(82) } else { ascii_none!() };
-  let color_c = if use_color { ascii256!(184) } else { ascii_none!() };
-  let color_d = if use_color { ascii256!(208) } else { ascii_none!() };
-  let color_e = if use_color { ASCII_RED } else { "" };
-  let color_r = if use_color { ASCII_RESET } else { "" };
-  let none = "(none)".to_string();
+  let color_mode = if color.to_lowercase() != "never" { ColorMode::On } else { ColorMode::Off };
   match fs::read_to_string(dmn_file_name) {
     Ok(dmn_file_content) => match &dmntk_model::parse(&dmn_file_content) {
       Ok(definitions) => {
-        println!("\n{color_a}Model{color_r}");
-        println!("{color_a} ├─ name:{color_b} {}{color_r}", definitions.name());
-        println!("{color_a} ├─ namespace: {}{color_b}{color_r}", definitions.namespace());
-        println!("{color_a} └─ id:{color_b} {}{color_r}", definitions.id().as_ref().unwrap_or(&none));
-        //------------------------------------------------------------------------------------------
-        // print definitions
-        //------------------------------------------------------------------------------------------
-        // ** decisions **
-        let decisions = definitions.decisions();
-        if decisions.is_empty() {
-          println!("\n{color_a}Decisions{color_c} {none}{color_r}");
-        } else {
-          println!("\n{color_a}Decisions{color_r}");
-          let decision_count = decisions.len();
-          for (i, decision) in decisions.iter().enumerate() {
-            if i < decision_count - 1 {
-              print!(" {color_a}├─{color_r}");
-            } else {
-              print!(" {color_a}└─{color_r}");
-            }
-            println!(" {color_c}{}{color_r}", decision.name());
-          }
-        }
-        // ** input data **
-        let input_data = definitions.input_data();
-        if input_data.is_empty() {
-          println!("\n{color_a}Input data{color_c} {none}{color_r}");
-        } else {
-          println!("\n{color_a}Input data{color_r}");
-          let input_data_count = input_data.len();
-          for (i, input_data) in input_data.iter().enumerate() {
-            if i < input_data_count - 1 {
-              print!(" {color_a}├─{color_r}");
-            } else {
-              print!(" {color_a}└─{color_r}");
-            }
-            println!(
-              " {}{} ({}){}",
-              color_d,
-              input_data.name(),
-              input_data.variable().type_ref().as_ref().unwrap_or(&none),
-              color_r
-            );
-          }
-        }
-        // more...
-        print!("\n{color_e}MORE DETAILS WILL BE IMPLEMENTED...{color_r}\n\n");
+        dmntk_gendoc::print_model(definitions, color_mode);
       }
       Err(reason) => eprintln!("parsing model file failed with reason: {reason}"),
     },
