@@ -30,7 +30,9 @@
  * limitations under the License.
  */
 
-use crate::errors::*;
+//! # Data transfer object definition for TCK handler
+
+use super::errors::{err_invalid_parameter, err_missing_parameter};
 use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
@@ -49,7 +51,7 @@ const XSD_DATE_TIME: &str = "xsd:dateTime";
 const XSD_TIME: &str = "xsd:time";
 const XSD_DURATION: &str = "xsd:duration";
 
-///
+/// Newtype with wrapped FEEL value.
 pub struct WrappedValue(pub Value);
 
 #[derive(Deserialize)]

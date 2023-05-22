@@ -141,7 +141,7 @@ impl Workspace {
           }
           Err(reason) => {
             failures_counter += 1;
-            eprintln!("ERROR: {} {} {}", rdnn, name, reason.to_string());
+            eprintln!("ERROR: {} {} {}", rdnn, name, reason);
           }
         }
       }

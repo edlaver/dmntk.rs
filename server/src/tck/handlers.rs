@@ -30,18 +30,69 @@
  * limitations under the License.
  */
 
-//! #
+//! # TCK handler
 
-use crate::defs::{ApplicationData, ResultDto};
-use crate::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
-use crate::errors::err_missing_parameter;
+use super::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
+use super::errors::err_missing_parameter;
+use crate::data::ApplicationData;
 use actix_web::web::Json;
 use actix_web::{post, web};
 use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_workspace::Workspace;
-use serde::Deserialize;
-use std::io;
+use serde::{Deserialize, Serialize};
+use std::{fmt, io};
+
+/// Data transfer object for an error.
+#[derive(Serialize)]
+pub struct TckErrorDto {
+  /// Error details.
+  #[serde(rename = "detail")]
+  detail: String,
+}
+
+/// Data transfer object for a result.
+#[derive(Serialize)]
+pub struct TckResultDto<T> {
+  /// Result containing data.
+  #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
+  data: Option<T>,
+  /// Result containing errors.
+  #[serde(rename = "errors", skip_serializing_if = "Vec::is_empty")]
+  errors: Vec<TckErrorDto>,
+}
+
+impl<T> Default for TckResultDto<T> {
+  /// Creates default result structure.
+  fn default() -> Self {
+    Self { data: None, errors: vec![] }
+  }
+}
+
+impl<T: Serialize> ToString for TckResultDto<T> {
+  /// Converts result to JSON string.
+  fn to_string(&self) -> String {
+    serde_json::to_string(self).unwrap_or("conversion to JSON failed for ResultDto".to_string())
+  }
+}
+
+impl<T> TckResultDto<T> {
+  /// Utility function for creating a result with some data inside.
+  pub fn data(d: T) -> TckResultDto<T> {
+    TckResultDto {
+      data: Some(d),
+      ..Default::default()
+    }
+  }
+
+  /// Utility function for creating a result with a single error inside.
+  pub fn error(err: impl fmt::Display) -> TckResultDto<T> {
+    TckResultDto {
+      errors: vec![TckErrorDto { detail: format!("{err}") }],
+      ..Default::default()
+    }
+  }
+}
 
 /// Parameters for evaluating invocable in DMN™ model definitions.
 /// The format of input data is compatible with test cases
@@ -65,11 +116,11 @@ pub struct TckEvaluateParams {
 /// Handler for evaluating models with input data in the format compatible with test cases
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[post("/tck/evaluate")]
-pub async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
+pub async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<TckResultDto<OutputNodeDto>>> {
   let workspace = data.workspace.read().unwrap();
   match do_evaluate_tck(&workspace, &params.into_inner()) {
-    Ok(response) => Ok(Json(ResultDto::data(response))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
+    Ok(response) => Ok(Json(TckResultDto::data(response))),
+    Err(reason) => Ok(Json(TckResultDto::error(reason))),
   }
 }
 

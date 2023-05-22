@@ -30,20 +30,10 @@
  * limitations under the License.
  */
 
-//! Errors reported by server.
+//! # TCK definitions
 
-use dmntk_common::{DmntkError, ToErrorMessage};
+mod dto;
+mod errors;
+mod handlers;
 
-/// Server errors.
-pub struct ServerError(String);
-
-impl ToErrorMessage for ServerError {
-  /// Converts [ServerError] to error message.
-  fn message(self) -> String {
-    self.0
-  }
-}
-
-pub fn err_endpoint_not_found() -> DmntkError {
-  ServerError("endpoint not found".to_string()).into()
-}
+pub use handlers::post_tck_evaluate;

@@ -30,20 +30,12 @@
  * limitations under the License.
  */
 
-//! Errors reported by server.
+//! # Shared application data.
 
-use dmntk_common::{DmntkError, ToErrorMessage};
+use dmntk_workspace::Workspace;
+use std::sync::RwLock;
 
-/// Server errors.
-pub struct ServerError(String);
-
-impl ToErrorMessage for ServerError {
-  /// Converts [ServerError] to error message.
-  fn message(self) -> String {
-    self.0
-  }
-}
-
-pub fn err_endpoint_not_found() -> DmntkError {
-  ServerError("endpoint not found".to_string()).into()
+/// Shared workspace with decision model definitions.
+pub struct ApplicationData {
+  pub workspace: RwLock<Workspace>,
 }

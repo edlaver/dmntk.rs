@@ -30,27 +30,71 @@
  * limitations under the License.
  */
 
-use crate::defs::{ApplicationData, ResultDto};
+use crate::data::ApplicationData;
 use crate::errors::*;
 use actix_web::web::Json;
-use actix_web::{error, post, web, App, HttpResponse, HttpServer};
+use actix_web::{post, web, App, HttpResponse, HttpServer};
 use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
+use serde::Serialize;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
-use std::{env, io};
-
-use crate::tck::post_tck_evaluate;
+use std::{env, fmt, io};
 
 const DMNTK_DEFAULT_PORT: u16 = 22022;
 const DMNTK_DEFAULT_HOST: &str = "0.0.0.0";
 const DMNTK_HOST_VARIABLE: &str = "DMNTK_HOST";
 const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
 const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
+
+const CONTENT_TYPE: &str = "application/json";
+
+/// Data transfer object for an error.
+#[derive(Serialize)]
+pub struct ErrorDto {
+  /// Error details.
+  #[serde(rename = "detail")]
+  detail: String,
+}
+
+/// Data transfer object for a result.
+#[derive(Serialize)]
+pub struct ResultDto<T> {
+  /// Result containing data.
+  #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
+  data: Option<T>,
+  /// Result containing errors.
+  #[serde(rename = "errors", skip_serializing_if = "Vec::is_empty")]
+  errors: Vec<ErrorDto>,
+}
+
+impl<T> Default for ResultDto<T> {
+  /// Creates default result structure.
+  fn default() -> Self {
+    Self { data: None, errors: vec![] }
+  }
+}
+
+impl<T: Serialize> ToString for ResultDto<T> {
+  /// Converts [ResultDto] to JSON string.
+  fn to_string(&self) -> String {
+    serde_json::to_string(self).unwrap_or("conversion to JSON failed for ResultDto".to_string())
+  }
+}
+
+impl<T> ResultDto<T> {
+  /// Utility function for creating [ResultDto] with a single error inside.
+  pub fn error(err: impl fmt::Display) -> ResultDto<T> {
+    ResultDto {
+      errors: vec![ErrorDto { detail: format!("{err}") }],
+      ..Default::default()
+    }
+  }
+}
 
 /// Handler for evaluating invocable in model.
 ///
@@ -62,14 +106,24 @@ async fn post_evaluate(params: web::Path<(String, String, String)>, request_body
   let (namespace, model, invocable) = params.into_inner();
   let result = do_evaluate(&workspace, &namespace, &model, &invocable, &request_body);
   match result {
-    Ok(value) => HttpResponse::Ok().content_type("application/json").body(format!("{{\"data\":{}}}", value.jsonify())),
-    Err(reason) => HttpResponse::Ok().content_type("application/json").body(ResultDto::<String>::error(reason).to_string()),
+    Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!("{{\"data\":{}}}", value.jsonify())),
+    Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(ResultDto::<String>::error(reason).to_string()),
   }
 }
 
 /// Handler for 404 errors.
 async fn not_found() -> io::Result<Json<ResultDto<()>>> {
   Ok(Json(ResultDto::error(err_endpoint_not_found())))
+}
+
+#[cfg(feature = "tck")]
+fn config(cfg: &mut web::ServiceConfig) {
+  cfg.service(crate::tck::post_tck_evaluate);
+}
+
+#[cfg(not(feature = "tck"))]
+fn config(cfg: &mut web::ServiceConfig) {
+  cfg.service(post_evaluate);
 }
 
 /// Starts the server.
@@ -83,17 +137,8 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
   HttpServer::new(move || {
     App::new()
       .app_data(application_data.clone())
-      .app_data(web::JsonConfig::default().limit(4 * 1024 * 1024).error_handler(|err, _| {
-        error::InternalError::from_response(
-          "",
-          HttpResponse::BadRequest()
-            .content_type("application/json")
-            .body(ResultDto::<String>::error(err_internal_error(&format!("{err:?}"))).to_string()),
-        )
-        .into()
-      }))
-      .service(post_tck_evaluate)
-      .service(post_evaluate)
+      .app_data(web::PayloadConfig::new(4 * 1024 * 1024))
+      .configure(config)
       .default_service(web::route().to(not_found))
   })
   .bind(address)?

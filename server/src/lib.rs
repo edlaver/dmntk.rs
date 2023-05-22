@@ -30,10 +30,11 @@
  * limitations under the License.
  */
 
-mod defs;
-mod dto;
+mod data;
 mod errors;
 mod server;
+
+#[cfg(feature = "tck")]
 mod tck;
 
 pub use server::start_server;

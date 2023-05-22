@@ -6,7 +6,7 @@ _pid=$!
 sleep 0.1
 
 # retrieve system information
-curl -s 0.0.0.0:22022/alfa
+curl -s 0.0.0.0:22022/tck/evaluate
 
 # stop dmntk server
 kill -s SIGINT "$_pid"

@@ -30,20 +30,24 @@
  * limitations under the License.
  */
 
-//! Errors reported by server.
+//! # Error definitions for TCK handler
 
 use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Server errors.
-pub struct ServerError(String);
+pub struct TckServerError(String);
 
-impl ToErrorMessage for ServerError {
-  /// Converts [ServerError] to error message.
+impl ToErrorMessage for TckServerError {
+  /// Converts [TckServerError] to error message.
   fn message(self) -> String {
     self.0
   }
 }
 
-pub fn err_endpoint_not_found() -> DmntkError {
-  ServerError("endpoint not found".to_string()).into()
+pub fn err_missing_parameter(name: &str) -> DmntkError {
+  TckServerError(format!("missing parameter '{name}'")).into()
+}
+
+pub fn err_invalid_parameter(description: &str) -> DmntkError {
+  TckServerError(format!("invalid parameter '{description}'")).into()
 }
