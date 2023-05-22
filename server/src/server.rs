@@ -30,162 +30,27 @@
  * limitations under the License.
  */
 
-use crate::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
+use crate::defs::{ApplicationData, ResultDto};
 use crate::errors::*;
 use actix_web::web::Json;
 use actix_web::{error, post, web, App, HttpResponse, HttpServer};
 use dmntk_common::{DmntkError, Jsonify, Result};
-use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
-use serde::{Deserialize, Serialize};
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
 use std::{env, io};
 
-const DMNTK_NAME: &str = env!("CARGO_PKG_NAME");
-const DMNTK_VERSION: &str = env!("CARGO_PKG_VERSION");
-const DMNTK_COPYRIGHT: &str = env!("CARGO_PKG_AUTHORS");
+use crate::tck::post_tck_evaluate;
+
 const DMNTK_DEFAULT_PORT: u16 = 22022;
 const DMNTK_DEFAULT_HOST: &str = "0.0.0.0";
 const DMNTK_HOST_VARIABLE: &str = "DMNTK_HOST";
 const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
 const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
-
-/// Shared workspace with decision model definitions.
-struct ApplicationData {
-  workspace: RwLock<Workspace>,
-}
-
-/// Data transfer object for an error.
-#[derive(Serialize)]
-struct ErrorDto {
-  /// Error details.
-  #[serde(rename = "details")]
-  details: String,
-}
-
-/// Data transfer object for a result.
-#[derive(Serialize)]
-struct ResultDto<T> {
-  /// Result containing data.
-  #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
-  data: Option<T>,
-  /// Result containing errors.
-  #[serde(rename = "errors", skip_serializing_if = "Vec::is_empty")]
-  errors: Vec<ErrorDto>,
-}
-
-impl<T> Default for ResultDto<T> {
-  /// Creates default result structure.
-  fn default() -> Self {
-    Self { data: None, errors: vec![] }
-  }
-}
-
-impl<T: Serialize> ToString for ResultDto<T> {
-  /// Converts [ResultDto] to JSON string.
-  fn to_string(&self) -> String {
-    serde_json::to_string(self).unwrap_or("conversion to JSON failed for ResultDto".to_string())
-  }
-}
-
-impl<T> ResultDto<T> {
-  /// Creates [ResultDto] with some data inside.
-  fn data(d: T) -> ResultDto<T> {
-    ResultDto {
-      data: Some(d),
-      ..Default::default()
-    }
-  }
-  /// Creates [ResultDto] with single error inside.
-  fn error(err: DmntkError) -> ResultDto<T> {
-    ResultDto {
-      errors: vec![ErrorDto { details: format!("{err}") }],
-      ..Default::default()
-    }
-  }
-}
-
-/// System information structure.
-#[derive(Serialize)]
-struct SystemInfoDto {
-  /// System name.
-  #[serde(rename = "name")]
-  name: String,
-  /// System version.
-  #[serde(rename = "version")]
-  version: String,
-  /// Legal notice.
-  #[serde(rename = "copyright")]
-  copyright: String,
-}
-
-impl Default for SystemInfoDto {
-  /// Creates default system information structure.
-  fn default() -> Self {
-    Self {
-      name: DMNTK_NAME.to_string(),
-      version: DMNTK_VERSION.to_string(),
-      copyright: DMNTK_COPYRIGHT.to_string(),
-    }
-  }
-}
-
-/// Operation status sent back to caller after request completion.
-#[derive(Serialize)]
-struct StatusResult {
-  /// Operation status.
-  #[serde(rename = "status")]
-  status: String,
-}
-
-/// Parameters for evaluating invocable in DMN™ model definitions.
-/// The format of input data is compatible with test cases
-/// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[derive(Deserialize)]
-struct TckEvaluateParams {
-  /// Name of the namespace where the model will be searched.
-  #[serde(rename = "namespace")]
-  model_namespace: Option<String>,
-  /// Name of the model in which the invocable will be searched.
-  #[serde(rename = "model")]
-  model_name: Option<String>,
-  /// Name of the invocable to be evaluated.
-  #[serde(rename = "invocable")]
-  invocable_name: Option<String>,
-  /// Collection of input values.
-  #[serde(rename = "input")]
-  input_values: Option<Vec<InputNodeDto>>,
-}
-
-/// Handler for evaluating models with input data in the format compatible with test cases
-/// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[post("/tck/evaluate")]
-async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
-  let workspace = data.workspace.read().unwrap();
-  match do_evaluate_tck(&workspace, &params.into_inner()) {
-    Ok(response) => Ok(Json(ResultDto::data(response))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
-}
-
-/// Parameters for evaluating invocable in DMN™ model definitions.
-#[derive(Deserialize)]
-struct EvaluateParams {
-  /// Name of the namespace where the model will be searches.
-  #[serde(rename = "namespace")]
-  model_namespace: String,
-  /// Name of the model in which the invocable will be searched.
-  #[serde(rename = "model")]
-  model_name: String,
-  /// Name of the invocable to be evaluated.
-  #[serde(rename = "invocable")]
-  invocable_name: String,
-}
 
 /// Handler for evaluating invocable in model.
 ///
@@ -317,62 +182,9 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
   dir.map(|d| PathBuf::from(&d))
 }
 
-/// Evaluates the invocable in model and returns the result.
-/// Input and output data format is compatible with
-/// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<OutputNodeDto, DmntkError> {
-  if let Some(model_namespace) = &params.model_namespace {
-    if let Some(model_name) = &params.model_name {
-      if let Some(invocable_name) = &params.invocable_name {
-        if let Some(input_values) = &params.input_values {
-          // convert input values into FEEL context
-          let input_data = FeelContext::try_from(WrappedValue::try_from(input_values)?.0)?;
-          // evaluate artifact with specified name
-          workspace.evaluate_invocable(model_namespace, model_name, invocable_name, &input_data)?.try_into()
-        } else {
-          Err(err_missing_parameter("input"))
-        }
-      } else {
-        Err(err_missing_parameter("invocable"))
-      }
-    } else {
-      Err(err_missing_parameter("model"))
-    }
-  } else {
-    Err(err_missing_parameter("namespace"))
-  }
-}
-
 /// Evaluates the artifact specified in parameters and returns the result.
 fn do_evaluate(workspace: &Workspace, model_rdnn: &str, model_name: &str, invocable_name: &str, input: &str) -> Result<Value, DmntkError> {
   let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
   let value = workspace.evaluate_invocable(model_rdnn, model_name, invocable_name, &input_data)?;
   Ok(value)
-}
-
-/*
- All tests below are only for maximizing dead code coverage.
- Remove all these tests when better coverage method is used.
-*/
-#[cfg(test)]
-mod tests {
-  use super::*;
-
-  #[test]
-  fn test_deserialize_tck_evaluate_params() {
-    assert!(serde_json::from_str::<Vec<TckEvaluateParams>>(r#"{"namespace": "a"}"#).is_err());
-    assert!(serde_json::from_str::<TckEvaluateParams>(r#"{"namespace":"a"}"#).is_ok());
-    assert!(serde_json::from_str::<TckEvaluateParams>(r#"{ {"inner": 10} }"#).is_err());
-    assert!(serde_json::from_str::<TckEvaluateParams>(r#"[1]"#).is_err());
-    assert!(serde_json::from_str::<TckEvaluateParams>(r#"1"#).is_err());
-  }
-
-  #[test]
-  fn test_deserialize_evaluate_params() {
-    assert!(serde_json::from_str::<Vec<EvaluateParams>>(r#"{"namespace": "a"}"#).is_err());
-    assert!(serde_json::from_str::<EvaluateParams>(r#"{"namespace":"a","model":"b","invocable":"c"}"#).is_ok());
-    assert!(serde_json::from_str::<EvaluateParams>(r#"{ {"inner": 10} }"#).is_err());
-    assert!(serde_json::from_str::<EvaluateParams>(r#"[1]"#).is_err());
-    assert!(serde_json::from_str::<EvaluateParams>(r#"1"#).is_err());
-  }
 }
