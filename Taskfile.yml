@@ -30,6 +30,11 @@ tasks:
     desc: Builds in debug mode
     cmds:
       - cmd: cargo +stable build --workspace
+        
+  build-tck:
+    desc: Builds in debug mode
+    cmds:
+      - cmd: cargo +stable build --workspace --features=tck
 
   clean:
     desc: Cleans all targets
@@ -40,6 +45,13 @@ tasks:
     desc: Runs clippy for all targets
     cmds:
       - cmd: cargo +nightly clippy --workspace --all-targets
+      - cmd: cargo clippy --workspace
+        
+  clippy-tck:
+    desc: Runs clippy for all targets and TCK feature
+    cmds:
+      - cmd: cargo +nightly clippy --workspace --all-targets --features=tck
+      - cmd: cargo clippy --workspace --features=tck
 
   cov:
     desc: Runs code coverage using grcov

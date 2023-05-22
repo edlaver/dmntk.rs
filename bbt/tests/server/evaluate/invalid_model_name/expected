@@ -1,1 +1,1 @@
-{"errors":[{"details":"<WorkspaceError> evaluator with name 'io.dmntk/compliance-level-2-test-9999' not found"}]}
+{"errors":[{"detail":"<WorkspaceError> evaluator with name 'io.dmntk/compliance-level-2-test-9999' not found"}]}

@@ -31,7 +31,6 @@
  */
 
 mod data;
-mod errors;
 mod server;
 
 #[cfg(feature = "tck")]

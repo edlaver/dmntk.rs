@@ -31,70 +31,23 @@
  */
 
 use crate::data::ApplicationData;
-use crate::errors::*;
-use actix_web::web::Json;
 use actix_web::{post, web, App, HttpResponse, HttpServer};
 use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
-use serde::Serialize;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::sync::RwLock;
-use std::{env, fmt, io};
+use std::{env, io};
 
 const DMNTK_DEFAULT_PORT: u16 = 22022;
 const DMNTK_DEFAULT_HOST: &str = "0.0.0.0";
 const DMNTK_HOST_VARIABLE: &str = "DMNTK_HOST";
 const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
 const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
-
 const CONTENT_TYPE: &str = "application/json";
-
-/// Data transfer object for an error.
-#[derive(Serialize)]
-pub struct ErrorDto {
-  /// Error details.
-  #[serde(rename = "detail")]
-  detail: String,
-}
-
-/// Data transfer object for a result.
-#[derive(Serialize)]
-pub struct ResultDto<T> {
-  /// Result containing data.
-  #[serde(rename = "data", skip_serializing_if = "Option::is_none")]
-  data: Option<T>,
-  /// Result containing errors.
-  #[serde(rename = "errors", skip_serializing_if = "Vec::is_empty")]
-  errors: Vec<ErrorDto>,
-}
-
-impl<T> Default for ResultDto<T> {
-  /// Creates default result structure.
-  fn default() -> Self {
-    Self { data: None, errors: vec![] }
-  }
-}
-
-impl<T: Serialize> ToString for ResultDto<T> {
-  /// Converts [ResultDto] to JSON string.
-  fn to_string(&self) -> String {
-    serde_json::to_string(self).unwrap_or("conversion to JSON failed for ResultDto".to_string())
-  }
-}
-
-impl<T> ResultDto<T> {
-  /// Utility function for creating [ResultDto] with a single error inside.
-  pub fn error(err: impl fmt::Display) -> ResultDto<T> {
-    ResultDto {
-      errors: vec![ErrorDto { detail: format!("{err}") }],
-      ..Default::default()
-    }
-  }
-}
 
 /// Handler for evaluating invocable in model.
 ///
@@ -106,14 +59,16 @@ async fn post_evaluate(params: web::Path<(String, String, String)>, request_body
   let (namespace, model, invocable) = params.into_inner();
   let result = do_evaluate(&workspace, &namespace, &model, &invocable, &request_body);
   match result {
-    Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!("{{\"data\":{}}}", value.jsonify())),
-    Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(ResultDto::<String>::error(reason).to_string()),
+    Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
+    Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),
   }
 }
 
 /// Handler for 404 errors.
-async fn not_found() -> io::Result<Json<ResultDto<()>>> {
-  Ok(Json(ResultDto::error(err_endpoint_not_found())))
+async fn not_found() -> HttpResponse {
+  HttpResponse::NotFound()
+    .content_type(CONTENT_TYPE)
+    .body(r#"{{"errors":[{{"detail":"endpoint not found"}}]}}"#)
 }
 
 #[cfg(feature = "tck")]
