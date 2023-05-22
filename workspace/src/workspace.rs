@@ -82,7 +82,7 @@ impl Workspace {
     }
   }
 
-  /// Adds new definitions to workspace, deletes all model evaluators.
+  /// Adds new definitions to workspace.
   fn add(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
     let namespace = definitions.namespace().to_string();
     // create the rdnn from definitions namespace
@@ -115,7 +115,7 @@ impl Workspace {
     Ok((rdnn, namespace, name))
   }
 
-  /// Creates model evaluators for all definitions in workspace.
+  /// Creates evaluators for all definitions in workspace.
   fn deploy(&mut self) -> (usize, usize) {
     self.evaluators.clear();
     let mut deployed_counter = 0;
@@ -128,11 +128,9 @@ impl Workspace {
               .evaluators
               .entry(rdnn.clone())
               .and_modify(|evaluators_by_name| {
-                //
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
               })
               .or_insert({
-                //
                 let mut evaluators_by_name: EvaluatorsByName = HashMap::new();
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
                 evaluators_by_name
