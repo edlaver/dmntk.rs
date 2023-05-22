@@ -32,8 +32,7 @@
 
 use crate::data::ApplicationData;
 use actix_web::{post, web, App, HttpResponse, HttpServer};
-use dmntk_common::{DmntkError, Jsonify, Result};
-use dmntk_feel::values::Value;
+use dmntk_common::Jsonify;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
 use std::net::IpAddr;
@@ -49,15 +48,17 @@ const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
 const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
 const CONTENT_TYPE: &str = "application/json";
 
-/// Handler for evaluating invocable in model.
+/// Handler for evaluating invocable in DMN model.
 ///
 /// Input data may be provided in `JSON` format or `FEEL` context format.
 /// The result value is always converted to JSON format.
-#[post("/evaluate/{namespace}/{model}/{invocable}")]
+///
+#[post("/evaluate/{rdnn}/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<(String, String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace = data.workspace.read().unwrap();
-  let (namespace, model, invocable) = params.into_inner();
-  let result = do_evaluate(&workspace, &namespace, &model, &invocable, &request_body);
+  let (model_rdnn, model_name, invocable_name) = params.into_inner();
+  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body)
+    .and_then(|input_data| workspace.evaluate_invocable(&model_rdnn, &model_name, &invocable_name, &input_data));
   match result {
     Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
     Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),
@@ -66,9 +67,7 @@ async fn post_evaluate(params: web::Path<(String, String, String)>, request_body
 
 /// Handler for 404 errors.
 async fn not_found() -> HttpResponse {
-  HttpResponse::NotFound()
-    .content_type(CONTENT_TYPE)
-    .body(r#"{{"errors":[{{"detail":"endpoint not found"}}]}}"#)
+  HttpResponse::NotFound().content_type(CONTENT_TYPE).body(r#"{"errors":[{"detail":"endpoint not found"}]}"#)
 }
 
 #[cfg(feature = "tck")]
@@ -106,13 +105,12 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
 /// The default host and port are defined by `DMNTK_DEFAULT_HOST` and `DMNTK_DEFAULT_PORT` constants.
 /// When other values are given as parameters to this function, these will be the actual host and port.
 /// Host and port may be also controlled using environment variables:
-/// - `HOST` or `DMNTK_HOST` for the host name,
-/// - `PORT` or `DMNTK_PORT` for the port name.
+/// - `DMNTK_HOST` for the host name,
+/// - `DMNTK_PORT` for the port name.
 ///
-/// Priorities (from highest to lowest):
+/// Priority (from highest to lowest):
 /// - `opt_host` an `opt_port` parameters,
 /// - `DMNTK_HOST` and `DMNTK_PORT` environment variables
-/// - `HOST` and `PORT` environment variables
 /// - `DMNTK_DEFAULT_HOST` and `DMNTK_DEFAULT_PORT` constants.
 ///
 fn get_server_address(opt_host: Option<String>, opt_port: Option<String>) -> String {
@@ -180,11 +178,4 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
     }
   }
   dir.map(|d| PathBuf::from(&d))
-}
-
-/// Evaluates the artifact specified in parameters and returns the result.
-fn do_evaluate(workspace: &Workspace, model_rdnn: &str, model_name: &str, invocable_name: &str, input: &str) -> Result<Value, DmntkError> {
-  let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
-  let value = workspace.evaluate_invocable(model_rdnn, model_name, invocable_name, &input_data)?;
-  Ok(value)
 }
