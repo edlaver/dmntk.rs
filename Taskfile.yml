@@ -166,6 +166,11 @@ tasks:
     desc: Runs the server in release mode and musl target
     cmds:
       - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv -H 127.0.0.1
+        
+  tck:
+    desc: Runs the server in release mode and musl target with flags for TCK
+    cmds:
+      - cmd: cargo +stable run --release --target=x86_64-unknown-linux-musl -- srv -H 127.0.0.1 -D ../tck/TestCases
 
   test:
     desc: Runs tests in debug mode
