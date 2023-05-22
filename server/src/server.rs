@@ -192,9 +192,10 @@ struct EvaluateParams {
 /// Input data may be provided in `JSON` format or `FEEL` context format.
 /// The result value is always converted to JSON format.
 #[post("/evaluate/{namespace}/{model}/{invocable}")]
-async fn post_evaluate(params: web::Path<EvaluateParams>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
+async fn post_evaluate(params: web::Path<(String, String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace = data.workspace.read().unwrap();
-  let result = do_evaluate(&workspace, &params.into_inner(), &request_body);
+  let (namespace, model, invocable) = params.into_inner();
+  let result = do_evaluate(&workspace, &namespace, &model, &invocable, &request_body);
   match result {
     Ok(value) => HttpResponse::Ok().content_type("application/json").body(format!("{{\"data\":{}}}", value.jsonify())),
     Err(reason) => HttpResponse::Ok().content_type("application/json").body(ResultDto::<String>::error(reason).to_string()),
@@ -343,12 +344,9 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
 }
 
 /// Evaluates the artifact specified in parameters and returns the result.
-fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> Result<Value, DmntkError> {
-  let model_namespace = &params.model_namespace;
-  let model_name = &params.model_name;
-  let invocable_name = &params.invocable_name;
+fn do_evaluate(workspace: &Workspace, model_rdnn: &str, model_name: &str, invocable_name: &str, input: &str) -> Result<Value, DmntkError> {
   let input_data = dmntk_evaluator::evaluate_context(&FeelScope::default(), input)?;
-  let value = workspace.evaluate_invocable(model_namespace, model_name, invocable_name, &input_data)?;
+  let value = workspace.evaluate_invocable(model_rdnn, model_name, invocable_name, &input_data)?;
   Ok(value)
 }
 

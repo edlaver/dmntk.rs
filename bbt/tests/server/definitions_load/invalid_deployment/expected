@@ -1,3 +1,4 @@
-<WorkspaceError> deployment failed for io.dmntk/compliance-level-2-test-0003, reason: <ModelEvaluatorError> invalid item definition type for 'tEmploymentStatus'
-Deployed 0 model(s).
+ERROR: io.dmntk compliance-level-2-test-0003 <ModelEvaluatorError> invalid item definition type for 'tEmploymentStatus'
+Successfully deployed 0 model(s).
+Failed to deploy 1 model(s).
 dmntk 0.0.0.0:22022
