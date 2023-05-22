@@ -69,15 +69,21 @@ impl Workspace {
     workspace
   }
 
-  /// Deletes all definitions and model evaluators.
-  pub fn clear(&mut self) {
-    self.definitions.clear();
-    self.evaluators.clear();
+  /// Evaluates invocable deployed in workspace.
+  pub fn evaluate_invocable(&self, model_rdnn: &str, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
+    if let Some(evaluators_by_name) = self.evaluators.get(model_rdnn) {
+      if let Some(model_evaluator) = evaluators_by_name.get(model_name) {
+        Ok(model_evaluator.evaluate_invocable(invocable_name, input_data))
+      } else {
+        Err(err_evaluator_name_not_found(model_rdnn, model_name))
+      }
+    } else {
+      Err(err_evaluator_rdnn_not_found(model_rdnn))
+    }
   }
 
   /// Adds new definitions to workspace, deletes all model evaluators.
-  pub fn add(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
-    self.evaluators.clear();
+  fn add(&mut self, definitions: Definitions) -> Result<(String, String, String)> {
     let namespace = definitions.namespace().to_string();
     // create the rdnn from definitions namespace
     let Some(rdnn) = to_rdnn(&namespace) else {
@@ -110,9 +116,10 @@ impl Workspace {
   }
 
   /// Creates model evaluators for all definitions in workspace.
-  pub fn deploy(&mut self) -> Result<usize> {
+  fn deploy(&mut self) -> (usize, usize) {
     self.evaluators.clear();
-    let mut counter = 0;
+    let mut deployed_counter = 0;
+    let mut failures_counter = 0;
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
         match ModelEvaluator::new(definitions) {
@@ -130,32 +137,23 @@ impl Workspace {
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
                 evaluators_by_name
               });
-            counter += 1;
+            deployed_counter += 1;
           }
           Err(reason) => {
-            self.evaluators.clear();
-            return Err(err_deployment_failure(rdnn, name, &reason.to_string()));
+            failures_counter += 1;
+            eprintln!("ERROR: {} {} {}", rdnn, name, reason.to_string());
           }
         }
       }
     }
-    Ok(counter)
-  }
-
-  /// Evaluates invocable deployed in workspace.
-  pub fn evaluate_invocable(&self, model_namespace: &str, model_name: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
-    if let Some(evaluators_by_name) = self.evaluators.get(model_namespace) {
-      if let Some(model_evaluator) = evaluators_by_name.get(model_name) {
-        return Ok(model_evaluator.evaluate_invocable(invocable_name, input_data));
-      }
-    }
-    Err(err_evaluator_not_deployed(model_name))
+    (deployed_counter, failures_counter)
   }
 
   /// Utility function that loads and deploys DMN models from specified directory (recursive).
   fn load_and_deploy(&mut self, opt_dir: Option<PathBuf>) {
     if let Some(dir) = opt_dir {
       for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
+        let file_path = entry.path().to_string_lossy();
         if entry.file_type().is_file() {
           let file_name = entry.file_name().to_string_lossy();
           if file_name.ends_with(".dmn") {
@@ -163,23 +161,18 @@ impl Workspace {
               Ok(xml) => match dmntk_model::parse(&xml) {
                 Ok(definitions) => match self.add(definitions) {
                   Ok(_) => {}
-                  Err(reason) => eprintln!("{}: {}", file_name, reason),
+                  Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
                 },
-                Err(reason) => eprintln!("{}: {}", file_name, reason),
+                Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
               },
-              Err(reason) => eprintln!("{}: {}", file_name, reason),
+              Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
             }
           }
         }
       }
-      match self.deploy() {
-        Ok(count) => println!("Deployed {count} model(s)."),
-        Err(reason) => {
-          eprintln!("{}", reason);
-          eprintln!("Deployed 0 model(s).");
-          self.evaluators.clear();
-        }
-      }
+      let (deployed_count, deploy_count) = self.deploy();
+      println!("Successfully deployed {deployed_count} model(s).");
+      println!("Failed to deploy {deploy_count} model(s).");
     }
   }
 }

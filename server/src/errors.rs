@@ -51,14 +51,6 @@ pub fn err_missing_parameter(name: &str) -> DmntkError {
   ServerError(format!("missing parameter '{name}'")).into()
 }
 
-pub fn err_invalid_base64_encoding() -> DmntkError {
-  ServerError("invalid Base64 encoding".to_string()).into()
-}
-
-pub fn err_invalid_utf8_content() -> DmntkError {
-  ServerError("invalid UTF-8 content".to_string()).into()
-}
-
 pub fn err_internal_error(message: &str) -> DmntkError {
   ServerError(message.to_string()).into()
 }

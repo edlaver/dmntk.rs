@@ -33,9 +33,7 @@
 use crate::dto::{InputNodeDto, OutputNodeDto, WrappedValue};
 use crate::errors::*;
 use actix_web::web::Json;
-use actix_web::{error, get, post, web, App, HttpResponse, HttpServer};
-use base64::engine::general_purpose::STANDARD;
-use base64::Engine;
+use actix_web::{error, post, web, App, HttpResponse, HttpServer};
 use dmntk_common::{DmntkError, Jsonify, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -137,25 +135,6 @@ impl Default for SystemInfoDto {
   }
 }
 
-/// Parameters for adding model definitions to workspace.
-#[derive(Deserialize)]
-struct AddDefinitionsParams {
-  /// Content of the model, encoded in `Base64`.
-  #[serde(rename = "content")]
-  content: Option<String>,
-}
-
-/// Result data sent back to caller after successfully added new definitions.
-#[derive(Serialize)]
-struct AddDefinitionsResult {
-  /// RDNN of the definitions.
-  rdnn: String,
-  /// Namespace of the definitions.
-  namespace: String,
-  /// Name of the definitions.
-  name: String,
-}
-
 /// Operation status sent back to caller after request completion.
 #[derive(Serialize)]
 struct StatusResult {
@@ -183,6 +162,17 @@ struct TckEvaluateParams {
   input_values: Option<Vec<InputNodeDto>>,
 }
 
+/// Handler for evaluating models with input data in the format compatible with test cases
+/// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
+#[post("/tck/evaluate")]
+async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
+  let workspace = data.workspace.read().unwrap();
+  match do_evaluate_tck(&workspace, &params.into_inner()) {
+    Ok(response) => Ok(Json(ResultDto::data(response))),
+    Err(reason) => Ok(Json(ResultDto::error(reason))),
+  }
+}
+
 /// Parameters for evaluating invocable in DMN™ model definitions.
 #[derive(Deserialize)]
 struct EvaluateParams {
@@ -195,52 +185,6 @@ struct EvaluateParams {
   /// Name of the invocable to be evaluated.
   #[serde(rename = "invocable")]
   invocable_name: String,
-}
-
-/// Handler for retrieving the system information.
-#[get("/system/info")]
-async fn get_system_info() -> io::Result<Json<ResultDto<SystemInfoDto>>> {
-  Ok(Json(ResultDto::data(SystemInfoDto::default())))
-}
-
-/// Handler for clearing definitions.
-#[post("/definitions/clear")]
-async fn post_definitions_clear(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
-  let mut workspace = data.workspace.write().unwrap();
-  Ok(Json(ResultDto::data(do_clear_definitions(&mut workspace))))
-}
-
-/// Handler for adding definitions.
-#[post("/definitions/add")]
-async fn post_definitions_add(params: Json<AddDefinitionsParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<AddDefinitionsResult>>> {
-  let mut workspace = data.workspace.write().unwrap();
-  let result = do_add_definitions(&mut workspace, &params.into_inner());
-  match result {
-    Ok(result) => Ok(Json(ResultDto::data(result))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
-}
-
-/// Handler for deploying definitions.
-#[post("/definitions/deploy")]
-async fn post_definitions_deploy(data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<StatusResult>>> {
-  let mut workspace = data.workspace.write().unwrap();
-  let result = do_deploy_definitions(&mut workspace);
-  match result {
-    Ok(result) => Ok(Json(ResultDto::data(result))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
-}
-
-/// Handler for evaluating models with input data in the format compatible with test cases
-/// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
-#[post("/tck/evaluate")]
-async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<ResultDto<OutputNodeDto>>> {
-  let workspace = data.workspace.read().unwrap();
-  match do_evaluate_tck(&workspace, &params.into_inner()) {
-    Ok(response) => Ok(Json(ResultDto::data(response))),
-    Err(reason) => Ok(Json(ResultDto::error(reason))),
-  }
 }
 
 /// Handler for evaluating invocable in model.
@@ -282,10 +226,6 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
         )
         .into()
       }))
-      .service(get_system_info)
-      .service(post_definitions_clear)
-      .service(post_definitions_add)
-      .service(post_definitions_deploy)
       .service(post_tck_evaluate)
       .service(post_evaluate)
       .default_service(web::route().to(not_found))
@@ -376,47 +316,6 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
   dir.map(|d| PathBuf::from(&d))
 }
 
-/// Deletes all definitions in workspace.
-fn do_clear_definitions(workspace: &mut Workspace) -> StatusResult {
-  workspace.clear();
-  StatusResult {
-    status: "definitions cleared".to_string(),
-  }
-}
-
-/// Adds definitions to workspace.
-fn do_add_definitions(workspace: &mut Workspace, params: &AddDefinitionsParams) -> Result<AddDefinitionsResult> {
-  if let Some(content) = &params.content {
-    if let Ok(bytes) = STANDARD.decode(content) {
-      if let Ok(xml) = String::from_utf8(bytes) {
-        match dmntk_model::parse(&xml) {
-          Ok(definitions) => {
-            let (rdnn, namespace, name) = workspace.add(definitions)?;
-            Ok(AddDefinitionsResult { rdnn, namespace, name })
-          }
-          Err(reason) => Err(reason),
-        }
-      } else {
-        Err(err_invalid_utf8_content())
-      }
-    } else {
-      Err(err_invalid_base64_encoding())
-    }
-  } else {
-    Err(err_missing_parameter("content"))
-  }
-}
-
-/// Deploys definitions in workspace.
-fn do_deploy_definitions(workspace: &mut Workspace) -> Result<StatusResult> {
-  match workspace.deploy() {
-    Ok(count) => Ok(StatusResult {
-      status: format!("deployed {} models(s)", count),
-    }),
-    Err(reason) => Err(reason),
-  }
-}
-
 /// Evaluates the invocable in model and returns the result.
 /// Input and output data format is compatible with
 /// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
@@ -460,15 +359,6 @@ fn do_evaluate(workspace: &Workspace, params: &EvaluateParams, input: &str) -> R
 #[cfg(test)]
 mod tests {
   use super::*;
-
-  #[test]
-  fn test_deserialize_add_definitions_params() {
-    assert!(serde_json::from_str::<Vec<AddDefinitionsParams>>(r#"{"content": "a"}"#).is_err());
-    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"{"content":"a"}"#).is_ok());
-    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"{ {"inner": 10} }"#).is_err());
-    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"[1]"#).is_err());
-    assert!(serde_json::from_str::<AddDefinitionsParams>(r#"1"#).is_err());
-  }
 
   #[test]
   fn test_deserialize_tck_evaluate_params() {
