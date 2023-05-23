@@ -89,7 +89,7 @@ impl ModelBuilder {
       item_definition_evaluator: ItemDefinitionEvaluator::empty(),
       item_definition_context_evaluator: ItemDefinitionContextEvaluator::empty(),
       item_definition_type_evaluator: ItemDefinitionTypeEvaluator::empty(),
-      business_knowledge_model_evaluator: Default::default(),
+      business_knowledge_model_evaluator: BusinessKnowledgeModelEvaluator::empty(),
       decision_evaluator: Default::default(),
       decision_service_evaluator: Default::default(),
       invocables: RefCell::new(Default::default()),
@@ -99,7 +99,7 @@ impl ModelBuilder {
     model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
     model_builder.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&definitions)?;
     model_builder.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&definitions)?;
-    model_builder.business_knowledge_model_evaluator.build(&definitions, &model_builder)?;
+    model_builder.business_knowledge_model_evaluator = BusinessKnowledgeModelEvaluator::new(&definitions, &model_builder)?;
     model_builder.decision_evaluator.build(&definitions, &model_builder)?;
     model_builder.decision_service_evaluator.build(&definitions, &model_builder)?;
     Ok(model_builder)

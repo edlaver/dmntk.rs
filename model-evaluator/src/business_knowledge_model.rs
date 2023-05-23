@@ -44,7 +44,7 @@ use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
 use std::collections::HashMap;
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 
 /// Type of closure that evaluates business knowledge model.
 /// Fn(input data, model evaluator, output data)
@@ -53,35 +53,38 @@ type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluato
 /// Business knowledge model evaluator.
 #[derive(Default)]
 pub struct BusinessKnowledgeModelEvaluator {
-  evaluators: RwLock<HashMap<String, BusinessKnowledgeModelEvaluatorFn>>,
+  evaluators: Arc<HashMap<String, BusinessKnowledgeModelEvaluatorFn>>,
 }
 
 impl BusinessKnowledgeModelEvaluator {
+  /// Creates an empty business knowledge model evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: Arc::new(HashMap::new()),
+    }
+  }
+
   /// Creates a new business knowledge model evaluator.
-  pub fn build(&self, definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<()> {
+  pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
       let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_builder)?;
       let business_knowledge_model_id = business_knowledge_model.id();
       let business_knowledge_model_name = &business_knowledge_model.name().to_string();
       let output_variable_name = business_knowledge_model.variable().name();
-      self
-        .evaluators
-        .write()
-        .map_err(err_write_lock_failed)?
-        .insert(business_knowledge_model_id.to_owned(), evaluator);
+      evaluators.insert(business_knowledge_model_id.to_owned(), evaluator);
       model_builder.add_invocable_business_knowledge_model(business_knowledge_model_name, business_knowledge_model_id, output_variable_name.to_owned());
     }
-    Ok(())
+    Ok(Self { evaluators: Arc::new(evaluators) })
   }
+
   /// Evaluates a business knowledge model with specified identifier.
   /// When a required business knowledge model is found, then its evaluator
   /// is executed, and the result is stored in `evaluated_ctx`.
   pub fn evaluate(&self, business_knowledge_model_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
-    if let Ok(evaluators) = self.evaluators.read() {
-      if let Some(evaluator) = evaluators.get(business_knowledge_model_id) {
-        evaluator(input_data, model_evaluator, output_data);
-      }
+    if let Some(evaluator) = self.evaluators.get(business_knowledge_model_id) {
+      evaluator(input_data, model_evaluator, output_data);
     }
   }
 }
