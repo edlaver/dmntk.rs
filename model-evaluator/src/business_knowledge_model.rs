@@ -51,7 +51,6 @@ use std::sync::Arc;
 type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
 
 /// Business knowledge model evaluator.
-#[derive(Default)]
 pub struct BusinessKnowledgeModelEvaluator {
   evaluators: Arc<HashMap<String, BusinessKnowledgeModelEvaluatorFn>>,
 }
