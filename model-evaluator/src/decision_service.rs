@@ -80,7 +80,7 @@ impl DecisionServiceEvaluator {
   }
 
   /// Creates function definition evaluators for all decision service evaluators.
-  pub fn build_function_definitions(&self, model_evaluator: &Arc<ModelEvaluator>) {
+  pub fn build_function_definitions(&self, model_evaluator: &ModelEvaluator) {
     if let Ok(mut evaluators) = self.evaluators.write() {
       let identifiers = evaluators.keys().cloned().collect::<Vec<String>>();
       for decision_service_id in identifiers {
