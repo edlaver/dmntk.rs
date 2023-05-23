@@ -45,7 +45,6 @@ use std::sync::Arc;
 pub type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
 
 /// Input data evaluator.
-#[derive(Default)]
 pub struct InputDataEvaluator {
   evaluators: Arc<HashMap<String, InputDataEvaluatorEntry>>,
 }

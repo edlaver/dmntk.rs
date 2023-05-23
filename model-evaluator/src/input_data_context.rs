@@ -40,24 +40,20 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
-use std::cell::RefCell;
 use std::collections::HashMap;
 
 /// Type of closure that evaluates input data context.
 type InputDataContextEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ItemDefinitionContextEvaluator) -> FeelType + Send + Sync>;
 
 /// Input data context evaluator.
-#[derive(Default)]
 pub struct InputDataContextEvaluator {
-  evaluators: RefCell<HashMap<String, InputDataContextEvaluatorFn>>,
+  evaluators: HashMap<String, InputDataContextEvaluatorFn>,
 }
 
 impl InputDataContextEvaluator {
   /// Creates an empty input data context evaluator.
   pub fn empty() -> Self {
-    Self {
-      evaluators: RefCell::new(HashMap::new()),
-    }
+    Self { evaluators: HashMap::new() }
   }
 
   /// Creates a new input data context evaluator based on provided definitions.
@@ -68,14 +64,12 @@ impl InputDataContextEvaluator {
       let evaluator = input_data_context_evaluator(input_data)?;
       evaluators.insert(input_data_id.to_owned(), evaluator);
     }
-    Ok(Self {
-      evaluators: RefCell::new(evaluators),
-    })
+    Ok(Self { evaluators })
   }
 
   /// Evaluates input data context with specified identifier.
   pub fn eval(&self, input_data_id: &str, ctx: &mut FeelContext, item_definition_context_evaluator: &ItemDefinitionContextEvaluator) -> FeelType {
-    if let Some(evaluator) = self.evaluators.borrow().get(input_data_id) {
+    if let Some(evaluator) = self.evaluators.get(input_data_id) {
       evaluator(ctx, item_definition_context_evaluator)
     } else {
       FeelType::Any
