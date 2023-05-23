@@ -1,5 +1,5 @@
 Found 1 model.
 Loaded 1 model.
-[error][io.dmntk/compliance-level-2-test-0003] <ModelEvaluatorError> invalid item definition type for 'tEmploymentStatus'
+[error][./2_0003.dmn] <ModelEvaluatorError> invalid item definition type for 'tEmploymentStatus'
 Failed to deploy 1 model.
 dmntk 0.0.0.0:22022

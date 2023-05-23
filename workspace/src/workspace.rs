@@ -46,18 +46,23 @@ use walkdir::WalkDir;
 
 const ERROR_TAG: &str = "[error]";
 
-/// Type alias defining a map of definitions indexed by its name.
+/// Type alias defining a map of definitions indexed by model name.
 type DefinitionsByName = HashMap<String, Definitions>;
 
-/// Type alias defining a map of evaluators indexed by its name.
+/// Type alias defining a map of evaluators indexed by model name.
 type EvaluatorsByName = HashMap<String, Arc<ModelEvaluator>>;
+
+/// Type alias defining a map of file names indexed by model name.
+type FileByName = HashMap<String, PathBuf>;
 
 /// Structure representing the container for DMN models.
 pub struct Workspace {
-  /// Map of [Definitions] indexed by **rdnn** created from [Definitions]' _namespace_ attribute.
+  /// Map of [Definitions] indexed by _RDNN_.
   definitions: HashMap<String, DefinitionsByName>,
-  /// Map of [ModelEvaluators](ModelEvaluator) indexed by [Definitions]' _name_ attribute.
+  /// Map of [ModelEvaluators](ModelEvaluator) indexed by [Definitions]' _RDNN_.
   evaluators: HashMap<String, EvaluatorsByName>,
+  /// Map of file names indexed by _RDNN_..
+  files: HashMap<String, FileByName>,
 }
 
 impl Workspace {
@@ -66,6 +71,7 @@ impl Workspace {
     let mut workspace = Self {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
+      files: HashMap::new(),
     };
     if let Some(dir) = opt_dir {
       workspace.load(dir);
@@ -97,7 +103,18 @@ impl Workspace {
       match fs::read_to_string(file) {
         Ok(xml) => match dmntk_model::parse(&xml) {
           Ok(definitions) => match self.add(definitions) {
-            Ok(_) => {
+            Ok((rdnn, _, name)) => {
+              self
+                .files
+                .entry(rdnn.clone())
+                .and_modify(|files_by_name| {
+                  files_by_name.insert(name.clone(), file.to_owned());
+                })
+                .or_insert({
+                  let mut files_by_name = HashMap::new();
+                  files_by_name.insert(name.clone(), file.to_owned());
+                  files_by_name
+                });
               loaded_count += 1;
             }
             Err(reason) => {
@@ -145,11 +162,9 @@ impl Workspace {
       .definitions
       .entry(rdnn.clone())
       .and_modify(|definitions_by_name| {
-        // add definitions with specified name to existing namespace
         definitions_by_name.insert(name.clone(), definitions.clone());
       })
       .or_insert({
-        // add definitions with specified name to namespace that will be created
         let mut definitions_by_name = HashMap::new();
         definitions_by_name.insert(name.clone(), definitions);
         definitions_by_name
@@ -179,8 +194,9 @@ impl Workspace {
             deployed_count += 1;
           }
           Err(reason) => {
+            let file = self.files.get(rdnn).unwrap().get(name).unwrap();
+            eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
             failed_count += 1;
-            eprintln!("{ERROR_TAG}[{}/{}] {}", rdnn, name, reason);
           }
         }
       }
