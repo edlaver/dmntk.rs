@@ -39,31 +39,36 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, Name};
 use dmntk_model::model::ItemDefinitionType;
-use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of closure that evaluates the item definition context.
 type ItemDefinitionContextEvaluatorFn = Box<dyn Fn(&Name, &mut FeelContext, &ItemDefinitionContextEvaluator) -> FeelType + Send + Sync>;
 
 /// Item definition type evaluators.
-#[derive(Default)]
 pub struct ItemDefinitionContextEvaluator {
-  evaluators: RefCell<HashMap<String, ItemDefinitionContextEvaluatorFn>>,
+  evaluators: HashMap<String, ItemDefinitionContextEvaluatorFn>,
 }
 
 impl ItemDefinitionContextEvaluator {
+  /// Creates an empty item definition context evaluator.
+  pub fn empty() -> Self {
+    Self { evaluators: HashMap::new() }
+  }
+
   /// Creates item definition type evaluators.
-  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for item_definition in definitions.item_definitions() {
       let evaluator = item_definition_context_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
-      self.evaluators.borrow_mut().insert(type_ref, evaluator);
+      evaluators.insert(type_ref, evaluator);
     }
-    Ok(())
+    Ok(Self { evaluators })
   }
+
   /// Evaluates a context from item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str, name: &Name, ctx: &mut FeelContext) -> FeelType {
-    if let Some(evaluator) = self.evaluators.borrow().get(type_ref) {
+    if let Some(evaluator) = self.evaluators.get(type_ref) {
       evaluator(name, ctx, self)
     } else {
       FeelType::Any
@@ -203,9 +208,7 @@ mod tests {
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionContextEvaluator {
-    let item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
-    item_definition_context_evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
-    item_definition_context_evaluator
+    ItemDefinitionContextEvaluator::new(&dmntk_model::parse(xml).unwrap().into()).unwrap()
   }
 
   #[test]

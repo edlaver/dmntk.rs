@@ -126,8 +126,7 @@ mod tests {
   fn build_evaluators(xml: &str) -> (InputDataContextEvaluator, ItemDefinitionContextEvaluator) {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
     let input_data_context_evaluator = InputDataContextEvaluator::new(&definitions).unwrap();
-    let item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
-    item_definition_context_evaluator.build(&definitions).unwrap();
+    let item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&definitions).unwrap();
     (input_data_context_evaluator, item_definition_context_evaluator)
   }
 

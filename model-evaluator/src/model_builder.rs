@@ -87,7 +87,7 @@ impl ModelBuilder {
       input_data_evaluator: InputDataEvaluator::empty(),
       input_data_context_evaluator: InputDataContextEvaluator::empty(),
       item_definition_evaluator: ItemDefinitionEvaluator::empty(),
-      item_definition_context_evaluator: Default::default(),
+      item_definition_context_evaluator: ItemDefinitionContextEvaluator::empty(),
       item_definition_type_evaluator: Default::default(),
       business_knowledge_model_evaluator: Default::default(),
       decision_evaluator: Default::default(),
@@ -97,7 +97,7 @@ impl ModelBuilder {
     model_builder.input_data_evaluator = InputDataEvaluator::new(&definitions)?;
     model_builder.input_data_context_evaluator = InputDataContextEvaluator::new(&definitions)?;
     model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
-    model_builder.item_definition_context_evaluator.build(&definitions)?;
+    model_builder.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&definitions)?;
     model_builder.item_definition_type_evaluator.build(&definitions)?;
     model_builder.business_knowledge_model_evaluator.build(&definitions, &model_builder)?;
     model_builder.decision_evaluator.build(&definitions, &model_builder)?;
