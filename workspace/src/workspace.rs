@@ -44,6 +44,8 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use walkdir::WalkDir;
 
+const ERROR_TAG: &str = "[error]";
+
 /// Type alias defining a map of definitions indexed by its name.
 type DefinitionsByName = HashMap<String, Arc<Definitions>>;
 
@@ -99,17 +101,17 @@ impl Workspace {
               loaded_count += 1;
             }
             Err(reason) => {
-              eprintln!("ERROR: {}: {}", file.display(), reason);
+              eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
               failed_count += 1;
             }
           },
           Err(reason) => {
-            eprintln!("ERROR: {}: {}", file.display(), reason);
+            eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
             failed_count += 1;
           }
         },
         Err(reason) => {
-          eprintln!("ERROR: {}: {}", file.display(), reason);
+          eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
           failed_count += 1;
         }
       }
@@ -179,7 +181,7 @@ impl Workspace {
           }
           Err(reason) => {
             failed_count += 1;
-            eprintln!("ERROR: {} {} {}", rdnn, name, reason);
+            eprintln!("{ERROR_TAG}[{}/{}] {}", rdnn, name, reason);
           }
         }
       }
