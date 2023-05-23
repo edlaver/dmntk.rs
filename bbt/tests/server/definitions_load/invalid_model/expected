@@ -1,4 +1,6 @@
 ERROR: ./2_0001_invalid.dmn: <ModelParserError> parsing model from XML failed with reason: expected 'description' tag, not 'definitions' at 37:1
-Successfully deployed 0 model(s).
-Failed to deploy 0 model(s).
+Found 1 model.
+Loaded 0 models.
+Failed to load 1 model.
+Deployed 0 models.
 dmntk 0.0.0.0:22022

@@ -1,4 +1,6 @@
 ERROR: ./2_0001_UTF_16.dmn: stream did not contain valid UTF-8
-Successfully deployed 0 model(s).
-Failed to deploy 0 model(s).
+Found 1 model.
+Loaded 0 models.
+Failed to load 1 model.
+Deployed 0 models.
 dmntk 0.0.0.0:22022

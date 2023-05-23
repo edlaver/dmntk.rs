@@ -1,4 +1,6 @@
+Found 1 model.
+Loaded 1 model.
 ERROR: io.dmntk compliance-level-2-test-0003 <ModelEvaluatorError> invalid item definition type for 'tEmploymentStatus'
-Successfully deployed 0 model(s).
-Failed to deploy 1 model(s).
+Deployed 0 models.
+Failed to deploy 1 model.
 dmntk 0.0.0.0:22022

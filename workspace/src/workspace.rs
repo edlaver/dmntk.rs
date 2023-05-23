@@ -65,7 +65,10 @@ impl Workspace {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
     };
-    workspace.load_and_deploy(opt_dir);
+    if let Some(dir) = opt_dir {
+      workspace.load(dir);
+      workspace.deploy();
+    };
     workspace
   }
 
@@ -79,6 +82,42 @@ impl Workspace {
       }
     } else {
       Err(err_evaluator_rdnn_not_found(model_rdnn))
+    }
+  }
+
+  /// Loads and deploys DMN models placed in specified directory (recursive).
+  fn load(&mut self, dir: PathBuf) {
+    let mut file_count = 0_usize;
+    let mut loaded_count = 0_usize;
+    let mut failed_count = 0_usize;
+    for file in &search_models_recursive(dir) {
+      file_count += 1;
+      match fs::read_to_string(file) {
+        Ok(xml) => match dmntk_model::parse(&xml) {
+          Ok(definitions) => match self.add(definitions) {
+            Ok(_) => {
+              loaded_count += 1;
+            }
+            Err(reason) => {
+              eprintln!("ERROR: {}: {}", file.display(), reason);
+              failed_count += 1;
+            }
+          },
+          Err(reason) => {
+            eprintln!("ERROR: {}: {}", file.display(), reason);
+            failed_count += 1;
+          }
+        },
+        Err(reason) => {
+          eprintln!("ERROR: {}: {}", file.display(), reason);
+          failed_count += 1;
+        }
+      }
+    }
+    println!("Found {file_count} {}.", plural("model", file_count));
+    println!("Loaded {loaded_count} {}.", plural("model", loaded_count));
+    if failed_count > 0 {
+      println!("Failed to load {failed_count} {}.", plural("model", failed_count));
     }
   }
 
@@ -116,10 +155,9 @@ impl Workspace {
   }
 
   /// Creates evaluators for all definitions in workspace.
-  fn deploy(&mut self) -> (usize, usize) {
-    self.evaluators.clear();
-    let mut deployed_counter = 0;
-    let mut failures_counter = 0;
+  fn deploy(&mut self) {
+    let mut deployed_count = 0;
+    let mut failed_count = 0;
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
         match ModelEvaluator::new(definitions) {
@@ -135,42 +173,44 @@ impl Workspace {
                 evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
                 evaluators_by_name
               });
-            deployed_counter += 1;
+            deployed_count += 1;
           }
           Err(reason) => {
-            failures_counter += 1;
+            failed_count += 1;
             eprintln!("ERROR: {} {} {}", rdnn, name, reason);
           }
         }
       }
     }
-    (deployed_counter, failures_counter)
+    println!("Deployed {deployed_count} {}.", plural("model", deployed_count));
+    if failed_count > 0 {
+      println!("Failed to deploy {failed_count} {}.", plural("model", failed_count));
+    }
   }
+}
 
-  /// Utility function that loads and deploys DMN models from specified directory (recursive).
-  fn load_and_deploy(&mut self, opt_dir: Option<PathBuf>) {
-    if let Some(dir) = opt_dir {
-      for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
-        let file_path = entry.path().to_string_lossy();
-        if entry.file_type().is_file() {
-          let file_name = entry.file_name().to_string_lossy();
-          if file_name.ends_with(".dmn") {
-            match fs::read_to_string(entry.path()) {
-              Ok(xml) => match dmntk_model::parse(&xml) {
-                Ok(definitions) => match self.add(definitions) {
-                  Ok(_) => {}
-                  Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
-                },
-                Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
-              },
-              Err(reason) => eprintln!("ERROR: {}: {}", file_path, reason),
-            }
-          }
+/// Searches all subdirectories starting from specified directory
+/// and searches for files that have `.dmn` extension.
+fn search_models_recursive(dir: PathBuf) -> Vec<PathBuf> {
+  let mut paths = vec![];
+  for entry in WalkDir::new(dir).into_iter().filter_map(|entry| entry.ok()) {
+    let path = entry.path();
+    if path.is_file() {
+      if let Some(extension) = path.extension() {
+        if extension == "dmn" {
+          paths.push(entry.path().into());
         }
       }
-      let (deployed_count, deploy_count) = self.deploy();
-      println!("Successfully deployed {deployed_count} model(s).");
-      println!("Failed to deploy {deploy_count} model(s).");
     }
+  }
+  paths
+}
+
+/// Utility function to make plurals from noun.
+fn plural(noun: &str, number: usize) -> String {
+  if number == 1 {
+    noun.to_string()
+  } else {
+    format!("{}s", noun)
   }
 }
