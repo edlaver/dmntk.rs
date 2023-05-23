@@ -115,7 +115,9 @@ impl Workspace {
       }
     }
     println!("Found {file_count} {}.", plural("model", file_count));
-    println!("Loaded {loaded_count} {}.", plural("model", loaded_count));
+    if loaded_count > 0 {
+      println!("Loaded {loaded_count} {}.", plural("model", loaded_count));
+    }
     if failed_count > 0 {
       println!("Failed to load {failed_count} {}.", plural("model", failed_count));
     }
@@ -182,7 +184,9 @@ impl Workspace {
         }
       }
     }
-    println!("Deployed {deployed_count} {}.", plural("model", deployed_count));
+    if deployed_count > 0 {
+      println!("Deployed {deployed_count} {}.", plural("model", deployed_count));
+    }
     if failed_count > 0 {
       println!("Failed to deploy {failed_count} {}.", plural("model", failed_count));
     }
