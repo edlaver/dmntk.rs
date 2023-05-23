@@ -32,7 +32,6 @@
 
 //! Builder for input data evaluators.
 
-use crate::errors::*;
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::model_definitions::DefDefinitions;
 use crate::variable::{Variable, VariableEvaluatorFn};
@@ -40,7 +39,7 @@ use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::Arc;
 
 ///
 pub type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
@@ -48,38 +47,37 @@ pub type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
 /// Input data evaluator.
 #[derive(Default)]
 pub struct InputDataEvaluator {
-  evaluators: RwLock<HashMap<String, InputDataEvaluatorEntry>>,
+  evaluators: Arc<HashMap<String, InputDataEvaluatorEntry>>,
 }
 
 impl InputDataEvaluator {
+  /// Creates an empty input data evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: Arc::new(HashMap::new()),
+    }
+  }
+
   /// Builds a new input data evaluator.
-  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
+  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id();
       let variable = Variable::try_from(input_data.variable())?;
       let evaluator = variable.build_evaluator();
-      self
-        .evaluators
-        .write()
-        .map_err(err_write_lock_failed)?
-        .insert(input_data_id.to_owned(), (variable, evaluator));
+      evaluators.insert(input_data_id.to_owned(), (variable, evaluator));
     }
-    Ok(())
+    Ok(Self { evaluators: Arc::new(evaluators) })
   }
 
   /// Evaluates input data with specified identifier.
   pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
-    self
-      .evaluators
-      .read()
-      .ok()?
-      .get(input_data_id)
-      .map(|evaluator| evaluator.1(value, item_definition_evaluator))
+    self.evaluators.get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
 
   /// Returns the name and type of the input variable of input data definition with specified identifier.
   pub fn get_input_variable(&self, input_data_id: &str) -> Option<Variable> {
-    self.evaluators.read().ok()?.get(input_data_id).map(|entry| (entry.0).clone())
+    self.evaluators.get(input_data_id).map(|entry| (entry.0).clone())
   }
 }
 
@@ -96,9 +94,7 @@ mod tests {
   /// and item definition evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataEvaluator, ItemDefinitionEvaluator) {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
-    let input_data_evaluator = InputDataEvaluator::default();
-    input_data_evaluator.build(&definitions).unwrap();
-    (input_data_evaluator, ItemDefinitionEvaluator::new(&definitions).unwrap())
+    (InputDataEvaluator::new(&definitions).unwrap(), ItemDefinitionEvaluator::new(&definitions).unwrap())
   }
 
   #[test]

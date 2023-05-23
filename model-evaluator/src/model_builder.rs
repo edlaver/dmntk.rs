@@ -58,7 +58,6 @@ pub type EvaluatorBuilders = (
 pub type Invocables = HashMap<String, InvocableType>;
 
 /// Model builder.
-#[derive(Default)]
 pub struct ModelBuilder {
   /// Input data evaluator builder.
   input_data_evaluator: InputDataEvaluator,
@@ -84,8 +83,18 @@ impl ModelBuilder {
   ///
   pub fn new(definitions: &Definitions) -> Result<Self> {
     let definitions: DefDefinitions = definitions.into();
-    let mut model_builder = ModelBuilder::default();
-    model_builder.input_data_evaluator.build(&definitions)?;
+    let mut model_builder = ModelBuilder {
+      input_data_evaluator: InputDataEvaluator::empty(),
+      input_data_context_evaluator: Default::default(),
+      item_definition_evaluator: Default::default(),
+      item_definition_context_evaluator: Default::default(),
+      item_definition_type_evaluator: Default::default(),
+      business_knowledge_model_evaluator: Default::default(),
+      decision_evaluator: Default::default(),
+      decision_service_evaluator: Default::default(),
+      invocables: RefCell::new(Default::default()),
+    };
+    model_builder.input_data_evaluator = InputDataEvaluator::new(&definitions)?;
     model_builder.input_data_context_evaluator.build(&definitions)?;
     model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
     model_builder.item_definition_context_evaluator.build(&definitions)?;
