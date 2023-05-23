@@ -53,15 +53,26 @@ pub struct InputDataContextEvaluator {
 }
 
 impl InputDataContextEvaluator {
-  /// Creates a new input data context evaluator.
-  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
+  /// Creates an empty input data context evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: RefCell::new(HashMap::new()),
+    }
+  }
+
+  /// Creates a new input data context evaluator based on provided definitions.
+  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for input_data in definitions.input_data() {
       let input_data_id = input_data.id();
       let evaluator = input_data_context_evaluator(input_data)?;
-      self.evaluators.borrow_mut().insert(input_data_id.to_owned(), evaluator);
+      evaluators.insert(input_data_id.to_owned(), evaluator);
     }
-    Ok(())
+    Ok(Self {
+      evaluators: RefCell::new(evaluators),
+    })
   }
+
   /// Evaluates input data context with specified identifier.
   pub fn eval(&self, input_data_id: &str, ctx: &mut FeelContext, item_definition_context_evaluator: &ItemDefinitionContextEvaluator) -> FeelType {
     if let Some(evaluator) = self.evaluators.borrow().get(input_data_id) {
@@ -120,8 +131,7 @@ mod tests {
   /// and item definition context evaluator from definitions.
   fn build_evaluators(xml: &str) -> (InputDataContextEvaluator, ItemDefinitionContextEvaluator) {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
-    let input_data_context_evaluator = InputDataContextEvaluator::default();
-    input_data_context_evaluator.build(&definitions).unwrap();
+    let input_data_context_evaluator = InputDataContextEvaluator::new(&definitions).unwrap();
     let item_definition_context_evaluator = ItemDefinitionContextEvaluator::default();
     item_definition_context_evaluator.build(&definitions).unwrap();
     (input_data_context_evaluator, item_definition_context_evaluator)

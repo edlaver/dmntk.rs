@@ -85,7 +85,7 @@ impl ModelBuilder {
     let definitions: DefDefinitions = definitions.into();
     let mut model_builder = ModelBuilder {
       input_data_evaluator: InputDataEvaluator::empty(),
-      input_data_context_evaluator: Default::default(),
+      input_data_context_evaluator: InputDataContextEvaluator::empty(),
       item_definition_evaluator: Default::default(),
       item_definition_context_evaluator: Default::default(),
       item_definition_type_evaluator: Default::default(),
@@ -95,7 +95,7 @@ impl ModelBuilder {
       invocables: RefCell::new(Default::default()),
     };
     model_builder.input_data_evaluator = InputDataEvaluator::new(&definitions)?;
-    model_builder.input_data_context_evaluator.build(&definitions)?;
+    model_builder.input_data_context_evaluator = InputDataContextEvaluator::new(&definitions)?;
     model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
     model_builder.item_definition_context_evaluator.build(&definitions)?;
     model_builder.item_definition_type_evaluator.build(&definitions)?;
