@@ -47,7 +47,7 @@ use walkdir::WalkDir;
 const ERROR_TAG: &str = "[error]";
 
 /// Type alias defining a map of definitions indexed by its name.
-type DefinitionsByName = HashMap<String, Arc<Definitions>>;
+type DefinitionsByName = HashMap<String, Definitions>;
 
 /// Type alias defining a map of evaluators indexed by its name.
 type EvaluatorsByName = HashMap<String, Arc<ModelEvaluator>>;
@@ -141,18 +141,17 @@ impl Workspace {
       }
     }
     // save definitions by namespace and name
-    let definitions_arc = Arc::new(definitions);
     self
       .definitions
       .entry(rdnn.clone())
       .and_modify(|definitions_by_name| {
         // add definitions with specified name to existing namespace
-        definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
+        definitions_by_name.insert(name.clone(), definitions.clone());
       })
       .or_insert({
         // add definitions with specified name to namespace that will be created
         let mut definitions_by_name = HashMap::new();
-        definitions_by_name.insert(name.clone(), Arc::clone(&definitions_arc));
+        definitions_by_name.insert(name.clone(), definitions);
         definitions_by_name
       });
     Ok((rdnn, namespace, name))
@@ -165,16 +164,16 @@ impl Workspace {
     for (rdnn, definitions_by_name) in &self.definitions {
       for (name, definitions) in definitions_by_name {
         match ModelEvaluator::new(definitions) {
-          Ok(model_evaluator_arc) => {
+          Ok(model_evaluator) => {
             self
               .evaluators
               .entry(rdnn.clone())
               .and_modify(|evaluators_by_name| {
-                evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
+                evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator));
               })
               .or_insert({
                 let mut evaluators_by_name: EvaluatorsByName = HashMap::new();
-                evaluators_by_name.insert(name.clone(), Arc::clone(&model_evaluator_arc));
+                evaluators_by_name.insert(name.clone(), model_evaluator);
                 evaluators_by_name
               });
             deployed_count += 1;
