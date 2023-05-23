@@ -32,7 +32,6 @@
 
 //! Builder for decision service evaluators.
 
-use crate::errors::err_write_lock_failed;
 use crate::model_builder::ModelBuilder;
 use crate::model_definitions::{DefDecisionService, DefDefinitions};
 use crate::model_evaluator::ModelEvaluator;
@@ -52,23 +51,32 @@ type DecisionServiceEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut
 ///
 type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionServiceEvaluatorFn, Option<Evaluator>);
 
-///
-#[derive(Default)]
+/// Decision service evaluator.
 pub struct DecisionServiceEvaluator {
   evaluators: RwLock<HashMap<String, DecisionServiceEvaluatorEntry>>,
 }
 
 impl DecisionServiceEvaluator {
+  /// Creates an empty decision service evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: RwLock::new(HashMap::new()),
+    }
+  }
+
   /// Creates a new decision service evaluator.
-  pub fn build(&self, definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<()> {
+  pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for decision_service in definitions.decision_services() {
       let decision_service_id = decision_service.id();
       let decision_service_name = &decision_service.name().to_string();
       let evaluator = build_decision_service_evaluator(decision_service, model_builder)?;
-      self.evaluators.write().map_err(err_write_lock_failed)?.insert(decision_service_id.to_owned(), evaluator);
+      evaluators.insert(decision_service_id.to_owned(), evaluator);
       model_builder.add_invocable_decision_service(decision_service_name, decision_service_id);
     }
-    Ok(())
+    Ok(Self {
+      evaluators: RwLock::new(evaluators),
+    })
   }
 
   /// Creates function definition evaluators for all decision service evaluators.

@@ -51,14 +51,13 @@ type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelCo
 ///
 type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 
-///
-#[derive(Default)]
+/// Decision evaluator.
 pub struct DecisionEvaluator {
   evaluators: Arc<HashMap<String, DecisionEvaluatorEntry>>,
 }
 
 impl DecisionEvaluator {
-  /// Creates an empty item definition context evaluator.
+  /// Creates an empty decision evaluator.
   pub fn empty() -> Self {
     Self {
       evaluators: Arc::new(HashMap::new()),
