@@ -115,10 +115,59 @@ macro_rules! color_mode {
 }
 
 #[macro_export]
+macro_rules! color_red {
+  ($color_mode:expr) => {{
+    use dmntk_common::ASCII_RED;
+    match $color_mode {
+      ColorMode::On => ASCII_RED,
+      ColorMode::Off => "",
+    }
+    .to_string()
+  }};
+}
+
+#[macro_export]
+macro_rules! color_green {
+  ($color_mode:expr) => {{
+    use dmntk_common::ASCII_GREEN;
+    match $color_mode {
+      ColorMode::On => ASCII_GREEN,
+      ColorMode::Off => "",
+    }
+    .to_string()
+  }};
+}
+
+#[macro_export]
 macro_rules! color_blue {
   ($color_mode:expr) => {{
+    use dmntk_common::ASCII_BLUE;
     match $color_mode {
       ColorMode::On => ASCII_BLUE,
+      ColorMode::Off => "",
+    }
+    .to_string()
+  }};
+}
+
+#[macro_export]
+macro_rules! color_magenta {
+  ($color_mode:expr) => {{
+    use dmntk_common::ASCII_MAGENTA;
+    match $color_mode {
+      ColorMode::On => ASCII_MAGENTA,
+      ColorMode::Off => "",
+    }
+    .to_string()
+  }};
+}
+
+#[macro_export]
+macro_rules! color_reset {
+  ($color_mode:expr) => {{
+    use dmntk_common::ASCII_RESET;
+    match $color_mode {
+      ColorMode::On => ASCII_RESET,
       ColorMode::Off => "",
     }
     .to_string()

@@ -33,7 +33,7 @@
 //! # Container for DMN models
 
 use crate::errors::*;
-use dmntk_common::{to_rdnn, Result};
+use dmntk_common::{color_blue, color_green, color_red, color_reset, to_rdnn, ColorMode, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_model::model::{Definitions, NamedElement};
@@ -44,7 +44,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use walkdir::WalkDir;
 
-const ERROR_TAG: &str = "[error]";
+const ERROR_TAG: &str = "error";
 
 /// Type alias defining a map of definitions indexed by model name.
 type DefinitionsByName = HashMap<String, Definitions>;
@@ -67,15 +67,15 @@ pub struct Workspace {
 
 impl Workspace {
   /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
-  pub fn new(opt_dir: Option<PathBuf>) -> Self {
+  pub fn new(opt_dir: Option<PathBuf>, color_mode: &ColorMode) -> Self {
     let mut workspace = Self {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
       files: HashMap::new(),
     };
     if let Some(dir) = opt_dir {
-      workspace.load(dir);
-      workspace.deploy();
+      workspace.load(dir, color_mode);
+      workspace.deploy(color_mode);
     };
     workspace
   }
@@ -94,7 +94,11 @@ impl Workspace {
   }
 
   /// Loads and deploys DMN models placed in specified directory (recursive).
-  fn load(&mut self, dir: PathBuf) {
+  fn load(&mut self, dir: PathBuf, color_mode: &ColorMode) {
+    let color_blue = color_blue!(color_mode);
+    let color_green = color_green!(color_mode);
+    let color_red = color_red!(color_mode);
+    let color_reset = color_reset!(color_mode);
     let mut file_count = 0_usize;
     let mut loaded_count = 0_usize;
     let mut failed_count = 0_usize;
@@ -118,27 +122,28 @@ impl Workspace {
               loaded_count += 1;
             }
             Err(reason) => {
-              eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
+              eprintln!("[{1}{ERROR_TAG}{0}][{2}{3}{0}] {1}{4}{0}", color_reset, color_red, color_blue, file.display(), reason);
               failed_count += 1;
             }
           },
           Err(reason) => {
-            eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
+            eprintln!("[{1}{ERROR_TAG}{0}][{2}{3}{0}] {1}{4}{0}", color_reset, color_red, color_blue, file.display(), reason);
             failed_count += 1;
           }
         },
         Err(reason) => {
-          eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
+          eprintln!("[{1}{ERROR_TAG}{0}][{2}{3}{0}] {1}{4}{0}", color_reset, color_red, color_blue, file.display(), reason);
           failed_count += 1;
         }
       }
     }
-    println!("Found {file_count} {}.", plural("model", file_count));
+    let color = if file_count > 0 { &color_green } else { &color_red };
+    println!("{1}Found {file_count} {2}.{0}", color_reset, color, plural("model", file_count));
     if loaded_count > 0 {
-      println!("Loaded {loaded_count} {}.", plural("model", loaded_count));
+      println!("{1}Loaded {loaded_count} {2}.{0}", color_reset, color_green, plural("model", loaded_count));
     }
     if failed_count > 0 {
-      println!("Failed to load {failed_count} {}.", plural("model", failed_count));
+      println!("{1}Failed to load {failed_count} {2}.{0}", color_reset, color_red, plural("model", failed_count));
     }
   }
 
@@ -173,7 +178,11 @@ impl Workspace {
   }
 
   /// Creates evaluators for all definitions in workspace.
-  fn deploy(&mut self) {
+  fn deploy(&mut self, color_mode: &ColorMode) {
+    let color_blue = color_blue!(color_mode);
+    let color_green = color_green!(color_mode);
+    let color_red = color_red!(color_mode);
+    let color_reset = color_reset!(color_mode);
     let mut deployed_count = 0;
     let mut failed_count = 0;
     for (rdnn, definitions_by_name) in &self.definitions {
@@ -195,17 +204,17 @@ impl Workspace {
           }
           Err(reason) => {
             let file = self.files.get(rdnn).unwrap().get(name).unwrap();
-            eprintln!("{ERROR_TAG}[{}] {}", file.display(), reason);
+            eprintln!("[{1}{ERROR_TAG}{0}][{2}{3}{0}] {1}{4}{0}", color_reset, color_red, color_blue, file.display(), reason);
             failed_count += 1;
           }
         }
       }
     }
     if deployed_count > 0 {
-      println!("Deployed {deployed_count} {}.", plural("model", deployed_count));
+      println!("{1}Deployed {deployed_count} {2}.{0}", color_reset, color_green, plural("model", deployed_count));
     }
     if failed_count > 0 {
-      println!("Failed to deploy {failed_count} {}.", plural("model", failed_count));
+      println!("{1}Failed to deploy {failed_count} {2}.{0}", color_reset, color_red, plural("model", failed_count));
     }
   }
 }
