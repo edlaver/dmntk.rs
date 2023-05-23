@@ -43,7 +43,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelScope, Name};
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::Arc;
 
 /// Type alias for closures that evaluate decisions.
 /// Fn(input data, model evaluator, output data)
@@ -55,35 +55,41 @@ type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 ///
 #[derive(Default)]
 pub struct DecisionEvaluator {
-  evaluators: RwLock<HashMap<String, DecisionEvaluatorEntry>>,
+  evaluators: Arc<HashMap<String, DecisionEvaluatorEntry>>,
 }
 
 impl DecisionEvaluator {
+  /// Creates an empty item definition context evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: Arc::new(HashMap::new()),
+    }
+  }
+
   /// Creates a new decision evaluator.
-  pub fn build(&self, definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<()> {
+  pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for decision in definitions.decisions() {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
       let decision_id = decision.id();
       let decision_name = &decision.name().to_string();
-      self.evaluators.write().map_err(err_write_lock_failed)?.insert(decision_id.to_owned(), evaluator_entry);
+      evaluators.insert(decision_id.to_owned(), evaluator_entry);
       model_builder.add_invocable_decision(decision_name, decision_id);
     }
-    Ok(())
+    Ok(Self { evaluators: Arc::new(evaluators) })
   }
 
   /// Evaluates a decision with specified identifier.
   pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
-      .read()
-      .ok()?
       .get(decision_id)
       .map(|evaluator_entry| evaluator_entry.1(input_data, model_evaluator, evaluated_ctx))
   }
 
   /// Returns the name and type of the output variable of a decision with specified identifier.
   pub fn get_output_variable(&self, decision_id: &str) -> Option<Variable> {
-    self.evaluators.read().ok()?.get(decision_id).map(|entry| entry.0.clone())
+    self.evaluators.get(decision_id).map(|entry| entry.0.clone())
   }
 }
 
