@@ -98,9 +98,7 @@ mod tests {
     let definitions: DefDefinitions = dmntk_model::parse(xml).unwrap().into();
     let input_data_evaluator = InputDataEvaluator::default();
     input_data_evaluator.build(&definitions).unwrap();
-    let item_definitions_evaluator = ItemDefinitionEvaluator::default();
-    item_definitions_evaluator.build(&definitions).unwrap();
-    (input_data_evaluator, item_definitions_evaluator)
+    (input_data_evaluator, ItemDefinitionEvaluator::new(&definitions).unwrap())
   }
 
   #[test]

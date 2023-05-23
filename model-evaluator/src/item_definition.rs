@@ -41,7 +41,7 @@ use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
 use dmntk_model::model::ItemDefinitionType;
 use std::collections::HashMap;
-use std::sync::RwLock;
+use std::sync::Arc;
 
 /// Type of closure that evaluates input data conformant with item definition.
 pub type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> Value + Send + Sync>;
@@ -49,22 +49,24 @@ pub type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator
 /// Item definition evaluator.
 #[derive(Default)]
 pub struct ItemDefinitionEvaluator {
-  evaluators: RwLock<HashMap<String, ItemDefinitionEvaluatorFn>>,
+  evaluators: Arc<HashMap<String, ItemDefinitionEvaluatorFn>>,
 }
 
 impl ItemDefinitionEvaluator {
-  /// Creates new item definition evaluator.
-  pub fn build(&self, definitions: &DefDefinitions) -> Result<()> {
+  /// Creates new item definition evaluator based on provided definitions.
+  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+    let mut evaluators = HashMap::new();
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
       let type_ref = item_definition.name().to_string();
-      self.evaluators.write().map_err(err_write_lock_failed)?.insert(type_ref, evaluator);
+      evaluators.insert(type_ref, evaluator);
     }
-    Ok(())
+    Ok(Self { evaluators: Arc::new(evaluators) })
   }
+
   /// Evaluates item definition with specified type reference name.
   pub fn eval(&self, type_ref: &str, value: &Value) -> Option<Value> {
-    self.evaluators.read().ok()?.get(type_ref).map(|evaluator| evaluator(value, self))
+    self.evaluators.get(type_ref).map(|evaluator| evaluator(value, self))
   }
 }
 
@@ -452,9 +454,7 @@ mod tests {
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
-    let item_definition_evaluator = ItemDefinitionEvaluator::default();
-    item_definition_evaluator.build(&dmntk_model::parse(xml).unwrap().into()).unwrap();
-    item_definition_evaluator
+    ItemDefinitionEvaluator::new(&dmntk_model::parse(xml).unwrap().into()).unwrap()
   }
 
   #[test]

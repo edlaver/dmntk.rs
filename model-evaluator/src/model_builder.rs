@@ -84,10 +84,10 @@ impl ModelBuilder {
   ///
   pub fn new(definitions: &Definitions) -> Result<Self> {
     let definitions: DefDefinitions = definitions.into();
-    let model_builder = ModelBuilder::default();
+    let mut model_builder = ModelBuilder::default();
     model_builder.input_data_evaluator.build(&definitions)?;
     model_builder.input_data_context_evaluator.build(&definitions)?;
-    model_builder.item_definition_evaluator.build(&definitions)?;
+    model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
     model_builder.item_definition_context_evaluator.build(&definitions)?;
     model_builder.item_definition_type_evaluator.build(&definitions)?;
     model_builder.business_knowledge_model_evaluator.build(&definitions, &model_builder)?;
