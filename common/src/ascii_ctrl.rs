@@ -79,6 +79,16 @@ pub enum ColorMode {
   Off,
 }
 
+impl From<String> for ColorMode {
+  ///
+  fn from(value: String) -> Self {
+    match value.to_lowercase().trim() {
+      "never" => Self::Off,
+      _ => Self::On,
+    }
+  }
+}
+
 #[macro_export]
 macro_rules! ascii256 {
   ($l:literal) => {{
@@ -90,6 +100,28 @@ macro_rules! ascii256 {
 macro_rules! ascii_none {
   () => {{
     "".to_string()
+  }};
+}
+
+#[macro_export]
+macro_rules! color_mode {
+  ($color_mode:expr,$color:expr) => {{
+    match $color_mode {
+      ColorMode::On => $color,
+      ColorMode::Off => "",
+    }
+    .to_string()
+  }};
+}
+
+#[macro_export]
+macro_rules! color_blue {
+  ($color_mode:expr) => {{
+    match $color_mode {
+      ColorMode::On => ASCII_BLUE,
+      ColorMode::Off => "",
+    }
+    .to_string()
   }};
 }
 

@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+//! # Command-line actions
+
 use crate::examples::*;
 use clap::{arg, command, crate_description, crate_version, ArgAction, ArgMatches, Command};
 use difference::Changeset;
@@ -39,13 +41,17 @@ use dmntk_feel::FeelScope;
 use dmntk_feel_parser::ast_tree;
 use std::fs;
 
-/// Available command-line actions.
+const COLOR_MODE_AUTO: &str = "auto";
+const COLOR_MODE_ALWAYS: &str = "always";
+const COLOR_MODE_NEVER: &str = "never";
+
+/// Command-line actions.
 enum Action {
-  /// Parse `FEEL` expression.
+  /// Parse FEEL expression.
   ParseFeelExpression(String, String),
-  /// Evaluate `FEEL` expression.
+  /// Evaluate FEEL expression.
   EvaluateFeelExpression(String, String),
-  /// Test `FEEL` expression.
+  /// Test FEEL expression.
   TestFeelExpression(
     /// Test file name.
     String,
@@ -56,7 +62,7 @@ enum Action {
     /// Value indicating the requested color mode.
     String,
   ),
-  /// Export `FEEL` expression to HTML.
+  /// Export FEEL expression to HTML.
   ExportFeelExpression(String, String, String),
   /// Parse decision table.
   ParseDecisionTable(String),
@@ -82,11 +88,11 @@ enum Action {
   ),
   /// Recognize decision table.
   RecognizeDecisionTable(String),
-  /// Parse DMN model`.
+  /// Parse DMN model.
   ParseDmnModel(String, String),
-  /// Evaluate DMN model`.
+  /// Evaluate DMN model.
   EvaluateDmnModel(String, String, String),
-  /// Test DMN model`.
+  /// Test DMN model.
   TestDmnModel(
     /// Test file name.
     String,
@@ -99,10 +105,19 @@ enum Action {
     /// Value indicating the requested color mode.
     String,
   ),
-  /// Export DMN model`.
+  /// Export DMN model.
   ExportDmnModel(String, String),
-  /// Start `dmntk` as a service.
-  StartService(Option<String>, Option<String>, Option<String>),
+  /// Start DMNTK as a service.
+  StartService(
+    ///
+    Option<String>,
+    ///
+    Option<String>,
+    ///
+    Option<String>,
+    /// Value indicating the requested color mode.
+    String,
+  ),
   /// Generate examples.
   GenerateExamples,
   /// Do nothing, no action was specified.
@@ -113,131 +128,271 @@ enum Action {
 pub async fn do_action() -> std::io::Result<()> {
   match get_cli_action() {
     Action::ParseFeelExpression(ctx_file_name, feel_file_name) => {
+      //
       parse_feel_expression(&ctx_file_name, &feel_file_name, ColorMode::Off);
       Ok(())
     }
     Action::EvaluateFeelExpression(input_file_name, feel_file_name) => {
+      //
       evaluate_feel_expression(&input_file_name, &feel_file_name);
       Ok(())
     }
     Action::TestFeelExpression(test_file_name, feel_file_name, summary_only, color) => {
+      //
       test_feel_expression(&test_file_name, &feel_file_name, summary_only, &color);
       Ok(())
     }
     Action::ExportFeelExpression(input_file_name, feel_file_name, html_file_name) => {
+      //
       export_feel_expression(&input_file_name, &feel_file_name, &html_file_name);
       Ok(())
     }
     Action::ParseDecisionTable(dectab_file_name) => {
+      //
       parse_decision_table(&dectab_file_name);
       Ok(())
     }
     Action::EvaluateDecisionTable(input_file_name, dectab_file_name) => {
+      //
       evaluate_decision_table(&input_file_name, &dectab_file_name);
       Ok(())
     }
     Action::TestDecisionTable(test_file_name, dectab_file_name, summary_only, color) => {
+      //
       test_decision_table(&test_file_name, &dectab_file_name, summary_only, &color);
       Ok(())
     }
     Action::ExportDecisionTable(dectab_file_name, html_file_name) => {
+      //
       export_decision_table(&dectab_file_name, &html_file_name);
       Ok(())
     }
     Action::RecognizeDecisionTable(dectab_file_name) => {
+      //
       recognize_decision_table(&dectab_file_name);
       Ok(())
     }
     Action::ParseDmnModel(dmn_file_name, color) => {
+      //
       parse_dmn_model(&dmn_file_name, &color);
       Ok(())
     }
     Action::EvaluateDmnModel(dmn_file_name, ctx_file_name, invocable_name) => {
+      //
       evaluate_dmn_model(&dmn_file_name, &ctx_file_name, &invocable_name);
       Ok(())
     }
     Action::TestDmnModel(test_file_name, dmn_file_name, invocable_name, summary_only, color) => {
+      //
       test_dmn_model(&test_file_name, &dmn_file_name, &invocable_name, summary_only, &color);
       Ok(())
     }
     Action::ExportDmnModel(dmn_file_name, html_file_name) => {
+      //
       export_dmn_model(&dmn_file_name, &html_file_name);
       Ok(())
     }
-    Action::StartService(opt_host, opt_port, opt_dir) => dmntk_server::start_server(opt_host, opt_port, opt_dir).await,
-    Action::GenerateExamples => generate_examples(),
-    Action::DoNothing => Ok(()),
+    Action::StartService(opt_host, opt_port, opt_dir, color) => {
+      // start DMNTK as a service (REST server)
+      dmntk_server::start_server(opt_host, opt_port, opt_dir, color.into()).await
+    }
+    Action::GenerateExamples => {
+      // generate and save the examples
+      generate_examples()
+    }
+    Action::DoNothing => {
+      // no specific action was requested
+      Ok(())
+    }
   }
 }
 
 /// Parses CLI argument matches.
-#[rustfmt::skip]
 fn get_matches() -> ArgMatches {
   command!()
     // pfe
-    .subcommand(Command::new("pfe").about("Parse FEEL Expression").display_order(7)
-      .arg(arg!(<CONTEXT_FILE>).help("File containing context for parsed FEEL expression").required(true).index(1))
-      .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be parsed").required(true).index(2)))
+    .subcommand(
+      Command::new("pfe")
+        .about("Parse FEEL Expression")
+        .display_order(7)
+        .arg(arg!(<CONTEXT_FILE>).help("File containing context for parsed FEEL expression").required(true).index(1))
+        .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be parsed").required(true).index(2)),
+    )
     // efe
-    .subcommand(Command::new("efe").about("Evaluate FEEL Expression").display_order(4)
-      .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated FEEL expression").required(true).index(1))
-      .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be evaluated").required(true).index(2)))
+    .subcommand(
+      Command::new("efe")
+        .about("Evaluate FEEL Expression")
+        .display_order(4)
+        .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated FEEL expression").required(true).index(1))
+        .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be evaluated").required(true).index(2)),
+    )
     // tfe
-    .subcommand(Command::new("tfe").about("Test FEEL Expression").display_order(10)
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(1))
-      .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(2))
-      .arg(arg!(<TEST_FILE>).help("File containing test cases for tested FEEL expression").required(true).index(1))
-      .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)))
+    .subcommand(
+      Command::new("tfe")
+        .about("Test FEEL Expression")
+        .display_order(10)
+        .arg(
+          arg!(-s - -summary)
+            .help("Display only summary after completing all tests")
+            .action(ArgAction::SetTrue)
+            .display_order(1),
+        )
+        .arg(
+          arg!(-c --color <WHEN>)
+            .help("Control when colored output is used")
+            .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
+            .action(ArgAction::Set)
+            .display_order(2),
+        )
+        .arg(arg!(<TEST_FILE>).help("File containing test cases for tested FEEL expression").required(true).index(1))
+        .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)),
+    )
     // xfe
-    .subcommand(Command::new("xfe").about("eXport FEEL Expression").display_order(13)
-      .arg(arg!(<INPUT_FILE>).help("File containing input data for expression to be exported to HTML").required(true).index(1))
-      .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be exported to HTML").required(true).index(2))
-      .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(3)))
+    .subcommand(
+      Command::new("xfe")
+        .about("eXport FEEL Expression")
+        .display_order(13)
+        .arg(
+          arg!(<INPUT_FILE>)
+            .help("File containing input data for expression to be exported to HTML")
+            .required(true)
+            .index(1),
+        )
+        .arg(arg!(<FEEL_FILE>).help("File containing FEEL expression to be exported to HTML").required(true).index(2))
+        .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(3)),
+    )
     // pdm
-    .subcommand(Command::new("pdm").about("Parse DMN Model").display_order(5)
-      .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(1))
-      .arg(arg!(<DMN_FILE>).help("File containing DMN model to be parsed").required(true).index(1)))
+    .subcommand(
+      Command::new("pdm")
+        .about("Parse DMN Model")
+        .display_order(5)
+        .arg(
+          arg!(-c --color <WHEN>)
+            .help("Control when colored output is used")
+            .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
+            .action(ArgAction::Set)
+            .display_order(1),
+        )
+        .arg(arg!(<DMN_FILE>).help("File containing DMN model to be parsed").required(true).index(1)),
+    )
     // edm
-    .subcommand(Command::new("edm").about("Evaluate DMN Model").display_order(2)
-      .arg(arg!(-i --invocable).help("Name of the invocable (decision, bkm, decision service) to be evaluated").action(ArgAction::Set).required(true).display_order(1))
-      .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated DMN model").required(true).index(1))
-      .arg(arg!(<DMN_FILE>).help("File containing DMN model to be evaluated").required(true).index(2)))
+    .subcommand(
+      Command::new("edm")
+        .about("Evaluate DMN Model")
+        .display_order(2)
+        .arg(
+          arg!(-i - -invocable)
+            .help("Name of the invocable (decision, bkm, decision service) to be evaluated")
+            .action(ArgAction::Set)
+            .required(true)
+            .display_order(1),
+        )
+        .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated DMN model").required(true).index(1))
+        .arg(arg!(<DMN_FILE>).help("File containing DMN model to be evaluated").required(true).index(2)),
+    )
     // tdm
-    .subcommand(Command::new("tdm").about("Test DMN Model").display_order(8)
-      .arg(arg!(-i --invocable).help("Name of the invocable to be tested").required(true).action(ArgAction::Set).display_order(1))
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(2))
-      .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(3))
-      .arg(arg!(<TEST_FILE>).help("File containing test cases for tested DMN model").required(true).index(1))
-      .arg(arg!(<DMN_FILE>).help("File containing DMN model to be tested").required(true).index(2)))
+    .subcommand(
+      Command::new("tdm")
+        .about("Test DMN Model")
+        .display_order(8)
+        .arg(
+          arg!(-i --invocable <NAME>)
+            .help("Name of the invocable to be tested")
+            .required(true)
+            .action(ArgAction::Set)
+            .display_order(1),
+        )
+        .arg(
+          arg!(-s - -summary)
+            .help("Display only summary after completing all tests")
+            .action(ArgAction::SetTrue)
+            .display_order(2),
+        )
+        .arg(
+          arg!(-c --color <WHEN>)
+            .help("Control when colored output is used")
+            .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
+            .action(ArgAction::Set)
+            .display_order(3),
+        )
+        .arg(arg!(<TEST_FILE>).help("File containing test cases for tested DMN model").required(true).index(1))
+        .arg(arg!(<DMN_FILE>).help("File containing DMN model to be tested").required(true).index(2)),
+    )
     // xdm
-    .subcommand(Command::new("xdm").about("eXport DMN Model").display_order(11)
-      .arg(arg!(<DMN_FILE>).help("File containing DMN model to be exported to HTML").required(true).index(1))
-      .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)))
+    .subcommand(
+      Command::new("xdm")
+        .about("eXport DMN Model")
+        .display_order(11)
+        .arg(arg!(<DMN_FILE>).help("File containing DMN model to be exported to HTML").required(true).index(1))
+        .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)),
+    )
     // pdt
-    .subcommand(Command::new("pdt").about("Parse Decision Table").display_order(6)
-      .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be parsed").required(true).index(1)))
+    .subcommand(
+      Command::new("pdt")
+        .about("Parse Decision Table")
+        .display_order(6)
+        .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be parsed").required(true).index(1)),
+    )
     // edt
-    .subcommand(Command::new("edt").about("Evaluate Decision Table").display_order(3)
-      .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated decision table").required(true).index(1))
-      .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be evaluated").required(true).index(2)))
+    .subcommand(
+      Command::new("edt")
+        .about("Evaluate Decision Table")
+        .display_order(3)
+        .arg(arg!(<INPUT_FILE>).help("File containing input data for evaluated decision table").required(true).index(1))
+        .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be evaluated").required(true).index(2)),
+    )
     // tdt
-    .subcommand(Command::new("tdt").about("Test Decision Table").display_order(9)
-      .arg(arg!(-s --summary).help("Display only summary after completing all tests").action(ArgAction::SetTrue).display_order(1))
-      .arg(arg!(-c --color).help("Control when colored output is used").action(ArgAction::Set).display_order(2))
-      .arg(arg!(<TEST_FILE>).help("File containing test cases for tested decision table").required(true).index(1))
-      .arg(arg!(<DECTAB_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)))
+    .subcommand(
+      Command::new("tdt")
+        .about("Test Decision Table")
+        .display_order(9)
+        .arg(
+          arg!(-s - -summary)
+            .help("Display only summary after completing all tests")
+            .action(ArgAction::SetTrue)
+            .display_order(1),
+        )
+        .arg(
+          arg!(-c --color <WHEN>)
+            .help("Control when colored output is used")
+            .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
+            .action(ArgAction::Set)
+            .display_order(2),
+        )
+        .arg(arg!(<TEST_FILE>).help("File containing test cases for tested decision table").required(true).index(1))
+        .arg(arg!(<DECTAB_FILE>).help("File containing FEEL expression to be tested").required(true).index(2)),
+    )
     // xdt
-    .subcommand(Command::new("xdt").about("eXport Decision Table").display_order(12)
-      .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be exported to HTML").required(true).index(1))
-      .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)))
+    .subcommand(
+      Command::new("xdt")
+        .about("eXport Decision Table")
+        .display_order(12)
+        .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be exported to HTML").required(true).index(1))
+        .arg(arg!(<HTML_FILE>).help("Output HTML file").required(true).index(2)),
+    )
     // rdt
-    .subcommand(Command::new("rdt").about("Recognize Decision Table").display_order(14)
-      .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be recognized").required(true).index(1)))
+    .subcommand(
+      Command::new("rdt")
+        .about("Recognize Decision Table")
+        .display_order(14)
+        .arg(arg!(<DECTAB_FILE>).help("File containing decision table to be recognized").required(true).index(1)),
+    )
     // srv
-    .subcommand(Command::new("srv").about("Run DMNTK as a service").display_order(1)
-      .arg(arg!(-H --host <HOST>).help("Host name").action(ArgAction::Set).display_order(1))
-      .arg(arg!(-P --port <PORT>).help("Port number").action(ArgAction::Set).display_order(2))
-      .arg(arg!(-D --dir <DIR>).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3)))
+    .subcommand(
+      Command::new("srv")
+        .about("Run DMNTK as a service")
+        .display_order(1)
+        .arg(arg!(-H --host <HOST>).help("Host name").action(ArgAction::Set).display_order(1))
+        .arg(arg!(-P --port <PORT>).help("Port number").action(ArgAction::Set).display_order(2))
+        .arg(arg!(-D --dir <DIR>).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3))
+        .arg(
+          arg!(-c --color <WHEN>)
+            .help("Control when colored output is used")
+            .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
+            .action(ArgAction::Set)
+            .display_order(4),
+        ),
+    )
     // exs
     .subcommand(Command::new("exs").about("Generate examples in current directory").display_order(15))
     .get_matches()
@@ -354,6 +509,7 @@ fn get_cli_action() -> Action {
         matches.get_one::<String>("host").map(|host| host.to_string()),
         matches.get_one::<String>("port").map(|port| port.to_string()),
         matches.get_one::<String>("dir").map(|dir| dir.to_string()),
+        matches.get_one::<String>("color").unwrap_or(auto).to_string(),
       );
     }
     // generate examples
