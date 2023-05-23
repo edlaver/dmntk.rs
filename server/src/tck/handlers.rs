@@ -41,6 +41,7 @@ use dmntk_common::DmntkError;
 use dmntk_feel::context::FeelContext;
 use dmntk_workspace::Workspace;
 use serde::{Deserialize, Serialize};
+use std::borrow::Borrow;
 use std::{fmt, io};
 
 /// Data transfer object for an error.
@@ -117,8 +118,8 @@ pub struct TckEvaluateParams {
 /// defined in [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 #[post("/tck/evaluate")]
 pub async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<ApplicationData>) -> io::Result<Json<TckResultDto<OutputNodeDto>>> {
-  let workspace = data.workspace.read().unwrap();
-  match do_evaluate_tck(&workspace, &params.into_inner()) {
+  let workspace: &Workspace = data.workspace.borrow();
+  match do_evaluate_tck(workspace, &params.into_inner()) {
     Ok(response) => Ok(Json(TckResultDto::data(response))),
     Err(reason) => Ok(Json(TckResultDto::error(reason))),
   }

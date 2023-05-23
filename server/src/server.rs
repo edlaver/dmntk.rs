@@ -35,10 +35,11 @@ use actix_web::{post, web, App, HttpResponse, HttpServer};
 use dmntk_common::Jsonify;
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
+use std::borrow::Borrow;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-use std::sync::RwLock;
+use std::sync::Arc;
 use std::{env, io};
 
 const DMNTK_DEFAULT_PORT: u16 = 22022;
@@ -55,7 +56,7 @@ const CONTENT_TYPE: &str = "application/json";
 ///
 #[post("/evaluate/{rdnn}/{model}/{invocable}")]
 async fn post_evaluate(params: web::Path<(String, String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
-  let workspace = data.workspace.read().unwrap();
+  let workspace: &Workspace = data.workspace.borrow();
   let (model_rdnn, model_name, invocable_name) = params.into_inner();
   let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body)
     .and_then(|input_data| workspace.evaluate_invocable(&model_rdnn, &model_name, &invocable_name, &input_data));
@@ -83,9 +84,7 @@ fn config(cfg: &mut web::ServiceConfig) {
 /// Starts the server.
 pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, opt_dir: Option<String>) -> io::Result<()> {
   let workspace = Workspace::new(get_workspace_dir(opt_dir));
-  let application_data = web::Data::new(ApplicationData {
-    workspace: RwLock::new(workspace),
-  });
+  let application_data = web::Data::new(ApplicationData { workspace: Arc::new(workspace) });
   let address = get_server_address(opt_host, opt_port);
   println!("dmntk {address}");
   HttpServer::new(move || {

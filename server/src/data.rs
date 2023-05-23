@@ -33,9 +33,9 @@
 //! # Shared application data.
 
 use dmntk_workspace::Workspace;
-use std::sync::RwLock;
+use std::sync::Arc;
 
 /// Shared workspace with decision model definitions.
 pub struct ApplicationData {
-  pub workspace: RwLock<Workspace>,
+  pub workspace: Arc<Workspace>,
 }
