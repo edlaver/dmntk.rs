@@ -86,7 +86,7 @@ impl ModelBuilder {
     let mut model_builder = ModelBuilder {
       input_data_evaluator: InputDataEvaluator::empty(),
       input_data_context_evaluator: InputDataContextEvaluator::empty(),
-      item_definition_evaluator: Default::default(),
+      item_definition_evaluator: ItemDefinitionEvaluator::empty(),
       item_definition_context_evaluator: Default::default(),
       item_definition_type_evaluator: Default::default(),
       business_knowledge_model_evaluator: Default::default(),

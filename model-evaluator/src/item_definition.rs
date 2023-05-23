@@ -47,12 +47,18 @@ use std::sync::Arc;
 pub type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> Value + Send + Sync>;
 
 /// Item definition evaluator.
-#[derive(Default)]
 pub struct ItemDefinitionEvaluator {
   evaluators: Arc<HashMap<String, ItemDefinitionEvaluatorFn>>,
 }
 
 impl ItemDefinitionEvaluator {
+  /// Creates an empty item definition evaluator.
+  pub fn empty() -> Self {
+    Self {
+      evaluators: Arc::new(HashMap::new()),
+    }
+  }
+
   /// Creates new item definition evaluator based on provided definitions.
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();
