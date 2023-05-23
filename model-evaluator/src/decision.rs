@@ -33,7 +33,6 @@
 //! Builder for decision evaluators.
 
 use crate::boxed_expressions::{bring_knowledge_requirements_into_context, build_expression_instance_evaluator};
-use crate::errors::err_write_lock_failed;
 use crate::model_builder::ModelBuilder;
 use crate::model_definitions::{DefDecision, DefDefinitions};
 use crate::model_evaluator::ModelEvaluator;
