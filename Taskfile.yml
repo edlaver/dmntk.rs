@@ -44,15 +44,23 @@ tasks:
   clippy:
     desc: Runs clippy for all targets
     cmds:
-      - cmd: cargo +nightly clippy --workspace --all-targets
       - cmd: cargo +stable clippy --workspace
+        
+  clippy-all:
+    desc: Runs clippy for all targets
+    cmds:
+      - cmd: cargo +nightly clippy --workspace --all-targets
       
         
   clippy-tck:
     desc: Runs clippy for all targets and TCK feature
     cmds:
-      - cmd: cargo +nightly clippy --workspace --all-targets --features=tck
       - cmd: cargo clippy --workspace --features=tck
+        
+  clippy-tck-all:
+    desc: Runs clippy for all targets and TCK feature
+    cmds:
+      - cmd: cargo +nightly clippy --workspace --all-targets --features=tck
 
   cov:
     desc: Runs code coverage using grcov

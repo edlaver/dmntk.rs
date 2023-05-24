@@ -25,11 +25,6 @@ Nevertheless, we maintain a set of black-box tests in the following purposes:
 - visualization of functionalities provided by **DMNTK**,
 - writing documentation ([dmntk.io](https://dmntk.io)).
 
-## Dependencies
-
-Some test cases use `ansifilter` to remove the console coloured commands from output stream.
-See the [ansifilter](https://gitlab.com/saalen/ansifilter) for installation details.
-
 ## Running black-box tests
 
 Run all tests:

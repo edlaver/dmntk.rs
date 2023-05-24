@@ -32,7 +32,7 @@
 
 //! # ASCII report of the DMN model
 
-use dmntk_common::{ascii256, ascii_none, write_ascii_tree, AsciiLine, AsciiNode, ColorMode};
+use dmntk_common::{color_256, write_ascii_tree, AsciiLine, AsciiNode, ColorMode};
 use dmntk_model::model::{Definitions, DmnElement, NamedElement, RequiredVariable};
 use std::fmt::Write;
 
@@ -45,14 +45,13 @@ const LABEL_NAMESPACE: &str = "namespace";
 const LABEL_NONE: &str = "(none)";
 
 pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
-  let use_color = color_mode == ColorMode::On;
-  let color_b = if use_color { ascii256!(82) } else { ascii_none!() };
-  let color_c = if use_color { ascii256!(184) } else { ascii_none!() };
-  let color_d = if use_color { ascii256!(208) } else { ascii_none!() };
+  let color_a = color_256!(color_mode, 82);
+  let color_b = color_256!(color_mode, 184);
+  let color_c = color_256!(color_mode, 208);
 
   // definitions.name
   let node_definitions_name = AsciiNode::leaf_builder()
-    .line(AsciiLine::builder().text(LABEL_NAME).colon_space().with_color(definitions.name(), &color_b).build())
+    .line(AsciiLine::builder().text(LABEL_NAME).colon_space().with_color(definitions.name(), &color_a).build())
     .build();
 
   // definitions.namespace
@@ -61,7 +60,7 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
       AsciiLine::builder()
         .text(LABEL_NAMESPACE)
         .colon_space()
-        .with_color(definitions.namespace(), &color_b)
+        .with_color(definitions.namespace(), &color_a)
         .build(),
     )
     .build();
@@ -69,7 +68,7 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   // definitions.id
   let definitions_id = definitions.id().as_ref().cloned().unwrap_or(LABEL_NONE.to_string());
   let node_definitions_id = AsciiNode::leaf_builder()
-    .line(AsciiLine::builder().text(LABEL_ID).colon_space().with_color(&definitions_id, &color_b).build())
+    .line(AsciiLine::builder().text(LABEL_ID).colon_space().with_color(&definitions_id, &color_a).build())
     .build();
 
   // node: model root for definitions with top level properties
@@ -87,7 +86,7 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   } else {
     let mut decision_node_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS).build());
     for decision in definitions.decisions() {
-      decision_node_builder.add_child(AsciiNode::leaf_builder().line(AsciiLine::builder().with_color(decision.name(), &color_c).build()).build());
+      decision_node_builder.add_child(AsciiNode::leaf_builder().line(AsciiLine::builder().with_color(decision.name(), &color_b).build()).build());
     }
     decision_node_builder.build()
   };
@@ -105,10 +104,10 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
         AsciiNode::leaf_builder()
           .line(
             AsciiLine::builder()
-              .with_color(input_data.name(), &color_d)
+              .with_color(input_data.name(), &color_c)
               .space()
               .l_paren()
-              .with_color(&input_data_type, &color_d)
+              .with_color(&input_data_type, &color_c)
               .r_paren()
               .build(),
           )
