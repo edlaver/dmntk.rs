@@ -32,6 +32,9 @@
 
 //! Common definitions for components of Decision Model and Notation Toolkit project.
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod ascii_ctrl;
 mod ascii_tree;
 mod errors;

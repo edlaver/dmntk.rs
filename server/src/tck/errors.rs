@@ -36,7 +36,7 @@ use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Server errors for TCK handler.
 #[derive(ToErrorMessage)]
-pub struct TckServerError(String);
+struct TckServerError(String);
 
 pub fn err_missing_parameter(name: &str) -> DmntkError {
   TckServerError(format!("missing parameter '{name}'")).into()

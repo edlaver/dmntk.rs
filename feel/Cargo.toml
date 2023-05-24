@@ -17,6 +17,7 @@ regex.workspace = true
 dmntk-common.workspace = true
 dmntk-feel-number.workspace = true
 dmntk-feel-temporal.workspace = true
+dmntk-macros.workspace = true
 
 [dev-dependencies]
 once_cell.workspace = true

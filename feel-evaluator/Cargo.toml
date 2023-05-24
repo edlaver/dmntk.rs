@@ -15,3 +15,4 @@ dmntk-common.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-parser.workspace = true
 dmntk-feel-temporal.workspace = true
+dmntk-macros.workspace = true

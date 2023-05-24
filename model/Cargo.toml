@@ -14,3 +14,4 @@ dmntk-common.workspace = true
 dmntk-examples.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-parser.workspace = true
+dmntk-macros.workspace = true

@@ -74,17 +74,11 @@ impl TryFrom<&str> for HRef {
 }
 
 mod errors {
-  use crate::DmntkError;
+  use crate::{DmntkError, ToErrorMessage};
 
   /// Errors reported by [HRef](crate::href::HRef).
+  #[derive(ToErrorMessage)]
   struct HRefError(String);
-
-  impl From<HRefError> for DmntkError {
-    /// Converts into [DmntkError].
-    fn from(e: HRefError) -> Self {
-      DmntkError::new("HRefError", &e.0)
-    }
-  }
 
   /// Creates an invalid reference error.
   pub fn err_invalid_reference(s: &str) -> DmntkError {

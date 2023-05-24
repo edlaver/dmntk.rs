@@ -30,17 +30,12 @@
  * limitations under the License.
  */
 
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 use dmntk_feel::FeelType;
 
 /// Errors related to model evaluation.
-pub struct ModelEvaluatorError(String);
-
-impl From<ModelEvaluatorError> for DmntkError {
-  fn from(e: ModelEvaluatorError) -> Self {
-    DmntkError::new("ModelEvaluatorError", &e.0)
-  }
-}
+#[derive(ToErrorMessage)]
+struct ModelEvaluatorError(String);
 
 pub fn err_business_knowledge_model_with_reference_not_found(s: &str) -> DmntkError {
   ModelEvaluatorError(format!("business knowledge model with reference '{s}' was not found")).into()

@@ -36,6 +36,9 @@
 
 #![warn(missing_docs)]
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod builder;
 mod canvas;
 mod errors;

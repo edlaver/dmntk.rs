@@ -13,3 +13,4 @@ serde.workspace = true
 uuid.workspace = true
 uriparse.workspace = true
 url = "2.3.1"
+dmntk-macros.workspace = true

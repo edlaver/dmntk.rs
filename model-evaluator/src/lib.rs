@@ -30,6 +30,9 @@
  * limitations under the License.
  */
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod boxed_expressions;
 mod business_knowledge_model;
 mod decision;

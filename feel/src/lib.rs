@@ -32,6 +32,9 @@
 
 //! FEEL definitions.
 
+#[macro_use]
+extern crate dmntk_macros;
+
 pub mod bif;
 pub mod closure;
 pub mod context;

@@ -32,6 +32,9 @@
 
 //! `FEEL` expressions evaluator.
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod bifs;
 mod builders;
 mod errors;

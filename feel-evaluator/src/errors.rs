@@ -30,16 +30,11 @@
  * limitations under the License.
  */
 
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// `FEEL` expressions evaluator errors.
-pub struct FeelEvaluatorError(String);
-
-impl From<FeelEvaluatorError> for DmntkError {
-  fn from(e: FeelEvaluatorError) -> Self {
-    DmntkError::new("FeelEvaluatorError", &e.0)
-  }
-}
+#[derive(ToErrorMessage)]
+struct FeelEvaluatorError(String);
 
 pub fn err_not_a_context() -> DmntkError {
   FeelEvaluatorError("expected FEEL context as an input".to_string()).into()

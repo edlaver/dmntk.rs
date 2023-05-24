@@ -33,18 +33,12 @@
 //! Implementation of FEEL temporal errors.
 
 use crate::FeelDate;
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 use dmntk_feel_number::FeelNumber;
 
 /// FEEL temporal error.
+#[derive(ToErrorMessage)]
 struct TemporalError(String);
-
-impl From<TemporalError> for DmntkError {
-  /// Converts temporal error into [DmntkError].
-  fn from(e: TemporalError) -> Self {
-    DmntkError::new("TemporalError", &e.0)
-  }
-}
 
 pub fn err_invalid_date(y: FeelNumber, m: FeelNumber, d: FeelNumber) -> DmntkError {
   TemporalError(format!("invalid date {y}-{m}-{d}")).into()

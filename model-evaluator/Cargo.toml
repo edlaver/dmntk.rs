@@ -14,6 +14,7 @@ dmntk-feel.workspace = true
 dmntk-feel-evaluator.workspace = true
 dmntk-feel-parser.workspace = true
 dmntk-feel-temporal.workspace = true
+dmntk-macros.workspace = true
 dmntk-model.workspace = true
 
 [dev-dependencies]

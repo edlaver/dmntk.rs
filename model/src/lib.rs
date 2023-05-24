@@ -30,6 +30,9 @@
  * limitations under the License.
  */
 
+#[macro_use]
+extern crate dmntk_macros;
+
 use crate::model::Definitions;
 use dmntk_common::Result;
 

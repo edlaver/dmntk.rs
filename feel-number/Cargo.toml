@@ -13,3 +13,4 @@ edition.workspace = true
 [dependencies]
 dfp-number-sys.workspace = true
 dmntk-common.workspace = true
+dmntk-macros.workspace = true

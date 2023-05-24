@@ -32,6 +32,9 @@
 
 //! # Workspace
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod errors;
 mod workspace;
 

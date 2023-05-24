@@ -15,3 +15,4 @@ once_cell.workspace = true
 regex.workspace = true
 dmntk-common.workspace = true
 dmntk-feel-number.workspace = true
+dmntk-macros.workspace = true

@@ -32,17 +32,11 @@
 
 //! Errors reported by workspace.
 
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Errors reported by workspace.
+#[derive(ToErrorMessage)]
 struct WorkspaceError(String);
-
-impl From<WorkspaceError> for DmntkError {
-  /// Converts `WorkspaceError` into [DmntkError].
-  fn from(e: WorkspaceError) -> Self {
-    DmntkError::new("WorkspaceError", &e.0)
-  }
-}
 
 pub fn err_evaluator_rdnn_not_found(rdnn: &str) -> DmntkError {
   WorkspaceError(format!("evaluator with namespace '{rdnn}' not found")).into()

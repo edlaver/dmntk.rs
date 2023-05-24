@@ -34,17 +34,11 @@
 
 use crate::point::Point;
 use crate::rect::Rect;
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Recognizer errors.
-pub struct RecognizerError(String);
-
-impl From<RecognizerError> for DmntkError {
-  /// Converts `RecognizerError` into [DmntkError].
-  fn from(e: RecognizerError) -> Self {
-    DmntkError::new("RecognizerError", &e.0)
-  }
-}
+#[derive(ToErrorMessage)]
+struct RecognizerError(String);
 
 pub fn err_canvas_expected_characters_not_found(chars: Vec<char>) -> DmntkError {
   RecognizerError(format!("expected characters not found: {chars:?}")).into()

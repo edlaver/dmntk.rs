@@ -32,6 +32,9 @@
 
 //! Implementation of `FEEL` temporal types.
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod defs;
 mod errors;
 mod feel_date;

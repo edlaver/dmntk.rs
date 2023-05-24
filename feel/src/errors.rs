@@ -33,17 +33,11 @@
 //! # Error definitions
 
 use crate::values::Value;
-use dmntk_common::DmntkError;
+use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Definition of errors raised in `types` module.
+#[derive(ToErrorMessage)]
 struct TypesError(String);
-
-impl From<TypesError> for DmntkError {
-  /// Converts `TypesError` into [DmntkError].
-  fn from(e: TypesError) -> Self {
-    DmntkError::new("TypesError", &e.0)
-  }
-}
 
 /// Creates an invalid `FEEL` type name error.
 pub fn err_invalid_feel_type_name(s: &str) -> DmntkError {
@@ -56,14 +50,8 @@ pub fn err_invalid_value_for_retrieving_using_feel_type(s1: &str, s2: &str) -> D
 }
 
 /// Value errors.
+#[derive(ToErrorMessage)]
 struct ValueError(String);
-
-impl From<ValueError> for DmntkError {
-  /// Converts `ValueError` into [DmntkError].
-  fn from(e: ValueError) -> Self {
-    DmntkError::new("ValueError", &e.0)
-  }
-}
 
 /// Error used when parsed text is not acceptable `xsd:integer` representation.
 pub fn err_invalid_xsd_integer(text: &str) -> DmntkError {
@@ -99,13 +87,8 @@ pub fn err_invalid_xsd_duration(text: &str) -> DmntkError {
 }
 
 /// Context errors.
+#[derive(ToErrorMessage)]
 struct ContextError(String);
-
-impl From<ContextError> for DmntkError {
-  fn from(e: ContextError) -> Self {
-    DmntkError::new("ContextError", &e.0)
-  }
-}
 
 /// Creates an instance of `value is not a context` error.
 pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
@@ -113,14 +96,8 @@ pub fn err_value_is_not_a_context(value: &Value) -> DmntkError {
 }
 
 /// Built-in functions errors.
+#[derive(ToErrorMessage)]
 struct BifError(String);
-
-impl From<BifError> for DmntkError {
-  /// Converts `BifError` into [DmntkError].
-  fn from(e: BifError) -> Self {
-    DmntkError::new("BifError", &e.0)
-  }
-}
 
 /// Creates an instance of `UnknownFunctionName` error.
 pub fn err_unknown_function_name(name: &str) -> DmntkError {
