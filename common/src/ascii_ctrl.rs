@@ -90,20 +90,6 @@ impl From<String> for ColorMode {
 }
 
 #[macro_export]
-macro_rules! ascii256 {
-  ($l:literal) => {{
-    format!("\u{001b}[38;5;{}m", $l)
-  }};
-}
-
-#[macro_export]
-macro_rules! ascii_none {
-  () => {{
-    "".to_string()
-  }};
-}
-
-#[macro_export]
 macro_rules! color_256 {
   ($color_mode:expr,$color:expr) => {{
     match $color_mode {
@@ -247,13 +233,6 @@ mod tests {
     println!();
   }
 
-  fn test_macro() {
-    print!("{}8{} ", ascii256!(9), ASCII_RESET);
-    print!("{}104{} ", ascii256!(104), ASCII_RESET);
-    print!("{}220{}", ascii256!(220), ASCII_RESET);
-    print!("\n\n");
-  }
-
   #[test]
   fn test_display_all() {
     test_display_8_colors();
@@ -261,6 +240,5 @@ mod tests {
     test_display_8_bg_colors();
     test_display_8_bg_bright_colors();
     test_display_256_colors();
-    test_macro();
   }
 }
