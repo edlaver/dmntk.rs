@@ -14,6 +14,7 @@ parsing-tables = []
 [dependencies]
 dmntk-common.workspace = true
 dmntk-feel.workspace = true
+dmntk-macros.workspace = true
 
 [dev-dependencies]
 difference.workspace = true

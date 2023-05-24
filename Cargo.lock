@@ -645,6 +645,7 @@ dependencies = [
  "dmntk-common",
  "dmntk-feel",
  "dmntk-feel-grammar",
+ "dmntk-macros",
 ]
 
 [[package]]
@@ -669,6 +670,14 @@ dependencies = [
  "dmntk-recognizer",
  "domrs",
  "markdown",
+]
+
+[[package]]
+name = "dmntk-macros"
+version = "0.2.0-dev"
+dependencies = [
+ "quote",
+ "syn 2.0.16",
 ]
 
 [[package]]
@@ -716,6 +725,7 @@ dependencies = [
  "dmntk-evaluator",
  "dmntk-feel",
  "dmntk-feel-parser",
+ "dmntk-macros",
  "dmntk-model",
  "dmntk-workspace",
  "serde",

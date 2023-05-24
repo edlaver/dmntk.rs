@@ -21,5 +21,6 @@ dmntk-common.workspace = true
 dmntk-evaluator.workspace = true
 dmntk-feel.workspace = true
 dmntk-feel-parser.workspace = true
+dmntk-macros.workspace = true
 dmntk-model.workspace = true
 dmntk-workspace.workspace = true

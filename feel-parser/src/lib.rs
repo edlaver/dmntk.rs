@@ -32,6 +32,9 @@
 
 //! Parser for `FEEL` language.
 
+#[macro_use]
+extern crate dmntk_macros;
+
 mod ast;
 mod closure;
 mod context;

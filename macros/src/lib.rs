@@ -30,18 +30,24 @@
  * limitations under the License.
  */
 
-//! # Error definitions for TCK handler
+//! # Derive macros
 
-use dmntk_common::{DmntkError, ToErrorMessage};
+extern crate proc_macro;
+#[macro_use]
+extern crate quote;
 
-/// Server errors for TCK handler.
-#[derive(ToErrorMessage)]
-pub struct TckServerError(String);
+use proc_macro::TokenStream;
 
-pub fn err_missing_parameter(name: &str) -> DmntkError {
-  TckServerError(format!("missing parameter '{name}'")).into()
-}
-
-pub fn err_invalid_parameter(description: &str) -> DmntkError {
-  TckServerError(format!("invalid parameter '{description}'")).into()
+#[proc_macro_derive(ToErrorMessage)]
+pub fn to_error_message(input: TokenStream) -> TokenStream {
+  let input = syn::parse_macro_input!(input as syn::DeriveInput);
+  let name = &input.ident;
+  let expanded = quote! {
+    impl ToErrorMessage for #name {
+      fn message(self) -> String {
+        self.0
+      }
+    }
+  };
+  TokenStream::from(expanded)
 }

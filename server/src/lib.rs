@@ -30,6 +30,10 @@
  * limitations under the License.
  */
 
+#[cfg(feature = "tck")]
+#[macro_use]
+extern crate dmntk_macros;
+
 mod data;
 mod server;
 

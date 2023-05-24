@@ -12,6 +12,7 @@ members = [
     "feel-parser",
     "feel-temporal",
     "gendoc",
+    "macros",
     "model",
     "model-evaluator",
     "recognizer",
@@ -54,6 +55,7 @@ dmntk-feel-number = { path = "feel-number" }
 dmntk-feel-parser = { path = "feel-parser" }
 dmntk-feel-temporal = { path = "feel-temporal" }
 dmntk-gendoc = { path = "gendoc" }
+dmntk-macros = { path = "macros" }
 dmntk-model = { path = "model" }
 dmntk-model-evaluator = { path = "model-evaluator" }
 dmntk-recognizer = { path = "recognizer" }

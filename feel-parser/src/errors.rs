@@ -35,14 +35,8 @@
 use dmntk_common::{DmntkError, ToErrorMessage};
 
 /// Lexer error.
+#[derive(ToErrorMessage)]
 struct LexerError(String);
-
-impl ToErrorMessage for LexerError {
-  /// Converts [LexerError] to error message.
-  fn message(self) -> String {
-    self.0
-  }
-}
 
 pub fn err_unexpected_eof() -> DmntkError {
   LexerError("unexpected end of file".to_string()).into()
@@ -61,14 +55,8 @@ pub fn err_unicode_surrogate_out_of_range(value: u64) -> DmntkError {
 }
 
 /// Parser error.
+#[derive(ToErrorMessage)]
 struct ParserError(String);
-
-impl From<ParserError> for DmntkError {
-  /// Converts `ParserError` into [DmntkError].
-  fn from(e: ParserError) -> Self {
-    DmntkError::new("ParserError", &e.0)
-  }
-}
 
 /// Creates an error when `FEEL` name was expected on input, but something else encountered.
 pub fn err_not_a_feel_name(s: &str) -> DmntkError {
