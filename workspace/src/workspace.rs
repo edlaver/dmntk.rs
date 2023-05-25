@@ -68,7 +68,7 @@ pub struct Workspace {
 
 impl Workspace {
   /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
-  pub fn new(opt_dir: Option<PathBuf>, color_mode: ColorMode) -> Self {
+  pub fn new(opt_dir: Option<PathBuf>, color_mode: ColorMode, verbose: bool) -> Self {
     let mut workspace = Self {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
@@ -78,32 +78,10 @@ impl Workspace {
       workspace.load(dir, color_mode);
       workspace.deploy(color_mode);
     };
-    workspace.display_deployed(color_mode);
-    workspace
-  }
-
-  fn display_deployed(&self, color_mode: ColorMode) {
-    let color_green = color_green!(color_mode);
-    let color_blue = color_blue!(color_mode);
-    let color_magenta = color_magenta!(color_mode);
-    let color_reset = color_reset!(color_mode);
-    for (model_rdnn, evaluators) in &self.evaluators {
-      for (model_name, model_evaluator) in evaluators {
-        for invocable_name in model_evaluator.invocable_names() {
-          let url = format!(
-            "  {1}{4}{0}/{2}{5}{0}/{3}{6}{0}",
-            color_reset,
-            color_blue,
-            color_green,
-            color_magenta,
-            encode(model_rdnn),
-            encode(model_name),
-            encode(invocable_name)
-          );
-          println!("{}", url);
-        }
-      }
+    if verbose {
+      workspace.display_deployed(color_mode);
     }
+    workspace
   }
 
   /// Evaluates invocable deployed in workspace.
@@ -243,6 +221,31 @@ impl Workspace {
       println!("{1}Failed to deploy {failed_count} {2}.{0}", color_reset, color_red, plural("model", failed_count));
     }
   }
+
+  /// Displays URLs of deployed invocables.
+  fn display_deployed(&self, color_mode: ColorMode) {
+    let color_green = color_green!(color_mode);
+    let color_blue = color_blue!(color_mode);
+    let color_magenta = color_magenta!(color_mode);
+    let color_reset = color_reset!(color_mode);
+    for (model_rdnn, evaluators) in &self.evaluators {
+      for (model_name, model_evaluator) in evaluators {
+        for invocable_name in model_evaluator.invocable_names() {
+          let url = format!(
+            "  {1}{4}{0}/{2}{5}{0}/{3}{6}{0}",
+            color_reset,
+            color_blue,
+            color_green,
+            color_magenta,
+            encode(model_rdnn),
+            encode(model_name),
+            encode(invocable_name)
+          );
+          println!("{}", url);
+        }
+      }
+    }
+  }
 }
 
 /// Searches all subdirectories starting from specified directory
@@ -262,7 +265,7 @@ fn search_models_recursive(dir: PathBuf) -> Vec<PathBuf> {
   paths
 }
 
-/// Utility function to make plurals from noun.
+/// Utility function to make a noun plural.
 fn plural(noun: &str, number: usize) -> String {
   if number == 1 {
     noun.to_string()

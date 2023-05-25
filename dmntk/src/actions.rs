@@ -169,6 +169,8 @@ enum Action {
     Option<String>,
     /// Requested color mode.
     ColorMode,
+    /// Flag indicating if more detailed information should be displayed during startup.
+    bool,
   ),
   /// Generate examples.
   GenerateExamples,
@@ -244,9 +246,9 @@ pub async fn do_action() -> std::io::Result<()> {
       export_dmn_model(&dmn_file_name, &html_file_name);
       Ok(())
     }
-    Action::StartService(opt_host, opt_port, opt_dir, color) => {
+    Action::StartService(opt_host, opt_port, opt_dir, color, verbose) => {
       // start DMNTK as a service (REST server)
-      dmntk_server::start_server(opt_host, opt_port, opt_dir, color).await
+      dmntk_server::start_server(opt_host, opt_port, opt_dir, color, verbose).await
     }
     Action::GenerateExamples => {
       // generate and save the examples
@@ -445,6 +447,12 @@ fn get_matches() -> ArgMatches {
         .arg(arg!(-P --port <PORT>).help("Port number").action(ArgAction::Set).display_order(2))
         .arg(arg!(-D --dir <DIR>).help("Directory where DMN files are searched").action(ArgAction::Set).display_order(3))
         .arg(
+          arg!(-v - -verbose)
+            .help("Displays model deployment details during startup")
+            .action(ArgAction::SetTrue)
+            .display_order(4),
+        )
+        .arg(
           arg!(-c --color <WHEN>)
             .help("Control when colored output is used")
             .value_parser([COLOR_MODE_AUTO, COLOR_MODE_ALWAYS, COLOR_MODE_NEVER])
@@ -570,6 +578,7 @@ fn get_cli_action() -> Action {
         matches.get_one::<String>("port").map(|port| port.to_string()),
         matches.get_one::<String>("dir").map(|dir| dir.to_string()),
         matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_flag("verbose"),
       );
     }
     // generate examples
