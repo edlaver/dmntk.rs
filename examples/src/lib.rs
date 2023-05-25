@@ -34,13 +34,14 @@ mod compatibility;
 pub mod decision_logic;
 pub mod decision_tables;
 mod examples;
-pub mod full_model;
+mod full_model;
 pub mod input_data;
 pub mod item_definition;
 
 pub use compatibility::*;
 pub use examples::valid::*;
 pub use examples::*;
+pub use full_model::*;
 
 use std::fmt::Write;
 

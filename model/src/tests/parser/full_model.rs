@@ -32,7 +32,7 @@
 
 use crate::model::DmnElement;
 use crate::parse;
-use dmntk_examples::full_model::DMN_FULL;
+use dmntk_examples::DMN_FULL;
 
 #[test]
 fn _0001() {
