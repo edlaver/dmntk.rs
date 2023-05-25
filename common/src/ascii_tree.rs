@@ -130,6 +130,18 @@ impl AsciiLineBuilder {
   }
 
   ///
+  pub fn indent(mut self) -> Self {
+    self.0.push(AsciiText::new("  "));
+    self
+  }
+
+  ///
+  pub fn colon(mut self) -> Self {
+    self.0.push(AsciiText::new(":"));
+    self
+  }
+
+  ///
   pub fn l_paren(mut self) -> Self {
     self.0.push(AsciiText::new("("));
     self
@@ -207,6 +219,13 @@ impl AsciiNodeBuilder {
   ///
   pub fn add_child(&mut self, child: AsciiNode) {
     self.1.push(child);
+  }
+
+  ///
+  pub fn add_opt_child(&mut self, opt_child: Option<AsciiNode>) {
+    if let Some(child) = opt_child {
+      self.1.push(child);
+    }
   }
 
   ///

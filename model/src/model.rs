@@ -236,25 +236,25 @@ impl PerformanceIndicator {
 #[derive(Debug, Clone)]
 pub struct OrganizationUnit {
   /// Optional identifier of this this [OrganizationUnit].
-  id: Option<String>,
+  pub(crate) id: Option<String>,
   /// Optional description of this [OrganizationUnit].
-  description: Option<String>,
+  pub(crate) description: Option<String>,
   /// An optional alternative short description of this [OrganizationUnit].
-  label: Option<String>,
+  pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [OrganizationUnit].
-  extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Option<ExtensionElements>,
   /// Container to attach named extended attributes and model associations to any [OrganizationUnit].
-  extension_attributes: Vec<ExtensionAttribute>,
+  pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [OrganizationUnit].
-  name: String,
+  pub(crate) name: String,
   /// `FEEL` name of this [OrganizationUnit].
-  feel_name: Name,
+  pub(crate) feel_name: Name,
   /// The URI of this [OrganizationUnit].
-  uri: Option<String>,
+  pub(crate) uri: Option<String>,
   /// Collection of [Decision] that are made by this [OrganizationUnit].
-  decisions_made: Vec<HRef>,
+  pub(crate) decisions_made: Vec<HRef>,
   /// Collection of [Decision] that are owned by this [OrganizationUnit].
-  decisions_owned: Vec<HRef>,
+  pub(crate) decisions_owned: Vec<HRef>,
 }
 
 impl DmnElement for OrganizationUnit {

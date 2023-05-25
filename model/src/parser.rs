@@ -50,6 +50,8 @@ const NODE_CONTEXT_ENTRY: &str = "contextEntry";
 const NODE_DEFAULT_OUTPUT_ENTRY: &str = "defaultOutputEntry";
 const NODE_DEFINITIONS: &str = "definitions";
 const NODE_DECISION: &str = "decision";
+const NODE_DECISION_MADE: &str = "decisionMade";
+const NODE_DECISION_OWNED: &str = "decisionOwned";
 const NODE_DECISION_TABLE: &str = "decisionTable";
 const NODE_DECISION_SERVICE: &str = "decisionService";
 const NODE_DMNDI: &str = "DMNDI";
@@ -97,6 +99,7 @@ const NODE_OUTPUT_VALUES: &str = "outputValues";
 const NODE_PARAMETER: &str = "parameter";
 const NODE_PARAMETERS: &str = "parameters";
 const NODE_PERFORMANCE_INDICATOR: &str = "performanceIndicator";
+const NODE_ORGANISATION_UNIT: &str = "organizationUnit";
 const NODE_QUESTION: &str = "question";
 const NODE_RELATION: &str = "relation";
 const NODE_REQUIRED_AUTHORITY: &str = "requiredAuthority";
@@ -425,20 +428,26 @@ impl ModelParser {
         name: required_name(child_node)?,
         feel_name: required_feel_name(child_node)?,
         uri: optional_attribute(child_node, ATTR_URI),
-        impacting_decisions: self.parse_impacting_decisions(child_node)?,
+        impacting_decisions: optional_children_required_href(child_node, NODE_IMPACTING_DECISION)?,
       };
       business_context_elements.push(BusinessContextElementInstance::PerformanceIndicator(performance_indicator));
     }
-    Ok(business_context_elements)
-  }
-
-  /// Parses a collection of impacting decisions.
-  fn parse_impacting_decisions(&self, node: &Node) -> Result<Vec<HRef>> {
-    let mut impacting_decisions = vec![];
-    for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_IMPACTING_DECISION) {
-      impacting_decisions.push(required_href(child_node)?);
+    for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_ORGANISATION_UNIT) {
+      let organisation_unit = OrganizationUnit {
+        id: optional_attribute(child_node, ATTR_ID),
+        description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
+        label: optional_attribute(child_node, ATTR_LABEL),
+        extension_elements: self.parse_extension_elements(child_node),
+        extension_attributes: self.parse_extension_attributes(child_node),
+        name: required_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
+        uri: optional_attribute(child_node, ATTR_URI),
+        decisions_made: optional_children_required_href(child_node, NODE_DECISION_MADE)?,
+        decisions_owned: optional_children_required_href(child_node, NODE_DECISION_OWNED)?,
+      };
+      business_context_elements.push(BusinessContextElementInstance::OrganizationUnit(organisation_unit));
     }
-    Ok(impacting_decisions)
+    Ok(business_context_elements)
   }
 
   /// Parses a collection of [Imports](Import).
@@ -1116,16 +1125,25 @@ fn required_feel_name(node: &Node) -> Result<Name> {
   Ok(dmntk_feel_parser::parse_longest_name(&name).unwrap_or(name.into()))
 }
 
-/// Returns the required href attribute.
+/// Returns the required `href` attribute.
 pub fn required_href(node: &Node) -> Result<HRef> {
   HRef::try_from(required_attribute(node, ATTR_HREF)?.as_str())
 }
 
-/// Returns the required attribute of the optional child node.
+/// Returns the required `href` attribute of the optional child node.
 pub fn optional_child_required_href(node: &Node, child_name: &str) -> Result<OptHRef> {
   if let Some(child_node) = optional_child(node, child_name) {
     Ok(Some(HRef::try_from(required_attribute(&child_node, ATTR_HREF)?.as_str())?))
   } else {
     Ok(None)
   }
+}
+
+/// Returns required `href` attributes collected from optional child nodes.
+pub fn optional_children_required_href(node: &Node, child_name: &str) -> Result<Vec<HRef>> {
+  let mut hrefs = vec![];
+  for ref child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
+    hrefs.push(required_href(child_node)?);
+  }
+  Ok(hrefs)
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions namespace="https://dmntk.io"
              name="complete-model-example"
-             id = "_id_definitions"
+             id="_id_definitions"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:layout="https://dmntk.io/layout">
 
     <description>
         This is an example of a complete DMN model.
-        This model contains all elements allowed by XML Schema for DMN, 
+        This model contains all elements allowed by XML Schema for DMN,
         and there is no reasonable business logic in it.
     </description>
 
@@ -52,13 +52,27 @@
         </context>
     </decision>
 
-    <performanceIndicator name="Performance indicator impacted by 'max' decision" id="_id_performance_indicator_1" URI="https://dmntk.io/performance-indicators/1">
-      <description>
-          This is an example
-          of the first performance
-          indicator.
-      </description>    
-      <impactingDecision href="#_id_decision_max"/>
+    <performanceIndicator name="Performance indicator impacted by 'max' decision" id="_id_performance_indicator_1" URI="https://dmntk.io/performance-indicators/1" label="PI1">
+        <description>
+            This is an example
+            of the first performance
+            indicator.
+        </description>
+        <impactingDecision href="#_id_decision_max"/>
     </performanceIndicator>
-    
+
+    <organizationUnit name="a">
+        <description>
+            This is an example of the first
+            organisation unit.
+        </description>
+        <decisionMade href="a"/>
+        <decisionOwned href="A"/>
+        <decisionMade href="b"/>
+        <decisionOwned href="B"/>
+        <decisionOwned href="C"/>
+        <decisionMade href="c"/>
+        <decisionOwned href="D"/>
+    </organizationUnit>
+
 </definitions>
