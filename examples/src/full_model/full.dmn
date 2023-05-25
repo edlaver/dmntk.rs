@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions namespace="https://dmntk.io"
-             name="complete-model"
-             id = "_a6dad67f-8e35-4d62-8590-e1f249277bd3"
+             name="complete-model-example"
+             id = "_id_definitions"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:layout="https://dmntk.io/layout">
 
-    <description>This is an example of a complete model.</description>
+    <description>
+        This is an example of a complete DMN model.
+        This model contains all elements allowed by XML Schema for DMN, 
+        and there is no reasonable business logic in it.
+    </description>
 
     <extensionElements>
         <layout:rectangle type="2003">

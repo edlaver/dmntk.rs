@@ -32,12 +32,12 @@
 
 use crate::model::DmnElement;
 use crate::parse;
-use crate::tests::parser::input_files::*;
+use dmntk_examples::full_model::DMN_FULL;
 
 #[test]
 fn _0001() {
-  let definitions = parse(T_DMN_FULL).unwrap();
-  assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", definitions.id().as_ref().unwrap());
+  let definitions = parse(DMN_FULL).unwrap();
+  assert_eq!("_id_definitions", definitions.id().as_ref().unwrap());
   //------------------------------------------------------------------------------------------------
   // ITEM DEFINITIONS
   //------------------------------------------------------------------------------------------------
@@ -74,8 +74,8 @@ fn _0001() {
 #[test]
 #[allow(clippy::redundant_clone)]
 fn _0002() {
-  let definitions = parse(T_DMN_FULL).unwrap();
+  let definitions = parse(DMN_FULL).unwrap();
   let cloned_definitions = definitions.clone();
-  assert_eq!("_a6dad67f-8e35-4d62-8590-e1f249277bd3", cloned_definitions.id().as_ref().unwrap());
+  assert_eq!("_id_definitions", cloned_definitions.id().as_ref().unwrap());
   assert_eq!(format!("{definitions:?}"), format!("{cloned_definitions:?}"));
 }

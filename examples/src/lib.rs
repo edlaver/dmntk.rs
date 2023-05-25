@@ -34,6 +34,7 @@ mod compatibility;
 pub mod decision_logic;
 pub mod decision_tables;
 mod examples;
+pub mod full_model;
 pub mod input_data;
 pub mod item_definition;
 
