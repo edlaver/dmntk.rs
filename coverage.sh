@@ -21,8 +21,8 @@ cargo clean
 
 # set instrumenting variables
 export CARGO_INCREMENTAL=0
-export RUSTDOCFLAGS="-Cpanic=abort"
-export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort"
+export RUSTDOCFLAGS="-Cpanic=unwind"
+export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=unwind"
 # set DMNTK features
 export CARGO_FEATURE_PARSING_TABLES=1
 
@@ -45,16 +45,23 @@ fi
 # prepare output directories for coverage results
 mkdir ./target/lcov
 mkdir ./target/coverage
+
 # generate coverage info
-grcov . --llvm -s . -t lcov --ignore-not-existing --excl-line='\s*\}+\)*;?$|\s*/\*\s*$|\s*\} else \{$' --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" -o ./target/lcov/lcov.info
+grcov . --llvm -s . -t lcov --ignore-not-existing \
+     --excl-line='\s*\}+\)*;?$|\s*/\*\s*$|\s*\} else \{$|\s*\);$|\s*\},$' \
+     --ignore "*cargo*" --ignore "*chrono-tz*" --ignore "*tests*" \
+     -o ./target/lcov/lcov.info
+
 # generate coverage report in HTML format
 genhtml -t "$CARGO_NAME v$CARGO_VERSION" -q -o ./target/coverage ./target/lcov/lcov.info
+
 # generate coverage report in PDF format
 if [ "$PDF_REPORT" != "" ]; then
   echo ""
   echo "Generating PDF report..."
   htop -b -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
 fi
+
 # display final message
 echo ""
 echo "Open coverage report:"
