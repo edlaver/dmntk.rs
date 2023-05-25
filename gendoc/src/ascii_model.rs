@@ -71,14 +71,18 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
     .line(AsciiLine::builder().text(LABEL_ID).colon_space().with_color(&definitions_id, &color_a).build())
     .build();
 
+  //-----------------------------------------------------------------------------------------------
   // node: model root for definitions with top level properties
+  //-----------------------------------------------------------------------------------------------
   let node_model_root = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_MODEL).build())
     .child(node_definitions_name)
     .child(node_definitions_namespace)
     .child(node_definitions_id)
     .build();
 
+  //-----------------------------------------------------------------------------------------------
   // node: decisions root
+  //-----------------------------------------------------------------------------------------------
   let node_decisions_root = if definitions.decisions().is_empty() {
     AsciiNode::leaf_builder()
       .line(AsciiLine::builder().text(LABEL_DECISIONS).space().text(LABEL_NONE).build())
@@ -91,7 +95,9 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
     decision_node_builder.build()
   };
 
+  //-----------------------------------------------------------------------------------------------
   // node: input data root
+  //-----------------------------------------------------------------------------------------------
   let node_input_data_root = if definitions.input_data().is_empty() {
     AsciiNode::leaf_builder()
       .line(AsciiLine::builder().text(LABEL_INPUT_DATA).space().text(LABEL_NONE).build())

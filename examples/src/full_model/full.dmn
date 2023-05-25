@@ -52,4 +52,8 @@
         </context>
     </decision>
 
+    <performanceIndicator name="Performance Indicator for 'max' decision" id="_id_performance_indicator_1">
+        
+    </performanceIndicator>
+    
 </definitions>
