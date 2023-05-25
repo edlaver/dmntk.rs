@@ -106,7 +106,7 @@ impl Workspace {
     let mut file_count = 0_usize;
     let mut loaded_count = 0_usize;
     let mut failed_count = 0_usize;
-    for file in &search_models_recursive(dir) {
+    for file in &search_models_recursive(&dir) {
       file_count += 1;
       match fs::read_to_string(file) {
         Ok(xml) => match dmntk_model::parse(&xml) {
@@ -142,7 +142,7 @@ impl Workspace {
       }
     }
     let color = if file_count > 0 { &color_green } else { &color_red };
-    println!("{1}Found {file_count} {2}.{0}", color_reset, color, plural("model", file_count));
+    println!("{1}Found {file_count} {2}.{0}", color_reset, color, plural("model", file_count),);
     if loaded_count > 0 {
       println!("{1}Loaded {loaded_count} {2}.{0}", color_reset, color_green, plural("model", loaded_count));
     }
@@ -250,7 +250,7 @@ impl Workspace {
 
 /// Searches all subdirectories starting from specified directory
 /// and searches for files that have `.dmn` extension.
-fn search_models_recursive(dir: PathBuf) -> Vec<PathBuf> {
+fn search_models_recursive(dir: &PathBuf) -> Vec<PathBuf> {
   let mut paths = vec![];
   for entry in WalkDir::new(dir).into_iter().filter_map(|entry| entry.ok()) {
     let path = entry.path();

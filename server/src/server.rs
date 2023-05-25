@@ -162,22 +162,21 @@ fn is_valid_ip_address(ip: &str) -> bool {
 
 /// Returns the root directory for workspace.
 fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
-  let mut dir: Option<String> = None;
-  if let Ok(d) = env::var(DMNTK_DIR_VARIABLE) {
-    let dir_path = Path::new(&d);
+  if let Ok(s) = env::var(DMNTK_DIR_VARIABLE) {
+    let dir_path = Path::new(&s);
     if dir_path.exists() && dir_path.is_dir() {
-      dir = Some(d);
+      return Some(dir_path.into());
     } else {
-      eprintln!("invalid directory specified in environment variable {}: {}", DMNTK_DIR_VARIABLE, d);
+      eprintln!("invalid directory specified in environment variable {}: {}", DMNTK_DIR_VARIABLE, s);
     }
   }
-  if let Some(d) = opt_dir {
-    let dir_path = Path::new(&d);
+  if let Some(s) = opt_dir {
+    let dir_path = Path::new(&s);
     if dir_path.exists() && dir_path.is_dir() {
-      dir = Some(d);
+      return Some(dir_path.into());
     } else {
-      eprintln!("invalid directory specified as command option: {}", d);
+      eprintln!("invalid directory specified as command option: {}", s);
     }
   }
-  dir.map(|d| PathBuf::from(&d))
+  env::current_dir().ok()
 }

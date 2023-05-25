@@ -1,3 +1,5 @@
+Found 0 models.
 dmntk 0.0.0.0:22022
+Found 0 models.
 dmntk 0.0.0.0:22022
 Error: Os { code: 98, kind: AddrInUse, message: "Address already in use" }
