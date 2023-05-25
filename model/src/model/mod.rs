@@ -34,6 +34,7 @@
 //! depicted in one or more Decision Requirements Diagrams (DRD).
 
 pub(crate) mod parser;
+mod xml_utils;
 
 #[cfg(test)]
 mod tests;
