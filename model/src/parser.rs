@@ -33,9 +33,10 @@
 //! Parser for loading a model from the XML file containing DMN interchange format.
 
 use crate::errors::*;
-use crate::model::xml_utils::*;
 use crate::model::*;
-use dmntk_common::Result;
+use crate::xml_utils::*;
+use dmntk_common::{HRef, OptHRef, Result};
+use dmntk_feel::Name;
 use roxmltree::Node;
 
 const NODE_ALLOWED_ANSWERS: &str = "allowedAnswers";
@@ -169,7 +170,7 @@ impl ModelParser {
     let mut definitions = Definitions {
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
-      id: xml_utils::optional_attribute(node, ATTR_ID),
+      id: optional_attribute(node, ATTR_ID),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),

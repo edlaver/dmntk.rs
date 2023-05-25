@@ -38,8 +38,13 @@ use dmntk_common::Result;
 
 mod errors;
 pub mod model;
+mod parser;
+mod xml_utils;
+
+#[cfg(test)]
+mod tests;
 
 /// Parses the XML document containing [Definitions] serialized to interchange format.
 pub fn parse(xml: &str) -> Result<Definitions> {
-  model::parser::ModelParser::default().parse(xml)
+  parser::ModelParser::default().parse(xml)
 }

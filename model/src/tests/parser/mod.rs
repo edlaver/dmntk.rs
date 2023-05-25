@@ -30,8 +30,8 @@
  * limitations under the License.
  */
 
+//! # Tests for DMN model parser
+
 mod full_model;
-mod parser;
-mod parser_dmndi;
-mod test_models;
+mod input_files;
 mod various;

@@ -30,8 +30,8 @@
  * limitations under the License.
  */
 
-mod full_model;
-mod parser;
-mod parser_dmndi;
-mod test_models;
-mod various;
+//! # Tests for model artifacts.
+
+mod builtin_aggregator;
+mod decision_table_orientation;
+mod hit_policy;
