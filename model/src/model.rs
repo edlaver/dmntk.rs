@@ -35,9 +35,6 @@
 //! Model for Decision Requirements Graph (DRG)
 //! depicted in one or more Decision Requirements Diagrams (DRD).
 
-#[cfg(test)]
-mod tests;
-
 use crate::errors::*;
 use dmntk_common::{DmntkError, HRef, OptHRef, Result};
 use dmntk_feel::{FeelType, Name};
