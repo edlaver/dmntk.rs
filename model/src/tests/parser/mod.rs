@@ -34,4 +34,4 @@
 
 mod full_model;
 mod input_files;
-mod various;
+mod invalid_models;

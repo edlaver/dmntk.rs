@@ -172,3 +172,9 @@ fn _0014() {
     format!("{}", definitions.err().unwrap())
   )
 }
+
+#[test]
+fn _0015() {
+  let definitions = parse(T_DMN_0015);
+  assert!(definitions.is_ok());
+}

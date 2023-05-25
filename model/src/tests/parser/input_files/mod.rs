@@ -46,5 +46,6 @@ pub const T_DMN_0011: &str = include_str!("t_0011.dmn");
 pub const T_DMN_0012: &str = include_str!("t_0012.dmn");
 pub const T_DMN_0013: &str = include_str!("t_0013.dmn");
 pub const T_DMN_0014: &str = include_str!("t_0014.dmn");
+pub const T_DMN_0015: &str = include_str!("t_0015.dmn");
 
 pub const T_DMN_FULL: &str = include_str!("t_full.dmn");
