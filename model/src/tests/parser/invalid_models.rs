@@ -178,3 +178,13 @@ fn _0015() {
   let definitions = parse(T_DMN_0015);
   assert!(definitions.is_ok());
 }
+
+#[test]
+fn _0016() {
+  let definitions = parse(T_DMN_0016);
+  assert!(definitions.is_err());
+  assert_eq!(
+    r#"<ModelParserError> required child node 'Bounds' in parent node 'DMNShape' is missing"#,
+    format!("{}", definitions.err().unwrap())
+  )
+}
