@@ -148,7 +148,8 @@ fn get_server_address(opt_host: Option<String>, opt_port: Option<String>) -> Str
       eprintln!("invalid port number specified as command option: {}", p_str);
     }
   }
-  format!("{host}:{port}")
+  let server_address = format!("{host}:{port}");
+  server_address
 }
 
 /// Checks if the specified IP address is correct.
@@ -178,5 +179,7 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
       eprintln!("invalid directory specified as command option: {}", s);
     }
   }
-  env::current_dir().ok()
+  // unwrap is intentional, when reading current directory fails, server should panic
+  let path = env::current_dir().unwrap();
+  Some(path)
 }
