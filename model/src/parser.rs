@@ -831,6 +831,7 @@ impl ModelParser {
         // actually only visual tools use those extension elements
         // but in case DMNTK would need these for some model visualization
         // then this function must be adjusted
+        //TODO collect text from these child elements and store as single string
         let name = element_node.tag_name().name().trim().to_string();
         if !name.is_empty() {
           extension_elements.elements.push(Element { name });
