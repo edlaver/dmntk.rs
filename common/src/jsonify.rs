@@ -30,10 +30,12 @@
  * limitations under the License.
  */
 
-//! Common trait for converting `FEEL` artifact to its `JSON` representation.
+//! # Trait for converting FEEL artifact to its JSON representation.
 
-/// Trait for converting a `FEEL` artifact into its `JSON` representation.
+/// Trait for converting a FEEL artifact into its JSON representation.
 pub trait Jsonify {
-  /// Converts `FEEL` artifact to its `JSON` representation.
+  /// Implementation should convert FEEL artifact to its JSON representation.
   fn jsonify(&self) -> String;
 }
+
+// granskade

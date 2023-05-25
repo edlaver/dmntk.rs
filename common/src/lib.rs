@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Common definitions for components of Decision Model and Notation Toolkit project.
+//! # Common definitions used by components of **DMNTK** project
 
 #[macro_use]
 extern crate dmntk_macros;

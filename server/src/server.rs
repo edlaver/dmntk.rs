@@ -32,7 +32,7 @@
 
 use crate::data::ApplicationData;
 use actix_web::{post, web, App, HttpResponse, HttpServer};
-use dmntk_common::{color_blue, color_magenta, color_reset, ColorMode, Jsonify};
+use dmntk_common::{color_blue, color_reset, color_yellow, ColorMode, Jsonify};
 use dmntk_feel::FeelScope;
 use dmntk_workspace::Workspace;
 use std::borrow::Borrow;
@@ -84,12 +84,12 @@ fn config(cfg: &mut web::ServiceConfig) {
 /// Starts the server.
 pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, opt_dir: Option<String>, color_mode: ColorMode) -> io::Result<()> {
   let color_blue = color_blue!(color_mode);
-  let color_magenta = color_magenta!(color_mode);
+  let color_yellow = color_yellow!(color_mode);
   let color_reset = color_reset!(color_mode);
   let workspace = Workspace::new(get_workspace_dir(opt_dir), &color_mode);
   let application_data = web::Data::new(ApplicationData { workspace: Arc::new(workspace) });
   let address = get_server_address(opt_host, opt_port);
-  println!("{1}dmntk{0} {2}{address}{0}", color_reset, color_blue, color_magenta);
+  println!("{1}dmntk{0} {2}{address}{0}", color_reset, color_blue, color_yellow);
   HttpServer::new(move || {
     App::new()
       .app_data(application_data.clone())

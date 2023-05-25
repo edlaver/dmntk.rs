@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Definition of the common error type.
+//! # Definition of the common error type
 
 use std::{any, fmt};
 
@@ -43,7 +43,7 @@ pub trait ToErrorMessage {
   fn message(self) -> String;
 }
 
-/// Common error definition used by all `DMNTK` components.
+/// Error definition used by all components of **DMNTK** project.
 #[derive(Debug, PartialEq, Eq)]
 pub struct DmntkError(String);
 

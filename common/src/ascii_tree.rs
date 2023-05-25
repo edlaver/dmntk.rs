@@ -36,13 +36,14 @@ use crate::{ColorMode, ASCII_RESET};
 use std::fmt;
 use std::fmt::{Display, Formatter, Write};
 
+/// Text with associated color control sequence to be displayed in terminal.
 pub struct AsciiText {
   color: Option<String>,
   text: String,
 }
 
 impl AsciiText {
-  ///
+  /// Creates a new text without color control sequence.
   pub fn new(text: &str) -> Self {
     Self {
       color: None,
@@ -50,7 +51,7 @@ impl AsciiText {
     }
   }
 
-  ///
+  /// Creates a new text with associated color control sequence.
   pub fn with_color(text: &str, color: &str) -> Self {
     Self {
       color: Some(color.to_string()),
@@ -58,12 +59,12 @@ impl AsciiText {
     }
   }
 
-  ///
+  /// Returns a text with color control sequence based on provided [ColorMode].
   pub fn mode(&self, color_mode: &ColorMode) -> Self {
     AsciiText {
       color: match color_mode {
         ColorMode::On => self.color.clone(),
-        ColorMode::Off => None,
+        _ => None,
       },
       text: self.text.clone(),
     }
@@ -71,7 +72,7 @@ impl AsciiText {
 }
 
 impl Display for AsciiText {
-  ///
+  /// Prints a text with associated color control sequence.
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     if let Some(color) = &self.color {
       write!(f, "{}{}{}", color, self.text, ASCII_RESET)
@@ -81,6 +82,7 @@ impl Display for AsciiText {
   }
 }
 
+/// Collection of [AsciiText] segments with associated color control sequence.
 pub struct AsciiLine(Vec<AsciiText>);
 
 impl AsciiLine {
@@ -105,6 +107,7 @@ impl Display for AsciiLine {
   }
 }
 
+/// Builder for [AsciiLine].
 pub struct AsciiLineBuilder(Vec<AsciiText>);
 
 impl AsciiLineBuilder {
@@ -150,8 +153,11 @@ impl AsciiLineBuilder {
   }
 }
 
+/// Types of nodes in the coloured ASCII tree.
 pub enum AsciiNode {
+  /// Intermediary (or root) node in the tree (always has child nodes).
   Node(AsciiLine, Vec<AsciiNode>),
+  /// Node being the leaf in the tree (has no child nodes).
   Leaf(Vec<AsciiLine>),
 }
 
@@ -167,6 +173,7 @@ impl AsciiNode {
   }
 }
 
+/// Builder for [AsciiNode::Leaf].
 pub struct AsciiLeafBuilder(Vec<AsciiLine>);
 
 impl AsciiLeafBuilder {
@@ -182,6 +189,7 @@ impl AsciiLeafBuilder {
   }
 }
 
+/// Builder for [AsciiNode::Node].
 pub struct AsciiNodeBuilder(AsciiLine, Vec<AsciiNode>);
 
 impl AsciiNodeBuilder {
@@ -202,12 +210,12 @@ impl AsciiNodeBuilder {
   }
 }
 
-///
+/// Writes the tree to provided writer starting from specified node.
 pub fn write_ascii_tree(f: &mut dyn Write, node: &AsciiNode, color_mode: &ColorMode) -> fmt::Result {
   write_ascii_node(f, node, &vec![], color_mode)
 }
 
-///
+/// Writes the tree node to provided writer.
 fn write_ascii_node(f: &mut dyn Write, tree: &AsciiNode, level: &Vec<usize>, color_mode: &ColorMode) -> fmt::Result {
   const NONE: &str = "   ";
   const EDGE: &str = " └─";

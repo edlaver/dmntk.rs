@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+//! # URI references
+
 use self::errors::*;
 use crate::DmntkError;
 use std::convert::TryFrom;
