@@ -75,6 +75,7 @@ const NODE_EXTENSION_ELEMENTS: &str = "extensionElements";
 const NODE_FUNCTION_DEFINITION: &str = "functionDefinition";
 const NODE_FORMAL_PARAMETER: &str = "formalParameter";
 const NODE_FUNCTION_ITEM: &str = "functionItem";
+const NODE_IMPACTING_DECISION: &str = "impactingDecision";
 const NODE_IMPORT: &str = "import";
 const NODE_INFORMATION_REQUIREMENT: &str = "informationRequirement";
 const NODE_INPUT_DATA: &str = "inputData";
@@ -95,6 +96,7 @@ const NODE_OUTPUT_ENTRY: &str = "outputEntry";
 const NODE_OUTPUT_VALUES: &str = "outputValues";
 const NODE_PARAMETER: &str = "parameter";
 const NODE_PARAMETERS: &str = "parameters";
+const NODE_PERFORMANCE_INDICATOR: &str = "performanceIndicator";
 const NODE_QUESTION: &str = "question";
 const NODE_RELATION: &str = "relation";
 const NODE_REQUIRED_AUTHORITY: &str = "requiredAuthority";
@@ -141,6 +143,7 @@ const ATTR_RESOLUTION: &str = "resolution";
 const ATTR_SHARED_STYLE: &str = "sharedStyle";
 const ATTR_TYPE_LANGUAGE: &str = "typeLanguage";
 const ATTR_TYPE_REF: &str = "typeRef";
+const ATTR_URI: &str = "URI";
 const ATTR_WIDTH: &str = "width";
 const ATTR_X: &str = "x";
 const ATTR_Y: &str = "y";
@@ -408,11 +411,36 @@ impl ModelParser {
       Ok(FunctionKind::Feel)
     }
   }
-  ///
-  #[allow(clippy::unnecessary_wraps)]
-  fn parse_business_context_elements(&self, _node: &Node) -> Result<Vec<BusinessContextElementInstance>> {
-    Ok(vec![])
+
+  /// Parses business context elements like performance indicators and organisational units.
+  fn parse_business_context_elements(&self, node: &Node) -> Result<Vec<BusinessContextElementInstance>> {
+    let mut business_context_elements = vec![];
+    for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_PERFORMANCE_INDICATOR) {
+      let performance_indicator = PerformanceIndicator {
+        id: optional_attribute(child_node, ATTR_ID),
+        description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
+        label: optional_attribute(child_node, ATTR_LABEL),
+        extension_elements: self.parse_extension_elements(child_node),
+        extension_attributes: self.parse_extension_attributes(child_node),
+        name: required_name(child_node)?,
+        feel_name: required_feel_name(child_node)?,
+        uri: optional_attribute(child_node, ATTR_URI),
+        impacting_decisions: self.parse_impacting_decisions(child_node)?,
+      };
+      business_context_elements.push(BusinessContextElementInstance::PerformanceIndicator(performance_indicator));
+    }
+    Ok(business_context_elements)
   }
+
+  /// Parses a collection of impacting decisions.
+  fn parse_impacting_decisions(&self, node: &Node) -> Result<Vec<HRef>> {
+    let mut impacting_decisions = vec![];
+    for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_IMPACTING_DECISION) {
+      impacting_decisions.push(required_href(child_node)?);
+    }
+    Ok(impacting_decisions)
+  }
+
   /// Parses a collection of [Imports](Import).
   fn parse_imports(&self, node: &Node) -> Result<Vec<Import>> {
     let mut imports = vec![];
@@ -1086,6 +1114,11 @@ fn required_name(node: &Node) -> Result<String> {
 fn required_feel_name(node: &Node) -> Result<Name> {
   let name = required_name(node)?;
   Ok(dmntk_feel_parser::parse_longest_name(&name).unwrap_or(name.into()))
+}
+
+/// Returns the required href attribute.
+pub fn required_href(node: &Node) -> Result<HRef> {
+  HRef::try_from(required_attribute(node, ATTR_HREF)?.as_str())
 }
 
 /// Returns the required attribute of the optional child node.

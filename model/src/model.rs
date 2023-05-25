@@ -166,24 +166,24 @@ pub enum BusinessContextElementInstance {
 #[derive(Debug, Clone)]
 pub struct PerformanceIndicator {
   /// Optional identifier of this this [PerformanceIndicator].
-  id: Option<String>,
+  pub(crate) id: Option<String>,
   /// Optional description of this [PerformanceIndicator].
-  description: Option<String>,
+  pub(crate) description: Option<String>,
   /// An optional alternative short description of this [PerformanceIndicator].
-  label: Option<String>,
+  pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [PerformanceIndicator].
-  extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Option<ExtensionElements>,
   /// Container to attach named extended attributes and model associations to any [PerformanceIndicator].
-  extension_attributes: Vec<ExtensionAttribute>,
+  pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [PerformanceIndicator].
-  name: String,
+  pub(crate) name: String,
   /// `FEEL` name of this [PerformanceIndicator].
-  feel_name: Name,
+  pub(crate) feel_name: Name,
   /// The URI of this [PerformanceIndicator].
-  uri: Option<String>,
+  pub(crate) uri: Option<String>,
   /// Collection of [Decision] that impact this [Perform`anceIndicator].
   /// This attribute stores references
-  impacting_decisions: Vec<HRef>,
+  pub(crate) impacting_decisions: Vec<HRef>,
 }
 
 impl DmnElement for PerformanceIndicator {

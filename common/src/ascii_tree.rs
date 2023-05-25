@@ -184,6 +184,11 @@ impl AsciiLeafBuilder {
   }
 
   ///
+  pub fn add_line(&mut self, line: AsciiLine) {
+    self.0.push(line);
+  }
+
+  ///
   pub fn build(self) -> AsciiNode {
     AsciiNode::Leaf(self.0)
   }

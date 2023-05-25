@@ -33,7 +33,7 @@
 //! # ASCII report of the DMN model
 
 use dmntk_common::{color_256, write_ascii_tree, AsciiLine, AsciiNode, ColorMode};
-use dmntk_model::model::{Definitions, DmnElement, NamedElement, RequiredVariable};
+use dmntk_model::model::*;
 use std::fmt::Write;
 
 const LABEL_DECISIONS: &str = "Decisions";
@@ -43,8 +43,11 @@ const LABEL_MODEL: &str = "Model";
 const LABEL_NAME: &str = "name";
 const LABEL_NAMESPACE: &str = "namespace";
 const LABEL_NONE: &str = "(none)";
+const LABEL_PERFORMANCE_INDICATORS: &str = "Performance indicators";
 
 pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
+  // color for unique identifiers
+  let color_id = color_256!(color_mode, 82);
   let color_a = color_256!(color_mode, 82);
   let color_b = color_256!(color_mode, 184);
   let color_c = color_256!(color_mode, 208);
@@ -74,11 +77,14 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   //-----------------------------------------------------------------------------------------------
   // node: model root for definitions with top level properties
   //-----------------------------------------------------------------------------------------------
-  let node_model_root = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_MODEL).build())
-    .child(node_definitions_name)
-    .child(node_definitions_namespace)
-    .child(node_definitions_id)
-    .build();
+  let mut node_model_root_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_MODEL).build());
+  node_model_root_builder.add_child(node_definitions_name);
+  node_model_root_builder.add_child(node_definitions_namespace);
+  node_model_root_builder.add_child(node_definitions_id);
+  if let Some(performance_indicators_node) = build_performance_indicators_node(definitions, &color_id) {
+    node_model_root_builder.add_child(performance_indicators_node)
+  }
+  let node_model_root = node_model_root_builder.build();
 
   //-----------------------------------------------------------------------------------------------
   // node: decisions root
@@ -131,4 +137,53 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   let _ = writeln!(&mut output);
   let _ = write_ascii_tree(&mut output, &node_input_data_root, &color_mode);
   println!("{}", output);
+}
+
+/// Builds a tree node containing performance indicators.
+fn build_performance_indicators_node(definitions: &Definitions, color_id: &str) -> Option<AsciiNode> {
+  let performance_indicators: Vec<&PerformanceIndicator> = definitions
+    .business_context_elements()
+    .iter()
+    .filter_map(|item| match item {
+      BusinessContextElementInstance::PerformanceIndicator(performance_indicator) => Some(performance_indicator),
+      _ => None,
+    })
+    .collect();
+  if !performance_indicators.is_empty() {
+    let mut performance_indicators_node_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_PERFORMANCE_INDICATORS).build());
+    for performance_indicator in performance_indicators {
+      let name = performance_indicator.name();
+      let mut performance_indicator_node_builder = AsciiNode::node_builder(AsciiLine::builder().text(name).build());
+
+      if let Some(description) = performance_indicator.description() {
+        performance_indicator_node_builder.add_child(build_description_leaf(description));
+      }
+
+      if let Some(id) = performance_indicator.id() {
+        performance_indicator_node_builder.add_child(build_id_leaf(id, color_id));
+      }
+
+      let performance_indicator_node = performance_indicator_node_builder.build();
+      performance_indicators_node_builder.add_child(performance_indicator_node);
+    }
+    let performance_indicators_node = performance_indicators_node_builder.build();
+    return Some(performance_indicators_node);
+  }
+  None
+}
+
+/// Builds a leaf node containing the value of the identifier.
+fn build_id_leaf(text: &str, color: &str) -> AsciiNode {
+  AsciiNode::leaf_builder()
+    .line(AsciiLine::builder().text(LABEL_ID).colon_space().with_color(text, color).build())
+    .build()
+}
+
+/// Builds a leaf node containing description.
+fn build_description_leaf(text: &str) -> AsciiNode {
+  let mut leaf_builder = AsciiNode::leaf_builder();
+  for line in text.lines().map(|s| s.trim()).filter(|s| !s.is_empty()) {
+    leaf_builder.add_line(AsciiLine::builder().text(line).build());
+  }
+  leaf_builder.build()
 }

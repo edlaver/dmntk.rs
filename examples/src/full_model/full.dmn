@@ -20,7 +20,7 @@
         </layout:circle>
     </extensionElements>
 
-    <decision name="max">
+    <decision name="max" id="_id_decision_max">
         <variable name="max"/>
         <context>
             <contextEntry>
@@ -52,8 +52,13 @@
         </context>
     </decision>
 
-    <performanceIndicator name="Performance Indicator for 'max' decision" id="_id_performance_indicator_1">
-        
+    <performanceIndicator name="Performance indicator impacted by 'max' decision" id="_id_performance_indicator_1" URI="https://dmntk.io/performance-indicators/1">
+      <description>
+          This is an example
+          of the first performance
+          indicator.
+      </description>    
+      <impactingDecision href="#_id_decision_max"/>
     </performanceIndicator>
     
 </definitions>
