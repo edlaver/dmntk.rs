@@ -1374,7 +1374,7 @@ impl NamedElement for KnowledgeSource {
 #[derive(Debug, Clone)]
 pub enum InvocableInstance {
   BusinessKnowledgeModel(Box<BusinessKnowledgeModel>),
-  DecisionService, // TODO add DecisionService
+  DecisionService,
 }
 
 /// A business knowledge model has an abstract part, representing reusable,
