@@ -9,6 +9,7 @@ license.workspace = true
 edition.workspace = true
 
 [dependencies]
+urlencoding.workspace = true
 walkdir.workspace = true
 dmntk-common.workspace = true
 dmntk-feel.workspace = true

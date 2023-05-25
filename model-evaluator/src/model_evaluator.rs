@@ -41,6 +41,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
 use dmntk_model::model::Definitions;
+use std::collections::hash_map::Keys;
 use std::sync::Arc;
 
 /// Types of invocable artefacts.
@@ -182,5 +183,10 @@ impl ModelEvaluator {
     } else {
       value_null!()
     }
+  }
+
+  /// Returns invocable names available in this model.
+  pub fn invocable_names(&self) -> Keys<'_, String, InvocableType> {
+    self.invocables.keys()
   }
 }

@@ -33,7 +33,7 @@
 //! # Container for DMN models
 
 use crate::errors::*;
-use dmntk_common::{color_blue, color_green, color_red, color_reset, to_rdnn, ColorMode, Result};
+use dmntk_common::{color_blue, color_green, color_magenta, color_red, color_reset, to_rdnn, ColorMode, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_model::model::{Definitions, NamedElement};
@@ -42,6 +42,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
+use urlencoding::encode;
 use walkdir::WalkDir;
 
 const ERROR_TAG: &str = "error";
@@ -67,7 +68,7 @@ pub struct Workspace {
 
 impl Workspace {
   /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
-  pub fn new(opt_dir: Option<PathBuf>, color_mode: &ColorMode) -> Self {
+  pub fn new(opt_dir: Option<PathBuf>, color_mode: ColorMode) -> Self {
     let mut workspace = Self {
       definitions: HashMap::new(),
       evaluators: HashMap::new(),
@@ -77,7 +78,32 @@ impl Workspace {
       workspace.load(dir, color_mode);
       workspace.deploy(color_mode);
     };
+    workspace.display_deployed(color_mode);
     workspace
+  }
+
+  fn display_deployed(&self, color_mode: ColorMode) {
+    let color_green = color_green!(color_mode);
+    let color_blue = color_blue!(color_mode);
+    let color_magenta = color_magenta!(color_mode);
+    let color_reset = color_reset!(color_mode);
+    for (model_rdnn, evaluators) in &self.evaluators {
+      for (model_name, model_evaluator) in evaluators {
+        for invocable_name in model_evaluator.invocable_names() {
+          let url = format!(
+            "  {1}{4}{0}/{2}{5}{0}/{3}{6}{0}",
+            color_reset,
+            color_blue,
+            color_green,
+            color_magenta,
+            encode(model_rdnn),
+            encode(model_name),
+            encode(invocable_name)
+          );
+          println!("{}", url);
+        }
+      }
+    }
   }
 
   /// Evaluates invocable deployed in workspace.
@@ -94,7 +120,7 @@ impl Workspace {
   }
 
   /// Loads and deploys DMN models placed in specified directory (recursive).
-  fn load(&mut self, dir: PathBuf, color_mode: &ColorMode) {
+  fn load(&mut self, dir: PathBuf, color_mode: ColorMode) {
     let color_blue = color_blue!(color_mode);
     let color_green = color_green!(color_mode);
     let color_red = color_red!(color_mode);
@@ -178,7 +204,7 @@ impl Workspace {
   }
 
   /// Creates evaluators for all definitions in workspace.
-  fn deploy(&mut self, color_mode: &ColorMode) {
+  fn deploy(&mut self, color_mode: ColorMode) {
     let color_blue = color_blue!(color_mode);
     let color_green = color_green!(color_mode);
     let color_red = color_red!(color_mode);
