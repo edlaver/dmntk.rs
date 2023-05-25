@@ -28,7 +28,7 @@
         </variable>
     </inputData>
     <dmndi:DMNDI>
-        <dmndi:DMNDiagram name="Decision Requirement Diagram" id="_d3a3312e-5924-4f7b-ac0e-232ef9203ff6">
+        <dmndi:DMNDiagram name="Decision Requirement Diagram" resolution="300" id="_d3a3312e-5924-4f7b-ac0e-232ef9203ff6">
             <dmndi:Size width="190.0" height="240.0"/>
             <dmndi:DMNShape dmnElementRef="_75b3add2-4d36-4a19-a76c-268b49b2f436" id="_ebf33cfc-0ee3-4708-af8b-91c52237b7d6">
                 <dc:Bounds x="20.0" y="20.0" width="150.0" height="60.0"/>

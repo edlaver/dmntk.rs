@@ -5,7 +5,7 @@
 
     <description>
         This is an example of invalid model.
-        No variable defined for definition.
+        No variable defined in decision.
     </description>
 
     <decision name="one">

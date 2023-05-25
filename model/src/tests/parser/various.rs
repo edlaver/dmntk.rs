@@ -162,3 +162,13 @@ fn _0013() {
     format!("{}", definitions.err().unwrap())
   )
 }
+
+#[test]
+fn _0014() {
+  let definitions = parse(T_DMN_0014);
+  assert!(definitions.is_err());
+  assert_eq!(
+    r#"<ModelParserError> expected mandatory child node 'text' in parent node 'outputEntry' at [31:17]"#,
+    format!("{}", definitions.err().unwrap())
+  )
+}
