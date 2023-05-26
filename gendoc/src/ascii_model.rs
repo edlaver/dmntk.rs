@@ -33,6 +33,8 @@
 //! # ASCII report of the DMN model
 
 use dmntk_common::{color_256, write_indented, AsciiLine, AsciiNode, AsciiNodeBuilder, ColorMode};
+
+use dmntk_feel::Name;
 use dmntk_model::model::*;
 use std::fmt::Write;
 
@@ -48,6 +50,7 @@ const LABEL_LABEL: &str = "label";
 const LABEL_IMPACTING_DECISIONS: &str = "impacting decisions";
 const LABEL_MODEL: &str = "Model";
 const LABEL_NAME: &str = "name";
+const LABEL_FEEL_NAME: &str = "FEEL name";
 const LABEL_NAMESPACE: &str = "namespace";
 const LABEL_ORGANISATION_UNITS: &str = "Organisation units";
 const LABEL_PERFORMANCE_INDICATORS: &str = "Performance indicators";
@@ -140,6 +143,7 @@ fn write_title(w: &mut dyn Write, title: &str) {
 fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
   write_title(w, LABEL_MODEL);
   let node_model = AsciiNode::node_builder(AsciiLine::builder().with_color(definitions.name(), colors.name()).build())
+    .child(build_feel_name(definitions.feel_name(), colors))
     .child(build_namespace_leaf(definitions.namespace(), colors))
     .opt_child(build_label(definitions.label(), colors))
     .opt_child(build_id(definitions.id(), colors))
@@ -251,6 +255,11 @@ fn builder_name(text: &str, colors: &Colors) -> AsciiNodeBuilder {
 /// Builds a leaf node containing a name.
 fn build_name(text: &str, colors: &Colors) -> AsciiNode {
   build_labeled_text_leaf(LABEL_NAME, text, colors.name())
+}
+
+/// Builds a leaf node containing a FEEL name.
+fn build_feel_name(feel_name: &Name, colors: &Colors) -> AsciiNode {
+  build_labeled_text_leaf(LABEL_FEEL_NAME, &feel_name.to_string(), colors.name())
 }
 
 /// Builds a leaf node containing the value of the identifier.

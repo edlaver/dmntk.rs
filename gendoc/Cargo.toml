@@ -13,6 +13,7 @@ domrs.workspace = true
 markdown.workspace = true
 dmntk-common.workspace = true
 dmntk-examples.workspace = true
+dmntk-feel.workspace = true
 dmntk-model.workspace = true
 
 [dev-dependencies]

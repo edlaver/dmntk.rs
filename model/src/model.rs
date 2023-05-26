@@ -407,12 +407,6 @@ impl Definitions {
     &self.item_definitions
   }
 
-  /// Returns an optional reference to [ItemDefinition] with specified name
-  /// or [None] when such [ItemDefinition] was not found in this [Definitions].
-  pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {
-    self.item_definitions.iter().find(|v| v.name() == name)
-  }
-
   /// Returns reference to the container of instances of [Import] contained in this [Definitions].
   pub fn imports(&self) -> &Vec<Import> {
     &self.imports
@@ -671,7 +665,7 @@ impl NamedElement for Definitions {
   fn name(&self) -> &str {
     &self.name
   }
-  /// Returns a reference to `FEEL` name of this element.
+  /// Returns a reference to FEEL name of this element.
   fn feel_name(&self) -> &Name {
     &self.feel_name
   }
