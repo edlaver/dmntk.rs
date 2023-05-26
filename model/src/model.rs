@@ -281,7 +281,7 @@ impl OrganizationUnit {
   }
 }
 
-/// In DMN™ model [DrgElement] is the abstract superclass for all DMN™ elements
+/// In DMN model, the [DrgElement] is the abstract superclass for all DMN elements
 /// that are contained within [Definitions] and that have a graphical representation in a DRD.
 /// This enumeration specifies the list of [DRGElements](DrgElement) contained in [Definitions].
 #[derive(Debug, Clone)]
@@ -293,7 +293,7 @@ pub enum DrgElement {
   KnowledgeSource(KnowledgeSource),
 }
 
-#[derive(Debug, Clone)]
+/// Enumeration of specific requirements.
 pub enum Requirement {
   Information(InformationRequirement),
   Knowledge(KnowledgeRequirement),
@@ -579,7 +579,6 @@ impl Definitions {
             }
           }
         }
-        DrgElement::InputData(_) => {}
         DrgElement::BusinessKnowledgeModel(business_knowledge_model) => {
           for r in &business_knowledge_model.knowledge_requirements {
             if let Some(r_id) = r.id() {
@@ -596,7 +595,6 @@ impl Definitions {
             }
           }
         }
-        DrgElement::DecisionService(_) => {}
         DrgElement::KnowledgeSource(knowledge_source) => {
           for r in &knowledge_source.authority_requirements {
             if let Some(r_id) = r.id() {
@@ -606,6 +604,7 @@ impl Definitions {
             }
           }
         }
+        _ => {}
       }
     }
     None

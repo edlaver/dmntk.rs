@@ -48,6 +48,7 @@ const LABEL_DESCRIPTION: &str = "description";
 const LABEL_EXPRESSION_LANGUAGE: &str = "expression language";
 const LABEL_ID: &str = "id";
 const LABEL_INPUT_DATA: &str = "Input data";
+const LABEL_KNOWLEDGE_SOURCES: &str = "Knowledge sources";
 const LABEL_LABEL: &str = "label";
 const LABEL_IMPACTING_DECISIONS: &str = "impacting decisions";
 const LABEL_MODEL: &str = "Model";
@@ -128,6 +129,7 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   write_decisions(&mut output, definitions, colors, indent);
   write_business_knowledge_models(&mut output, definitions, colors, indent);
   write_decision_services(&mut output, definitions, colors, indent);
+  write_knowledge_sources(&mut output, definitions, colors, indent);
   write_input_data(&mut output, definitions, colors, indent);
   write_performance_indicators(&mut output, definitions, colors, indent);
   write_organisation_units(&mut output, definitions, colors, indent);
@@ -184,6 +186,7 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
       .opt_child(build_opt_labeled_multiline_text(LABEL_ALLOWED_ANSWERS, decision.allowed_answers(), colors.default()))
       .opt_child(build_description(decision.description(), colors))
       .child(build_variable(decision.variable(), colors))
+      .opt_child(build_authority_requirements(decision.authority_requirements(), colors))
       .opt_child(build_extension_elements(decision.extension_elements(), colors))
       .opt_child(build_extension_attributes(decision.extension_attributes(), colors))
       .build();
@@ -205,6 +208,7 @@ fn write_business_knowledge_models(w: &mut dyn Write, definitions: &Definitions,
       .opt_child(build_id(bkm.id(), colors))
       .opt_child(build_description(bkm.description(), colors))
       .child(build_variable(bkm.variable(), colors))
+      .opt_child(build_authority_requirements(bkm.authority_requirements(), colors))
       .opt_child(build_extension_elements(bkm.extension_elements(), colors))
       .opt_child(build_extension_attributes(bkm.extension_attributes(), colors))
       .build();
@@ -228,6 +232,27 @@ fn write_decision_services(w: &mut dyn Write, definitions: &Definitions, colors:
       .child(build_variable(decision_service.variable(), colors))
       .opt_child(build_extension_elements(decision_service.extension_elements(), colors))
       .opt_child(build_extension_attributes(decision_service.extension_attributes(), colors))
+      .build();
+    write_empty_line(w, i);
+    let _ = write_indented(w, &node_decision, colors.mode(), indent);
+  }
+}
+
+/// Write knowledge sources.
+fn write_knowledge_sources(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let knowledge_sources = definitions.knowledge_sources();
+  if !knowledge_sources.is_empty() {
+    write_title(w, LABEL_KNOWLEDGE_SOURCES);
+  }
+  for (i, knowledge_source) in knowledge_sources.iter().enumerate() {
+    let node_decision = builder_name(knowledge_source.name(), colors)
+      .child(build_feel_name(knowledge_source.feel_name(), colors))
+      .opt_child(build_label(knowledge_source.label(), colors))
+      .opt_child(build_id(knowledge_source.id(), colors))
+      .opt_child(build_description(knowledge_source.description(), colors))
+      .opt_child(build_extension_elements(knowledge_source.extension_elements(), colors))
+      .opt_child(build_extension_attributes(knowledge_source.extension_attributes(), colors))
+      .opt_child(build_authority_requirements(knowledge_source.authority_requirements(), colors))
       .build();
     write_empty_line(w, i);
     let _ = write_indented(w, &node_decision, colors.mode(), indent);
@@ -394,6 +419,24 @@ fn build_extension_elements(_extension_elements: &Vec<ExtensionElement>, _colors
 }
 
 fn build_extension_attributes(_extension_attributes: &Vec<ExtensionAttribute>, _colors: &Colors) -> Option<AsciiNode> {
+  None
+}
+
+fn build_authority_requirements(authority_requirements: &Vec<AuthorityRequirement>, colors: &Colors) -> Option<AsciiNode> {
+  if !authority_requirements.is_empty() {
+    let mut authority_requirements_builder = AsciiNode::node_builder(AsciiLine::builder().text("authority requirements:").build());
+    for authority_requirement in authority_requirements {
+      let a = AsciiNode::node_builder(AsciiLine::builder().text("authority requirement").build())
+        .opt_child(build_id(authority_requirement.id(), colors))
+        .opt_child(build_label(authority_requirement.label(), colors))
+        .opt_child(build_description(authority_requirement.description(), colors))
+        .opt_child(build_extension_elements(authority_requirement.extension_elements(), colors))
+        .opt_child(build_extension_attributes(authority_requirement.extension_attributes(), colors))
+        .build();
+      authority_requirements_builder.add_child(a);
+    }
+    return Some(authority_requirements_builder.build());
+  }
   None
 }
 

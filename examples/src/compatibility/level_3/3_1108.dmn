@@ -123,7 +123,13 @@
             <text>substring after(string:"foobar",match:"b")</text>
         </literalExpression>
     </decision>
-    <knowledgeSource name="DMN 1.1 - 10.3.4.3 Table 60" id="_jBcukfUUEeesLuP4RHs4vA"/>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.3 Table 60" id="_jBcukfUUEeesLuP4RHs4vA">
+        <authorityRequirement id="_id_authority_requirement" label="DMN specification">
+            <description>
+                You can find it on page...
+            </description>
+        </authorityRequirement>
+    </knowledgeSource>
     <dmndi:DMNDI>
         <dmndi:DMNDiagram name="Page 1" id="_jBcukPUUEeesLuP4RHs4vA_D2">
             <dmndi:DMNShape dmnElementRef="_jBcupPUUEeesLuP4RHs4vA" id="_jBcukPUUEeesLuP4RHs4vA_s1">

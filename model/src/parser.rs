@@ -171,8 +171,7 @@ impl ModelParser {
 
   /// Parses model [Definitions].
   fn parse_definitions(&mut self, node: &Node) -> Result<Definitions> {
-    let drg_elements = self.parse_drg_elements(node)?;
-    let mut definitions = Definitions {
+    let definitions = Definitions {
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
       id: optional_attribute(node, ATTR_ID),
@@ -186,13 +185,11 @@ impl ModelParser {
       exporter: optional_attribute(node, ATTR_EXPORTER),
       exporter_version: optional_attribute(node, ATTR_EXPORTER_VERSION),
       item_definitions: self.parse_item_definitions(node, NODE_ITEM_DEFINITION)?,
-      drg_elements,
+      drg_elements: self.parse_drg_elements(node)?,
       business_context_elements: self.parse_business_context_elements(node)?,
       imports: self.parse_imports(node)?,
-      dmndi: None, // diagram (if present) is parsed below
+      dmndi: self.parse_dmndi(node)?,
     };
-    // parse diagram if present
-    self.parse_dmndi(node, &mut definitions)?;
     Ok(definitions)
   }
 
@@ -885,15 +882,15 @@ impl ModelParser {
   }
 
   /// Parse DMNDI part of the diagram definitions.
-  fn parse_dmndi(&self, node: &Node, definitions: &mut Definitions) -> Result<()> {
-    for child_node in node.children().filter(|n| n.tag_name().name() == NODE_DMNDI) {
+  fn parse_dmndi(&self, node: &Node) -> Result<Option<Dmndi>> {
+    if let Some(child_node) = node.children().find(|n| n.tag_name().name() == NODE_DMNDI) {
       let dmndi = Dmndi {
         styles: self.parse_styles(&child_node)?,
         diagrams: self.parse_diagrams(&child_node)?,
       };
-      definitions.dmndi = Some(dmndi);
+      return Ok(Some(dmndi));
     }
-    Ok(())
+    Ok(None)
   }
 
   /// Parses shared styles defined in diagram.
