@@ -414,11 +414,11 @@ fn build_variable(variable: &InformationItem, colors: &Colors) -> AsciiNode {
     .build()
 }
 
-fn build_extension_elements(_extension_elements: &Vec<ExtensionElement>, _colors: &Colors) -> Option<AsciiNode> {
+fn build_extension_elements(_extension_elements: &[ExtensionElement], _colors: &Colors) -> Option<AsciiNode> {
   None
 }
 
-fn build_extension_attributes(_extension_attributes: &Vec<ExtensionAttribute>, _colors: &Colors) -> Option<AsciiNode> {
+fn build_extension_attributes(_extension_attributes: &[ExtensionAttribute], _colors: &Colors) -> Option<AsciiNode> {
   None
 }
 
