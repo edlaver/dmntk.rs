@@ -39,6 +39,8 @@ use dmntk_model::model::*;
 use std::fmt::Write;
 
 const LABEL_ALLOWED_ANSWERS: &str = "allowed answers";
+const LABEL_BUSINESS_KNOWLEDGE_MODELS: &str = "Business knowledge models";
+const LABEL_DECISION_SERVICES: &str = "Decision services";
 const LABEL_DECISIONS: &str = "Decisions";
 const LABEL_DECISIONS_MADE: &str = "decisions made";
 const LABEL_DECISIONS_OWNED: &str = "decisions owned";
@@ -124,6 +126,8 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
   let mut output = String::new();
   write_model(&mut output, definitions, colors, indent);
   write_decisions(&mut output, definitions, colors, indent);
+  write_business_knowledge_models(&mut output, definitions, colors, indent);
+  write_decision_services(&mut output, definitions, colors, indent);
   write_input_data(&mut output, definitions, colors, indent);
   write_performance_indicators(&mut output, definitions, colors, indent);
   write_organisation_units(&mut output, definitions, colors, indent);
@@ -182,6 +186,48 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
       .child(build_variable(decision.variable(), colors))
       .opt_child(build_extension_elements(decision.extension_elements(), colors))
       .opt_child(build_extension_attributes(decision.extension_attributes(), colors))
+      .build();
+    write_empty_line(w, i);
+    let _ = write_indented(w, &node_decision, colors.mode(), indent);
+  }
+}
+
+/// Write business knowledge models.
+fn write_business_knowledge_models(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let business_knowledge_models = definitions.business_knowledge_models();
+  if !business_knowledge_models.is_empty() {
+    write_title(w, LABEL_BUSINESS_KNOWLEDGE_MODELS);
+  }
+  for (i, bkm) in business_knowledge_models.iter().enumerate() {
+    let node_decision = builder_name(bkm.name(), colors)
+      .child(build_feel_name(bkm.feel_name(), colors))
+      .opt_child(build_label(bkm.label(), colors))
+      .opt_child(build_id(bkm.id(), colors))
+      .opt_child(build_description(bkm.description(), colors))
+      .child(build_variable(bkm.variable(), colors))
+      .opt_child(build_extension_elements(bkm.extension_elements(), colors))
+      .opt_child(build_extension_attributes(bkm.extension_attributes(), colors))
+      .build();
+    write_empty_line(w, i);
+    let _ = write_indented(w, &node_decision, colors.mode(), indent);
+  }
+}
+
+/// Write decision services.
+fn write_decision_services(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let decision_services = definitions.decision_services();
+  if !decision_services.is_empty() {
+    write_title(w, LABEL_DECISION_SERVICES);
+  }
+  for (i, decision_service) in decision_services.iter().enumerate() {
+    let node_decision = builder_name(decision_service.name(), colors)
+      .child(build_feel_name(decision_service.feel_name(), colors))
+      .opt_child(build_label(decision_service.label(), colors))
+      .opt_child(build_id(decision_service.id(), colors))
+      .opt_child(build_description(decision_service.description(), colors))
+      .child(build_variable(decision_service.variable(), colors))
+      .opt_child(build_extension_elements(decision_service.extension_elements(), colors))
+      .opt_child(build_extension_attributes(decision_service.extension_attributes(), colors))
       .build();
     write_empty_line(w, i);
     let _ = write_indented(w, &node_decision, colors.mode(), indent);
