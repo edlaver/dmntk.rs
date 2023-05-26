@@ -3,6 +3,8 @@
              name="complete-model-example"
              id="_id_definitions"
              label="FULL MODEL"
+             exporter="Tool that this model was exported from"
+             exporterVersion="Exporter version number"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:layout="https://dmntk.io/layout">
 

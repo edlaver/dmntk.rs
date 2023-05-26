@@ -36,10 +36,12 @@ use dmntk_common::{color_256, write_indented, AsciiLine, AsciiNode, AsciiNodeBui
 use dmntk_model::model::*;
 use std::fmt::Write;
 
+const LABEL_ALLOWED_ANSWERS: &str = "allowed answers";
 const LABEL_DECISIONS: &str = "Decisions";
 const LABEL_DECISIONS_MADE: &str = "decisions made";
 const LABEL_DECISIONS_OWNED: &str = "decisions owned";
 const LABEL_DESCRIPTION: &str = "description";
+const LABEL_EXPRESSION_LANGUAGE: &str = "expression language";
 const LABEL_ID: &str = "id";
 const LABEL_INPUT_DATA: &str = "Input data";
 const LABEL_LABEL: &str = "label";
@@ -49,13 +51,16 @@ const LABEL_NAME: &str = "name";
 const LABEL_NAMESPACE: &str = "namespace";
 const LABEL_ORGANISATION_UNITS: &str = "Organisation units";
 const LABEL_PERFORMANCE_INDICATORS: &str = "Performance indicators";
+const LABEL_QUESTION: &str = "question";
 const LABEL_TYPE: &str = "type";
+const LABEL_TYPE_LANGUAGE: &str = "type language";
 const LABEL_URI: &str = "URI";
 const LABEL_VARIABLE: &str = "variable (output)";
 
 /// Color palette.
 struct Colors {
   color_mode: ColorMode,
+  color_default: String,
   color_name: String,
   color_label: String,
   color_id: String,
@@ -70,6 +75,7 @@ impl Colors {
   fn new(color_mode: ColorMode) -> Self {
     Self {
       color_mode,
+      color_default: color_256!(color_mode, 255),
       color_name: color_256!(color_mode, 184),
       color_label: color_256!(color_mode, 209),
       color_id: color_256!(color_mode, 82),
@@ -81,6 +87,9 @@ impl Colors {
   }
   fn mode(&self) -> &ColorMode {
     &self.color_mode
+  }
+  fn default(&self) -> &str {
+    &self.color_default
   }
   fn name(&self) -> &str {
     &self.color_name
@@ -134,6 +143,10 @@ fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, in
     .child(build_namespace_leaf(definitions.namespace(), colors))
     .opt_child(build_label(definitions.label(), colors))
     .opt_child(build_id(definitions.id(), colors))
+    .opt_child(build_labeled_uri(LABEL_EXPRESSION_LANGUAGE, definitions.expression_language(), colors))
+    .opt_child(build_labeled_uri(LABEL_TYPE_LANGUAGE, definitions.type_language(), colors))
+    .opt_child(build_opt_labeled_text_leaf("exporter", definitions.exporter(), colors.default()))
+    .opt_child(build_opt_labeled_text_leaf("exporter version", definitions.exporter_version(), colors.default()))
     .opt_child(build_description(definitions.description(), colors))
     .build();
   let _ = write_indented(w, &node_model, colors.mode(), indent);
@@ -149,6 +162,8 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
     let node_decision = builder_name(decision.name(), colors)
       .opt_child(build_label(decision.label(), colors))
       .opt_child(build_id(decision.id(), colors))
+      .opt_child(build_opt_labeled_multiline_text(LABEL_QUESTION, decision.question(), colors.default()))
+      .opt_child(build_opt_labeled_multiline_text(LABEL_ALLOWED_ANSWERS, decision.allowed_answers(), colors.default()))
       .opt_child(build_description(decision.description(), colors))
       .child(build_variable(decision.variable(), colors))
       .build();
@@ -245,14 +260,7 @@ fn build_id(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
 
 /// Builds a leaf node containing description.
 fn build_description(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  opt_text.as_ref().map(|text| {
-    let mut leaf_builder = AsciiNode::leaf_builder();
-    leaf_builder.add_line(AsciiLine::builder().text(LABEL_DESCRIPTION).colon().build());
-    for line in text.lines().map(|s| s.trim()).filter(|s| !s.is_empty()) {
-      leaf_builder.add_line(AsciiLine::builder().indent().with_color(line, colors.description()).build());
-    }
-    leaf_builder.build()
-  })
+  build_opt_labeled_multiline_text(LABEL_DESCRIPTION, opt_text, colors.description())
 }
 
 /// Builds a leaf node containing the value of the label.
@@ -270,6 +278,11 @@ fn build_href(text: &str, colors: &Colors) -> AsciiNode {
 /// Builds a leaf node containing an URI.
 fn build_uri(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
   build_opt_labeled_text_leaf(LABEL_URI, opt_text, colors.uri())
+}
+
+/// Builds a leaf node containing a labeled URI.
+fn build_labeled_uri(label: &str, opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
+  build_opt_labeled_text_leaf(label, opt_text, colors.uri())
 }
 
 /// Builds a leaf node containing a namespace.
@@ -305,5 +318,25 @@ fn build_opt_labeled_text_leaf(label: &str, opt_text: &Option<String>, color: &s
     AsciiNode::leaf_builder()
       .line(AsciiLine::builder().text(label).colon_space().with_color(text, color).build())
       .build()
+  })
+}
+
+/// Builds a leaf node containing optional labeled multiline text.
+fn build_opt_labeled_multiline_text(label: &str, opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
+  opt_text.as_ref().map(|text| {
+    let mut leaf_builder = AsciiNode::leaf_builder();
+    leaf_builder.add_line(AsciiLine::builder().text(label).colon().build());
+    // find the minimum number of spaces in consecutive lines
+    let mut min_spaces = if text.is_empty() { 0 } else { usize::MAX };
+    for line in text.lines().filter(|s| !s.trim().is_empty()) {
+      let space_count = line.len() - line.trim_start().len();
+      if space_count < min_spaces {
+        min_spaces = space_count;
+      }
+    }
+    for line in text.lines().filter(|s| !s.trim().is_empty()).map(|s| s[min_spaces..].trim_end()) {
+      leaf_builder.add_line(AsciiLine::builder().indent().with_color(line, color).build());
+    }
+    leaf_builder.build()
   })
 }

@@ -350,15 +350,15 @@ pub struct Definitions {
   pub(crate) namespace: String,
   /// This attribute identifies the expression language used in
   /// [LiteralExpressions](LiteralExpression) within the scope
-  /// of this [Definitions]. The `Default` is `FEEL`.
-  /// This value `MAY` be overridden on each individual [LiteralExpression].
-  /// The language `SHALL` be specified in a URI format.
+  /// of this [Definitions]. The _Default_ is FEEL.
+  /// This value **MAY** be overridden on each individual [LiteralExpression].
+  /// The language **SHALL** be specified in a URI format.
   pub(crate) expression_language: Option<String>,
   /// This attribute identifies the type language used in
   /// [LiteralExpressions](LiteralExpression) within the scope
-  /// of this [Definitions]. The `Default` is `FEEL`.
-  /// This value `MAY` be overridden on each individual [ItemDefinition].
-  /// The language `SHALL` be specified in a URI format.
+  /// of this [Definitions]. The _Default_ is FEEL.
+  /// This value **MAY** be overridden on each individual [ItemDefinition].
+  /// The language **SHALL** be specified in a URI format.
   pub(crate) type_language: Option<String>,
   /// Name of the tool used to export the XML serialization.
   pub(crate) exporter: Option<String>,
@@ -411,11 +411,6 @@ impl Definitions {
   /// or [None] when such [ItemDefinition] was not found in this [Definitions].
   pub fn item_definition_by_name(&self, name: &str) -> Option<&ItemDefinition> {
     self.item_definitions.iter().find(|v| v.name() == name)
-  }
-
-  /// Returns reference to the container of instances of [BusinessContextElement] contained in this [Definitions].
-  pub fn business_context_elements(&self) -> &Vec<BusinessContextElementInstance> {
-    &self.business_context_elements
   }
 
   /// Returns reference to the container of instances of [Import] contained in this [Definitions].
