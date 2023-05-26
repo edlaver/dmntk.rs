@@ -149,9 +149,11 @@ fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, in
     .opt_child(build_id(definitions.id(), colors))
     .opt_child(build_labeled_uri(LABEL_EXPRESSION_LANGUAGE, definitions.expression_language(), colors))
     .opt_child(build_labeled_uri(LABEL_TYPE_LANGUAGE, definitions.type_language(), colors))
-    .opt_child(build_opt_labeled_text_leaf("exporter", definitions.exporter(), colors.default()))
-    .opt_child(build_opt_labeled_text_leaf("exporter version", definitions.exporter_version(), colors.default()))
+    .opt_child(build_opt_labeled_text("exporter", definitions.exporter(), colors.default()))
+    .opt_child(build_opt_labeled_text("exporter version", definitions.exporter_version(), colors.default()))
     .opt_child(build_description(definitions.description(), colors))
+    .opt_child(build_extension_elements(definitions.extension_elements(), colors))
+    .opt_child(build_extension_attributes(definitions.extension_attributes(), colors))
     .build();
   let _ = write_indented(w, &node_model, colors.mode(), indent);
 }
@@ -164,12 +166,15 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
   }
   for decision in decisions {
     let node_decision = builder_name(decision.name(), colors)
+      .child(build_feel_name(decision.feel_name(), colors))
       .opt_child(build_label(decision.label(), colors))
       .opt_child(build_id(decision.id(), colors))
       .opt_child(build_opt_labeled_multiline_text(LABEL_QUESTION, decision.question(), colors.default()))
       .opt_child(build_opt_labeled_multiline_text(LABEL_ALLOWED_ANSWERS, decision.allowed_answers(), colors.default()))
       .opt_child(build_description(decision.description(), colors))
       .child(build_variable(decision.variable(), colors))
+      .opt_child(build_extension_elements(decision.extension_elements(), colors))
+      .opt_child(build_extension_attributes(decision.extension_attributes(), colors))
       .build();
     let _ = write_indented(w, &node_decision, colors.mode(), indent);
   }
@@ -183,10 +188,13 @@ fn write_input_data(w: &mut dyn Write, definitions: &Definitions, colors: &Color
   }
   for input in input_data {
     let node_input = builder_name(input.name(), colors)
+      .child(build_feel_name(input.feel_name(), colors))
       .opt_child(build_label(input.label(), colors))
       .opt_child(build_id(input.id(), colors))
       .opt_child(build_description(input.description(), colors))
       .child(build_variable(input.variable(), colors))
+      .opt_child(build_extension_elements(input.extension_elements(), colors))
+      .opt_child(build_extension_attributes(input.extension_attributes(), colors))
       .build();
     let _ = write_indented(w, &node_input, colors.mode(), indent);
   }
@@ -206,11 +214,14 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
     }
     let node_impacting_decisions = impacting_decisions_builder.build();
     let node_performance_indicator = builder_name(performance_indicator.name(), colors)
+      .child(build_feel_name(performance_indicator.feel_name(), colors))
       .opt_child(build_label(performance_indicator.label(), colors))
       .opt_child(build_id(performance_indicator.id(), colors))
       .opt_child(build_description(performance_indicator.description(), colors))
       .opt_child(build_uri(performance_indicator.uri(), colors))
       .child(node_impacting_decisions)
+      .opt_child(build_extension_elements(performance_indicator.extension_elements(), colors))
+      .opt_child(build_extension_attributes(performance_indicator.extension_attributes(), colors))
       .build();
     let _ = write_indented(w, &node_performance_indicator, colors.mode(), indent);
   }
@@ -236,12 +247,15 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
     }
     let node_decisions_owned = decisions_made_builder.build();
     let node_organisation_unit = builder_name(organisation_units.name(), colors)
+      .child(build_feel_name(organisation_units.feel_name(), colors))
       .opt_child(build_label(organisation_units.label(), colors))
       .opt_child(build_id(organisation_units.id(), colors))
       .opt_child(build_description(organisation_units.description(), colors))
       .opt_child(build_uri(organisation_units.uri(), colors))
       .child(node_decisions_made)
       .child(node_decisions_owned)
+      .opt_child(build_extension_elements(organisation_units.extension_elements(), colors))
+      .opt_child(build_extension_attributes(organisation_units.extension_attributes(), colors))
       .build();
     let _ = write_indented(w, &node_organisation_unit, colors.mode(), indent);
   }
@@ -254,17 +268,17 @@ fn builder_name(text: &str, colors: &Colors) -> AsciiNodeBuilder {
 
 /// Builds a leaf node containing a name.
 fn build_name(text: &str, colors: &Colors) -> AsciiNode {
-  build_labeled_text_leaf(LABEL_NAME, text, colors.name())
+  build_labeled_text(LABEL_NAME, text, colors.name())
 }
 
 /// Builds a leaf node containing a FEEL name.
 fn build_feel_name(feel_name: &Name, colors: &Colors) -> AsciiNode {
-  build_labeled_text_leaf(LABEL_FEEL_NAME, &feel_name.to_string(), colors.name())
+  build_labeled_text(LABEL_FEEL_NAME, &feel_name.to_string(), colors.name())
 }
 
 /// Builds a leaf node containing the value of the identifier.
 fn build_id(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text_leaf(LABEL_ID, opt_text, colors.id())
+  build_opt_labeled_text(LABEL_ID, opt_text, colors.id())
 }
 
 /// Builds a leaf node containing description.
@@ -274,7 +288,7 @@ fn build_description(opt_text: &Option<String>, colors: &Colors) -> Option<Ascii
 
 /// Builds a leaf node containing the value of the label.
 fn build_label(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text_leaf(LABEL_LABEL, opt_text, colors.label())
+  build_opt_labeled_text(LABEL_LABEL, opt_text, colors.label())
 }
 
 /// Builds a leaf node containing a label.
@@ -286,43 +300,55 @@ fn build_href(text: &str, colors: &Colors) -> AsciiNode {
 
 /// Builds a leaf node containing an URI.
 fn build_uri(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text_leaf(LABEL_URI, opt_text, colors.uri())
+  build_opt_labeled_text(LABEL_URI, opt_text, colors.uri())
 }
 
 /// Builds a leaf node containing a labeled URI.
 fn build_labeled_uri(label: &str, opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text_leaf(label, opt_text, colors.uri())
+  build_opt_labeled_text(label, opt_text, colors.uri())
 }
 
 /// Builds a leaf node containing a namespace.
 fn build_namespace_leaf(text: &str, colors: &Colors) -> AsciiNode {
-  build_labeled_text_leaf(LABEL_NAMESPACE, text, colors.uri())
+  build_labeled_text(LABEL_NAMESPACE, text, colors.uri())
 }
 
 /// Builds a leaf node containing a type.
 fn build_type(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text_leaf(LABEL_TYPE, opt_text, colors.typ())
+  build_opt_labeled_text(LABEL_TYPE, opt_text, colors.typ())
 }
 
 /// Builds a node containing output variable properties.
 fn build_variable(variable: &InformationItem, colors: &Colors) -> AsciiNode {
   AsciiNode::node_builder(AsciiLine::builder().text(LABEL_VARIABLE).build())
     .child(build_name(variable.name(), colors))
+    .child(build_feel_name(variable.feel_name(), colors))
+    .opt_child(build_id(variable.id(), colors))
     .opt_child(build_label(variable.label(), colors))
     .opt_child(build_type(variable.type_ref(), colors))
     .opt_child(build_description(variable.description(), colors))
+    .opt_child(build_extension_elements(variable.extension_elements(), colors))
+    .opt_child(build_extension_attributes(variable.extension_attributes(), colors))
     .build()
 }
 
+fn build_extension_elements(_extension_elements: &Vec<ExtensionElement>, _colors: &Colors) -> Option<AsciiNode> {
+  None
+}
+
+fn build_extension_attributes(_extension_attributes: &Vec<ExtensionAttribute>, _colors: &Colors) -> Option<AsciiNode> {
+  None
+}
+
 /// Builds a leaf with a single line containing label and coloured value.
-fn build_labeled_text_leaf(label: &str, text: &str, color: &str) -> AsciiNode {
+fn build_labeled_text(label: &str, text: &str, color: &str) -> AsciiNode {
   AsciiNode::leaf_builder()
     .line(AsciiLine::builder().text(label).colon_space().with_color(text, color).build())
     .build()
 }
 
 /// Builds optional a leaf with a single line containing label and coloured value.
-fn build_opt_labeled_text_leaf(label: &str, opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
+fn build_opt_labeled_text(label: &str, opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
   opt_text.as_ref().map(|text| {
     AsciiNode::leaf_builder()
       .line(AsciiLine::builder().text(label).colon_space().with_color(text, color).build())
@@ -330,12 +356,11 @@ fn build_opt_labeled_text_leaf(label: &str, opt_text: &Option<String>, color: &s
   })
 }
 
-/// Builds a leaf node containing optional labeled multiline text.
+/// Builds a node containing optional labeled multiline text.
 fn build_opt_labeled_multiline_text(label: &str, opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
   opt_text.as_ref().map(|text| {
     let mut leaf_builder = AsciiNode::leaf_builder();
     leaf_builder.add_line(AsciiLine::builder().text(label).colon().build());
-    // find the minimum number of spaces in consecutive lines
     let mut min_spaces = if text.is_empty() { 0 } else { usize::MAX };
     for line in text.lines().filter(|s| !s.trim().is_empty()) {
       let space_count = line.len() - line.trim_start().len();

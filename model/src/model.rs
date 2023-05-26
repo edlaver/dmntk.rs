@@ -59,7 +59,7 @@ pub trait DmnElement {
   /// Returns reference to optional alternative short description of this [DmnElement].
   fn label(&self) -> &Option<String>;
   /// Returns reference to attached additional elements to any [DmnElement].
-  fn extension_elements(&self) -> &Option<ExtensionElements>;
+  fn extension_elements(&self) -> &Vec<ExtensionElement>;
   /// Returns reference to attached named extended attributes and model associations to any [DmnElement].
   fn extension_attributes(&self) -> &Vec<ExtensionAttribute>;
 }
@@ -116,27 +116,27 @@ pub trait BusinessContextElement: NamedElement {
 /// [Element] represents an element from another metamodel.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Element {
-  pub(crate) name: String,
+  /// Content of the element.
+  pub(crate) content: String,
 }
 
 impl Element {
-  /// Returns element's name.
-  pub fn name(&self) -> &str {
-    &self.name
+  /// Returns element's content.
+  pub fn content(&self) -> &str {
+    &self.content
   }
 }
 
-/// The [ExtensionElements] element is a container to aggregate elements
-/// from other metamodels inside any [DmnElement].
+/// The [ExtensionElement] contains element from other metamodels inside any [DmnElement].
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExtensionElements {
-  pub(crate) elements: Vec<Element>,
+pub struct ExtensionElement {
+  pub(crate) element: Element,
 }
 
-impl ExtensionElements {
-  /// Returns extension elements.
-  pub fn elements(&self) -> &Vec<Element> {
-    &self.elements
+impl ExtensionElement {
+  /// Returns extension element.
+  pub fn element(&self) -> &Element {
+    &self.element
   }
 }
 
@@ -148,10 +148,10 @@ pub struct ExtensionAttribute {
   /// The name of the extension attribute.
   pub name: String,
   /// The contained [Element].
-  /// This attribute SHALL NOT be used together with `value_ref`.
+  /// This attribute **SHALL NOT** be used together with `value_ref`.
   pub value: Option<Element>,
   /// A reference to the associated [Element].
-  /// This attribute SHALL NOT be used together with `value`.
+  /// This attribute **SHALL NOT** be used together with `value`.
   pub value_ref: Option<Element>,
 }
 
@@ -172,7 +172,7 @@ pub struct PerformanceIndicator {
   /// An optional alternative short description of this [PerformanceIndicator].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [PerformanceIndicator].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [PerformanceIndicator].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [PerformanceIndicator].
@@ -200,7 +200,7 @@ impl DmnElement for PerformanceIndicator {
     &self.label
   }
   /// Returns reference to attached additional elements to any [PerformanceIndicator].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [PerformanceIndicator].
@@ -242,7 +242,7 @@ pub struct OrganizationUnit {
   /// An optional alternative short description of this [OrganizationUnit].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [OrganizationUnit].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [OrganizationUnit].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [OrganizationUnit].
@@ -271,7 +271,7 @@ impl DmnElement for OrganizationUnit {
     &self.label
   }
   /// Returns reference to attached additional elements to any [OrganizationUnit].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [OrganizationUnit].
@@ -338,7 +338,7 @@ pub struct Definitions {
   /// Optional alternative short description of this [Definitions] derived from [DMNElement](DmnElement).
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [Definitions] derived from [DMNElement](DmnElement).
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [Definitions] derived from [DMNElement](DmnElement).
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [Definitions] derived from [NamedElement].
@@ -651,7 +651,7 @@ impl DmnElement for Definitions {
     &self.label
   }
   /// Returns reference to attached additional elements to any [Definitions].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [Definitions].
@@ -680,7 +680,7 @@ pub struct InformationItem {
   /// Optional alternative short description of this [InformationItem].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [InformationItem].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [InformationItem].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InformationItem].
@@ -714,7 +714,7 @@ impl DmnElement for InformationItem {
     &self.label
   }
   /// Returns reference to attached additional elements to any [InformationItem].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [InformationItem].
@@ -756,7 +756,7 @@ pub struct InputData {
   /// An optional alternative short description of this [InputData].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [InputData].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [InputData].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [InputData].
@@ -788,7 +788,7 @@ impl DmnElement for InputData {
     &self.label
   }
   /// Returns reference to attached additional elements to any [InputData].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [InputData].
@@ -821,7 +821,7 @@ pub struct Import {
   /// An optional alternative short description of this [Import].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [Import].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [Import].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [Import]. Serves as a prefix in namespace-qualified names,
@@ -852,7 +852,7 @@ impl DmnElement for Import {
     &self.label
   }
   /// Returns reference to attached additional elements to any [InputData].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [InputData].
@@ -939,7 +939,7 @@ pub struct LiteralExpression {
   /// An optional alternative short description of this [LiteralExpression].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [LiteralExpression].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [LiteralExpression].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Optional type definition for this [LiteralExpression].
@@ -983,7 +983,7 @@ impl DmnElement for LiteralExpression {
     &self.label
   }
   /// Returns reference to attached additional elements to any [LiteralExpression].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [LiteralExpression].
@@ -1052,7 +1052,7 @@ pub struct Decision {
   /// An alternative short description of the [Decision].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [Decision].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [Decision].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of the [Decision].
@@ -1129,7 +1129,7 @@ impl DmnElement for Decision {
     &self.label
   }
   /// Returns reference to attached additional elements to any [Decision].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [Decision].
@@ -1160,7 +1160,7 @@ pub struct InformationRequirement {
   /// An optional alternative short description of the [InformationRequirement].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [InformationRequirement].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [InformationRequirement].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Reference to [Decision] that this [InformationRequirement] associates
@@ -1196,7 +1196,7 @@ impl DmnElement for InformationRequirement {
     &self.label
   }
   /// Returns reference to attached additional elements to any [InformationRequirement].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [InformationRequirement].
@@ -1216,7 +1216,7 @@ pub struct KnowledgeRequirement {
   /// An optional alternative short description of the [KnowledgeRequirement].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [KnowledgeRequirement].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [KnowledgeRequirement].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Reference to [Invocable] that this [KnowledgeRequirement] associates with
@@ -1245,7 +1245,7 @@ impl DmnElement for KnowledgeRequirement {
     &self.label
   }
   /// Returns reference to attached additional elements to any [KnowledgeRequirement].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [KnowledgeRequirement].
@@ -1265,7 +1265,7 @@ pub struct AuthorityRequirement {
   /// An optional alternative short description of the [AuthorityRequirement].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [AuthorityRequirement].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [AuthorityRequirement].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// The instance of [KnowledgeSource] that this [AuthorityRequirement] associates
@@ -1308,7 +1308,7 @@ impl DmnElement for AuthorityRequirement {
     &self.label
   }
   /// Returns reference to attached additional elements to any [AuthorityRequirement].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [AuthorityRequirement].
@@ -1328,7 +1328,7 @@ pub struct KnowledgeSource {
   /// Optional alternative short description of this [KnowledgeSource].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [KnowledgeSource].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [KnowledgeSource].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [KnowledgeSource].
@@ -1360,7 +1360,7 @@ impl DmnElement for KnowledgeSource {
     &self.label
   }
   /// Returns reference to attached additional elements to any [KnowledgeSource].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [KnowledgeSource].
@@ -1399,7 +1399,7 @@ pub struct BusinessKnowledgeModel {
   /// Optional alternative short description of this [BusinessKnowledgeModel].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [BusinessKnowledgeModel].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [BusinessKnowledgeModel].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [BusinessKnowledgeModel].
@@ -1445,7 +1445,7 @@ impl DmnElement for BusinessKnowledgeModel {
     &self.label
   }
   /// Returns reference to attached additional elements to any [BusinessKnowledgeModel].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [BusinessKnowledgeModel].
@@ -1483,7 +1483,7 @@ pub struct DecisionService {
   /// Optional alternative short description of this [DecisionService].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [DecisionService].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [DecisionService].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [DecisionService].
@@ -1535,7 +1535,7 @@ impl DmnElement for DecisionService {
     &self.label
   }
   /// Returns reference to attached additional elements to any [DecisionService].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [DecisionService].
@@ -1585,7 +1585,7 @@ pub struct ItemDefinition {
   /// Optional alternative short description of this [ItemDefinition].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [ItemDefinition].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [ItemDefinition].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Name of this [ItemDefinition].
@@ -1664,7 +1664,7 @@ impl DmnElement for ItemDefinition {
     &self.label
   }
   /// Returns reference to attached additional elements to any [ItemDefinition].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [ItemDefinition].
@@ -1758,7 +1758,7 @@ pub struct FunctionDefinition {
   /// Optional alternative short description of this [FunctionDefinition].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [FunctionDefinition].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [FunctionDefinition].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Optional base type of this [FunctionDefinition] identified by namespace-prefixed name.
@@ -1800,7 +1800,7 @@ impl DmnElement for FunctionDefinition {
     &self.label
   }
   /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].
@@ -1828,7 +1828,7 @@ pub struct Relation {
   /// Optional alternative short description of this [Relation].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [Relation].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [Relation].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Optional base type of this [Relation] identified by namespace-prefixed name.
@@ -1864,7 +1864,7 @@ impl DmnElement for Relation {
     &self.label
   }
   /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].
@@ -1889,7 +1889,7 @@ pub struct List {
   /// Optional alternative short description of this [List].
   pub(crate) label: Option<String>,
   /// Container to attach additional elements to any [List].
-  pub(crate) extension_elements: Option<ExtensionElements>,
+  pub(crate) extension_elements: Vec<ExtensionElement>,
   /// Container to attach named extended attributes and model associations to any [List].
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Optional base type of this [List] identified by namespace-prefixed name.
@@ -1919,7 +1919,7 @@ impl DmnElement for List {
     &self.label
   }
   /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Option<ExtensionElements> {
+  fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
   /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].

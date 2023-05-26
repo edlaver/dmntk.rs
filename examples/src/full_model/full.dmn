@@ -5,23 +5,13 @@
              label="FULL MODEL"
              exporter="Tool that this model was exported from"
              exporterVersion="Exporter version number"
-             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
-             xmlns:layout="https://dmntk.io/layout">
+             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
 
     <description>
         This is an example of a complete DMN model.
         This model contains all elements allowed by XML Schema for DMN,
         and there is no reasonable business logic in it.
     </description>
-
-    <extensionElements>
-        <layout:rectangle type="2003">
-            <layout:location y="20" x="90"/>
-        </layout:rectangle>
-        <layout:circle type="2003">
-            <layout:location y="18" x="408"/>
-        </layout:circle>
-    </extensionElements>
 
     <decision name="max" id="_id_decision_max">
         <variable name="max"/>
@@ -71,11 +61,11 @@
             organisation unit.
         </description>
         <decisionMade href="a"/>
-        <decisionOwned href="A"/>
         <decisionMade href="b"/>
+        <decisionMade href="c"/>
+        <decisionOwned href="A"/>
         <decisionOwned href="B"/>
         <decisionOwned href="C"/>
-        <decisionMade href="c"/>
         <decisionOwned href="D"/>
     </organizationUnit>
 

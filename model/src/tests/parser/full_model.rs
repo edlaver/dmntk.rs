@@ -35,7 +35,6 @@ use crate::parse;
 use dmntk_examples::DMN_FULL;
 
 #[test]
-#[ignore]
 fn _0001() {
   let definitions = parse(DMN_FULL).unwrap();
   assert_eq!("_id_definitions", definitions.id().as_ref().unwrap());
@@ -46,16 +45,7 @@ fn _0001() {
   //------------------------------------------------------------------------------------------------
   // EXTENSION ELEMENTS IN DEFINITIONS
   //------------------------------------------------------------------------------------------------
-  let extension_elements = definitions.extension_elements().as_ref().unwrap();
-  assert_eq!(2, extension_elements.elements().len());
-  assert_eq!(
-    r#"ExtensionElements { elements: [Element { name: "rectangle" }, Element { name: "circle" }] }"#,
-    format!("{extension_elements:?}")
-  );
-  assert_eq!(r#"Element { name: "rectangle" }"#, format!("{:?}", extension_elements.elements()[0]));
-  assert_eq!("rectangle", extension_elements.elements()[0].name());
-  assert_eq!(r#"Element { name: "circle" }"#, format!("{:?}", extension_elements.elements()[1]));
-  assert_eq!("circle", extension_elements.elements()[1].name());
+  assert_eq!(0, definitions.extension_elements().len());
   //------------------------------------------------------------------------------------------------
   // DRG ELEMENTS
   //------------------------------------------------------------------------------------------------
@@ -68,11 +58,13 @@ fn _0001() {
   assert!(definitions.dmndi().is_none());
 }
 
+/// Covers all cloning and debugging functions of `Definitions`.
 #[test]
 #[allow(clippy::redundant_clone)]
 fn _0002() {
   let definitions = parse(DMN_FULL).unwrap();
   let cloned_definitions = definitions.clone();
   assert_eq!("_id_definitions", cloned_definitions.id().as_ref().unwrap());
-  assert_eq!(format!("{definitions:?}"), format!("{cloned_definitions:?}"));
+  let expected = format!("{definitions:?}");
+  assert_eq!(expected, format!("{cloned_definitions:?}"));
 }

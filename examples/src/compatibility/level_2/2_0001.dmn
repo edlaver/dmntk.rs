@@ -40,7 +40,7 @@
         <description>
             Full name of the customer provided by calling service.
         </description>
-        <variable typeRef="string" name="Full Name" label="Customer's name">
+        <variable typeRef="string" name="Full Name" label="Customer's name" id="_id_variable_full_name">
             <description>Full name of the person that will be sent greetings from this decision model.</description>
         </variable>
     </inputData>

@@ -73,7 +73,6 @@ const NODE_DMNDI_DECISION_SERVICE_DIVIDER_LINE: &str = "DMNDecisionServiceDivide
 const NODE_DESCRIPTION: &str = "description";
 const NODE_ENCAPSULATED_DECISION: &str = "encapsulatedDecision";
 const NODE_ENCAPSULATED_LOGIC: &str = "encapsulatedLogic";
-const NODE_EXTENSION_ELEMENTS: &str = "extensionElements";
 const NODE_FUNCTION_DEFINITION: &str = "functionDefinition";
 const NODE_FORMAL_PARAMETER: &str = "formalParameter";
 const NODE_FUNCTION_ITEM: &str = "functionItem";
@@ -269,7 +268,7 @@ impl ModelParser {
         extension_elements: self.parse_extension_elements(child_node),
         extension_attributes: self.parse_extension_attributes(child_node),
         name: required_name(child_node)?,
-        feel_name: required_feel_name(node)?,
+        feel_name: required_feel_name(child_node)?,
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
       };
       input_data_items.push(DrgElement::InputData(input_data));
@@ -286,8 +285,8 @@ impl ModelParser {
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
-        extension_elements: None,
-        extension_attributes: vec![],
+        extension_elements: self.parse_extension_elements(child_node),
+        extension_attributes: self.parse_extension_attributes(child_node),
         question: optional_child_optional_content(child_node, NODE_QUESTION),
         allowed_answers: optional_child_optional_content(child_node, NODE_ALLOWED_ANSWERS),
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
@@ -310,8 +309,8 @@ impl ModelParser {
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
-        extension_elements: None,
-        extension_attributes: vec![],
+        extension_elements: self.parse_extension_elements(child_node),
+        extension_attributes: self.parse_extension_attributes(child_node),
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
         encapsulated_logic: self.parse_function_definition_child(child_node, NODE_ENCAPSULATED_LOGIC)?,
         knowledge_requirements: self.parse_knowledge_requirements(child_node, NODE_KNOWLEDGE_REQUIREMENT)?,
@@ -331,8 +330,8 @@ impl ModelParser {
         id: optional_attribute(child_node, ATTR_ID),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
-        extension_elements: None,
-        extension_attributes: vec![],
+        extension_elements: self.parse_extension_elements(child_node),
+        extension_attributes: self.parse_extension_attributes(child_node),
         variable: self.parse_information_item_child(child_node, NODE_VARIABLE)?,
         output_decisions: self.required_hrefs_in_child_nodes(child_node, NODE_OUTPUT_DECISION)?,
         encapsulated_decisions: self.required_hrefs_in_child_nodes(child_node, NODE_ENCAPSULATED_DECISION)?,
@@ -823,30 +822,14 @@ impl ModelParser {
   }
 
   /// Parses extension elements.
-  fn parse_extension_elements(&self, node: &Node) -> Option<ExtensionElements> {
-    if let Some(ref child_node) = node.children().find(|n| n.tag_name().name() == NODE_EXTENSION_ELEMENTS) {
-      let mut extension_elements = ExtensionElements { elements: vec![] };
-      for element_node in child_node.children() {
-        // currently only element names from the first dependency level is parsed
-        // actually only visual tools use those extension elements
-        // but in case DMNTK would need these for some model visualization
-        // then this function must be adjusted
-        //TODO collect text from these child elements and store as single string
-        let name = element_node.tag_name().name().trim().to_string();
-        if !name.is_empty() {
-          extension_elements.elements.push(Element { name });
-        }
-      }
-      Some(extension_elements)
-    } else {
-      None
-    }
+  fn parse_extension_elements(&self, _node: &Node) -> Vec<ExtensionElement> {
+    // Currently ignored. Ready for future development when needed.
+    vec![]
   }
 
   /// Parses extension attributes.
-  /// Currently extension elements are omitted and [None] is always returned.
-  /// This function is a placeholder for further development.   
-  fn parse_extension_attributes(&self, _: &Node) -> Vec<ExtensionAttribute> {
+  fn parse_extension_attributes(&self, _node: &Node) -> Vec<ExtensionAttribute> {
+    // Currently ignored. Ready for future development when needed.
     vec![]
   }
 
