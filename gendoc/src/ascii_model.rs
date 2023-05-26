@@ -139,6 +139,13 @@ fn write_title(w: &mut dyn Write, title: &str) {
   let _ = writeln!(w, "└─{}─┘", bar);
 }
 
+/// Writes an empty line when counter > 0.
+fn write_empty_line(w: &mut dyn Write, counter: usize) {
+  if counter > 0 {
+    let _ = writeln!(w);
+  }
+}
+
 /// Write model properties.
 fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
   write_title(w, LABEL_MODEL);
@@ -164,7 +171,7 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
   if !decisions.is_empty() {
     write_title(w, LABEL_DECISIONS);
   }
-  for decision in decisions {
+  for (i, decision) in decisions.iter().enumerate() {
     let node_decision = builder_name(decision.name(), colors)
       .child(build_feel_name(decision.feel_name(), colors))
       .opt_child(build_label(decision.label(), colors))
@@ -176,6 +183,7 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
       .opt_child(build_extension_elements(decision.extension_elements(), colors))
       .opt_child(build_extension_attributes(decision.extension_attributes(), colors))
       .build();
+    write_empty_line(w, i);
     let _ = write_indented(w, &node_decision, colors.mode(), indent);
   }
 }
@@ -186,7 +194,7 @@ fn write_input_data(w: &mut dyn Write, definitions: &Definitions, colors: &Color
   if !input_data.is_empty() {
     write_title(w, LABEL_INPUT_DATA);
   }
-  for input in input_data {
+  for (i, input) in input_data.iter().enumerate() {
     let node_input = builder_name(input.name(), colors)
       .child(build_feel_name(input.feel_name(), colors))
       .opt_child(build_label(input.label(), colors))
@@ -196,6 +204,7 @@ fn write_input_data(w: &mut dyn Write, definitions: &Definitions, colors: &Color
       .opt_child(build_extension_elements(input.extension_elements(), colors))
       .opt_child(build_extension_attributes(input.extension_attributes(), colors))
       .build();
+    write_empty_line(w, i);
     let _ = write_indented(w, &node_input, colors.mode(), indent);
   }
 }
@@ -206,7 +215,7 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
   if !performance_indicators.is_empty() {
     write_title(w, LABEL_PERFORMANCE_INDICATORS);
   }
-  for performance_indicator in performance_indicators {
+  for (i, performance_indicator) in performance_indicators.iter().enumerate() {
     // prepare a node with impacting decisions
     let mut impacting_decisions_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_IMPACTING_DECISIONS).colon().build());
     for impacting_decision in performance_indicator.impacting_decisions() {
@@ -223,6 +232,7 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
       .opt_child(build_extension_elements(performance_indicator.extension_elements(), colors))
       .opt_child(build_extension_attributes(performance_indicator.extension_attributes(), colors))
       .build();
+    write_empty_line(w, i);
     let _ = write_indented(w, &node_performance_indicator, colors.mode(), indent);
   }
 }
@@ -233,7 +243,7 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
   if !organisation_units.is_empty() {
     write_title(w, LABEL_ORGANISATION_UNITS);
   }
-  for organisation_units in definitions.organisation_units() {
+  for (i, organisation_units) in definitions.organisation_units().iter().enumerate() {
     // prepare a node with decisions made
     let mut decisions_made_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS_MADE).colon().build());
     for decision_made in organisation_units.decisions_made() {
@@ -257,6 +267,7 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
       .opt_child(build_extension_elements(organisation_units.extension_elements(), colors))
       .opt_child(build_extension_attributes(organisation_units.extension_attributes(), colors))
       .build();
+    write_empty_line(w, i);
     let _ = write_indented(w, &node_organisation_unit, colors.mode(), indent);
   }
 }
