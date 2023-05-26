@@ -217,6 +217,14 @@ impl AsciiNodeBuilder {
   }
 
   ///
+  pub fn opt_child(mut self, opt_child: Option<AsciiNode>) -> Self {
+    if let Some(child) = opt_child {
+      self.1.push(child);
+    }
+    self
+  }
+
+  ///
   pub fn add_child(&mut self, child: AsciiNode) {
     self.1.push(child);
   }
@@ -235,12 +243,20 @@ impl AsciiNodeBuilder {
 }
 
 /// Writes the tree to provided writer starting from specified node.
-pub fn write_ascii_tree(f: &mut dyn Write, node: &AsciiNode, color_mode: &ColorMode) -> fmt::Result {
-  write_ascii_node(f, node, &vec![], color_mode)
+pub fn write(f: &mut dyn Write, node: &AsciiNode, color_mode: &ColorMode) -> fmt::Result {
+  write_node(f, node, &vec![], color_mode)
+}
+
+/// Writes the tree to provided writer starting from specified node with indentation.
+pub fn write_indented(f: &mut dyn Write, node: &AsciiNode, color_mode: &ColorMode, indent: usize) -> fmt::Result {
+  let mut buffer = String::new();
+  let _ = write_node(&mut buffer, node, &vec![], color_mode);
+  let indent = " ".repeat(indent);
+  write!(f, "{}", buffer.lines().map(|line| format!("{}{line}\n", indent)).collect::<String>())
 }
 
 /// Writes the tree node to provided writer.
-fn write_ascii_node(f: &mut dyn Write, tree: &AsciiNode, level: &Vec<usize>, color_mode: &ColorMode) -> fmt::Result {
+fn write_node(f: &mut dyn Write, tree: &AsciiNode, level: &Vec<usize>, color_mode: &ColorMode) -> fmt::Result {
   const NONE: &str = "   ";
   const EDGE: &str = " └─";
   const PIPE: &str = " │ ";
@@ -274,7 +290,7 @@ fn write_ascii_node(f: &mut dyn Write, tree: &AsciiNode, level: &Vec<usize>, col
         let mut level_next = level.clone();
         level_next.push(deep);
         deep -= 1;
-        write_ascii_node(f, node, &level_next, color_mode)?;
+        write_node(f, node, &level_next, color_mode)?;
       }
     }
     AsciiNode::Leaf(lines) => {
@@ -382,7 +398,7 @@ mod tests {
 
     let mut output = String::new();
     let _ = writeln!(&mut output);
-    let _ = write_ascii_tree(&mut output, &root, &ColorMode::Off);
+    let _ = write(&mut output, &root, &ColorMode::Off);
     assert_eq!(EXPECTED, output);
   }
 }

@@ -508,6 +508,18 @@ impl Definitions {
       .collect()
   }
 
+  /// Returns all performance indicators.
+  pub fn performance_indicators(&self) -> Vec<&PerformanceIndicator> {
+    self
+      .business_context_elements
+      .iter()
+      .filter_map(|item| match item {
+        BusinessContextElementInstance::PerformanceIndicator(performance_indicator) => Some(performance_indicator),
+        _ => None,
+      })
+      .collect()
+  }
+
   /// Returns decision with specified identifier.
   pub fn get_decision(&self, id: &str) -> Option<Decision> {
     for drg_element in &self.drg_elements {

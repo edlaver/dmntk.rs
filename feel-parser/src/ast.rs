@@ -32,7 +32,7 @@
 
 //! Implementation of a node in Abstract Syntax Tree for `FEEL` grammar.
 
-use dmntk_common::{write_ascii_tree, AsciiLine, AsciiNode, ColorMode};
+use dmntk_common::{write, AsciiLine, AsciiNode, ColorMode};
 use dmntk_feel::{FeelType, Name};
 use std::fmt;
 
@@ -345,7 +345,7 @@ impl AstNode {
 pub fn ast_tree(node: &AstNode, color_mode: &ColorMode) -> String {
   let mut output = String::new();
   let tree = ast_node_to_tree(node);
-  let _ = write_ascii_tree(&mut output, &tree, color_mode);
+  let _ = write(&mut output, &tree, color_mode);
   output.lines().map(|line| format!("\n      {line}")).collect()
 }
 

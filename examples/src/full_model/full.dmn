@@ -2,6 +2,7 @@
 <definitions namespace="https://dmntk.io"
              name="complete-model-example"
              id="_id_definitions"
+             label="FULL MODEL"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:layout="https://dmntk.io/layout">
 
@@ -59,6 +60,7 @@
             indicator.
         </description>
         <impactingDecision href="#_id_decision_max"/>
+        <impactingDecision href="#_id_decision_max_1"/>
     </performanceIndicator>
 
     <organizationUnit name="a">

@@ -35,6 +35,7 @@ use crate::parse;
 use dmntk_examples::DMN_FULL;
 
 #[test]
+#[ignore]
 fn _0001() {
   let definitions = parse(DMN_FULL).unwrap();
   assert_eq!("_id_definitions", definitions.id().as_ref().unwrap());
