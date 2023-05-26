@@ -113,47 +113,20 @@ pub trait BusinessContextElement: NamedElement {
   fn uri(&self) -> &Option<String>;
 }
 
-/// [Element] represents an element from another metamodel.
+/// The [ExtensionElement] contains element from other
+/// metamodels inside any [DmnElement].
+///
+/// Not used, prepared for further development.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Element {
-  /// Content of the element.
-  pub(crate) content: String,
-}
-
-impl Element {
-  /// Returns element's content.
-  pub fn content(&self) -> &str {
-    &self.content
-  }
-}
-
-/// The [ExtensionElement] contains element from other metamodels inside any [DmnElement].
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExtensionElement {
-  pub(crate) element: Element,
-}
-
-impl ExtensionElement {
-  /// Returns extension element.
-  pub fn element(&self) -> &Element {
-    &self.element
-  }
-}
+pub struct ExtensionElement;
 
 /// The [ExtensionAttribute] element contains an [Element] or a reference
 /// to an [Element] from another metamodel. An [ExtensionAttribute] also has a name
 /// to define the role or purpose of the associated element.
+///
+/// Not used, prepared for further development.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExtensionAttribute {
-  /// The name of the extension attribute.
-  pub name: String,
-  /// The contained [Element].
-  /// This attribute **SHALL NOT** be used together with `value_ref`.
-  pub value: Option<Element>,
-  /// A reference to the associated [Element].
-  /// This attribute **SHALL NOT** be used together with `value`.
-  pub value_ref: Option<Element>,
-}
+pub struct ExtensionAttribute;
 
 /// Enumeration of concrete instances of [BusinessContextElement].
 #[derive(Debug, Clone)]
@@ -162,7 +135,8 @@ pub enum BusinessContextElementInstance {
   OrganizationUnit(OrganizationUnit),
 }
 
-///
+/// [PerformanceIndicator] is a placeholder, anticipating a definition to be
+/// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
 #[derive(Debug, Clone)]
 pub struct PerformanceIndicator {
   /// Optional identifier of this this [PerformanceIndicator].
@@ -232,7 +206,8 @@ impl PerformanceIndicator {
   }
 }
 
-///
+/// [OrganizationUnit] is a placeholder, anticipating a definition to be
+/// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
 #[derive(Debug, Clone)]
 pub struct OrganizationUnit {
   /// Optional identifier of this this [OrganizationUnit].

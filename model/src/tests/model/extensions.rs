@@ -30,9 +30,20 @@
  * limitations under the License.
  */
 
-//! # Tests for model artifacts.
+//! # Tests for extension elements and attributes.
+//!
+//! These elements are currently ignored, so tests are just for code coverage.
 
-mod builtin_aggregator;
-mod decision_table_orientation;
-mod extensions;
-mod hit_policy;
+use crate::model::{ExtensionAttribute, ExtensionElement};
+
+#[test]
+fn test_extension_element() {
+  let actual = ExtensionElement;
+  assert_eq!("ExtensionElement", format!("{:?}", actual.clone()));
+}
+
+#[test]
+fn test_extension_attribute() {
+  let actual = ExtensionAttribute;
+  assert_eq!("ExtensionAttribute", format!("{:?}", actual.clone()));
+}
