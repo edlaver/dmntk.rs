@@ -45,11 +45,13 @@ const LABEL_INPUT_DATA: &str = "Input data";
 const LABEL_LABEL: &str = "label";
 const LABEL_IMPACTING_DECISIONS: &str = "impacting decisions";
 const LABEL_MODEL: &str = "Model";
+const LABEL_NAME: &str = "name";
 const LABEL_NAMESPACE: &str = "namespace";
-const LABEL_NONE: &str = "(none)";
 const LABEL_ORGANISATION_UNITS: &str = "Organisation units";
 const LABEL_PERFORMANCE_INDICATORS: &str = "Performance indicators";
+const LABEL_TYPE: &str = "type";
 const LABEL_URI: &str = "URI";
+const LABEL_VARIABLE: &str = "variable (output)";
 
 /// Color palette.
 struct Colors {
@@ -103,68 +105,15 @@ impl Colors {
   }
 }
 
+/// Prints the model report to standard output.
 pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
-  // prepare the color palette
   let colors = &Colors::new(color_mode);
-
-  //-----------------------------------------------------------------------------------------------
-  // node: decisions root
-  //-----------------------------------------------------------------------------------------------
-  let node_decisions_root = if definitions.decisions().is_empty() {
-    AsciiNode::leaf_builder()
-      .line(AsciiLine::builder().text(LABEL_DECISIONS).space().text(LABEL_NONE).build())
-      .build()
-  } else {
-    let mut decision_node_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS).build());
-    for decision in definitions.decisions() {
-      decision_node_builder.add_child(
-        AsciiNode::leaf_builder()
-          .line(AsciiLine::builder().with_color(decision.name(), colors.name()).build())
-          .build(),
-      );
-    }
-    decision_node_builder.build()
-  };
-
-  //-----------------------------------------------------------------------------------------------
-  // node: input data root
-  //-----------------------------------------------------------------------------------------------
-  let node_input_data_root = if definitions.input_data().is_empty() {
-    AsciiNode::leaf_builder()
-      .line(AsciiLine::builder().text(LABEL_INPUT_DATA).space().text(LABEL_NONE).build())
-      .build()
-  } else {
-    let mut input_data_node_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_INPUT_DATA).build());
-    for input_data in definitions.input_data() {
-      let input_data_type = input_data.variable().type_ref().as_ref().cloned().unwrap_or(LABEL_NONE.to_string());
-      input_data_node_builder.add_child(
-        AsciiNode::leaf_builder()
-          .line(
-            AsciiLine::builder()
-              .with_color(input_data.name(), colors.name())
-              .space()
-              .l_paren()
-              .with_color(&input_data_type, colors.typ())
-              .r_paren()
-              .build(),
-          )
-          .build(),
-      );
-    }
-    input_data_node_builder.build()
-  };
-
-  let indent = 1;
+  let indent = 2;
   let mut output = String::new();
-  write_title(&mut output, LABEL_MODEL);
   write_model(&mut output, definitions, colors, indent);
-  write_title(&mut output, LABEL_DECISIONS);
-  let _ = write_indented(&mut output, &node_decisions_root, &color_mode, indent);
-  write_title(&mut output, LABEL_INPUT_DATA);
-  let _ = write_indented(&mut output, &node_input_data_root, &color_mode, indent);
-  write_title(&mut output, LABEL_PERFORMANCE_INDICATORS);
+  write_decisions(&mut output, definitions, colors, indent);
+  write_input_data(&mut output, definitions, colors, indent);
   write_performance_indicators(&mut output, definitions, colors, indent);
-  write_title(&mut output, LABEL_ORGANISATION_UNITS);
   write_organisation_units(&mut output, definitions, colors, indent);
   println!("{}", output);
 }
@@ -172,6 +121,7 @@ pub fn print_model(definitions: &Definitions, color_mode: ColorMode) {
 /// Writes a title text.
 fn write_title(w: &mut dyn Write, title: &str) {
   let bar = "─".repeat(title.len());
+  let _ = writeln!(w);
   let _ = writeln!(w, "┌─{}─┐", bar);
   let _ = writeln!(w, "│ {} │", title);
   let _ = writeln!(w, "└─{}─┘", bar);
@@ -179,26 +129,66 @@ fn write_title(w: &mut dyn Write, title: &str) {
 
 /// Write model properties.
 fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  write_title(w, LABEL_MODEL);
   let node_model = AsciiNode::node_builder(AsciiLine::builder().with_color(definitions.name(), colors.name()).build())
-    .child(build_namespace_leaf(definitions.namespace(), colors.uri()))
-    .opt_child(build_label(definitions.label(), colors.label()))
-    .opt_child(build_id(definitions.id(), colors.id()))
+    .child(build_namespace_leaf(definitions.namespace(), colors))
+    .opt_child(build_label(definitions.label(), colors))
+    .opt_child(build_id(definitions.id(), colors))
+    .opt_child(build_description(definitions.description(), colors))
     .build();
   let _ = write_indented(w, &node_model, colors.mode(), indent);
 }
 
+/// Write decisions.
+fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let decisions = definitions.decisions();
+  if !decisions.is_empty() {
+    write_title(w, LABEL_DECISIONS);
+  }
+  for decision in decisions {
+    let node_decision = builder_name(decision.name(), colors)
+      .opt_child(build_label(decision.label(), colors))
+      .opt_child(build_id(decision.id(), colors))
+      .opt_child(build_description(decision.description(), colors))
+      .child(build_variable(decision.variable(), colors))
+      .build();
+    let _ = write_indented(w, &node_decision, colors.mode(), indent);
+  }
+}
+
+/// Write input data.
+fn write_input_data(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let input_data = definitions.input_data();
+  if !input_data.is_empty() {
+    write_title(w, LABEL_INPUT_DATA);
+  }
+  for input in input_data {
+    let node_input = builder_name(input.name(), colors)
+      .opt_child(build_label(input.label(), colors))
+      .opt_child(build_id(input.id(), colors))
+      .opt_child(build_description(input.description(), colors))
+      .child(build_variable(input.variable(), colors))
+      .build();
+    let _ = write_indented(w, &node_input, colors.mode(), indent);
+  }
+}
+
 /// Write performance indicators.
 fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
-  for performance_indicator in definitions.performance_indicators() {
+  let performance_indicators = definitions.performance_indicators();
+  if !performance_indicators.is_empty() {
+    write_title(w, LABEL_PERFORMANCE_INDICATORS);
+  }
+  for performance_indicator in performance_indicators {
     // prepare a node with impacting decisions
     let mut impacting_decisions_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_IMPACTING_DECISIONS).colon().build());
     for impacting_decision in performance_indicator.impacting_decisions() {
       impacting_decisions_builder.add_child(build_href(impacting_decision.into(), colors));
     }
     let node_impacting_decisions = impacting_decisions_builder.build();
-    let node_performance_indicator = builder_name(performance_indicator.name(), colors.name())
-      .opt_child(build_label(performance_indicator.label(), colors.label()))
-      .opt_child(build_id(performance_indicator.id(), colors.id()))
+    let node_performance_indicator = builder_name(performance_indicator.name(), colors)
+      .opt_child(build_label(performance_indicator.label(), colors))
+      .opt_child(build_id(performance_indicator.id(), colors))
       .opt_child(build_description(performance_indicator.description(), colors))
       .opt_child(build_uri(performance_indicator.uri(), colors))
       .child(node_impacting_decisions)
@@ -209,6 +199,10 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
 
 /// Write organisation units.
 fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, indent: usize) {
+  let organisation_units = definitions.organisation_units();
+  if !organisation_units.is_empty() {
+    write_title(w, LABEL_ORGANISATION_UNITS);
+  }
   for organisation_units in definitions.organisation_units() {
     // prepare a node with decisions made
     let mut decisions_made_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS_MADE).colon().build());
@@ -222,9 +216,9 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
       decisions_made_builder.add_child(build_href(decision_owned.into(), colors));
     }
     let node_decisions_owned = decisions_made_builder.build();
-    let node_organisation_unit = builder_name(organisation_units.name(), colors.name())
-      .opt_child(build_label(organisation_units.label(), colors.label()))
-      .opt_child(build_id(organisation_units.id(), colors.id()))
+    let node_organisation_unit = builder_name(organisation_units.name(), colors)
+      .opt_child(build_label(organisation_units.label(), colors))
+      .opt_child(build_id(organisation_units.id(), colors))
       .opt_child(build_description(organisation_units.description(), colors))
       .opt_child(build_uri(organisation_units.uri(), colors))
       .child(node_decisions_made)
@@ -234,13 +228,19 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
   }
 }
 
+/// Prepares a node builder containing a name as a root element.
+fn builder_name(text: &str, colors: &Colors) -> AsciiNodeBuilder {
+  AsciiNode::node_builder(AsciiLine::builder().with_color(text, colors.name()).build())
+}
+
+/// Builds a leaf node containing a name.
+fn build_name(text: &str, colors: &Colors) -> AsciiNode {
+  build_labeled_text_leaf(LABEL_NAME, text, colors.name())
+}
+
 /// Builds a leaf node containing the value of the identifier.
-fn build_id(opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
-  opt_text.as_ref().map(|text| {
-    AsciiNode::leaf_builder()
-      .line(AsciiLine::builder().text(LABEL_ID).colon_space().with_color(text, color).build())
-      .build()
-  })
+fn build_id(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
+  build_opt_labeled_text_leaf(LABEL_ID, opt_text, colors.id())
 }
 
 /// Builds a leaf node containing description.
@@ -256,12 +256,8 @@ fn build_description(opt_text: &Option<String>, colors: &Colors) -> Option<Ascii
 }
 
 /// Builds a leaf node containing the value of the label.
-fn build_label(opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
-  opt_text.as_ref().map(|text| {
-    AsciiNode::leaf_builder()
-      .line(AsciiLine::builder().text(LABEL_LABEL).colon_space().with_color(text, color).build())
-      .build()
-  })
+fn build_label(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
+  build_opt_labeled_text_leaf(LABEL_LABEL, opt_text, colors.label())
 }
 
 /// Builds a leaf node containing a label.
@@ -273,26 +269,41 @@ fn build_href(text: &str, colors: &Colors) -> AsciiNode {
 
 /// Builds a leaf node containing an URI.
 fn build_uri(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  opt_text.as_ref().map(|text| {
-    AsciiNode::leaf_builder()
-      .line(AsciiLine::builder().text(LABEL_URI).colon_space().with_color(text, colors.uri()).build())
-      .build()
-  })
-}
-
-/// Prepares a node builder containing a name as a root element.
-fn builder_name(text: &str, color: &str) -> AsciiNodeBuilder {
-  AsciiNode::node_builder(AsciiLine::builder().with_color(text, color).build())
+  build_opt_labeled_text_leaf(LABEL_URI, opt_text, colors.uri())
 }
 
 /// Builds a leaf node containing a namespace.
-fn build_namespace_leaf(text: &str, color: &str) -> AsciiNode {
-  build_label_value_line_leaf(LABEL_NAMESPACE, text, color)
+fn build_namespace_leaf(text: &str, colors: &Colors) -> AsciiNode {
+  build_labeled_text_leaf(LABEL_NAMESPACE, text, colors.uri())
+}
+
+/// Builds a leaf node containing a type.
+fn build_type(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
+  build_opt_labeled_text_leaf(LABEL_TYPE, opt_text, colors.typ())
+}
+
+/// Builds a node containing output variable properties.
+fn build_variable(variable: &InformationItem, colors: &Colors) -> AsciiNode {
+  AsciiNode::node_builder(AsciiLine::builder().text(LABEL_VARIABLE).build())
+    .child(build_name(variable.name(), colors))
+    .opt_child(build_label(variable.label(), colors))
+    .opt_child(build_type(variable.type_ref(), colors))
+    .opt_child(build_description(variable.description(), colors))
+    .build()
 }
 
 /// Builds a leaf with a single line containing label and coloured value.
-fn build_label_value_line_leaf(label: &str, value: &str, color: &str) -> AsciiNode {
+fn build_labeled_text_leaf(label: &str, text: &str, color: &str) -> AsciiNode {
   AsciiNode::leaf_builder()
-    .line(AsciiLine::builder().text(label).colon_space().with_color(value, color).build())
+    .line(AsciiLine::builder().text(label).colon_space().with_color(text, color).build())
     .build()
+}
+
+/// Builds optional a leaf with a single line containing label and coloured value.
+fn build_opt_labeled_text_leaf(label: &str, opt_text: &Option<String>, color: &str) -> Option<AsciiNode> {
+  opt_text.as_ref().map(|text| {
+    AsciiNode::leaf_builder()
+      .line(AsciiLine::builder().text(label).colon_space().with_color(text, color).build())
+      .build()
+  })
 }

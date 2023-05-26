@@ -23,8 +23,11 @@
         </literalExpression>
     </decision>
     <inputData name="Full Name" id="_cba86e4d-e91c-46a2-9176-e9adf88e15db">
-        <variable typeRef="string" name="Full Name">
-            <description>Full name of the person that will be greeted by this decision model.</description>
+        <description>
+            Full name of the customer provided by calling service.
+        </description>
+        <variable typeRef="string" name="Full Name" label="Customer's name">
+            <description>Full name of the person that will be sent greetings from this decision model.</description>
         </variable>
     </inputData>
     <dmndi:DMNDI>

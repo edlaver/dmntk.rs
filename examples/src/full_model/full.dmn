@@ -63,7 +63,7 @@
         <impactingDecision href="#_id_decision_max_1"/>
     </performanceIndicator>
 
-    <organizationUnit name="Law department">
+    <organizationUnit name="Law department" label="LD">
         <description>
             This is an example of the first
             organisation unit.
