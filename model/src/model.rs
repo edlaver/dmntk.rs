@@ -508,13 +508,25 @@ impl Definitions {
       .collect()
   }
 
-  /// Returns all performance indicators.
+  /// Returns performance indicators.
   pub fn performance_indicators(&self) -> Vec<&PerformanceIndicator> {
     self
       .business_context_elements
       .iter()
       .filter_map(|item| match item {
         BusinessContextElementInstance::PerformanceIndicator(performance_indicator) => Some(performance_indicator),
+        _ => None,
+      })
+      .collect()
+  }
+
+  /// Returns organisation units.
+  pub fn organisation_units(&self) -> Vec<&OrganizationUnit> {
+    self
+      .business_context_elements
+      .iter()
+      .filter_map(|item| match item {
+        BusinessContextElementInstance::OrganizationUnit(organisarion_unit) => Some(organisarion_unit),
         _ => None,
       })
       .collect()
