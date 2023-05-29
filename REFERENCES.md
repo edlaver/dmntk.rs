@@ -11,3 +11,7 @@
 - [Keep a Changelog](https://keepachangelog.com)
 - [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
+---
+
+- Graph algorithms: https://crates.io/crates/petgraph
+- Java integration using JNI: https://crates.io/crates/jni
