@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+//! # Examples of horizontal decision tables
+
 #[doc = include_str!("H_000010.md")]
 pub const H_000010: &str = include_str!("H_000010.md");
 
