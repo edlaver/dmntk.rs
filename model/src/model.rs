@@ -238,7 +238,7 @@ pub enum Requirement {
 /// for all elements of a DMN decision model.
 /// It defines the scope of visibility and the namespace
 /// for all contained elements.
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct Definitions {
   /// Optional identifier for this [Definitions] derived from [DMNElement](DmnElement).
   pub(crate) id: DmnId,
@@ -526,18 +526,7 @@ impl Definitions {
   }
 }
 
-impl NamedElement for Definitions {
-  /// Returns reference to the name of this [Definitions].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to FEEL name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
-#[derive(Debug, Clone, PartialEq, DmnElement)]
+#[derive(Debug, Clone, PartialEq, DmnElement, NamedElement)]
 pub struct InformationItem {
   /// Optional identifier of this this [InformationItem].
   pub(crate) id: DmnId,
@@ -566,17 +555,6 @@ impl InformationItem {
   }
 }
 
-impl NamedElement for InformationItem {
-  /// Returns reference to the name of this [InformationItem].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
 impl FeelTypedElement for InformationItem {
   /// Returns a reference to optional `FEEL` type of this element.
   fn feel_type(&self) -> &Option<FeelType> {
@@ -590,7 +568,7 @@ impl FeelTypedElement for InformationItem {
 
 /// [InputData] is used to model the inputs of a decision whose values
 /// are defined outside of the decision model.
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct InputData {
   /// Optional identifier of this this [InputData].
   pub(crate) id: DmnId,
@@ -617,22 +595,11 @@ impl RequiredVariable for InputData {
   }
 }
 
-impl NamedElement for InputData {
-  /// Returns reference to the name of this [InputData].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
 /// `Import` class is used when referencing external elements,
 /// either DMN [DRGElement](DrgElement) or [ItemDefinition] instances contained
 /// in other [Definitions] elements, or non-DMN elements,
 /// such as an XML Schema or a PMML file.
-#[derive(Debug, Clone, PartialEq, Eq, DmnElement)]
+#[derive(Debug, Clone, PartialEq, Eq, DmnElement, NamedElement)]
 pub struct Import {
   /// Optional identifier of this this [Import].
   pub(crate) id: DmnId,
@@ -656,18 +623,6 @@ pub struct Import {
   pub(crate) location_uri: Option<String>,
   /// Identifies the namespace of the imported element.
   pub(crate) namespace: String,
-}
-
-impl NamedElement for Import {
-  /// Returns reference to the name of this [Import].
-  fn name(&self) -> &str {
-    &self.name
-  }
-
-  /// Returns a reference to `FEEL` name of this [Import].
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
 }
 
 impl Import {
@@ -820,7 +775,7 @@ impl Binding {
 }
 
 /// [Decision]
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct Decision {
   /// Identifier of the [Decision].
   pub(crate) id: DmnId,
@@ -889,17 +844,6 @@ impl Decision {
   /// Returns a reference to collection of [AuthorityRequirement].
   pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
-  }
-}
-
-impl NamedElement for Decision {
-  /// Returns reference to the name of this [Decision].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
   }
 }
 
@@ -1005,7 +949,7 @@ impl AuthorityRequirement {
 
 /// The class [KnowledgeSource] is used to model authoritative knowledge sources in a decision model.
 /// In a DRD, an instance of [KnowledgeSource] is represented by a `knowledge source` diagram element.
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct KnowledgeSource {
   /// Optional identifier of this this [KnowledgeSource].
   pub(crate) id: DmnId,
@@ -1032,17 +976,6 @@ impl KnowledgeSource {
   }
 }
 
-impl NamedElement for KnowledgeSource {
-  /// Returns reference to the name of this [KnowledgeSource].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this [KnowledgeSource].
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
 /// Instances of `Invocable` interface.
 #[derive(Debug, Clone)]
 pub enum InvocableInstance {
@@ -1053,7 +986,7 @@ pub enum InvocableInstance {
 /// A business knowledge model has an abstract part, representing reusable,
 /// invocable decision logic, and a concrete part, which mandates that the decision logic
 /// must be a single FEEL boxed function definition.
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct BusinessKnowledgeModel {
   /// Optional identifier of this this [BusinessKnowledgeModel].
   pub(crate) id: DmnId,
@@ -1091,17 +1024,6 @@ impl BusinessKnowledgeModel {
   /// Returns reference to the collection of instances of [AuthorityRequirement] that compose this [BusinessKnowledgeModel].
   pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
-  }
-}
-
-impl NamedElement for BusinessKnowledgeModel {
-  /// Returns reference to the name of this [ItemDefinition].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
   }
 }
 
@@ -1182,7 +1104,7 @@ pub enum ItemDefinitionType {
 
 /// [ItemDefinition] is used to model the inputs of a decision,
 /// whose values are defined outside of the decision model.
-#[derive(Debug, Clone, DmnElement)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct ItemDefinition {
   /// Optional identifier of this this [ItemDefinition].
   pub(crate) id: DmnId,
@@ -1253,17 +1175,6 @@ impl ItemDefinition {
   /// Returns a reference to an optional [FunctionItem] that compose this [ItemDefinition].
   pub fn function_item(&self) -> &Option<FunctionItem> {
     &self.function_item
-  }
-}
-
-impl NamedElement for ItemDefinition {
-  /// Returns reference to the name of this [ItemDefinition].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
   }
 }
 
