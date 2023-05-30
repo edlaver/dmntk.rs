@@ -1170,18 +1170,22 @@ impl DmnElement for InformationRequirement {
   fn id(&self) -> &Option<String> {
     &self.id
   }
+
   /// Returns reference to optional description of this [InformationRequirement].
   fn description(&self) -> &Option<String> {
     &self.description
   }
+
   /// Returns reference to optional alternative short description of this [InformationRequirement].
   fn label(&self) -> &Option<String> {
     &self.label
   }
+
   /// Returns reference to attached additional elements to any [InformationRequirement].
   fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
+
   /// Returns reference to attached named extended attributes and model associations to any [InformationRequirement].
   fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
     &self.extension_attributes
