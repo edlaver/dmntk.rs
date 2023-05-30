@@ -135,8 +135,8 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
         bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
       }
     }
+    // bring into context the variable from required input
     if let Some(href) = information_requirement.required_input() {
-      // bring into context the variable from required input
       if let Some(required_input) = definitions.input_data_by_id(href.into()) {
         let variable_name = required_input.variable().name();
         let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, item_definition_context_evaluator);

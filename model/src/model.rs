@@ -1154,11 +1154,12 @@ pub struct InformationRequirement {
 }
 
 impl InformationRequirement {
-  /// Returns reference to optional URI pointing [Decision].
+  /// Returns reference to optional URI pointing a [Decision].
   pub fn required_decision(&self) -> &OptHRef {
     &self.required_decision
   }
-  /// Returns reference to optional URI pointing [InputData].
+
+  /// Returns reference to optional URI pointing an [InputData].
   pub fn required_input(&self) -> &OptHRef {
     &self.required_input
   }
