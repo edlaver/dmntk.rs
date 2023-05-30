@@ -345,9 +345,10 @@ pub struct Definitions {
   pub(crate) drg_elements: Vec<DrgElement>,
   /// Container for the instances of [BusinessContextElement] that are contained in this [Definitions].
   pub(crate) business_context_elements: Vec<BusinessContextElementInstance>,
-  /// Container used to import externally defined elements and make them available for use by elements in this [Definitions].
+  /// Container used to import externally defined elements and make them available
+  /// for use by elements in this [Definitions].
   pub(crate) imports: Vec<Import>,
-  /// Optional Diagram Interchange information contained within this [Definitions].
+  /// Optional diagram interchange information contained within this [Definitions].
   pub(crate) dmndi: Option<Dmndi>,
 }
 
