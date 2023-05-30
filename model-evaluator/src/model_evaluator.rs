@@ -30,6 +30,8 @@
  * limitations under the License.
  */
 
+//! # DMN model evaluator
+
 use crate::business_knowledge_model::BusinessKnowledgeModelEvaluator;
 use crate::decision::DecisionEvaluator;
 use crate::decision_service::DecisionServiceEvaluator;
@@ -44,7 +46,7 @@ use dmntk_model::model::Definitions;
 use std::collections::hash_map::Keys;
 use std::sync::Arc;
 
-/// Types of invocable artefacts.
+/// Types of invocable artifacts in model.
 pub enum InvocableType {
   Decision(String),
   BusinessKnowledgeModel(String, Name),
@@ -68,7 +70,7 @@ pub struct ModelEvaluator {
 }
 
 impl From<ModelBuilder> for ModelEvaluator {
-  ///
+  /// Creates [ModelEvaluator] from provided [ModelBuilder].
   fn from(model_builder: ModelBuilder) -> Self {
     let (input_data_evaluator, item_definition_evaluator, business_knowledge_model_evaluator, decision_evaluator, decision_service_evaluator, invocables) = model_builder.into();
     Self {
@@ -91,32 +93,32 @@ impl ModelEvaluator {
     Ok(model_evaluator)
   }
 
-  ///
+  /// Returns a reference to input data evaluator.
   pub fn input_data_evaluator(&self) -> &InputDataEvaluator {
     &self.input_data_evaluator
   }
 
-  ///
+  /// Returns a reference to item definition evaluator.
   pub fn item_definition_evaluator(&self) -> &ItemDefinitionEvaluator {
     &self.item_definition_evaluator
   }
 
-  ///
+  /// Returns a reference to business knowledge model evaluator.
   pub fn business_knowledge_model_evaluator(&self) -> &BusinessKnowledgeModelEvaluator {
     &self.business_knowledge_model_evaluator
   }
 
-  ///
+  /// Returns a reference to decision evaluator.
   pub fn decision_evaluator(&self) -> &DecisionEvaluator {
     &self.decision_evaluator
   }
 
-  ///
+  /// Returns a reference to decision service evaluator.
   pub fn decision_service_evaluator(&self) -> &DecisionServiceEvaluator {
     &self.decision_service_evaluator
   }
 
-  /// Evaluates an invocable with specified name.
+  /// Evaluates an invocable identified by specified `invocable_name`.
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     let invocable = self.invocables.get(invocable_name);
     match invocable {
@@ -136,12 +138,12 @@ impl ModelEvaluator {
     }
   }
 
-  /// Evaluates a business knowledge model.
+  /// Evaluates a business knowledge model identified by specified `id`.
   pub fn evaluate_business_knowledge_model(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     self.business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
     if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
-      //TODO handle external
+      //TODO Handle external functions.
       let mut parameters_ctx = FeelContext::default();
       parameters_ctx.zip(closure_ctx);
       for (name, _) in parameters {
@@ -157,7 +159,7 @@ impl ModelEvaluator {
     }
   }
 
-  /// Evaluates a decision.
+  /// Evaluates a decision identified by specified `id`.
   pub fn evaluate_decision(&self, id: &str, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
@@ -171,7 +173,7 @@ impl ModelEvaluator {
     }
   }
 
-  /// Evaluates a decision service.
+  /// Evaluates a decision service identified by specified `id`.
   pub fn evaluate_decision_service(&self, id: &str, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {

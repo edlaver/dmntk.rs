@@ -62,7 +62,7 @@ pub struct Workspace {
   definitions: HashMap<String, DefinitionsByName>,
   /// Map of [ModelEvaluators](ModelEvaluator) indexed by [Definitions]' _RDNN_.
   evaluators: HashMap<String, EvaluatorsByName>,
-  /// Map of file names indexed by _RDNN_..
+  /// Map of file names indexed by _RDNN_.
   files: HashMap<String, FileByName>,
 }
 
