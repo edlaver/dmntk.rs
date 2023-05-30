@@ -803,7 +803,7 @@ pub struct Import {
   /// such as typeRefs specifying imported [ItemDefinitions](ItemDefinition)
   /// and expressions referencing imported [InformationItems](InformationItem).
   pub(crate) name: String,
-  /// Optional `FEEL` name of this [Import].
+  /// Optional FEEL name of this [Import].
   pub(crate) feel_name: Name,
   /// Specifies the style of import associated with this [Import].
   pub(crate) import_type: String,
