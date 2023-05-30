@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! ???
+//! # Model definitions necessary for building model evaluator
 
 use crate::errors::err_invalid_item_definition_type;
 use crate::type_ref::type_ref_to_feel_type;
@@ -496,7 +496,7 @@ impl DefDefinitions {
   }
 }
 
-/// Generates a new identifier when not provided..
+/// Generates a new identifier when not provided.
 fn generate_id(opt_id: &Option<String>) -> String {
   opt_id.as_ref().unwrap_or(&gen_id()).clone()
 }

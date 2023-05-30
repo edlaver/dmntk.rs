@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Builder for decision evaluators.
+//! # Decisions' evaluator builder
 
 use crate::boxed_expressions::{bring_knowledge_requirements_into_context, build_expression_instance_evaluator};
 use crate::model_builder::ModelBuilder;
@@ -45,7 +45,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Type alias for closures that evaluate decisions.
-/// Fn(input data, model evaluator, output data)
+/// (input data, model evaluator, output data) -> Output variable name
 type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 ///
@@ -71,13 +71,13 @@ impl DecisionEvaluator {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
       let decision_id = decision.id();
       let decision_name = &decision.name().to_string();
-      evaluators.insert(decision_id.to_owned(), evaluator_entry);
+      evaluators.insert(decision_id.to_string(), evaluator_entry);
       model_builder.add_invocable_decision(decision_name, decision_id);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }
 
-  /// Evaluates a decision with specified identifier.
+  /// Evaluates a decision identified by specified `decision_id`.
   pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
@@ -91,21 +91,21 @@ impl DecisionEvaluator {
   }
 }
 
-///
+/// Builds and returns decision evaluator.
 fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision, model_builder: &ModelBuilder) -> Result<DecisionEvaluatorEntry> {
-  // acquire all needed evaluators
+  // acquire all needed intermediary evaluators
   let item_definition_type_evaluator = model_builder.item_definition_type_evaluator();
   let item_definition_context_evaluator = model_builder.item_definition_context_evaluator();
   let input_data_context_evaluator = model_builder.input_data_context_evaluator();
 
-  // get output variable
+  // get the output variable properties
   let mut output_variable = Variable::try_from(decision.variable())?;
   output_variable.update_feel_type(item_definition_type_evaluator);
 
-  // prepare output variable name for this decision
+  // prepare output variable name for processed decision
   let output_variable_name = output_variable.name().clone();
 
-  // prepare output variable type for this decision
+  // prepare output variable type for processed decision
   let output_variable_type = output_variable.feel_type().clone();
 
   // holds variables for required decisions and required knowledge
@@ -123,7 +123,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
         let variable_name = required_decision.variable().name();
-        //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected
+        //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected.
         let variable_type_ref = if required_decision.variable().type_ref().is_some() {
           required_decision.variable().type_ref().as_ref().unwrap().clone()
         } else {
@@ -151,8 +151,8 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
 
   // prepare expression instance for this decision
   let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
-    let (evl, _) = build_expression_instance_evaluator(&scope, expression_instance, model_builder)?;
-    evl
+    let (evaluator, _) = build_expression_instance_evaluator(&scope, expression_instance, model_builder)?;
+    evaluator
   } else {
     Box::new(move |_: &FeelScope| value_null!("no decision logic defined in decision"))
   };
