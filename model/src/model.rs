@@ -491,7 +491,7 @@ impl Definitions {
       .business_context_elements
       .iter()
       .filter_map(|item| match item {
-        BusinessContextElementInstance::OrganizationUnit(organisarion_unit) => Some(organisarion_unit),
+        BusinessContextElementInstance::OrganizationUnit(organisation_unit) => Some(organisation_unit),
         _ => None,
       })
       .collect()
