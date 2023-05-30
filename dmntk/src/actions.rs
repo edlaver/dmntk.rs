@@ -342,7 +342,7 @@ fn get_matches() -> ArgMatches {
         .about("Evaluate DMN Model")
         .display_order(2)
         .arg(
-          arg!(-i - -invocable)
+          arg!(-i --invocable <NAME>)
             .help("Name of the invocable (decision, bkm, decision service) to be evaluated")
             .action(ArgAction::Set)
             .required(true)
