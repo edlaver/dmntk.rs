@@ -818,18 +818,22 @@ impl DmnElement for Import {
   fn id(&self) -> &Option<String> {
     &self.id
   }
+
   /// Returns reference to optional description of this [InputData].
   fn description(&self) -> &Option<String> {
     &self.description
   }
+
   /// Returns reference to optional alternative short description of this [InputData].
   fn label(&self) -> &Option<String> {
     &self.label
   }
+
   /// Returns reference to attached additional elements to any [InputData].
   fn extension_elements(&self) -> &Vec<ExtensionElement> {
     &self.extension_elements
   }
+
   /// Returns reference to attached named extended attributes and model associations to any [InputData].
   fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
     &self.extension_attributes
@@ -841,6 +845,7 @@ impl NamedElement for Import {
   fn name(&self) -> &str {
     &self.name
   }
+
   /// Returns a reference to `FEEL` name of this [Import].
   fn feel_name(&self) -> &Name {
     &self.feel_name
@@ -852,10 +857,12 @@ impl Import {
   pub fn import_type(&self) -> &str {
     &self.import_type
   }
+
   /// Returns reference to the optional location URI for this [Import].
   pub fn location_uri(&self) -> &Option<String> {
     &self.location_uri
   }
+
   /// Returns reference to the namespace of this [Import].
   pub fn namespace(&self) -> &str {
     &self.namespace
