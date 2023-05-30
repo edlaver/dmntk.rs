@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! # Model definitions necessary for building model evaluator
+//! # Model definitions needed for building model evaluator
 
 use crate::errors::err_invalid_item_definition_type;
 use crate::type_ref::type_ref_to_feel_type;
