@@ -40,12 +40,14 @@ use dmntk_feel::{value_null, FeelType, Name};
 /// Type of closure that evaluates values from variable definition.
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
 
-///
+/// Variable properties.
 #[derive(Clone)]
 pub struct Variable {
+  /// Variable's name.
   name: Name,
+  /// Variable's type reference.
   pub type_ref: Option<String>,
-  /// Evaluated FEEL type for this variable.
+  /// Variables FEEL type (evaluated).
   feel_type: FeelType,
 }
 
@@ -87,7 +89,7 @@ impl Variable {
     }
   }
 
-  /// Returns a reference to variable's FEEL type.
+  /// Returns variable's FEEL type.
   pub fn feel_type(&self) -> &FeelType {
     &self.feel_type
   }
