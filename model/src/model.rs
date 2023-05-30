@@ -47,17 +47,27 @@ pub const URI_MODEL: &str = "https://www.omg.org/spec/DMN/20191111/MODEL/";
 pub const URI_UNINTERPRETED: &str = "http://www.omg.org/spec/DMN/uninterpreted/20140801";
 pub const URI_XML_SCHEMA: &str = "http://www.w3.org/2001/XMLSchema";
 
+/// [DmnId] defines possible types of unique identifiers in model.
+/// Specification defines this identifier as optional, but this implementation
+/// makes it mandatory, just for simplicity. When this identifier is not provided in the model,
+/// a new unique UUID identifier is generated. This SHALL not be conflicting with any other identifiers.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DmnId {
+  /// Identifier was provided in model.
+  Provided(String),
+  /// Identifier was generated during parsing (not provided in model).
+  Generated(String),
+}
+
 /// [DmnElement] is the abstract superclass for the Decision Model elements.
 /// It provides the optional attributes `id`, `description` and `label`,
 /// which other elements will inherit.
 pub trait DmnElement {
   /// Returns a reference to identifier for this [DmnElement].
   /// This identifier SHALL be unique within its containing [Definitions] element.
-  /// Specification defines this identifier as optional, but this implementation
-  /// makes it mandatory for simplicity. When this identifier is not provided in the
-  /// model, a new unique UUID identifier is generated. This should not conflicting
-  /// with any other identifier.
   fn id(&self) -> &String;
+  /// Returns a reference to optional identifier for this [DmnElement].
+  fn opt_id(&self) -> Option<&String>;
   /// Returns reference to optional description of this [DmnElement].
   fn description(&self) -> &Option<String>;
   /// Returns reference to optional alternative short description of this [DmnElement].
@@ -141,10 +151,10 @@ pub enum BusinessContextElementInstance {
 
 /// [PerformanceIndicator] is a placeholder, anticipating a definition to be
 /// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement, NamedElement, BusinessContextElement)]
 pub struct PerformanceIndicator {
   /// Optional identifier of this this [PerformanceIndicator].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [PerformanceIndicator].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [PerformanceIndicator].
@@ -164,46 +174,6 @@ pub struct PerformanceIndicator {
   pub(crate) impacting_decisions: Vec<HRef>,
 }
 
-impl DmnElement for PerformanceIndicator {
-  /// Returns reference to optional identifier for this [PerformanceIndicator].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [PerformanceIndicator].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [PerformanceIndicator].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [PerformanceIndicator].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [PerformanceIndicator].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
-impl NamedElement for PerformanceIndicator {
-  /// Returns a reference to the name of this element.
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
-impl BusinessContextElement for PerformanceIndicator {
-  fn uri(&self) -> &Option<String> {
-    &self.uri
-  }
-}
-
 impl PerformanceIndicator {
   pub fn impacting_decisions(&self) -> &Vec<HRef> {
     &self.impacting_decisions
@@ -212,10 +182,10 @@ impl PerformanceIndicator {
 
 /// [OrganizationUnit] is a placeholder, anticipating a definition to be
 /// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement, NamedElement, BusinessContextElement)]
 pub struct OrganizationUnit {
   /// Optional identifier of this this [OrganizationUnit].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [OrganizationUnit].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [OrganizationUnit].
@@ -234,46 +204,6 @@ pub struct OrganizationUnit {
   pub(crate) decisions_made: Vec<HRef>,
   /// Collection of [Decision] that are owned by this [OrganizationUnit].
   pub(crate) decisions_owned: Vec<HRef>,
-}
-
-impl DmnElement for OrganizationUnit {
-  /// Returns reference to optional identifier for this [OrganizationUnit].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [OrganizationUnit].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [OrganizationUnit].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [OrganizationUnit].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [OrganizationUnit].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
-impl NamedElement for OrganizationUnit {
-  /// Returns a reference to the name of this element.
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
-impl BusinessContextElement for OrganizationUnit {
-  fn uri(&self) -> &Option<String> {
-    &self.uri
-  }
 }
 
 impl OrganizationUnit {
@@ -308,10 +238,10 @@ pub enum Requirement {
 /// for all elements of a DMN decision model.
 /// It defines the scope of visibility and the namespace
 /// for all contained elements.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct Definitions {
   /// Optional identifier for this [Definitions] derived from [DMNElement](DmnElement).
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [Definitions] derived from [DMNElement](DmnElement).
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [Definitions] derived from [DMNElement](DmnElement).
@@ -596,29 +526,6 @@ impl Definitions {
   }
 }
 
-impl DmnElement for Definitions {
-  /// Returns reference to optional identifier for this [Definitions].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [Definitions].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [Definitions].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [Definitions].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [Definitions].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl NamedElement for Definitions {
   /// Returns reference to the name of this [Definitions].
   fn name(&self) -> &str {
@@ -630,10 +537,10 @@ impl NamedElement for Definitions {
   }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct InformationItem {
   /// Optional identifier of this this [InformationItem].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [InformationItem].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [InformationItem].
@@ -656,29 +563,6 @@ impl InformationItem {
   ///
   pub fn type_ref(&self) -> &Option<String> {
     &self.type_ref
-  }
-}
-
-impl DmnElement for InformationItem {
-  /// Returns reference to optional identifier for this [InformationItem].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [InformationItem].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [InformationItem].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [InformationItem].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [InformationItem].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
   }
 }
 
@@ -706,10 +590,10 @@ impl FeelTypedElement for InformationItem {
 
 /// [InputData] is used to model the inputs of a decision whose values
 /// are defined outside of the decision model.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct InputData {
   /// Optional identifier of this this [InputData].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [InputData].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [InputData].
@@ -733,29 +617,6 @@ impl RequiredVariable for InputData {
   }
 }
 
-impl DmnElement for InputData {
-  /// Returns reference to optional identifier for this [InputData].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [InputData].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [InputData].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [InputData].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [InputData].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl NamedElement for InputData {
   /// Returns reference to the name of this [InputData].
   fn name(&self) -> &str {
@@ -771,10 +632,10 @@ impl NamedElement for InputData {
 /// either DMN [DRGElement](DrgElement) or [ItemDefinition] instances contained
 /// in other [Definitions] elements, or non-DMN elements,
 /// such as an XML Schema or a PMML file.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, DmnElement)]
 pub struct Import {
   /// Optional identifier of this this [Import].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [Import].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [Import].
@@ -795,33 +656,6 @@ pub struct Import {
   pub(crate) location_uri: Option<String>,
   /// Identifies the namespace of the imported element.
   pub(crate) namespace: String,
-}
-
-impl DmnElement for Import {
-  /// Returns reference to optional identifier for this [InputData].
-  fn id(&self) -> &String {
-    &self.id
-  }
-
-  /// Returns reference to optional description of this [InputData].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-
-  /// Returns reference to optional alternative short description of this [InputData].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-
-  /// Returns reference to attached additional elements to any [InputData].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-
-  /// Returns reference to attached named extended attributes and model associations to any [InputData].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
 }
 
 impl NamedElement for Import {
@@ -896,10 +730,10 @@ pub struct ContextEntry {
 
 /// [LiteralExpression] is used to model a value expression whose value
 /// is specified by text in some specified expression language.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, DmnElement)]
 pub struct LiteralExpression {
   /// Optional identifier of this this [LiteralExpression].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [LiteralExpression].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [LiteralExpression].
@@ -932,29 +766,6 @@ impl LiteralExpression {
   ///
   pub fn imported_values(&self) -> Option<Import> {
     self.imported_values.clone()
-  }
-}
-
-impl DmnElement for LiteralExpression {
-  /// Returns reference to optional identifier for this [LiteralExpression].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [LiteralExpression].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [LiteralExpression].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [LiteralExpression].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [LiteralExpression].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
   }
 }
 
@@ -1009,10 +820,10 @@ impl Binding {
 }
 
 /// [Decision]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct Decision {
   /// Identifier of the [Decision].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Description of the [Decision].
   pub(crate) description: Option<String>,
   /// An alternative short description of the [Decision].
@@ -1081,29 +892,6 @@ impl Decision {
   }
 }
 
-impl DmnElement for Decision {
-  /// Returns reference to optional identifier for this [Decision].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [Decision].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [Decision].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [Decision].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [Decision].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl NamedElement for Decision {
   /// Returns reference to the name of this [Decision].
   fn name(&self) -> &str {
@@ -1117,10 +905,10 @@ impl NamedElement for Decision {
 
 /// The class [InformationRequirement] is used to model an information requirement,
 /// as represented by a plain arrow in a DRD.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct InformationRequirement {
   /// Optional identifier of the [InformationRequirement].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of the [InformationRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [InformationRequirement].
@@ -1149,39 +937,12 @@ impl InformationRequirement {
   }
 }
 
-impl DmnElement for InformationRequirement {
-  /// Returns reference to optional identifier for this [InformationRequirement].
-  fn id(&self) -> &String {
-    &self.id
-  }
-
-  /// Returns reference to optional description of this [InformationRequirement].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-
-  /// Returns reference to optional alternative short description of this [InformationRequirement].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-
-  /// Returns reference to attached additional elements to any [InformationRequirement].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-
-  /// Returns reference to attached named extended attributes and model associations to any [InformationRequirement].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 /// The class [KnowledgeRequirement] is used to model a knowledge requirement,
 /// as represented by a dashed arrow in a DRD.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct KnowledgeRequirement {
   /// Optional identifier of the [KnowledgeRequirement].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of the [KnowledgeRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [KnowledgeRequirement].
@@ -1202,35 +963,12 @@ impl KnowledgeRequirement {
   }
 }
 
-impl DmnElement for KnowledgeRequirement {
-  /// Returns reference to optional identifier for this [KnowledgeRequirement].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [KnowledgeRequirement].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [KnowledgeRequirement].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [KnowledgeRequirement].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [KnowledgeRequirement].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 /// The class [AuthorityRequirement] is used to model an authority requirement,
 /// as represented by an arrow drawn with a dashed line and a filled circular head in a DRD
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct AuthorityRequirement {
   /// Optional identifier of the [AuthorityRequirement].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of the [AuthorityRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [AuthorityRequirement].
@@ -1265,35 +1003,12 @@ impl AuthorityRequirement {
   }
 }
 
-impl DmnElement for AuthorityRequirement {
-  /// Returns reference to optional identifier for this [AuthorityRequirement].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [AuthorityRequirement].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [AuthorityRequirement].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [AuthorityRequirement].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [AuthorityRequirement].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 /// The class [KnowledgeSource] is used to model authoritative knowledge sources in a decision model.
 /// In a DRD, an instance of [KnowledgeSource] is represented by a `knowledge source` diagram element.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct KnowledgeSource {
   /// Optional identifier of this this [KnowledgeSource].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [KnowledgeSource].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [KnowledgeSource].
@@ -1314,29 +1029,6 @@ impl KnowledgeSource {
   /// Returns a reference to collection of [AuthorityRequirement].
   pub fn authority_requirements(&self) -> &Vec<AuthorityRequirement> {
     &self.authority_requirements
-  }
-}
-
-impl DmnElement for KnowledgeSource {
-  /// Returns reference to optional identifier for this [KnowledgeSource].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [KnowledgeSource].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [KnowledgeSource].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [KnowledgeSource].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [KnowledgeSource].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
   }
 }
 
@@ -1361,10 +1053,10 @@ pub enum InvocableInstance {
 /// A business knowledge model has an abstract part, representing reusable,
 /// invocable decision logic, and a concrete part, which mandates that the decision logic
 /// must be a single FEEL boxed function definition.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct BusinessKnowledgeModel {
   /// Optional identifier of this this [BusinessKnowledgeModel].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [BusinessKnowledgeModel].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [BusinessKnowledgeModel].
@@ -1402,29 +1094,6 @@ impl BusinessKnowledgeModel {
   }
 }
 
-impl DmnElement for BusinessKnowledgeModel {
-  /// Returns reference to optional identifier for this [BusinessKnowledgeModel].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [BusinessKnowledgeModel].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [BusinessKnowledgeModel].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [BusinessKnowledgeModel].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [BusinessKnowledgeModel].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl NamedElement for BusinessKnowledgeModel {
   /// Returns reference to the name of this [ItemDefinition].
   fn name(&self) -> &str {
@@ -1445,10 +1114,10 @@ impl RequiredVariable for BusinessKnowledgeModel {
 
 /// The [DecisionService] class is used to define named decision services
 /// against the decision model contained in an instance of [Definitions].
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct DecisionService {
   /// Optional identifier of this this [DecisionService].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [DecisionService].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [DecisionService].
@@ -1492,40 +1161,6 @@ impl DecisionService {
   }
 }
 
-impl DmnElement for DecisionService {
-  /// Returns reference to optional identifier for this [DecisionService].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [DecisionService].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [DecisionService].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [DecisionService].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [DecisionService].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
-impl NamedElement for DecisionService {
-  /// Returns reference to the name of this [ItemDefinition].
-  fn name(&self) -> &str {
-    &self.name
-  }
-  /// Returns a reference to `FEEL` name of this element.
-  fn feel_name(&self) -> &Name {
-    &self.feel_name
-  }
-}
-
 impl RequiredVariable for DecisionService {
   /// Returns reference to a variable for this [DecisionService].
   fn variable(&self) -> &InformationItem {
@@ -1547,10 +1182,10 @@ pub enum ItemDefinitionType {
 
 /// [ItemDefinition] is used to model the inputs of a decision,
 /// whose values are defined outside of the decision model.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, DmnElement)]
 pub struct ItemDefinition {
   /// Optional identifier of this this [ItemDefinition].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [ItemDefinition].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [ItemDefinition].
@@ -1618,29 +1253,6 @@ impl ItemDefinition {
   /// Returns a reference to an optional [FunctionItem] that compose this [ItemDefinition].
   pub fn function_item(&self) -> &Option<FunctionItem> {
     &self.function_item
-  }
-}
-
-impl DmnElement for ItemDefinition {
-  /// Returns reference to optional identifier for this [ItemDefinition].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [ItemDefinition].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [ItemDefinition].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [ItemDefinition].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [ItemDefinition].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
   }
 }
 
@@ -1720,10 +1332,10 @@ pub enum FunctionKind {
 
 /// [FunctionItem] defines the signature of a function:
 /// the parameters and the output type of the function.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct FunctionDefinition {
   /// Optional identifier of this this [FunctionDefinition].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [FunctionDefinition].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [FunctionDefinition].
@@ -1757,29 +1369,6 @@ impl FunctionDefinition {
   }
 }
 
-impl DmnElement for FunctionDefinition {
-  /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [FunctionDefinition].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [FunctionDefinition].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl Expression for FunctionDefinition {
   fn type_ref(&self) -> &Option<String> {
     &self.type_ref
@@ -1790,10 +1379,10 @@ impl Expression for FunctionDefinition {
 /// A [Relation] has a column instead of repeated `ContextEntry`s,
 /// and a `List` is used for every row, with one of the `List`’s
 /// expression for each column value.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct Relation {
   /// Optional identifier of this this [Relation].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [Relation].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [Relation].
@@ -1821,29 +1410,6 @@ impl Relation {
   }
 }
 
-impl DmnElement for Relation {
-  /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [FunctionDefinition].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [FunctionDefinition].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
-  }
-}
-
 impl Expression for Relation {
   fn type_ref(&self) -> &Option<String> {
     &self.type_ref
@@ -1851,10 +1417,10 @@ impl Expression for Relation {
 }
 
 /// A [List] is simply a list of elements, which are instances of [Expression]s.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct List {
   /// Optional identifier of this this [List].
-  pub(crate) id: String,
+  pub(crate) id: DmnId,
   /// Optional description of this [List].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [List].
@@ -1873,29 +1439,6 @@ impl List {
   /// Returns a reference to collection of list's elements.
   pub fn elements(&self) -> &Vec<ExpressionInstance> {
     &self.elements
-  }
-}
-
-impl DmnElement for List {
-  /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &String {
-    &self.id
-  }
-  /// Returns reference to optional description of this [FunctionDefinition].
-  fn description(&self) -> &Option<String> {
-    &self.description
-  }
-  /// Returns reference to optional alternative short description of this [FunctionDefinition].
-  fn label(&self) -> &Option<String> {
-    &self.label
-  }
-  /// Returns reference to attached additional elements to any [FunctionDefinition].
-  fn extension_elements(&self) -> &Vec<ExtensionElement> {
-    &self.extension_elements
-  }
-  /// Returns reference to attached named extended attributes and model associations to any [FunctionDefinition].
-  fn extension_attributes(&self) -> &Vec<ExtensionAttribute> {
-    &self.extension_attributes
   }
 }
 

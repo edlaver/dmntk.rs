@@ -1101,8 +1101,8 @@ fn required_name(node: &Node) -> Result<String> {
 }
 
 /// Returns optional identifier provided in model or generates a new one.
-fn optional_id(node: &Node) -> String {
-  optional_attribute(node, ATTR_ID).unwrap_or(gen_id())
+fn optional_id(node: &Node) -> DmnId {
+  optional_attribute(node, ATTR_ID).map(|id| DmnId::Provided(id)).unwrap_or(DmnId::Generated(gen_id()))
 }
 
 /// Returns FEEL name for specified node.

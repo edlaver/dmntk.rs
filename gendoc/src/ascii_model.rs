@@ -159,7 +159,7 @@ fn write_model(w: &mut dyn Write, definitions: &Definitions, colors: &Colors, in
     .child(build_feel_name(definitions.feel_name(), colors))
     .child(build_namespace_leaf(definitions.namespace(), colors))
     .opt_child(build_label(definitions.label(), colors))
-    .child(build_id(definitions.id(), colors))
+    .opt_child(build_id(definitions.opt_id(), colors))
     .opt_child(build_labeled_uri(LABEL_EXPRESSION_LANGUAGE, definitions.expression_language(), colors))
     .opt_child(build_labeled_uri(LABEL_TYPE_LANGUAGE, definitions.type_language(), colors))
     .opt_child(build_opt_labeled_text("exporter", definitions.exporter(), colors.default()))
@@ -181,7 +181,7 @@ fn write_decisions(w: &mut dyn Write, definitions: &Definitions, colors: &Colors
     let node_decision = builder_name(decision.name(), colors)
       .child(build_feel_name(decision.feel_name(), colors))
       .opt_child(build_label(decision.label(), colors))
-      .child(build_id(decision.id(), colors))
+      .opt_child(build_id(decision.opt_id(), colors))
       .opt_child(build_opt_labeled_multiline_text(LABEL_QUESTION, decision.question(), colors.default()))
       .opt_child(build_opt_labeled_multiline_text(LABEL_ALLOWED_ANSWERS, decision.allowed_answers(), colors.default()))
       .opt_child(build_description(decision.description(), colors))
@@ -205,7 +205,7 @@ fn write_business_knowledge_models(w: &mut dyn Write, definitions: &Definitions,
     let node_decision = builder_name(bkm.name(), colors)
       .child(build_feel_name(bkm.feel_name(), colors))
       .opt_child(build_label(bkm.label(), colors))
-      .child(build_id(bkm.id(), colors))
+      .opt_child(build_id(bkm.opt_id(), colors))
       .opt_child(build_description(bkm.description(), colors))
       .child(build_variable(bkm.variable(), colors))
       .opt_child(build_authority_requirements(bkm.authority_requirements(), colors))
@@ -227,7 +227,7 @@ fn write_decision_services(w: &mut dyn Write, definitions: &Definitions, colors:
     let node_decision = builder_name(decision_service.name(), colors)
       .child(build_feel_name(decision_service.feel_name(), colors))
       .opt_child(build_label(decision_service.label(), colors))
-      .child(build_id(decision_service.id(), colors))
+      .opt_child(build_id(decision_service.opt_id(), colors))
       .opt_child(build_description(decision_service.description(), colors))
       .child(build_variable(decision_service.variable(), colors))
       .opt_child(build_extension_elements(decision_service.extension_elements(), colors))
@@ -248,7 +248,7 @@ fn write_knowledge_sources(w: &mut dyn Write, definitions: &Definitions, colors:
     let node_decision = builder_name(knowledge_source.name(), colors)
       .child(build_feel_name(knowledge_source.feel_name(), colors))
       .opt_child(build_label(knowledge_source.label(), colors))
-      .child(build_id(knowledge_source.id(), colors))
+      .opt_child(build_id(knowledge_source.opt_id(), colors))
       .opt_child(build_description(knowledge_source.description(), colors))
       .opt_child(build_extension_elements(knowledge_source.extension_elements(), colors))
       .opt_child(build_extension_attributes(knowledge_source.extension_attributes(), colors))
@@ -269,7 +269,7 @@ fn write_input_data(w: &mut dyn Write, definitions: &Definitions, colors: &Color
     let node_input = builder_name(input.name(), colors)
       .child(build_feel_name(input.feel_name(), colors))
       .opt_child(build_label(input.label(), colors))
-      .child(build_id(input.id(), colors))
+      .opt_child(build_id(input.opt_id(), colors))
       .opt_child(build_description(input.description(), colors))
       .child(build_variable(input.variable(), colors))
       .opt_child(build_extension_elements(input.extension_elements(), colors))
@@ -296,7 +296,7 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
     let node_performance_indicator = builder_name(performance_indicator.name(), colors)
       .child(build_feel_name(performance_indicator.feel_name(), colors))
       .opt_child(build_label(performance_indicator.label(), colors))
-      .child(build_id(performance_indicator.id(), colors))
+      .opt_child(build_id(performance_indicator.opt_id(), colors))
       .opt_child(build_description(performance_indicator.description(), colors))
       .opt_child(build_uri(performance_indicator.uri(), colors))
       .child(node_impacting_decisions)
@@ -330,7 +330,7 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
     let node_organisation_unit = builder_name(organisation_units.name(), colors)
       .child(build_feel_name(organisation_units.feel_name(), colors))
       .opt_child(build_label(organisation_units.label(), colors))
-      .child(build_id(organisation_units.id(), colors))
+      .opt_child(build_id(organisation_units.opt_id(), colors))
       .opt_child(build_description(organisation_units.description(), colors))
       .opt_child(build_uri(organisation_units.uri(), colors))
       .child(node_decisions_made)
@@ -359,8 +359,8 @@ fn build_feel_name(feel_name: &Name, colors: &Colors) -> AsciiNode {
 }
 
 /// Builds a leaf node containing the value of the identifier.
-fn build_id(id: &str, colors: &Colors) -> AsciiNode {
-  build_labeled_text(LABEL_ID, id, colors.id())
+fn build_id(id: Option<&String>, colors: &Colors) -> Option<AsciiNode> {
+  build_opt_labeled_text(LABEL_ID, &id.cloned(), colors.id())
 }
 
 /// Builds a leaf node containing description.
@@ -405,7 +405,7 @@ fn build_variable(variable: &InformationItem, colors: &Colors) -> AsciiNode {
   AsciiNode::node_builder(AsciiLine::builder().text(LABEL_VARIABLE).build())
     .child(build_name(variable.name(), colors))
     .child(build_feel_name(variable.feel_name(), colors))
-    .child(build_id(variable.id(), colors))
+    .opt_child(build_id(variable.opt_id(), colors))
     .opt_child(build_label(variable.label(), colors))
     .opt_child(build_type(variable.type_ref(), colors))
     .opt_child(build_description(variable.description(), colors))
@@ -427,7 +427,7 @@ fn build_authority_requirements(authority_requirements: &Vec<AuthorityRequiremen
     let mut authority_requirements_builder = AsciiNode::node_builder(AsciiLine::builder().text("authority requirements:").build());
     for authority_requirement in authority_requirements {
       let a = AsciiNode::node_builder(AsciiLine::builder().text("authority requirement").build())
-        .child(build_id(authority_requirement.id(), colors))
+        .opt_child(build_id(authority_requirement.opt_id(), colors))
         .opt_child(build_label(authority_requirement.label(), colors))
         .opt_child(build_description(authority_requirement.description(), colors))
         .opt_child(build_extension_elements(authority_requirement.extension_elements(), colors))
