@@ -128,7 +128,7 @@ mod tests {
   fn test_feel_grammar() {
     let len = FEEL_GRAMMAR.len();
     assert!(len > 1000);
-    assert_eq!("%start feel", &FEEL_GRAMMAR[1339..1350]);
+    assert_eq!("%start feel", &FEEL_GRAMMAR[1341..1352]);
     assert_eq!("%%\n", &FEEL_GRAMMAR[len - 3..]);
   }
 
