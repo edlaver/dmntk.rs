@@ -51,9 +51,13 @@ pub const URI_XML_SCHEMA: &str = "http://www.w3.org/2001/XMLSchema";
 /// It provides the optional attributes `id`, `description` and `label`,
 /// which other elements will inherit.
 pub trait DmnElement {
-  /// Returns reference to optional identifier for this [DmnElement].
+  /// Returns a reference to identifier for this [DmnElement].
   /// This identifier SHALL be unique within its containing [Definitions] element.
-  fn id(&self) -> &Option<String>;
+  /// Specification defines this identifier as optional, but this implementation
+  /// makes it mandatory for simplicity. When this identifier is not provided in the
+  /// model, a new unique UUID identifier is generated. This should not conflicting
+  /// with any other identifier.
+  fn id(&self) -> &String;
   /// Returns reference to optional description of this [DmnElement].
   fn description(&self) -> &Option<String>;
   /// Returns reference to optional alternative short description of this [DmnElement].
@@ -140,7 +144,7 @@ pub enum BusinessContextElementInstance {
 #[derive(Debug, Clone)]
 pub struct PerformanceIndicator {
   /// Optional identifier of this this [PerformanceIndicator].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [PerformanceIndicator].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [PerformanceIndicator].
@@ -162,7 +166,7 @@ pub struct PerformanceIndicator {
 
 impl DmnElement for PerformanceIndicator {
   /// Returns reference to optional identifier for this [PerformanceIndicator].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [PerformanceIndicator].
@@ -211,7 +215,7 @@ impl PerformanceIndicator {
 #[derive(Debug, Clone)]
 pub struct OrganizationUnit {
   /// Optional identifier of this this [OrganizationUnit].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [OrganizationUnit].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [OrganizationUnit].
@@ -234,7 +238,7 @@ pub struct OrganizationUnit {
 
 impl DmnElement for OrganizationUnit {
   /// Returns reference to optional identifier for this [OrganizationUnit].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [OrganizationUnit].
@@ -307,7 +311,7 @@ pub enum Requirement {
 #[derive(Debug, Clone)]
 pub struct Definitions {
   /// Optional identifier for this [Definitions] derived from [DMNElement](DmnElement).
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [Definitions] derived from [DMNElement](DmnElement).
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [Definitions] derived from [DMNElement](DmnElement).
@@ -501,10 +505,8 @@ impl Definitions {
   pub fn get_decision(&self, id: &str) -> Option<Decision> {
     for drg_element in &self.drg_elements {
       if let DrgElement::Decision(decision) = drg_element {
-        if let Some(decision_id) = decision.id() {
-          if decision_id == id {
-            return Some(decision.clone());
-          }
+        if decision.id() == id {
+          return Some(decision.clone());
         }
       }
     }
@@ -515,10 +517,8 @@ impl Definitions {
   pub fn get_input_data(&self, id: &str) -> Option<InputData> {
     for drg_element in &self.drg_elements {
       if let DrgElement::InputData(input_data) = drg_element {
-        if let Some(decision_id) = input_data.id() {
-          if decision_id == id {
-            return Some(input_data.clone());
-          }
+        if input_data.id() == id {
+          return Some(input_data.clone());
         }
       }
     }
@@ -529,10 +529,8 @@ impl Definitions {
   pub fn get_business_knowledge_model(&self, id: &str) -> Option<BusinessKnowledgeModel> {
     for drg_element in &self.drg_elements {
       if let DrgElement::BusinessKnowledgeModel(business_knowledge_model) = drg_element {
-        if let Some(decision_id) = business_knowledge_model.id() {
-          if decision_id == id {
-            return Some(business_knowledge_model.clone());
-          }
+        if business_knowledge_model.id() == id {
+          return Some(business_knowledge_model.clone());
         }
       }
     }
@@ -543,10 +541,8 @@ impl Definitions {
   pub fn get_knowledge_source(&self, id: &str) -> Option<KnowledgeSource> {
     for drg_element in &self.drg_elements {
       if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
-        if let Some(decision_id) = knowledge_source.id() {
-          if decision_id == id {
-            return Some(knowledge_source.clone());
-          }
+        if knowledge_source.id() == id {
+          return Some(knowledge_source.clone());
         }
       }
     }
@@ -558,50 +554,38 @@ impl Definitions {
     for drg_element in &self.drg_elements {
       match drg_element {
         DrgElement::Decision(decision) => {
-          for r in &decision.knowledge_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Knowledge(r.clone()));
-              }
+          for knowledge_requirement in &decision.knowledge_requirements {
+            if knowledge_requirement.id() == id {
+              return Some(Requirement::Knowledge(knowledge_requirement.clone()));
             }
           }
-          for r in &decision.information_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Information(r.clone()));
-              }
+          for information_requirement in &decision.information_requirements {
+            if information_requirement.id() == id {
+              return Some(Requirement::Information(information_requirement.clone()));
             }
           }
-          for r in &decision.authority_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Authority(r.clone()));
-              }
+          for authority_requirement in &decision.authority_requirements {
+            if authority_requirement.id() == id {
+              return Some(Requirement::Authority(authority_requirement.clone()));
             }
           }
         }
         DrgElement::BusinessKnowledgeModel(business_knowledge_model) => {
-          for r in &business_knowledge_model.knowledge_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Knowledge(r.clone()));
-              }
+          for knowledge_requirement in &business_knowledge_model.knowledge_requirements {
+            if knowledge_requirement.id() == id {
+              return Some(Requirement::Knowledge(knowledge_requirement.clone()));
             }
           }
-          for r in &business_knowledge_model.authority_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Authority(r.clone()));
-              }
+          for authority_requirement in &business_knowledge_model.authority_requirements {
+            if authority_requirement.id() == id {
+              return Some(Requirement::Authority(authority_requirement.clone()));
             }
           }
         }
         DrgElement::KnowledgeSource(knowledge_source) => {
-          for r in &knowledge_source.authority_requirements {
-            if let Some(r_id) = r.id() {
-              if r_id == id {
-                return Some(Requirement::Authority(r.clone()));
-              }
+          for authority_requirement in &knowledge_source.authority_requirements {
+            if authority_requirement.id() == id {
+              return Some(Requirement::Authority(authority_requirement.clone()));
             }
           }
         }
@@ -614,7 +598,7 @@ impl Definitions {
 
 impl DmnElement for Definitions {
   /// Returns reference to optional identifier for this [Definitions].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [Definitions].
@@ -649,7 +633,7 @@ impl NamedElement for Definitions {
 #[derive(Debug, Clone, PartialEq)]
 pub struct InformationItem {
   /// Optional identifier of this this [InformationItem].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [InformationItem].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [InformationItem].
@@ -677,7 +661,7 @@ impl InformationItem {
 
 impl DmnElement for InformationItem {
   /// Returns reference to optional identifier for this [InformationItem].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [InformationItem].
@@ -725,7 +709,7 @@ impl FeelTypedElement for InformationItem {
 #[derive(Debug, Clone)]
 pub struct InputData {
   /// Optional identifier of this this [InputData].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [InputData].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [InputData].
@@ -751,7 +735,7 @@ impl RequiredVariable for InputData {
 
 impl DmnElement for InputData {
   /// Returns reference to optional identifier for this [InputData].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [InputData].
@@ -790,7 +774,7 @@ impl NamedElement for InputData {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Import {
   /// Optional identifier of this this [Import].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [Import].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [Import].
@@ -815,7 +799,7 @@ pub struct Import {
 
 impl DmnElement for Import {
   /// Returns reference to optional identifier for this [InputData].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
 
@@ -915,7 +899,7 @@ pub struct ContextEntry {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LiteralExpression {
   /// Optional identifier of this this [LiteralExpression].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [LiteralExpression].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of this [LiteralExpression].
@@ -953,7 +937,7 @@ impl LiteralExpression {
 
 impl DmnElement for LiteralExpression {
   /// Returns reference to optional identifier for this [LiteralExpression].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [LiteralExpression].
@@ -1028,7 +1012,7 @@ impl Binding {
 #[derive(Debug, Clone)]
 pub struct Decision {
   /// Identifier of the [Decision].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Description of the [Decision].
   pub(crate) description: Option<String>,
   /// An alternative short description of the [Decision].
@@ -1099,7 +1083,7 @@ impl Decision {
 
 impl DmnElement for Decision {
   /// Returns reference to optional identifier for this [Decision].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [Decision].
@@ -1136,7 +1120,7 @@ impl NamedElement for Decision {
 #[derive(Debug, Clone)]
 pub struct InformationRequirement {
   /// Optional identifier of the [InformationRequirement].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of the [InformationRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [InformationRequirement].
@@ -1167,7 +1151,7 @@ impl InformationRequirement {
 
 impl DmnElement for InformationRequirement {
   /// Returns reference to optional identifier for this [InformationRequirement].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
 
@@ -1197,7 +1181,7 @@ impl DmnElement for InformationRequirement {
 #[derive(Debug, Clone)]
 pub struct KnowledgeRequirement {
   /// Optional identifier of the [KnowledgeRequirement].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of the [KnowledgeRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [KnowledgeRequirement].
@@ -1220,7 +1204,7 @@ impl KnowledgeRequirement {
 
 impl DmnElement for KnowledgeRequirement {
   /// Returns reference to optional identifier for this [KnowledgeRequirement].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [KnowledgeRequirement].
@@ -1246,7 +1230,7 @@ impl DmnElement for KnowledgeRequirement {
 #[derive(Debug, Clone)]
 pub struct AuthorityRequirement {
   /// Optional identifier of the [AuthorityRequirement].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of the [AuthorityRequirement].
   pub(crate) description: Option<String>,
   /// An optional alternative short description of the [AuthorityRequirement].
@@ -1283,7 +1267,7 @@ impl AuthorityRequirement {
 
 impl DmnElement for AuthorityRequirement {
   /// Returns reference to optional identifier for this [AuthorityRequirement].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [AuthorityRequirement].
@@ -1309,7 +1293,7 @@ impl DmnElement for AuthorityRequirement {
 #[derive(Debug, Clone)]
 pub struct KnowledgeSource {
   /// Optional identifier of this this [KnowledgeSource].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [KnowledgeSource].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [KnowledgeSource].
@@ -1335,7 +1319,7 @@ impl KnowledgeSource {
 
 impl DmnElement for KnowledgeSource {
   /// Returns reference to optional identifier for this [KnowledgeSource].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [KnowledgeSource].
@@ -1380,7 +1364,7 @@ pub enum InvocableInstance {
 #[derive(Debug, Clone)]
 pub struct BusinessKnowledgeModel {
   /// Optional identifier of this this [BusinessKnowledgeModel].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [BusinessKnowledgeModel].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [BusinessKnowledgeModel].
@@ -1420,7 +1404,7 @@ impl BusinessKnowledgeModel {
 
 impl DmnElement for BusinessKnowledgeModel {
   /// Returns reference to optional identifier for this [BusinessKnowledgeModel].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [BusinessKnowledgeModel].
@@ -1464,7 +1448,7 @@ impl RequiredVariable for BusinessKnowledgeModel {
 #[derive(Debug, Clone)]
 pub struct DecisionService {
   /// Optional identifier of this this [DecisionService].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [DecisionService].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [DecisionService].
@@ -1510,7 +1494,7 @@ impl DecisionService {
 
 impl DmnElement for DecisionService {
   /// Returns reference to optional identifier for this [DecisionService].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [DecisionService].
@@ -1566,7 +1550,7 @@ pub enum ItemDefinitionType {
 #[derive(Debug, Clone)]
 pub struct ItemDefinition {
   /// Optional identifier of this this [ItemDefinition].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [ItemDefinition].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [ItemDefinition].
@@ -1639,7 +1623,7 @@ impl ItemDefinition {
 
 impl DmnElement for ItemDefinition {
   /// Returns reference to optional identifier for this [ItemDefinition].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [ItemDefinition].
@@ -1739,7 +1723,7 @@ pub enum FunctionKind {
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionDefinition {
   /// Optional identifier of this this [FunctionDefinition].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [FunctionDefinition].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [FunctionDefinition].
@@ -1775,7 +1759,7 @@ impl FunctionDefinition {
 
 impl DmnElement for FunctionDefinition {
   /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [FunctionDefinition].
@@ -1809,7 +1793,7 @@ impl Expression for FunctionDefinition {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Relation {
   /// Optional identifier of this this [Relation].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [Relation].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [Relation].
@@ -1839,7 +1823,7 @@ impl Relation {
 
 impl DmnElement for Relation {
   /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [FunctionDefinition].
@@ -1870,7 +1854,7 @@ impl Expression for Relation {
 #[derive(Debug, Clone, PartialEq)]
 pub struct List {
   /// Optional identifier of this this [List].
-  pub(crate) id: Option<String>,
+  pub(crate) id: String,
   /// Optional description of this [List].
   pub(crate) description: Option<String>,
   /// Optional alternative short description of this [List].
@@ -1894,7 +1878,7 @@ impl List {
 
 impl DmnElement for List {
   /// Returns reference to optional identifier for this [FunctionDefinition].
-  fn id(&self) -> &Option<String> {
+  fn id(&self) -> &String {
     &self.id
   }
   /// Returns reference to optional description of this [FunctionDefinition].

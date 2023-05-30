@@ -37,7 +37,7 @@ use dmntk_examples::DMN_FULL;
 #[test]
 fn _0001() {
   let definitions = parse(DMN_FULL).unwrap();
-  assert_eq!("_id_definitions", definitions.id().as_ref().unwrap());
+  assert_eq!("_id_definitions", definitions.id());
   //------------------------------------------------------------------------------------------------
   // ITEM DEFINITIONS
   //------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ fn _0001() {
 fn _0002() {
   let definitions = parse(DMN_FULL).unwrap();
   let cloned_definitions = definitions.clone();
-  assert_eq!("_id_definitions", cloned_definitions.id().as_ref().unwrap());
+  assert_eq!("_id_definitions", cloned_definitions.id());
   let expected = format!("{definitions:?}");
   assert_eq!(expected, format!("{cloned_definitions:?}"));
 }

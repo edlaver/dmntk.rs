@@ -34,20 +34,23 @@
 
 use crate::errors::err_invalid_item_definition_type;
 use crate::type_ref::type_ref_to_feel_type;
-use dmntk_common::{gen_id, HRef, Result};
+use dmntk_common::{HRef, Result};
 use dmntk_feel::Name;
 use dmntk_model::model::*;
 use std::collections::HashMap;
 
+/// Information item definition (variable properties).
 #[derive(Debug)]
 pub struct DefInformationItem {
+  /// Variable name.
   name: Name,
+  /// Variable type reference.
   type_ref: Option<String>,
 }
 
-impl From<(&Option<Name>, &InformationItem)> for DefInformationItem {
+impl From<&InformationItem> for DefInformationItem {
   ///
-  fn from((_, information_item): (&Option<Name>, &InformationItem)) -> Self {
+  fn from(information_item: &InformationItem) -> Self {
     Self {
       name: information_item.feel_name().clone(),
       type_ref: information_item.type_ref().clone(),
@@ -74,13 +77,13 @@ pub struct DefInputData {
   variable: DefInformationItem,
 }
 
-impl From<(&Option<Name>, &InputData)> for DefInputData {
+impl From<&InputData> for DefInputData {
   ///
-  fn from((opt_import_name, input_data): (&Option<Name>, &InputData)) -> Self {
+  fn from(input_data: &InputData) -> Self {
     Self {
-      id: generate_id(input_data.id()),
+      id: input_data.id().to_string(),
       name: input_data.name().to_string(),
-      variable: (opt_import_name, input_data.variable()).into(),
+      variable: input_data.variable().into(),
     }
   }
 }
@@ -114,18 +117,18 @@ pub struct DefItemDefinition {
   is_collection: bool,
 }
 
-impl From<(&Option<Name>, &ItemDefinition)> for DefItemDefinition {
+impl From<&ItemDefinition> for DefItemDefinition {
   ///
-  fn from((opt_import_name, input_data): (&Option<Name>, &ItemDefinition)) -> Self {
+  fn from(item_definition: &ItemDefinition) -> Self {
     Self {
-      id: generate_id(input_data.id()),
-      name: input_data.name().to_string(),
-      feel_name: input_data.feel_name().clone(),
-      type_ref: input_data.type_ref().clone(),
-      allowed_values: input_data.allowed_values().clone(),
-      item_components: input_data.item_components().iter().map(|a| (opt_import_name, a).into()).collect(),
-      function_item: input_data.function_item().clone(),
-      is_collection: input_data.is_collection(),
+      id: item_definition.id().to_string(),
+      name: item_definition.name().to_string(),
+      feel_name: item_definition.feel_name().clone(),
+      type_ref: item_definition.type_ref().clone(),
+      allowed_values: item_definition.allowed_values().clone(),
+      item_components: item_definition.item_components().iter().map(|inner| inner.into()).collect(),
+      function_item: item_definition.function_item().clone(),
+      is_collection: item_definition.is_collection(),
     }
   }
 }
@@ -203,15 +206,13 @@ pub struct DefBusinessKnowledgeModel {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<(&Option<Name>, &BusinessKnowledgeModel)> for DefBusinessKnowledgeModel {
+impl From<&BusinessKnowledgeModel> for DefBusinessKnowledgeModel {
   ///
-  fn from(value: (&Option<Name>, &BusinessKnowledgeModel)) -> Self {
-    let opt_import_name = value.0;
-    let business_knowledge_model = value.1;
+  fn from(business_knowledge_model: &BusinessKnowledgeModel) -> Self {
     Self {
-      id: generate_id(business_knowledge_model.id()),
+      id: business_knowledge_model.id().to_string(),
       name: business_knowledge_model.name().to_string(),
-      variable: (opt_import_name, business_knowledge_model.variable()).into(),
+      variable: business_knowledge_model.variable().into(),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
       knowledge_requirements: business_knowledge_model.knowledge_requirements().clone(),
     }
@@ -255,13 +256,13 @@ pub struct DefDecision {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<(&Option<Name>, &Decision)> for DefDecision {
-  ///
-  fn from((opt_import_name, decision): (&Option<Name>, &Decision)) -> Self {
+impl From<&Decision> for DefDecision {
+  /// Convert [DefDecision] from [Decision].
+  fn from(decision: &Decision) -> Self {
     Self {
-      id: generate_id(decision.id()),
+      id: decision.id().to_string(),
       name: decision.name().to_string(),
-      variable: (opt_import_name, decision.variable()).into(),
+      variable: decision.variable().into(),
       decision_logic: decision.decision_logic().clone(),
       information_requirements: decision.information_requirements().clone(),
       knowledge_requirements: decision.knowledge_requirements().clone(),
@@ -312,13 +313,13 @@ pub struct DefDecisionService {
   input_data: Vec<HRef>,
 }
 
-impl From<(&Option<Name>, &DecisionService)> for DefDecisionService {
+impl From<&DecisionService> for DefDecisionService {
   ///
-  fn from((opt_import_name, decision_service): (&Option<Name>, &DecisionService)) -> Self {
+  fn from(decision_service: &DecisionService) -> Self {
     Self {
-      id: generate_id(decision_service.id()),
+      id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
-      variable: (opt_import_name, decision_service.variable()).into(),
+      variable: decision_service.variable().into(),
       input_decisions: decision_service.input_decisions().clone(),
       output_decisions: decision_service.output_decisions().clone(),
       encapsulated_decisions: decision_service.encapsulated_decisions().clone(),
@@ -389,40 +390,37 @@ impl From<Definitions> for DefDefinitions {
 impl From<&Definitions> for DefDefinitions {
   ///
   fn from(definitions: &Definitions) -> Self {
-    Self::from(&vec![(None, definitions)])
+    Self::from(&vec![definitions])
   }
 }
 
-impl From<&Vec<(Option<Name>, &Definitions)>> for DefDefinitions {
+impl From<&Vec<&Definitions>> for DefDefinitions {
   ///
-  fn from(defs: &Vec<(Option<Name>, &Definitions)>) -> Self {
+  fn from(defs: &Vec<&Definitions>) -> Self {
     let mut item_definitions = vec![];
     let mut input_data = HashMap::new();
     let mut business_knowledge_models = HashMap::new();
     let mut decisions = HashMap::new();
     let mut decision_services = HashMap::new();
     let mut knowledge_sources = HashMap::new();
-    for (opt_import_name, definitions) in defs {
-      let namespace = if opt_import_name.is_some() { Some(definitions.namespace()) } else { None };
-      item_definitions.append(&mut definitions.item_definitions().iter().map(|a| (opt_import_name, a).into()).collect());
+    for definitions in defs {
+      item_definitions.append(&mut definitions.item_definitions().iter().map(|inner_item_definition| inner_item_definition.into()).collect());
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
-            input_data.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
+            input_data.insert(inner.id().to_string(), inner.into());
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
+            business_knowledge_models.insert(inner.id().to_string(), inner.into());
           }
           DrgElement::Decision(inner) => {
-            decisions.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
+            decisions.insert(inner.id().to_string(), inner.into());
           }
           DrgElement::DecisionService(inner) => {
-            decision_services.insert(prepare_id(namespace, inner.id()), (opt_import_name, inner).into());
+            decision_services.insert(inner.id().to_string(), inner.into());
           }
           DrgElement::KnowledgeSource(inner) => {
-            if let Some(id) = inner.id() {
-              knowledge_sources.insert(id.clone(), inner.clone());
-            }
+            knowledge_sources.insert(inner.id().to_string(), inner.clone());
           }
         }
       }
@@ -493,20 +491,5 @@ impl DefDefinitions {
   /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
   pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
     self.knowledge_sources.get(id)
-  }
-}
-
-/// Generates a new identifier when not provided.
-fn generate_id(opt_id: &Option<String>) -> String {
-  opt_id.as_ref().unwrap_or(&gen_id()).clone()
-}
-
-/// Prepares UUID based on provided optional namespace and optional identifier.
-fn prepare_id(opt_namespace: Option<&str>, opt_id: &Option<String>) -> String {
-  let id = opt_id.as_ref().unwrap_or(&gen_id()).clone();
-  if let Some(namespace) = opt_namespace {
-    format!("{namespace}#{id}")
-  } else {
-    id
   }
 }

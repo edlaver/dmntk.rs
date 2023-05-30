@@ -35,7 +35,7 @@
 use crate::errors::*;
 use crate::model::*;
 use crate::xml_utils::*;
-use dmntk_common::{HRef, OptHRef, Result};
+use dmntk_common::{gen_id, HRef, OptHRef, Result};
 use dmntk_feel::Name;
 use roxmltree::Node;
 
@@ -174,7 +174,7 @@ impl ModelParser {
     let definitions = Definitions {
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -207,7 +207,7 @@ impl ModelParser {
     Ok(ItemDefinition {
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -259,7 +259,7 @@ impl ModelParser {
     let mut input_data_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_INPUT_DATA) {
       let input_data = InputData {
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -279,7 +279,7 @@ impl ModelParser {
       let decision = Decision {
         name: required_name(child_node)?,
         feel_name: required_feel_name(child_node)?,
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -303,7 +303,7 @@ impl ModelParser {
       let business_knowledge_model = BusinessKnowledgeModel {
         name: required_name(child_node)?,
         feel_name: required_feel_name(child_node)?,
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -324,7 +324,7 @@ impl ModelParser {
       let decision_service = DecisionService {
         name: required_name(child_node)?,
         feel_name: required_feel_name(child_node)?,
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -344,7 +344,7 @@ impl ModelParser {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_KNOWLEDGE_SOURCE) {
       let knowledge_source = KnowledgeSource {
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -386,7 +386,7 @@ impl ModelParser {
 
   fn parse_function_definition(&self, node: &Node) -> Result<FunctionDefinition> {
     Ok(FunctionDefinition {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -416,7 +416,7 @@ impl ModelParser {
     let mut business_context_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_PERFORMANCE_INDICATOR) {
       let performance_indicator = PerformanceIndicator {
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -430,7 +430,7 @@ impl ModelParser {
     }
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_ORGANISATION_UNIT) {
       let organisation_unit = OrganizationUnit {
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -451,7 +451,7 @@ impl ModelParser {
     let mut imports = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_IMPORT) {
       let import = Import {
-        id: optional_attribute(child_node, ATTR_ID),
+        id: optional_id(child_node),
         description: optional_child_optional_content(child_node, NODE_DESCRIPTION),
         label: optional_attribute(child_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(child_node),
@@ -496,7 +496,7 @@ impl ModelParser {
   /// Parses the attributes of [InformationItem].
   fn parse_information_item(&self, node: &Node) -> Result<InformationItem> {
     Ok(InformationItem {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -518,7 +518,7 @@ impl ModelParser {
 
   fn parse_information_requirement(&mut self, node: &Node) -> Result<InformationRequirement> {
     let req = InformationRequirement {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -539,7 +539,7 @@ impl ModelParser {
 
   fn parse_knowledge_requirement(&mut self, node: &Node) -> Result<KnowledgeRequirement> {
     let req = KnowledgeRequirement {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -559,7 +559,7 @@ impl ModelParser {
 
   fn parse_authority_requirement(&mut self, node: &Node) -> Result<AuthorityRequirement> {
     let req = AuthorityRequirement {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -764,7 +764,7 @@ impl ModelParser {
   /// The `literal_expression_node` must be a node named `literalExpression`.
   fn parse_literal_expression(&self, node: &Node) -> LiteralExpression {
     LiteralExpression {
-      id: optional_attribute(node, ATTR_ID),
+      id: optional_id(node),
       description: optional_child_optional_content(node, NODE_DESCRIPTION),
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
@@ -795,7 +795,7 @@ impl ModelParser {
           return Err(err_number_of_elements_in_row_differs_from_number_of_columns());
         }
         rows.push(List {
-          id: optional_attribute(row_node, ATTR_ID),
+          id: optional_id(row_node),
           description: optional_child_optional_content(row_node, NODE_DESCRIPTION),
           label: optional_attribute(row_node, ATTR_LABEL),
           extension_elements: self.parse_extension_elements(row_node),
@@ -805,7 +805,7 @@ impl ModelParser {
         });
       }
       return Ok(Some(Relation {
-        id: optional_attribute(relation_node, ATTR_ID),
+        id: optional_id(relation_node),
         description: optional_child_optional_content(relation_node, NODE_DESCRIPTION),
         label: optional_attribute(relation_node, ATTR_LABEL),
         extension_elements: self.parse_extension_elements(relation_node),
@@ -1098,6 +1098,11 @@ impl ModelParser {
 /// Returns required name attribute for specified node.
 fn required_name(node: &Node) -> Result<String> {
   required_attribute(node, ATTR_NAME)
+}
+
+/// Returns optional identifier provided in model or generates a new one.
+fn optional_id(node: &Node) -> String {
+  optional_attribute(node, ATTR_ID).unwrap_or(gen_id())
 }
 
 /// Returns FEEL name for specified node.
