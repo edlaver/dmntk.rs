@@ -36,7 +36,7 @@ use crate::errors::*;
 use crate::model::*;
 use crate::xml_utils::*;
 use dmntk_common::{gen_id, HRef, OptHRef, Result};
-use dmntk_feel::Name;
+use dmntk_feel::{Name, FEEL_TYPE_NAME_ANY};
 use roxmltree::Node;
 
 // XML node names
@@ -518,7 +518,7 @@ impl ModelParser {
       extension_attributes: self.parse_extension_attributes(node),
       name: required_name(node)?,
       feel_name: required_feel_name(node)?,
-      type_ref: optional_attribute(node, ATTR_TYPE_REF).unwrap_or("Any".to_string()),
+      type_ref: optional_attribute(node, ATTR_TYPE_REF).unwrap_or(FEEL_TYPE_NAME_ANY.to_string()),
       feel_type: None,
     })
   }
