@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! # Decisions' evaluator builder
+//! # Builder for decision evaluators
 
 use crate::boxed_expressions::{bring_knowledge_requirements_into_context, build_expression_instance_evaluator};
 use crate::model_builder::ModelBuilder;
