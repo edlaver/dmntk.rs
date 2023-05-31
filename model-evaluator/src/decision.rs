@@ -48,7 +48,7 @@ use std::sync::Arc;
 /// (input data, model evaluator, output data) -> Output variable name
 type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
-///
+/// Type alias for decision's output variable combined with decision's evaluator function.
 type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 
 /// Decision evaluator.
@@ -109,13 +109,13 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   let output_variable_type = output_variable.feel_type().clone();
 
   // holds variables for required decisions and required knowledge
-  let mut knowledge_requirements_ctx = FeelContext::default();
+  let mut requirements_ctx = FeelContext::default();
 
   // hods variables for required inputs
   let mut input_requirements_ctx = FeelContext::default();
 
   // bring into context the variables from this decision's knowledge requirements
-  bring_knowledge_requirements_into_context(definitions, decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
+  bring_knowledge_requirements_into_context(definitions, decision.knowledge_requirements(), &mut requirements_ctx)?;
 
   // bring into context the variables from information requirements
   for information_requirement in decision.information_requirements() {
@@ -129,10 +129,8 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
         } else {
           "Any".to_string()
         };
-        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut knowledge_requirements_ctx);
-        knowledge_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
-        // bring into context the variables from this required decision's knowledge requirements
-        bring_knowledge_requirements_into_context(definitions, required_decision.knowledge_requirements(), &mut knowledge_requirements_ctx)?;
+        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut requirements_ctx);
+        requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }
     // bring into context the variable from required input
@@ -146,7 +144,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   }
 
   // prepare a scope and build expression instance evaluator
-  let scope: FeelScope = knowledge_requirements_ctx.into();
+  let scope: FeelScope = requirements_ctx.into();
   scope.push(input_requirements_ctx.clone());
 
   // prepare expression instance for this decision
