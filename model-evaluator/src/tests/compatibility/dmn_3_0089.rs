@@ -33,15 +33,7 @@
 use super::super::*;
 use dmntk_examples::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| {
-  build_model_evaluators(&[
-    (Some("modelA".into()), DMN_3_0089_MODEL_A),
-    (Some("Model B".into()), DMN_3_0089_MODEL_B),
-    (Some("Model B2".into()), DMN_3_0089_MODEL_B2),
-    (None, DMN_3_0089),
-  ])
-});
-
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B, DMN_3_0089_MODEL_B2, DMN_3_0089]));
 static MODEL_EVALUATOR_A: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(DMN_3_0089_MODEL_A));
 
 #[test]

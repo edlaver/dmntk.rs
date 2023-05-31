@@ -72,7 +72,7 @@ impl DecisionEvaluator {
       let decision_id = decision.id().to_string();
       let decision_name = decision.name().to_string();
       evaluators.insert(decision_id.to_string(), evaluator_entry);
-      model_builder.add_invocable_decision(decision_name, decision_id);
+      model_builder.add_decision_invocable(decision_name, decision_id);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }

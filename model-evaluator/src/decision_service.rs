@@ -68,11 +68,11 @@ impl DecisionServiceEvaluator {
   pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
     let mut evaluators = HashMap::new();
     for decision_service in definitions.decision_services() {
-      let decision_service_id = decision_service.id();
-      let decision_service_name = &decision_service.name().to_string();
+      let decision_service_id = decision_service.id().to_string();
+      let decision_service_name = decision_service.name().to_string();
       let evaluator = build_decision_service_evaluator(decision_service, model_builder)?;
       evaluators.insert(decision_service_id.to_owned(), evaluator);
-      model_builder.add_invocable_decision_service(decision_service_name, decision_service_id);
+      model_builder.add_decision_service_invocable(decision_service_name, decision_service_id);
     }
     Ok(Self {
       evaluators: RwLock::new(evaluators),
