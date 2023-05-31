@@ -30,29 +30,14 @@
  * limitations under the License.
  */
 
-#[macro_use]
-extern crate dmntk_macros;
+//! # Model's bundle evaluator
 
-mod boxed_expressions;
-mod bundle_evaluator;
-mod business_knowledge_model;
-mod decision;
-mod decision_service;
-mod decision_table;
-mod errors;
-mod input_data;
-mod input_data_context;
-mod item_definition;
-mod item_definition_context;
-mod item_definition_type;
-mod model_builder;
-mod model_definitions;
-mod model_evaluator;
-mod type_ref;
-mod variable;
+use crate::ModelEvaluator;
+use std::collections::HashMap;
 
-#[cfg(test)]
-mod tests;
-
-pub use decision_table::build_decision_table_evaluator;
-pub use model_evaluator::ModelEvaluator;
+/// Evaluator for a bundle of models.
+#[allow(dead_code)]
+pub struct BundleEvaluator {
+  /// Map of model evaluators indexed by model's namespace.
+  model_evaluators: HashMap<String, ModelEvaluator>,
+}
