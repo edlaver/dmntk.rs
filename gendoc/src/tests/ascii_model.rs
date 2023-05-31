@@ -150,7 +150,7 @@ test_print_model!(_3_0087, DMN_3_0087);
 test_print_model!(_3_0088, DMN_3_0088);
 test_print_model!(_3_0089, DMN_3_0089);
 test_print_model!(_3_0089_model_a, DMN_3_0089_MODEL_A);
-test_print_model!(_3_0089_model_b, DMN_3_0089_MODEL_B);
+test_print_model!(_3_0089_model_b1, DMN_3_0089_MODEL_B1);
 test_print_model!(_3_0089_model_b2, DMN_3_0089_MODEL_B2);
 test_print_model!(_3_0090, DMN_3_0090);
 test_print_model!(_3_0092, DMN_3_0092);
