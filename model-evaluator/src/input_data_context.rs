@@ -92,7 +92,7 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
         | FeelType::DateTime
         | FeelType::DaysAndTimeDuration
         | FeelType::YearsAndMonthsDuration
-    ) {0
+    ) {
       Ok(Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
         ctx.set_entry(&name, Value::FeelType(feel_type.clone()));
         feel_type.clone()
