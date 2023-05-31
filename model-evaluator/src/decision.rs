@@ -160,9 +160,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   let mut required_decision_references: Vec<String> = vec![];
   let mut required_input_data_references: Vec<String> = vec![];
   for knowledge_requirement in decision.knowledge_requirements() {
-    if let Some(href) = knowledge_requirement.required_knowledge() {
-      required_knowledge_references.push(href.into());
-    }
+    required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
   }
   for information_requirement in decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {

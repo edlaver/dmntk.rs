@@ -116,8 +116,7 @@ fn build_bkm_evaluator(
   };
   let mut knowledge_requirements = vec![];
   for knowledge_requirement in business_knowledge_model.knowledge_requirements() {
-    let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
-    knowledge_requirements.push(href.into());
+    knowledge_requirements.push(knowledge_requirement.required_knowledge().into());
   }
   // bring into context the variables from knowledge requirements
   bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), &mut local_context)?;

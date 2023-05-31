@@ -897,12 +897,12 @@ pub struct KnowledgeRequirement {
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Reference to [Invocable] that this [KnowledgeRequirement] associates with
   /// its containing [Decision] or [BusinessKnowledgeModel] element.
-  pub(crate) required_knowledge: OptHRef,
+  pub(crate) required_knowledge: HRef,
 }
 
 impl KnowledgeRequirement {
-  /// Returns reference to the [Invocable].
-  pub fn required_knowledge(&self) -> &OptHRef {
+  /// Returns a reference to the [Invocable].
+  pub fn required_knowledge(&self) -> &HRef {
     &self.required_knowledge
   }
 }

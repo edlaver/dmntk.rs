@@ -65,10 +65,6 @@ pub fn err_empty_feel_type() -> DmntkError {
   ModelEvaluatorError("empty FEEL type".into()).into()
 }
 
-pub fn err_empty_reference() -> DmntkError {
-  ModelEvaluatorError("empty reference".into()).into()
-}
-
 pub fn err_empty_function_body() -> DmntkError {
   ModelEvaluatorError("empty function definition body".into()).into()
 }

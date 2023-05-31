@@ -48,7 +48,7 @@ use std::sync::Arc;
 ///
 pub fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowledge_requirements: &[KnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
   for knowledge_requirement in knowledge_requirements {
-    let href = knowledge_requirement.required_knowledge().as_ref().ok_or_else(err_empty_reference)?;
+    let href = knowledge_requirement.required_knowledge();
     let required_knowledge_id: &str = href.into();
     if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
       let output_variable_name = business_knowledge_model.variable().name();

@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! Parser for loading a model from the XML file containing DMN interchange format.
+//! # XML parser for DMN model
 
 use crate::errors::*;
 use crate::model::*;
@@ -39,6 +39,7 @@ use dmntk_common::{gen_id, HRef, OptHRef, Result};
 use dmntk_feel::Name;
 use roxmltree::Node;
 
+// XML node names
 const NODE_ALLOWED_ANSWERS: &str = "allowedAnswers";
 const NODE_ALLOWED_VALUES: &str = "allowedValues";
 const NODE_AUTHORITY_REQUIREMENT: &str = "authorityRequirement";
@@ -111,6 +112,7 @@ const NODE_TEXT: &str = "text";
 const NODE_TYPE_REF: &str = "typeRef";
 const NODE_VARIABLE: &str = "variable";
 
+// XML attribute names
 const ATTR_BLUE: &str = "blue";
 const ATTR_DMN_ELEMENT_REF: &str = "dmnElementRef";
 const ATTR_EXPORTER: &str = "exporter";
@@ -150,6 +152,7 @@ const ATTR_WIDTH: &str = "width";
 const ATTR_X: &str = "x";
 const ATTR_Y: &str = "y";
 
+/// XML parser for DMN model.
 #[derive(Default)]
 pub struct ModelParser {}
 
@@ -234,6 +237,7 @@ impl ModelParser {
     }
   }
 
+  /// Parsers unary tests.
   fn parse_unary_tests(&self, node: &Node, child_name: &str) -> Result<Option<UnaryTests>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       Ok(Some(UnaryTests {
@@ -245,16 +249,18 @@ impl ModelParser {
     }
   }
 
+  /// Parses DRG elements.
   fn parse_drg_elements(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     drg_elements.append(&mut self.parse_input_data(node)?);
     drg_elements.append(&mut self.parse_decisions(node)?);
-    drg_elements.append(&mut self.parse_business_knowledge_models(node)?);
+    drg_elements.append(&mut self.parse_bkm(node)?);
     drg_elements.append(&mut self.parse_decision_services(node)?);
     drg_elements.append(&mut self.parse_knowledge_sources(node)?);
     Ok(drg_elements)
   }
 
+  /// Parses input data.
   fn parse_input_data(&self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut input_data_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_INPUT_DATA) {
@@ -273,6 +279,7 @@ impl ModelParser {
     Ok(input_data_items)
   }
 
+  /// Parses decisions.
   fn parse_decisions(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut decision_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION) {
@@ -297,7 +304,8 @@ impl ModelParser {
     Ok(decision_items)
   }
 
-  fn parse_business_knowledge_models(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
+  /// Parses business knowledge models.
+  fn parse_bkm(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut parsed_items = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_BUSINESS_KNOWLEDGE_MODEL) {
       let business_knowledge_model = BusinessKnowledgeModel {
@@ -318,6 +326,7 @@ impl ModelParser {
     Ok(parsed_items)
   }
 
+  /// Parses decision services.
   fn parse_decision_services(&self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_DECISION_SERVICE) {
@@ -340,6 +349,7 @@ impl ModelParser {
     Ok(drg_elements)
   }
 
+  /// Parses knowledge sources.
   fn parse_knowledge_sources(&mut self, node: &Node) -> Result<Vec<DrgElement>> {
     let mut drg_elements = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == NODE_KNOWLEDGE_SOURCE) {
@@ -358,6 +368,7 @@ impl ModelParser {
     Ok(drg_elements)
   }
 
+  ///
   fn required_hrefs_in_child_nodes(&self, node: &Node, child_name: &str) -> Result<Vec<HRef>> {
     let mut hrefs = vec![];
     for ref child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
@@ -368,6 +379,7 @@ impl ModelParser {
     Ok(hrefs)
   }
 
+  ///
   fn parse_function_definition_child(&self, node: &Node, child_name: &str) -> Result<Option<FunctionDefinition>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == child_name) {
       Ok(Some(self.parse_function_definition(&child_node)?))
@@ -376,6 +388,7 @@ impl ModelParser {
     }
   }
 
+  ///
   fn parse_optional_function_definition(&self, node: &Node) -> Result<Option<FunctionDefinition>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == NODE_FUNCTION_DEFINITION) {
       Ok(Some(self.parse_function_definition(&child_node)?))
@@ -384,6 +397,7 @@ impl ModelParser {
     }
   }
 
+  ///
   fn parse_function_definition(&self, node: &Node) -> Result<FunctionDefinition> {
     Ok(FunctionDefinition {
       id: optional_id(node),
@@ -398,6 +412,7 @@ impl ModelParser {
     })
   }
 
+  ///
   fn parse_function_kind(&self, node: &Node) -> Result<FunctionKind> {
     if let Some(function_kind_text) = optional_attribute(node, ATTR_KIND) {
       match function_kind_text.trim() {
@@ -508,6 +523,7 @@ impl ModelParser {
     })
   }
 
+  /// Parses information requirements.
   fn parse_information_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<InformationRequirement>> {
     let mut information_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
@@ -516,6 +532,7 @@ impl ModelParser {
     Ok(information_requirement_items)
   }
 
+  /// Parses single information requirement.
   fn parse_information_requirement(&mut self, node: &Node) -> Result<InformationRequirement> {
     let req = InformationRequirement {
       id: optional_id(node),
@@ -529,6 +546,7 @@ impl ModelParser {
     Ok(req)
   }
 
+  /// Parses knowledge requirements.
   fn parse_knowledge_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<KnowledgeRequirement>> {
     let mut knowledge_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
@@ -537,6 +555,7 @@ impl ModelParser {
     Ok(knowledge_requirement_items)
   }
 
+  /// Parses single knowledge requirement.
   fn parse_knowledge_requirement(&mut self, node: &Node) -> Result<KnowledgeRequirement> {
     let req = KnowledgeRequirement {
       id: optional_id(node),
@@ -544,11 +563,12 @@ impl ModelParser {
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
-      required_knowledge: optional_child_required_href(node, NODE_REQUIRED_KNOWLEDGE)?,
+      required_knowledge: required_child_required_href(node, NODE_REQUIRED_KNOWLEDGE)?,
     };
     Ok(req)
   }
 
+  /// Parses authority requirements.
   fn parse_authority_requirements(&mut self, node: &Node, child_name: &str) -> Result<Vec<AuthorityRequirement>> {
     let mut authority_requirement_items = vec![];
     for child_node in node.children().filter(|n| n.tag_name().name() == child_name) {
@@ -557,6 +577,7 @@ impl ModelParser {
     Ok(authority_requirement_items)
   }
 
+  /// Parses single authority requirement.
   fn parse_authority_requirement(&mut self, node: &Node) -> Result<AuthorityRequirement> {
     let req = AuthorityRequirement {
       id: optional_id(node),
@@ -1036,7 +1057,7 @@ impl ModelParser {
     }
   }
 
-  /// Parses decisionServiceDividerLine
+  /// Parses divider line.
   fn parse_divider_line(&self, node: &Node) -> Result<Option<DmnDecisionServiceDividerLine>> {
     if let Some(child_node) = node.children().find(|n| n.tag_name().name() == NODE_DMNDI_DECISION_SERVICE_DIVIDER_LINE) {
       Ok(Some(DmnDecisionServiceDividerLine {
@@ -1114,6 +1135,12 @@ fn required_feel_name(node: &Node) -> Result<Name> {
 /// Returns the required `href` attribute.
 pub fn required_href(node: &Node) -> Result<HRef> {
   HRef::try_from(required_attribute(node, ATTR_HREF)?.as_str())
+}
+
+/// Returns the required `href` attribute taken from required child node.
+pub fn required_child_required_href(node: &Node, child_name: &str) -> Result<HRef> {
+  let child_node = required_child(node, child_name)?;
+  HRef::try_from(required_attribute(&child_node, ATTR_HREF)?.as_str())
 }
 
 /// Returns the required `href` attribute of the optional child node.
