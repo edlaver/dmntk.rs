@@ -396,8 +396,8 @@ fn build_namespace_leaf(text: &str, colors: &Colors) -> AsciiNode {
 }
 
 /// Builds a leaf node containing a type.
-fn build_type(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> {
-  build_opt_labeled_text(LABEL_TYPE, opt_text, colors.typ())
+fn build_type(text: &str, colors: &Colors) -> AsciiNode {
+  build_labeled_text(LABEL_TYPE, text, colors.typ())
 }
 
 /// Builds a node containing output variable properties.
@@ -407,7 +407,7 @@ fn build_variable(variable: &InformationItem, colors: &Colors) -> AsciiNode {
     .child(build_feel_name(variable.feel_name(), colors))
     .opt_child(build_id(variable.opt_id(), colors))
     .opt_child(build_label(variable.label(), colors))
-    .opt_child(build_type(variable.type_ref(), colors))
+    .child(build_type(variable.type_ref(), colors))
     .opt_child(build_description(variable.description(), colors))
     .opt_child(build_extension_elements(variable.extension_elements(), colors))
     .opt_child(build_extension_attributes(variable.extension_attributes(), colors))

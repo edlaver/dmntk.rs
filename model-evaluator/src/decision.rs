@@ -123,13 +123,8 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_id(href.into()) {
         let variable_name = required_decision.variable().name();
-        //TODO below "Any" type is assumed when the variable has no typeRef property, but typeRef is required - so the models should be corrected.
-        let variable_type_ref = if required_decision.variable().type_ref().is_some() {
-          required_decision.variable().type_ref().as_ref().unwrap().clone()
-        } else {
-          "Any".to_string()
-        };
-        let variable_type = item_definition_context_evaluator.eval(&variable_type_ref, variable_name, &mut requirements_ctx);
+        let variable_type_ref = required_decision.variable().type_ref();
+        let variable_type = item_definition_context_evaluator.eval(variable_type_ref, variable_name, &mut requirements_ctx);
         requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }

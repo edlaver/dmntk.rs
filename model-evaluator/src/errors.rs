@@ -41,10 +41,6 @@ pub fn err_business_knowledge_model_with_reference_not_found(s: &str) -> DmntkEr
   ModelEvaluatorError(format!("business knowledge model with reference '{s}' was not found")).into()
 }
 
-pub fn err_input_data_without_type_reference(s: &str) -> DmntkError {
-  ModelEvaluatorError(format!("input data with identifier '{s}' has no type reference definition")).into()
-}
-
 pub fn err_empty_literal_expression() -> DmntkError {
   ModelEvaluatorError("empty literal expression".into()).into()
 }

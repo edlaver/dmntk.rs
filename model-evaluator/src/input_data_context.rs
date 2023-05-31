@@ -79,12 +79,7 @@ impl InputDataContextEvaluator {
 
 ///
 pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDataContextEvaluatorFn> {
-  let type_ref = input_data
-    .variable()
-    .type_ref()
-    .as_ref()
-    .ok_or_else(|| err_input_data_without_type_reference(input_data.name()))?
-    .clone();
+  let type_ref = input_data.variable().type_ref().clone();
   let name = input_data.variable().name().clone();
   if let Some(feel_type) = type_ref_to_feel_type(&type_ref) {
     if matches!(

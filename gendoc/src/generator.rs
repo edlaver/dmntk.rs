@@ -343,7 +343,7 @@ fn create_variable_details(variable: &InformationItem, heading: &str) -> HtmlEle
   let mut property_type = HtmlElement::new_div(Some("variable-details-property-name"));
   property_type.set_content("Type");
   let mut value_type = HtmlElement::new_div(Some("variable-details-property-value-type"));
-  value_type.set_content(variable.type_ref().as_ref().unwrap_or(&"?".to_string()));
+  value_type.set_content(variable.type_ref());
   variable_details_properties.add_children(vec![property_type, value_type]);
 
   let mut variable_details = HtmlElement::new_div(Some("variable-details-container"));

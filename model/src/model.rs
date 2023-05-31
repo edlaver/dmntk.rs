@@ -542,15 +542,15 @@ pub struct InformationItem {
   pub(crate) name: String,
   /// `FEEL` name of this [ItemDefinition].
   pub(crate) feel_name: Name,
-  /// Optional qualified name of the type of this [InformationItem].
-  pub(crate) type_ref: Option<String>,
+  /// Qualified name of the type of this [InformationItem].
+  pub(crate) type_ref: String,
   /// Optional `FEEL` type of this [InformationItem].
   pub(crate) feel_type: Option<FeelType>,
 }
 
 impl InformationItem {
-  ///
-  pub fn type_ref(&self) -> &Option<String> {
+  /// Returns qualified name of the type of this [InformationItem].
+  pub fn type_ref(&self) -> &String {
     &self.type_ref
   }
 }

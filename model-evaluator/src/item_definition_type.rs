@@ -199,7 +199,7 @@ fn function_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTy
       output_type_ref = type_ref.to_owned();
     }
     for parameter_information_item in function_item.parameters() {
-      parameters_type_ref.push(parameter_information_item.type_ref().as_ref().unwrap_or(&FEEL_TYPE_NAME_ANY.to_string()).clone());
+      parameters_type_ref.push(parameter_information_item.type_ref().to_string());
     }
   }
   Ok(Box::new(move |evaluator: &ItemDefinitionTypeEvaluator| {

@@ -35,7 +35,7 @@ use crate::item_definition_type::ItemDefinitionTypeEvaluator;
 use crate::model_definitions::DefInformationItem;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelType, Name};
+use dmntk_feel::{value_null, FeelType, Name, FEEL_TYPE_NAME_ANY};
 
 /// Type of closure that evaluates values from variable definition.
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
@@ -46,7 +46,7 @@ pub struct Variable {
   /// Variable's name.
   name: Name,
   /// Variable's type reference.
-  pub type_ref: Option<String>,
+  pub type_ref: String,
   /// Variables FEEL type (evaluated).
   feel_type: FeelType,
 }
@@ -55,11 +55,9 @@ impl TryFrom<&DefInformationItem> for Variable {
   type Error = DmntkError;
   ///
   fn try_from(value: &DefInformationItem) -> Result<Self, Self::Error> {
-    let name = value.name().clone();
-    let type_ref = value.type_ref().clone();
     Ok(Self {
-      name,
-      type_ref,
+      name: value.name().clone(),
+      type_ref: value.type_ref().clone(),
       feel_type: FeelType::Any,
     })
   }
@@ -73,19 +71,19 @@ impl Variable {
 
   /// Resolves the FEEL type of the variable.
   pub fn resolve_feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
-    if let Some(type_ref) = &self.type_ref {
-      item_definition_type_evaluator.information_item_type(type_ref).unwrap_or(FeelType::Any)
-    } else {
+    if self.type_ref == FEEL_TYPE_NAME_ANY {
       FeelType::Any
+    } else {
+      item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
     }
   }
 
   /// Updates the FEEL type of the variable.
   pub fn update_feel_type(&mut self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) {
-    self.feel_type = if let Some(type_ref) = &self.type_ref {
-      item_definition_type_evaluator.information_item_type(type_ref).unwrap_or(FeelType::Any)
-    } else {
+    self.feel_type = if self.type_ref == FEEL_TYPE_NAME_ANY {
       FeelType::Any
+    } else {
+      item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
     }
   }
 
@@ -98,8 +96,9 @@ impl Variable {
   pub fn build_evaluator(&self) -> VariableEvaluatorFn {
     // prepare the variable name
     let variable_name = self.name.clone();
+    let variable_type_ref = self.type_ref.clone();
     // if there is no type reference defined, the value is just returned as is
-    if self.type_ref.is_none() {
+    if variable_type_ref == FEEL_TYPE_NAME_ANY {
       return Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
         if let Value::Context(ctx) = value {
           if let Some(v) = ctx.get_entry(&variable_name) {
@@ -109,11 +108,7 @@ impl Variable {
         (variable_name.clone(), value_null!())
       });
     }
-    // here the `variable.type_ref` must have some value, so unwrapping is safe
-    // type_ref is either a simple type name or a name of an item definition,
-    // both cases are handled below
-    let type_ref = self.type_ref.as_ref().unwrap().clone();
-    match type_ref.as_str() {
+    match variable_type_ref.as_str() {
       "Any" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
         if let Value::Context(ctx) = value {
           if let Some(v) = ctx.get_entry(&variable_name) {
@@ -234,8 +229,8 @@ impl Variable {
         if let Value::Context(ctx) = value {
           if let Some(entry_value) = ctx.get_entry(&variable_name) {
             let evaluated_value = item_definition_evaluator
-              .eval(&type_ref, entry_value)
-              .unwrap_or_else(|| value_null!("input data evaluator: item definition evaluator '{}' not found", type_ref));
+              .eval(&variable_type_ref, entry_value)
+              .unwrap_or_else(|| value_null!("input data evaluator: item definition evaluator '{}' not found", variable_type_ref));
             (variable_name.clone(), evaluated_value)
           } else {
             (variable_name.clone(), value_null!("no name {} in context {}", variable_name, ctx))

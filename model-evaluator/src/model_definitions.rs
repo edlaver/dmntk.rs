@@ -45,7 +45,7 @@ pub struct DefInformationItem {
   /// Variable name.
   name: Name,
   /// Variable type reference.
-  type_ref: Option<String>,
+  type_ref: String,
 }
 
 impl From<&InformationItem> for DefInformationItem {
@@ -65,7 +65,7 @@ impl DefInformationItem {
   }
 
   /// Returns a reference to optional type reference.
-  pub fn type_ref(&self) -> &Option<String> {
+  pub fn type_ref(&self) -> &String {
     &self.type_ref
   }
 }
