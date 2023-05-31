@@ -271,17 +271,17 @@ impl From<&Decision> for DefDecision {
 }
 
 impl DefDecision {
-  /// Returns a reference to identifier.
+  /// Returns decision's identifier.
   pub fn id(&self) -> &str {
     &self.id
   }
 
-  /// Returns a reference to name.
+  /// Returns decision's name.
   pub fn name(&self) -> &str {
     &self.name
   }
 
-  /// Returns reference to a variable.
+  /// Returns output variable.
   pub fn variable(&self) -> &DefInformationItem {
     &self.variable
   }
