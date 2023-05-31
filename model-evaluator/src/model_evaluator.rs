@@ -128,7 +128,7 @@ impl ModelEvaluator {
       }
       Some(InvocableType::BusinessKnowledgeModel(id, output_variable_name)) => {
         // evaluate business knowledge model
-        self.evaluate_business_knowledge_model(id, input_data, output_variable_name)
+        self.evaluate_bkm(id, input_data, output_variable_name)
       }
       Some(InvocableType::DecisionService(id)) => {
         // evaluate decision service
@@ -139,7 +139,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a business knowledge model identified by specified `id`.
-  pub fn evaluate_business_knowledge_model(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
+  pub fn evaluate_bkm(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     self.business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
     if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
