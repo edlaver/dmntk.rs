@@ -85,9 +85,9 @@ impl DecisionEvaluator {
       .map(|evaluator_entry| evaluator_entry.1(input_data, model_evaluator, evaluated_ctx))
   }
 
-  /// Returns the name and type of the output variable of a decision with specified identifier.
-  pub fn get_output_variable(&self, decision_id: &str) -> Option<Variable> {
-    self.evaluators.get(decision_id).map(|entry| entry.0.clone())
+  /// Returns the variable for decision identified by provided identifier..
+  pub fn get_variable(&self, id: &str) -> Option<&Variable> {
+    self.evaluators.get(id).map(|entry| &entry.0)
   }
 }
 

@@ -164,7 +164,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   // fills the list of formal parameters based on required input data
   // these parameters are placed before input parameters defined by input decisions
   for input_data_id in &input_data_references {
-    if let Some(input_data_variable) = input_data_evaluator.get_input_variable(input_data_id) {
+    if let Some(input_data_variable) = input_data_evaluator.get_variable(input_data_id) {
       let parameter_name = input_data_variable.name().clone();
       let parameter_type = input_data_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
@@ -176,7 +176,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   // simultaneously, fills the list of formal parameters based on output variables of input decisions
   let mut input_decision_results_evaluators = vec![];
   for decision_id in &input_decisions {
-    if let Some(decision_output_variable) = decision_evaluator.get_output_variable(decision_id) {
+    if let Some(decision_output_variable) = decision_evaluator.get_variable(decision_id) {
       let parameter_name = decision_output_variable.name().clone();
       let parameter_type = decision_output_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));

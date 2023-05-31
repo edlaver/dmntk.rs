@@ -70,13 +70,13 @@ impl InputDataEvaluator {
   }
 
   /// Evaluates input data with specified identifier.
-  pub fn evaluate(&self, input_data_id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
-    self.evaluators.get(input_data_id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
+  pub fn evaluate(&self, id: &str, value: &Value, item_definition_evaluator: &ItemDefinitionEvaluator) -> Option<(Name, Value)> {
+    self.evaluators.get(id).map(|evaluator| evaluator.1(value, item_definition_evaluator))
   }
 
-  /// Returns the name and type of the input variable of input data definition with specified identifier.
-  pub fn get_input_variable(&self, input_data_id: &str) -> Option<Variable> {
-    self.evaluators.get(input_data_id).map(|entry| (entry.0).clone())
+  /// Returns the variable for input data definition identified by provided identifier.
+  pub fn get_variable(&self, id: &str) -> Option<&Variable> {
+    self.evaluators.get(id).map(|entry| &entry.0)
   }
 }
 
