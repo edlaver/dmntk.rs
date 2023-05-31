@@ -67,7 +67,7 @@ impl ItemDefinitionTypeEvaluator {
   }
 
   /// Evaluates a type of item definition with specified type reference name.
-  pub fn eval(&self, type_ref: &str) -> Option<FeelType> {
+  fn eval(&self, type_ref: &str) -> Option<FeelType> {
     if let Some(evaluator) = self.evaluators.get(type_ref) {
       evaluator(self)
     } else {
@@ -77,6 +77,9 @@ impl ItemDefinitionTypeEvaluator {
 
   /// Returns FEEL type for specified type reference.
   pub fn information_item_type(&self, type_ref: &str) -> Option<FeelType> {
+    if type_ref == FEEL_TYPE_NAME_ANY {
+      return Some(FeelType::Any);
+    }
     if let Some(feel_type) = type_ref_to_feel_type(type_ref) {
       match feel_type {
         FeelType::String => Some(FeelType::String),

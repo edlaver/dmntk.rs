@@ -41,7 +41,7 @@ use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name, FEEL_TYPE_NAME_ANY};
+use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
 use dmntk_model::model::*;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -99,25 +99,17 @@ fn build_bkm_evaluator(
   let mut local_context = FeelContext::default();
   let mut formal_parameters = vec![];
   for information_item in function_definition.formal_parameters() {
-    let feel_type = if information_item.type_ref() == FEEL_TYPE_NAME_ANY {
-      FeelType::Any
-    } else {
-      item_definition_type_evaluator
-        .information_item_type(information_item.type_ref())
-        .ok_or_else(err_empty_feel_type)?
-    };
+    let feel_type = item_definition_type_evaluator
+      .information_item_type(information_item.type_ref())
+      .ok_or_else(err_empty_feel_type)?;
     let feel_name = information_item.feel_name();
     formal_parameters.push((feel_name.clone(), feel_type.clone()));
     local_context.set_entry(feel_name, Value::FeelType(feel_type));
   }
   let output_variable_name = business_knowledge_model.variable().name().clone();
-  let output_variable_type = if business_knowledge_model.variable().type_ref() == FEEL_TYPE_NAME_ANY {
-    FeelType::Any
-  } else {
-    item_definition_type_evaluator
-      .information_item_type(business_knowledge_model.variable().type_ref())
-      .unwrap_or(FeelType::Any)
-  };
+  let output_variable_type = item_definition_type_evaluator
+    .information_item_type(business_knowledge_model.variable().type_ref())
+    .unwrap_or(FeelType::Any);
   let mut knowledge_requirements = vec![];
   for knowledge_requirement in business_knowledge_model.knowledge_requirements() {
     knowledge_requirements.push(knowledge_requirement.required_knowledge().into());

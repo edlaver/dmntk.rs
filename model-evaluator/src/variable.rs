@@ -71,20 +71,12 @@ impl Variable {
 
   /// Resolves the FEEL type of the variable.
   pub fn resolve_feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
-    if self.type_ref == FEEL_TYPE_NAME_ANY {
-      FeelType::Any
-    } else {
-      item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
-    }
+    item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
   }
 
   /// Updates the FEEL type of the variable.
   pub fn update_feel_type(&mut self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) {
-    self.feel_type = if self.type_ref == FEEL_TYPE_NAME_ANY {
-      FeelType::Any
-    } else {
-      item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
-    }
+    self.feel_type = item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any);
   }
 
   /// Returns variable's FEEL type.

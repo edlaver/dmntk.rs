@@ -40,7 +40,7 @@ use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody, FEEL_TYPE_NAME_ANY};
+use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody};
 use dmntk_feel_parser::ClosureBuilder;
 use dmntk_model::model::*;
 use std::sync::Arc;
@@ -84,11 +84,7 @@ pub fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evalu
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
       let variable_name = variable.feel_name();
-      let variable_type = if variable.type_ref() == FEEL_TYPE_NAME_ANY {
-        FeelType::Any
-      } else {
-        item_definition_type_evaluator.information_item_type(variable.type_ref()).ok_or_else(err_empty_feel_type)?
-      };
+      let variable_type = item_definition_type_evaluator.information_item_type(variable.type_ref()).ok_or_else(err_empty_feel_type)?;
       let (evaluator, _) = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
       scope.set_name(variable_name.clone());
       entry_evaluators.push((Some(variable_name.clone()), variable_type, evaluator));
@@ -131,11 +127,7 @@ pub fn build_function_definition_evaluator(scope: &FeelScope, function_definitio
   let mut parameters_ctx = FeelContext::default();
   for parameter in function_definition.formal_parameters() {
     let parameter_name = parameter.feel_name().clone();
-    let parameter_type = if parameter.type_ref() == FEEL_TYPE_NAME_ANY {
-      FeelType::Any
-    } else {
-      item_definition_type_evaluator.information_item_type(parameter.type_ref()).ok_or_else(err_empty_feel_type)?
-    };
+    let parameter_type = item_definition_type_evaluator.information_item_type(parameter.type_ref()).ok_or_else(err_empty_feel_type)?;
     parameters_ctx.set_entry(&parameter_name, Value::FeelType(parameter_type.clone()));
     parameters.push((parameter_name, parameter_type));
   }
@@ -236,13 +228,9 @@ pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, mo
   for binding in invocation.bindings() {
     if let Some(binding_formula) = binding.binding_formula() {
       let param_name = binding.parameter().feel_name().clone();
-      let param_type = if binding.parameter().type_ref() == FEEL_TYPE_NAME_ANY {
-        FeelType::Any
-      } else {
-        item_definition_type_evaluator
-          .information_item_type(binding.parameter().type_ref())
-          .ok_or_else(err_empty_feel_type)?
-      };
+      let param_type = item_definition_type_evaluator
+        .information_item_type(binding.parameter().type_ref())
+        .ok_or_else(err_empty_feel_type)?;
       let (evaluator, _) = build_expression_instance_evaluator(scope, binding_formula, model_evaluator)?;
       bindings.push((param_name, param_type, evaluator));
     }
