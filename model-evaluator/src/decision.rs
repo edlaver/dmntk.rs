@@ -214,6 +214,6 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // return the name of the output variable
     output_variable_name.clone()
   });
-  // return the output variable, and decision evaluator closure
+  // return the output variable and decision evaluator function
   Ok((output_variable, decision_evaluator))
 }
