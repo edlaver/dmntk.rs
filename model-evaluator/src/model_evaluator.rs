@@ -121,6 +121,11 @@ impl ModelEvaluator {
     &self.decision_service_evaluator
   }
 
+  /// Returns invocable names available in this model.
+  pub fn invocable_names(&self) -> Keys<'_, String, InvocableType> {
+    self.invocables.keys()
+  }
+
   /// Evaluates an invocable identified by specified `invocable_name`.
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     let invocable = self.invocables.get(invocable_name);
@@ -142,7 +147,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a business knowledge model identified by specified `id`.
-  pub fn evaluate_bkm(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
+  fn evaluate_bkm(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     self.business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
     if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
@@ -163,7 +168,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision identified by specified `id`.
-  pub fn evaluate_decision(&self, id: &str, input_data: &FeelContext) -> Value {
+  fn evaluate_decision(&self, id: &str, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
@@ -177,7 +182,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision service identified by specified `id`.
-  pub fn evaluate_decision_service(&self, id: &str, input_data: &FeelContext) -> Value {
+  fn evaluate_decision_service(&self, id: &str, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
@@ -188,10 +193,5 @@ impl ModelEvaluator {
     } else {
       value_null!()
     }
-  }
-
-  /// Returns invocable names available in this model.
-  pub fn invocable_names(&self) -> Keys<'_, String, InvocableType> {
-    self.invocables.keys()
   }
 }
