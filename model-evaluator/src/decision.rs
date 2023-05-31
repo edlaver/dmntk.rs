@@ -69,8 +69,8 @@ impl DecisionEvaluator {
     let mut evaluators = HashMap::new();
     for decision in definitions.decisions() {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
-      let decision_id = decision.id();
-      let decision_name = &decision.name().to_string();
+      let decision_id = decision.id().to_string();
+      let decision_name = decision.name().to_string();
       evaluators.insert(decision_id.to_string(), evaluator_entry);
       model_builder.add_invocable_decision(decision_name, decision_id);
     }

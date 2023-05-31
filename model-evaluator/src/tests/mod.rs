@@ -77,13 +77,13 @@ pub fn context(input: &str) -> FeelContext {
   }
 }
 
-/// Utility function that builds a model evaluator from XML model definitions.
+/// Utility function that builds a model evaluator from single XML model definitions.
 fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
   ModelEvaluator::new(&dmntk_model::parse(model_content).unwrap()).unwrap()
 }
 
-/// Utility function that builds a model evaluator from XML model definitions.
-fn build_model_evaluators(model_content: &[(Option<Name>, &str)]) -> Arc<ModelEvaluator> {
+/// Utility function that builds a model evaluator from multiple XML model definitions.
+fn build_model_evaluators(model_content: &[&str]) -> Arc<ModelEvaluator> {
   let mut definitions = vec![];
   for (opt_name, content) in model_content {
     definitions.push((opt_name.clone(), dmntk_model::parse(content).unwrap()));

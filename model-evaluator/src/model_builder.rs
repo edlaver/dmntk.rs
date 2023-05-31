@@ -136,8 +136,8 @@ impl ModelBuilder {
   }
 
   ///
-  pub fn add_invocable_decision(&self, name: &str, id: &str) {
-    self.invocables.borrow_mut().insert(name.to_string(), InvocableType::Decision(id.to_string()));
+  pub fn add_invocable_decision(&self, name: String, id: String) {
+    self.invocables.borrow_mut().insert(name, InvocableType::Decision(id));
   }
 
   ///
