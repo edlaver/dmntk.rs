@@ -46,10 +46,13 @@ use dmntk_model::model::Definitions;
 use std::collections::hash_map::Keys;
 use std::sync::Arc;
 
-/// Types of invocable artifacts in model.
+/// Types of invocables in DMN model.
 pub enum InvocableType {
+  /// Decision.
   Decision(String),
+  /// Business knowledge model.
   BusinessKnowledgeModel(String, Name),
+  /// Decision service.
   DecisionService(String),
 }
 
@@ -85,7 +88,7 @@ impl From<ModelBuilder> for ModelEvaluator {
 }
 
 impl ModelEvaluator {
-  /// Creates an instance of [ModelEvaluator].
+  /// Creates an instance of [ModelEvaluator] from parsed [Definitions].
   pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
     let model_builder = ModelBuilder::new(definitions)?;
     let model_evaluator: Arc<ModelEvaluator> = Arc::new(model_builder.into());
