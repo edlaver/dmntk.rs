@@ -45,10 +45,15 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Type alias for closures that evaluate decisions.
+///
 /// (input data, model evaluator, output data) -> Output variable name
+///
 type DecisionEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 /// Type alias for decision's output variable combined with decision's evaluator function.
+///
+/// (variable, decision evaluator function)
+///
 type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 
 /// Decision evaluator.
