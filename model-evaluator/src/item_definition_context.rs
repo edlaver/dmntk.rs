@@ -33,7 +33,7 @@
 //! Builder for item definition context evaluators.
 
 use crate::errors::*;
-use crate::model_definitions::{DefDefinitions, DefItemDefinition};
+use crate::model_definitions::{DefDefinitions, DefItemDefinition, DefKey};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -46,7 +46,7 @@ type ItemDefinitionContextEvaluatorFn = Box<dyn Fn(&Name, &mut FeelContext, &Ite
 
 /// Item definition type evaluators.
 pub struct ItemDefinitionContextEvaluator {
-  evaluators: HashMap<String, ItemDefinitionContextEvaluatorFn>,
+  evaluators: HashMap<DefKey, ItemDefinitionContextEvaluatorFn>,
 }
 
 impl ItemDefinitionContextEvaluator {
@@ -60,15 +60,17 @@ impl ItemDefinitionContextEvaluator {
     let mut evaluators = HashMap::new();
     for item_definition in definitions.item_definitions() {
       let evaluator = item_definition_context_evaluator(item_definition)?;
-      let type_ref = item_definition.name().to_string();
-      evaluators.insert(type_ref, evaluator);
+      let namespace = item_definition.namespace();
+      let type_ref = item_definition.name();
+      let def_key = DefKey::new(namespace, type_ref);
+      evaluators.insert(def_key, evaluator);
     }
     Ok(Self { evaluators })
   }
 
   /// Evaluates a context from item definition with specified type reference name.
-  pub fn eval(&self, type_ref: &str, name: &Name, ctx: &mut FeelContext) -> FeelType {
-    if let Some(evaluator) = self.evaluators.get(type_ref) {
+  pub fn eval(&self, def_key: &DefKey, name: &Name, ctx: &mut FeelContext) -> FeelType {
+    if let Some(evaluator) = self.evaluators.get(def_key) {
       evaluator(name, ctx, self)
     } else {
       FeelType::Any
@@ -80,10 +82,10 @@ impl ItemDefinitionContextEvaluator {
 fn item_definition_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type_context_evaluator(feel_type),
-    ItemDefinitionType::ReferencedType(namespace, ref_type) => referenced_type_context_evaluator(ref_type),
+    ItemDefinitionType::ReferencedType(namespace, ref_type) => referenced_type_context_evaluator(DefKey::new(&namespace, &ref_type)),
     ItemDefinitionType::ComponentType => component_type_context_evaluator(item_definition),
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => collection_of_simple_type_context_evaluator(feel_type),
-    ItemDefinitionType::CollectionOfReferencedType(namespace, ref_type) => collection_of_referenced_type_context_evaluator(ref_type),
+    ItemDefinitionType::CollectionOfReferencedType(namespace, ref_type) => collection_of_referenced_type_context_evaluator(DefKey::new(&namespace, &ref_type)),
     ItemDefinitionType::CollectionOfComponentType => collection_of_component_type_context_evaluator(item_definition),
     ItemDefinitionType::FunctionType => function_type_context_evaluator(item_definition),
   }
@@ -112,9 +114,9 @@ fn simple_type_context_evaluator(feel_type: FeelType) -> Result<ItemDefinitionCo
 }
 
 ///
-fn referenced_type_context_evaluator(ref_type: String) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn referenced_type_context_evaluator(def_key: DefKey) -> Result<ItemDefinitionContextEvaluatorFn> {
   Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-    evaluator.eval(&ref_type, name, ctx)
+    evaluator.eval(&def_key, name, ctx)
   }))
 }
 
@@ -161,10 +163,10 @@ fn collection_of_simple_type_context_evaluator(feel_type: FeelType) -> Result<It
 }
 
 ///
-fn collection_of_referenced_type_context_evaluator(type_ref: String) -> Result<ItemDefinitionContextEvaluatorFn> {
+fn collection_of_referenced_type_context_evaluator(def_key: DefKey) -> Result<ItemDefinitionContextEvaluatorFn> {
   Ok(Box::new(move |name: &Name, ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
     let mut evaluated_ctx = FeelContext::default();
-    let feel_type = evaluator.eval(&type_ref, name, &mut evaluated_ctx);
+    let feel_type = evaluator.eval(&def_key, name, &mut evaluated_ctx);
     let list_type = FeelType::List(Box::new(feel_type.clone()));
     let list = Value::List(vec![Value::FeelType(feel_type)]);
     ctx.set_entry(name, list);
@@ -201,10 +203,13 @@ fn function_type_context_evaluator(_item_definition: &DefItemDefinition) -> Resu
 #[cfg(test)]
 mod tests {
   use crate::item_definition_context::ItemDefinitionContextEvaluator;
+  use crate::model_definitions::DefKey;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::Value;
   use dmntk_feel::{FeelType, Name};
+
+  const NAMESPACE: &str = "https://dmntk.io/";
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionContextEvaluator {
@@ -219,7 +224,7 @@ mod tests {
     let mut expected_context = FeelContext::default();
     let variable_name: Name = "Customer Name".into();
     expected_context.set_entry(&variable_name, Value::FeelType(FeelType::String));
-    let actual_type = evaluator.eval("tCustomerName", &variable_name, &mut ctx);
+    let actual_type = evaluator.eval(&DefKey::new(NAMESPACE, "tCustomerName"), &variable_name, &mut ctx);
     assert_eq!(expected_type, actual_type);
     assert_eq!(expected_context, ctx);
     assert_eq!("{Customer Name: type(string)}", ctx.to_string());
@@ -332,7 +337,7 @@ mod tests {
     let mut expected_context = FeelContext::default();
     let variable_name: Name = "Items".into();
     expected_context.set_entry(&variable_name, Value::List(vec![Value::FeelType(FeelType::String)]));
-    let actual_type = evaluator.eval("tItems", &variable_name, &mut ctx);
+    let actual_type = evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), &variable_name, &mut ctx);
     assert_eq!(expected_type, actual_type);
     assert_eq!(expected_context, ctx);
     assert_eq!("{Items: [type(string)]}", ctx.to_string());

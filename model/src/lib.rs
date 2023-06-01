@@ -42,8 +42,4 @@ mod xml_utils;
 mod tests;
 
 pub use model::*;
-
-/// Parses the XML document containing [Definitions] serialized to interchange format.
-pub fn parse(xml: &str) -> dmntk_common::Result<Definitions> {
-  parser::ModelParser::default().parse(xml)
-}
+pub use parser::parse;

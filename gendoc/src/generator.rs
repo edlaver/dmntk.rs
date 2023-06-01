@@ -181,13 +181,13 @@ fn create_model_diagrams(definitions: &Definitions) -> Vec<HtmlElement> {
         match diagram_element {
           DmnDiagramElement::DmnShape(shape) => {
             if let Some(dmn_element_ref) = &shape.dmn_element_ref {
-              if let Some(decision) = &definitions.get_decision(dmn_element_ref.as_str()) {
+              if let Some(decision) = definitions.get_decision(dmn_element_ref.as_str()) {
                 html_svg_content.push(create_svg_decision(shape, decision));
-              } else if let Some(input_data) = &definitions.get_input_data(dmn_element_ref.as_str()) {
+              } else if let Some(input_data) = definitions.get_input_data(dmn_element_ref.as_str()) {
                 html_svg_content.push(create_svg_input_data(shape, input_data));
-              } else if let Some(business_knowledge_model) = &definitions.get_business_knowledge_model(dmn_element_ref.as_str()) {
+              } else if let Some(business_knowledge_model) = definitions.get_business_knowledge_model(dmn_element_ref.as_str()) {
                 html_svg_content.push(create_svg_business_knowledge_model(shape, business_knowledge_model));
-              } else if let Some(knowledge_source) = &definitions.get_knowledge_source(dmn_element_ref.as_str()) {
+              } else if let Some(knowledge_source) = definitions.get_knowledge_source(dmn_element_ref.as_str()) {
                 html_svg_content.push(create_svg_knowledge_source(shape, knowledge_source));
               }
             }

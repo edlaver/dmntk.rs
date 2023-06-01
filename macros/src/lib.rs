@@ -58,6 +58,9 @@ pub fn dmn_element(input: TokenStream) -> TokenStream {
   let name = &input.ident;
   let expanded = quote! {
     impl DmnElement for #name {
+      fn namespace(&self) -> &str {
+        &self.namespace
+      }
       fn id(&self) -> &String {
         match &self.id {
           DmnId::Provided(id) => id,

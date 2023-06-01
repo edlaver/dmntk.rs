@@ -142,9 +142,9 @@ impl ModelEvaluator {
   pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
     let invocable = self.invocables.get(invocable_name);
     match invocable {
-      Some(InvocableType::Decision(id)) => {
+      Some(InvocableType::Decision(def_key)) => {
         // evaluate decision
-        self.evaluate_decision(id, input_data)
+        self.evaluate_decision(def_key, input_data)
       }
       Some(InvocableType::BusinessKnowledgeModel(def_key, output_variable_name)) => {
         // evaluate business knowledge model
@@ -158,7 +158,21 @@ impl ModelEvaluator {
     }
   }
 
-  /// Evaluates a business knowledge model identified by specified `id`.
+  /// Evaluates a decision.
+  fn evaluate_decision(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
+    let mut evaluated_ctx = FeelContext::default();
+    if let Some(output_variable_name) = self.decision_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
+      if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
+        output_value.clone()
+      } else {
+        value_null!()
+      }
+    } else {
+      value_null!()
+    }
+  }
+
+  /// Evaluates a business knowledge model.
   fn evaluate_bkm(&self, def_key: &DefKey, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     self.business_knowledge_model_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx);
@@ -179,21 +193,7 @@ impl ModelEvaluator {
     }
   }
 
-  /// Evaluates a decision identified by specified `id`.
-  fn evaluate_decision(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
-    let mut evaluated_ctx = FeelContext::default();
-    if let Some(output_variable_name) = self.decision_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
-      if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
-        output_value.clone()
-      } else {
-        value_null!()
-      }
-    } else {
-      value_null!()
-    }
-  }
-
-  /// Evaluates a decision service identified by specified `id`.
+  /// Evaluates a decision service.
   fn evaluate_decision_service(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {

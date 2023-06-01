@@ -102,7 +102,7 @@ fn build_bkm_evaluator(
   let mut formal_parameters = vec![];
   for information_item in function_definition.formal_parameters() {
     let feel_type = item_definition_type_evaluator
-      .information_item_type("FAKE_NAMESPACE", information_item.type_ref())
+      .information_item_type(information_item.namespace(), information_item.type_ref())
       .ok_or_else(err_empty_feel_type)?;
     let feel_name = information_item.feel_name();
     formal_parameters.push((feel_name.clone(), feel_type.clone()));

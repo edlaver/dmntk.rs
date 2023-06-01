@@ -63,6 +63,8 @@ pub enum DmnId {
 /// It provides the optional attributes `id`, `description` and `label`,
 /// which other elements will inherit.
 pub trait DmnElement {
+  /// Namespace the element belongs to.
+  fn namespace(&self) -> &str;
   /// Returns a reference to identifier for this [DmnElement].
   /// This identifier SHALL be unique within its containing [Definitions] element.
   fn id(&self) -> &String;
@@ -153,6 +155,8 @@ pub enum BusinessContextElementInstance {
 /// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
 #[derive(Debug, Clone, DmnElement, NamedElement, BusinessContextElement)]
 pub struct PerformanceIndicator {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [PerformanceIndicator].
   pub(crate) id: DmnId,
   /// Optional description of this [PerformanceIndicator].
@@ -184,6 +188,8 @@ impl PerformanceIndicator {
 /// adopted from other OMG meta-models, such as OMG OSM when it is further developed.
 #[derive(Debug, Clone, DmnElement, NamedElement, BusinessContextElement)]
 pub struct OrganizationUnit {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [OrganizationUnit].
   pub(crate) id: DmnId,
   /// Optional description of this [OrganizationUnit].
@@ -219,6 +225,7 @@ impl OrganizationUnit {
 /// that are contained within [Definitions] and that have a graphical representation in a DRD.
 /// This enumeration specifies the list of [DRGElements](DrgElement) contained in [Definitions].
 #[derive(Debug, Clone)]
+#[allow(clippy::large_enum_variant)]
 pub enum DrgElement {
   Decision(Decision),
   InputData(InputData),
@@ -378,13 +385,13 @@ impl Definitions {
   }
 
   /// Returns all knowledge source definitions.
-  pub fn knowledge_sources(&self) -> Vec<KnowledgeSource> {
+  pub fn knowledge_sources(&self) -> Vec<&KnowledgeSource> {
     self
       .drg_elements
       .iter()
       .filter_map(|drg_element| {
         if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
-          Some(knowledge_source.clone())
+          Some(knowledge_source)
         } else {
           None
         }
@@ -432,11 +439,11 @@ impl Definitions {
   }
 
   /// Returns decision with specified identifier.
-  pub fn get_decision(&self, id: &str) -> Option<Decision> {
+  pub fn get_decision(&self, id: &str) -> Option<&Decision> {
     for drg_element in &self.drg_elements {
       if let DrgElement::Decision(decision) = drg_element {
         if decision.id() == id {
-          return Some(decision.clone());
+          return Some(decision);
         }
       }
     }
@@ -444,11 +451,11 @@ impl Definitions {
   }
 
   /// Returns input data with specified identifier.
-  pub fn get_input_data(&self, id: &str) -> Option<InputData> {
+  pub fn get_input_data(&self, id: &str) -> Option<&InputData> {
     for drg_element in &self.drg_elements {
       if let DrgElement::InputData(input_data) = drg_element {
         if input_data.id() == id {
-          return Some(input_data.clone());
+          return Some(input_data);
         }
       }
     }
@@ -456,11 +463,11 @@ impl Definitions {
   }
 
   /// Returns business knowledge model with specified identifier.
-  pub fn get_business_knowledge_model(&self, id: &str) -> Option<BusinessKnowledgeModel> {
+  pub fn get_business_knowledge_model(&self, id: &str) -> Option<&BusinessKnowledgeModel> {
     for drg_element in &self.drg_elements {
       if let DrgElement::BusinessKnowledgeModel(business_knowledge_model) = drg_element {
         if business_knowledge_model.id() == id {
-          return Some(business_knowledge_model.clone());
+          return Some(business_knowledge_model);
         }
       }
     }
@@ -468,11 +475,11 @@ impl Definitions {
   }
 
   /// Returns knowledge source with specified identifier.
-  pub fn get_knowledge_source(&self, id: &str) -> Option<KnowledgeSource> {
+  pub fn get_knowledge_source(&self, id: &str) -> Option<&KnowledgeSource> {
     for drg_element in &self.drg_elements {
       if let DrgElement::KnowledgeSource(knowledge_source) = drg_element {
         if knowledge_source.id() == id {
-          return Some(knowledge_source.clone());
+          return Some(knowledge_source);
         }
       }
     }
@@ -528,6 +535,8 @@ impl Definitions {
 
 #[derive(Debug, Clone, PartialEq, DmnElement, NamedElement)]
 pub struct InformationItem {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [InformationItem].
   pub(crate) id: DmnId,
   /// Optional description of this [InformationItem].
@@ -570,6 +579,8 @@ impl FeelTypedElement for InformationItem {
 /// are defined outside of the decision model.
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct InputData {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [InputData].
   pub(crate) id: DmnId,
   /// Optional description of this [InputData].
@@ -687,6 +698,8 @@ pub struct ContextEntry {
 /// is specified by text in some specified expression language.
 #[derive(Debug, Clone, PartialEq, Eq, DmnElement)]
 pub struct LiteralExpression {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [LiteralExpression].
   pub(crate) id: DmnId,
   /// Optional description of this [LiteralExpression].
@@ -777,6 +790,8 @@ impl Binding {
 /// [Decision]
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct Decision {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Identifier of the [Decision].
   pub(crate) id: DmnId,
   /// Description of the [Decision].
@@ -851,6 +866,8 @@ impl Decision {
 /// as represented by a plain arrow in a DRD.
 #[derive(Debug, Clone, DmnElement)]
 pub struct InformationRequirement {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of the [InformationRequirement].
   pub(crate) id: DmnId,
   /// Optional description of the [InformationRequirement].
@@ -885,6 +902,8 @@ impl InformationRequirement {
 /// as represented by a dashed arrow in a DRD.
 #[derive(Debug, Clone, DmnElement)]
 pub struct KnowledgeRequirement {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of the [KnowledgeRequirement].
   pub(crate) id: DmnId,
   /// Optional description of the [KnowledgeRequirement].
@@ -911,6 +930,8 @@ impl KnowledgeRequirement {
 /// as represented by an arrow drawn with a dashed line and a filled circular head in a DRD
 #[derive(Debug, Clone, DmnElement)]
 pub struct AuthorityRequirement {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of the [AuthorityRequirement].
   pub(crate) id: DmnId,
   /// Optional description of the [AuthorityRequirement].
@@ -951,6 +972,8 @@ impl AuthorityRequirement {
 /// In a DRD, an instance of [KnowledgeSource] is represented by a `knowledge source` diagram element.
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct KnowledgeSource {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [KnowledgeSource].
   pub(crate) id: DmnId,
   /// Optional description of this [KnowledgeSource].
@@ -981,6 +1004,8 @@ impl KnowledgeSource {
 /// must be a single FEEL boxed function definition.
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct BusinessKnowledgeModel {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [BusinessKnowledgeModel].
   pub(crate) id: DmnId,
   /// Optional description of this [BusinessKnowledgeModel].
@@ -1031,6 +1056,8 @@ impl RequiredVariable for BusinessKnowledgeModel {
 /// against the decision model contained in an instance of [Definitions].
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct DecisionService {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [DecisionService].
   pub(crate) id: DmnId,
   /// Optional description of this [DecisionService].
@@ -1099,6 +1126,8 @@ pub enum ItemDefinitionType {
 /// whose values are defined outside of the decision model.
 #[derive(Debug, Clone, DmnElement, NamedElement)]
 pub struct ItemDefinition {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [ItemDefinition].
   pub(crate) id: DmnId,
   /// Optional description of this [ItemDefinition].
@@ -1238,6 +1267,8 @@ pub enum FunctionKind {
 /// the parameters and the output type of the function.
 #[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct FunctionDefinition {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [FunctionDefinition].
   pub(crate) id: DmnId,
   /// Optional description of this [FunctionDefinition].
@@ -1285,6 +1316,8 @@ impl Expression for FunctionDefinition {
 /// expression for each column value.
 #[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct Relation {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [Relation].
   pub(crate) id: DmnId,
   /// Optional description of this [Relation].
@@ -1323,6 +1356,8 @@ impl Expression for Relation {
 /// A [List] is simply a list of elements, which are instances of [Expression]s.
 #[derive(Debug, Clone, PartialEq, DmnElement)]
 pub struct List {
+  /// Namespace.
+  pub(crate) namespace: String,
   /// Optional identifier of this this [List].
   pub(crate) id: DmnId,
   /// Optional description of this [List].

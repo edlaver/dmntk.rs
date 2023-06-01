@@ -81,9 +81,9 @@ pub struct DefInformationItem {
 
 impl DefInformationItem {
   /// Creates [DefInformationItem] from [InformationItem].
-  pub fn new(namespace: &str, information_item: &InformationItem) -> Self {
+  pub fn new(information_item: &InformationItem) -> Self {
     Self {
-      namespace: namespace.to_string(),
+      namespace: information_item.namespace().to_string(),
       name: information_item.feel_name().clone(),
       type_ref: information_item.type_ref().clone(),
     }
@@ -117,12 +117,12 @@ pub struct DefInputData {
 
 impl DefInputData {
   /// Creates [DefInputData] from [InputData].
-  pub fn new(namespace: &str, input_data: &InputData) -> Self {
+  pub fn new(input_data: &InputData) -> Self {
     Self {
-      namespace: namespace.to_string(),
+      namespace: input_data.namespace().to_string(),
       id: input_data.id().to_string(),
       name: input_data.name().to_string(),
-      variable: DefInformationItem::new(namespace, input_data.variable()),
+      variable: DefInformationItem::new(input_data.variable()),
     }
   }
 }
@@ -163,15 +163,15 @@ pub struct DefItemDefinition {
 }
 
 impl DefItemDefinition {
-  pub fn new(namespace: &str, item_definition: &ItemDefinition) -> Self {
+  pub fn new(item_definition: &ItemDefinition) -> Self {
     Self {
-      namespace: namespace.to_string(),
+      namespace: item_definition.namespace().to_string(),
       id: item_definition.id().to_string(),
       name: item_definition.name().to_string(),
       feel_name: item_definition.feel_name().clone(),
       type_ref: item_definition.type_ref().clone(),
       allowed_values: item_definition.allowed_values().clone(),
-      item_components: item_definition.item_components().iter().map(|inner| DefItemDefinition::new(namespace, inner)).collect(),
+      item_components: item_definition.item_components().iter().map(DefItemDefinition::new).collect(),
       function_item: item_definition.function_item().clone(),
       is_collection: item_definition.is_collection(),
     }
@@ -263,18 +263,14 @@ pub struct DefBusinessKnowledgeModel {
 
 impl DefBusinessKnowledgeModel {
   /// Create [DefBusinessKnowledgeModel] from [BusinessKnowledgeModel].
-  pub fn new(namespace: &str, business_knowledge_model: &BusinessKnowledgeModel) -> Self {
+  pub fn new(business_knowledge_model: &BusinessKnowledgeModel) -> Self {
     Self {
-      namespace: namespace.to_string(),
+      namespace: business_knowledge_model.namespace().to_string(),
       id: business_knowledge_model.id().to_string(),
       name: business_knowledge_model.name().to_string(),
-      variable: DefInformationItem::new(namespace, business_knowledge_model.variable()),
+      variable: DefInformationItem::new(business_knowledge_model.variable()),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
-      knowledge_requirements: business_knowledge_model
-        .knowledge_requirements()
-        .iter()
-        .map(|knowledge_requirement| DefKnowledgeRequirement::new(namespace, knowledge_requirement))
-        .collect(),
+      knowledge_requirements: business_knowledge_model.knowledge_requirements().iter().map(DefKnowledgeRequirement::new).collect(),
     }
   }
 }
@@ -341,10 +337,16 @@ pub struct DefInformationRequirement {
 }
 
 impl DefInformationRequirement {
-  pub fn new(namespace: &str, information_requirement: &InformationRequirement) -> Self {
+  pub fn new(information_requirement: &InformationRequirement) -> Self {
     Self {
-      required_decision: information_requirement.required_decision().as_ref().map(|href| DefHRef::new(namespace, href)),
-      required_input: information_requirement.required_input().as_ref().map(|href| DefHRef::new(namespace, href)),
+      required_decision: information_requirement
+        .required_decision()
+        .as_ref()
+        .map(|href| DefHRef::new(information_requirement.namespace(), href)),
+      required_input: information_requirement
+        .required_input()
+        .as_ref()
+        .map(|href| DefHRef::new(information_requirement.namespace(), href)),
     }
   }
 
@@ -363,9 +365,9 @@ pub struct DefKnowledgeRequirement {
 }
 
 impl DefKnowledgeRequirement {
-  pub fn new(namespace: &str, knowledge_requirement: &KnowledgeRequirement) -> Self {
+  pub fn new(knowledge_requirement: &KnowledgeRequirement) -> Self {
     Self {
-      required_knowledge: DefHRef::new(namespace, knowledge_requirement.required_knowledge()),
+      required_knowledge: DefHRef::new(knowledge_requirement.namespace(), knowledge_requirement.required_knowledge()),
     }
   }
 
@@ -387,23 +389,15 @@ pub struct DefDecision {
 
 impl DefDecision {
   /// Create [DefDecision] from [Decision].
-  pub fn new(namespace: &str, decision: &Decision) -> Self {
+  pub fn new(decision: &Decision) -> Self {
     Self {
-      namespace: namespace.to_string(),
+      namespace: decision.namespace().to_string(),
       id: decision.id().to_string(),
       name: decision.name().to_string(),
-      variable: DefInformationItem::new(namespace, decision.variable()),
+      variable: DefInformationItem::new(decision.variable()),
       decision_logic: decision.decision_logic().clone(),
-      information_requirements: decision
-        .information_requirements()
-        .iter()
-        .map(|information_requirement| DefInformationRequirement::new(namespace, information_requirement))
-        .collect(),
-      knowledge_requirements: decision
-        .knowledge_requirements()
-        .iter()
-        .map(|knowledge_requirement| DefKnowledgeRequirement::new(namespace, knowledge_requirement))
-        .collect(),
+      information_requirements: decision.information_requirements().iter().map(DefInformationRequirement::new).collect(),
+      knowledge_requirements: decision.knowledge_requirements().iter().map(DefKnowledgeRequirement::new).collect(),
     }
   }
 }
@@ -459,12 +453,13 @@ pub struct DefDecisionService {
 
 impl DefDecisionService {
   /// Creates [DefDecisionService] from [DecisionService].
-  pub fn new(namespace: &str, decision_service: &DecisionService) -> Self {
+  pub fn new(decision_service: &DecisionService) -> Self {
+    let namespace = decision_service.namespace();
     Self {
       namespace: namespace.to_string(),
       id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
-      variable: DefInformationItem::new(namespace, decision_service.variable()),
+      variable: DefInformationItem::new(decision_service.variable()),
       input_decisions: decision_service.input_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
       output_decisions: decision_service.output_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
       encapsulated_decisions: decision_service.encapsulated_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
@@ -551,21 +546,20 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
     let mut decisions = HashMap::new();
     let mut decision_services = HashMap::new();
     for definitions in defs {
-      let namespace = definitions.namespace();
-      item_definitions.append(&mut definitions.item_definitions().iter().map(|inner| DefItemDefinition::new(namespace, inner)).collect());
+      item_definitions.append(&mut definitions.item_definitions().iter().map(DefItemDefinition::new).collect());
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
-            input_data.insert(DefKey::new(namespace, inner.id()), DefInputData::new(namespace, inner));
+            input_data.insert(DefKey::new(inner.namespace(), inner.id()), DefInputData::new(inner));
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(DefKey::new(namespace, inner.id()), DefBusinessKnowledgeModel::new(namespace, inner));
+            business_knowledge_models.insert(DefKey::new(inner.namespace(), inner.id()), DefBusinessKnowledgeModel::new(inner));
           }
           DrgElement::Decision(inner) => {
-            decisions.insert(DefKey::new(namespace, inner.id()), DefDecision::new(namespace, inner));
+            decisions.insert(DefKey::new(inner.namespace(), inner.id()), DefDecision::new(inner));
           }
           DrgElement::DecisionService(inner) => {
-            decision_services.insert(DefKey::new(namespace, inner.id()), DefDecisionService::new(namespace, inner));
+            decision_services.insert(DefKey::new(inner.namespace(), inner.id()), DefDecisionService::new(inner));
           }
           _ => {}
         }

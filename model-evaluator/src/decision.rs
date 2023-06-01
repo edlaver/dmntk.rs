@@ -130,8 +130,9 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_decision() {
       if let Some(required_decision) = definitions.decision_by_key(href.namespace(), href.id()) {
         let variable_name = required_decision.variable().name();
+        let variable_namespace = required_decision.variable().namespace();
         let variable_type_ref = required_decision.variable().type_ref();
-        let variable_type = item_definition_context_evaluator.eval(variable_type_ref, variable_name, &mut requirements_ctx);
+        let variable_type = item_definition_context_evaluator.eval(&DefKey::new(variable_namespace, variable_type_ref), variable_name, &mut requirements_ctx);
         requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }
@@ -139,7 +140,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     if let Some(href) = information_requirement.required_input() {
       if let Some(required_input) = definitions.input_data_by_key(href.namespace(), href.id()) {
         let variable_name = required_input.variable().name();
-        let variable_type = input_data_context_evaluator.eval(href.id(), &mut input_requirements_ctx, item_definition_context_evaluator);
+        let variable_type = input_data_context_evaluator.eval(&href.into(), &mut input_requirements_ctx, item_definition_context_evaluator);
         input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }

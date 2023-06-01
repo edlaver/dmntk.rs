@@ -34,7 +34,7 @@
 
 use crate::errors::*;
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
-use crate::model_definitions::{DefDefinitions, DefInputData};
+use crate::model_definitions::{DefDefinitions, DefInputData, DefKey};
 use crate::type_ref::type_ref_to_feel_type;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
@@ -47,7 +47,7 @@ type InputDataContextEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ItemDefinitionC
 
 /// Input data context evaluator.
 pub struct InputDataContextEvaluator {
-  evaluators: HashMap<String, InputDataContextEvaluatorFn>,
+  evaluators: HashMap<DefKey, InputDataContextEvaluatorFn>,
 }
 
 impl InputDataContextEvaluator {
@@ -60,16 +60,18 @@ impl InputDataContextEvaluator {
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();
     for input_data in definitions.input_data() {
+      let input_data_namespace = input_data.namespace();
       let input_data_id = input_data.id();
       let evaluator = input_data_context_evaluator(input_data)?;
-      evaluators.insert(input_data_id.to_owned(), evaluator);
+      let def_key = DefKey::new(input_data_namespace, input_data_id);
+      evaluators.insert(def_key, evaluator);
     }
     Ok(Self { evaluators })
   }
 
   /// Evaluates input data context with specified identifier.
-  pub fn eval(&self, input_data_id: &str, ctx: &mut FeelContext, item_definition_context_evaluator: &ItemDefinitionContextEvaluator) -> FeelType {
-    if let Some(evaluator) = self.evaluators.get(input_data_id) {
+  pub fn eval(&self, def_key: &DefKey, ctx: &mut FeelContext, item_definition_context_evaluator: &ItemDefinitionContextEvaluator) -> FeelType {
+    if let Some(evaluator) = self.evaluators.get(def_key) {
       evaluator(ctx, item_definition_context_evaluator)
     } else {
       FeelType::Any
@@ -79,7 +81,8 @@ impl InputDataContextEvaluator {
 
 ///
 pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDataContextEvaluatorFn> {
-  let type_ref = input_data.variable().type_ref().clone();
+  let namespace = input_data.variable().namespace().to_string();
+  let type_ref = input_data.variable().type_ref().to_string();
   let name = input_data.variable().name().clone();
   if let Some(feel_type) = type_ref_to_feel_type(&type_ref) {
     if matches!(
@@ -102,7 +105,7 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
     }
   } else {
     Ok(Box::new(move |ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-      evaluator.eval(&type_ref, &name, ctx)
+      evaluator.eval(&DefKey::new(&namespace, &type_ref), &name, ctx)
     }))
   }
 }
@@ -111,10 +114,12 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
 mod tests {
   use crate::input_data_context::InputDataContextEvaluator;
   use crate::item_definition_context::ItemDefinitionContextEvaluator;
-  use crate::model_definitions::DefDefinitions;
+  use crate::model_definitions::{DefDefinitions, DefKey};
   use dmntk_examples::input_data::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::FeelType;
+
+  const NAMESPACE: &str = "https://dmntk.io/";
 
   /// Utility function for building input data context evaluator from definitions,
   /// and item definition context evaluator from definitions.
@@ -130,7 +135,11 @@ mod tests {
     let (evaluator, item_definition_context_evaluator) = build_evaluators(DMN_0001);
     let expected_type = FeelType::String;
     let mut ctx = FeelContext::default();
-    let actual_type = evaluator.eval("_cba86e4d-e91c-46a2-9176-e9adf88e15db", &mut ctx, &item_definition_context_evaluator);
+    let actual_type = evaluator.eval(
+      &DefKey::new(NAMESPACE, "_cba86e4d-e91c-46a2-9176-e9adf88e15db"),
+      &mut ctx,
+      &item_definition_context_evaluator,
+    );
     assert_eq!(expected_type, actual_type);
     assert_eq!("{Full Name: type(string)}", ctx.to_string());
   }
