@@ -72,15 +72,17 @@ impl DefInformationItem {
 
 #[derive(Debug)]
 pub struct DefInputData {
+  namespace: String,
   id: String,
   name: String,
   variable: DefInformationItem,
 }
 
-impl From<&InputData> for DefInputData {
-  ///
-  fn from(input_data: &InputData) -> Self {
+impl DefInputData {
+  /// Creates [DefInputData] from [InputData].
+  pub fn new(namespace: &str, input_data: &InputData) -> Self {
     Self {
+      namespace: namespace.to_string(),
       id: input_data.id().to_string(),
       name: input_data.name().to_string(),
       variable: input_data.variable().into(),
@@ -89,6 +91,11 @@ impl From<&InputData> for DefInputData {
 }
 
 impl DefInputData {
+  /// Returns the namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
   /// Returns a reference to identifier.
   pub fn id(&self) -> &str {
     &self.id
@@ -107,6 +114,7 @@ impl DefInputData {
 
 #[derive(Debug)]
 pub struct DefItemDefinition {
+  namespace: String,
   id: String,
   name: String,
   feel_name: Name,
@@ -117,16 +125,16 @@ pub struct DefItemDefinition {
   is_collection: bool,
 }
 
-impl From<&ItemDefinition> for DefItemDefinition {
-  ///
-  fn from(item_definition: &ItemDefinition) -> Self {
+impl DefItemDefinition {
+  pub fn new(namespace: &str, item_definition: &ItemDefinition) -> Self {
     Self {
+      namespace: namespace.to_string(),
       id: item_definition.id().to_string(),
       name: item_definition.name().to_string(),
       feel_name: item_definition.feel_name().clone(),
       type_ref: item_definition.type_ref().clone(),
       allowed_values: item_definition.allowed_values().clone(),
-      item_components: item_definition.item_components().iter().map(|inner| inner.into()).collect(),
+      item_components: item_definition.item_components().iter().map(|inner| DefItemDefinition::new(namespace, inner)).collect(),
       function_item: item_definition.function_item().clone(),
       is_collection: item_definition.is_collection(),
     }
@@ -134,21 +142,27 @@ impl From<&ItemDefinition> for DefItemDefinition {
 }
 
 impl DefItemDefinition {
-  /// Returns a reference to identifier.
+  /// Returns the namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
+  /// Returns the identifier.
   pub fn id(&self) -> &str {
     &self.id
   }
 
-  /// Returns a reference to name.
+  /// Returns a name.
   pub fn name(&self) -> &str {
     &self.name
   }
 
-  /// Returns a reference to `FEEL` name.
+  /// Returns a FEEL name.
   pub fn feel_name(&self) -> &Name {
     &self.feel_name
   }
 
+  /// Returns type reference.
   pub fn type_ref(&self) -> &Option<String> {
     &self.type_ref
   }
@@ -199,6 +213,7 @@ impl DefItemDefinition {
 
 #[derive(Debug)]
 pub struct DefBusinessKnowledgeModel {
+  namespace: String,
   id: String,
   name: String,
   variable: DefInformationItem,
@@ -206,10 +221,11 @@ pub struct DefBusinessKnowledgeModel {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<&BusinessKnowledgeModel> for DefBusinessKnowledgeModel {
-  ///
-  fn from(business_knowledge_model: &BusinessKnowledgeModel) -> Self {
+impl DefBusinessKnowledgeModel {
+  /// Create [DefBusinessKnowledgeModel] from [BusinessKnowledgeModel].
+  pub fn new(namespace: &str, business_knowledge_model: &BusinessKnowledgeModel) -> Self {
     Self {
+      namespace: namespace.to_string(),
       id: business_knowledge_model.id().to_string(),
       name: business_knowledge_model.name().to_string(),
       variable: business_knowledge_model.variable().into(),
@@ -220,17 +236,22 @@ impl From<&BusinessKnowledgeModel> for DefBusinessKnowledgeModel {
 }
 
 impl DefBusinessKnowledgeModel {
-  /// Returns a reference to identifier.
+  /// Returns the namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
+  /// Returns an identifier.
   pub fn id(&self) -> &str {
     &self.id
   }
 
-  /// Returns a reference to name.
+  /// Returns a name.
   pub fn name(&self) -> &str {
     &self.name
   }
 
-  /// Returns reference to a variable.
+  /// Returns an output variable.
   pub fn variable(&self) -> &DefInformationItem {
     &self.variable
   }
@@ -248,6 +269,7 @@ impl DefBusinessKnowledgeModel {
 
 #[derive(Debug)]
 pub struct DefDecision {
+  namespace: String,
   id: String,
   name: String,
   variable: DefInformationItem,
@@ -256,10 +278,11 @@ pub struct DefDecision {
   knowledge_requirements: Vec<KnowledgeRequirement>,
 }
 
-impl From<&Decision> for DefDecision {
-  /// Convert [DefDecision] from [Decision].
-  fn from(decision: &Decision) -> Self {
+impl DefDecision {
+  /// Create [DefDecision] from [Decision].
+  pub fn new(namespace: &str, decision: &Decision) -> Self {
     Self {
+      namespace: namespace.to_string(),
       id: decision.id().to_string(),
       name: decision.name().to_string(),
       variable: decision.variable().into(),
@@ -271,12 +294,17 @@ impl From<&Decision> for DefDecision {
 }
 
 impl DefDecision {
-  /// Returns decision's identifier.
+  /// Returns the namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
+  /// Returns an identifier.
   pub fn id(&self) -> &str {
     &self.id
   }
 
-  /// Returns decision's name.
+  /// Returns a name.
   pub fn name(&self) -> &str {
     &self.name
   }
@@ -304,6 +332,7 @@ impl DefDecision {
 
 #[derive(Debug)]
 pub struct DefDecisionService {
+  namespace: String,
   id: String,
   name: String,
   variable: DefInformationItem,
@@ -313,10 +342,11 @@ pub struct DefDecisionService {
   input_data: Vec<HRef>,
 }
 
-impl From<&DecisionService> for DefDecisionService {
-  ///
-  fn from(decision_service: &DecisionService) -> Self {
+impl DefDecisionService {
+  /// Creates [DefDecisionService] from [DecisionService].
+  pub fn new(namespace: &str, decision_service: &DecisionService) -> Self {
     Self {
+      namespace: namespace.to_string(),
       id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
       variable: decision_service.variable().into(),
@@ -329,6 +359,11 @@ impl From<&DecisionService> for DefDecisionService {
 }
 
 impl DefDecisionService {
+  /// Returns the namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
   /// Returns a reference to identifier.
   pub fn id(&self) -> &str {
     &self.id
@@ -364,7 +399,7 @@ impl DefDecisionService {
   }
 }
 
-/// All definitions needed to build complete model evaluator from DMN models (with imports).
+/// All definitions needed to build complete model evaluator from DMN models.
 pub struct DefDefinitions {
   /// Item definitions.
   item_definitions: Vec<DefItemDefinition>,
@@ -376,8 +411,6 @@ pub struct DefDefinitions {
   decisions: HashMap<String, DefDecision>,
   /// Map of decision services indexed by identifier.
   decision_services: HashMap<String, DefDecisionService>,
-  /// Map of knowledge sources indexed by identifier.
-  knowledge_sources: HashMap<String, KnowledgeSource>,
 }
 
 impl From<Definitions> for DefDefinitions {
@@ -402,26 +435,24 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
     let mut business_knowledge_models = HashMap::new();
     let mut decisions = HashMap::new();
     let mut decision_services = HashMap::new();
-    let mut knowledge_sources = HashMap::new();
     for definitions in defs {
-      item_definitions.append(&mut definitions.item_definitions().iter().map(|inner_item_definition| inner_item_definition.into()).collect());
+      let namespace = definitions.namespace();
+      item_definitions.append(&mut definitions.item_definitions().iter().map(|inner| DefItemDefinition::new(namespace, inner)).collect());
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
-            input_data.insert(inner.id().to_string(), inner.into());
+            input_data.insert(inner.id().to_string(), DefInputData::new(namespace, inner));
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(inner.id().to_string(), inner.into());
+            business_knowledge_models.insert(inner.id().to_string(), DefBusinessKnowledgeModel::new(namespace, inner));
           }
           DrgElement::Decision(inner) => {
-            decisions.insert(inner.id().to_string(), inner.into());
+            decisions.insert(inner.id().to_string(), DefDecision::new(namespace, inner));
           }
           DrgElement::DecisionService(inner) => {
-            decision_services.insert(inner.id().to_string(), inner.into());
+            decision_services.insert(inner.id().to_string(), DefDecisionService::new(namespace, inner));
           }
-          DrgElement::KnowledgeSource(inner) => {
-            knowledge_sources.insert(inner.id().to_string(), inner.clone());
-          }
+          _ => {}
         }
       }
     }
@@ -431,7 +462,6 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
       business_knowledge_models,
       decisions,
       decision_services,
-      knowledge_sources,
     }
   }
 }
@@ -442,7 +472,7 @@ impl DefDefinitions {
     &self.item_definitions
   }
 
-  /// Returns references to decisions contained in the model.
+  /// Returns references to decisions.
   pub fn decisions(&self) -> Vec<&DefDecision> {
     self.decisions.values().collect()
   }
@@ -453,7 +483,7 @@ impl DefDefinitions {
     self.decisions.get(id)
   }
 
-  /// Returns references to business knowledge models contained in the model.
+  /// Returns references to business knowledge models.
   pub fn business_knowledge_models(&self) -> Vec<&DefBusinessKnowledgeModel> {
     self.business_knowledge_models.values().collect()
   }
@@ -464,7 +494,7 @@ impl DefDefinitions {
     self.business_knowledge_models.get(id)
   }
 
-  /// Returns a vector of references to decision services.
+  /// Returns references to decision services.
   pub fn decision_services(&self) -> Vec<&DefDecisionService> {
     self.decision_services.values().collect()
   }
@@ -475,7 +505,7 @@ impl DefDefinitions {
     self.decision_services.get(id)
   }
 
-  ///
+  /// Returns references to input data instances.
   pub fn input_data(&self) -> Vec<&DefInputData> {
     self.input_data.values().collect()
   }
@@ -485,11 +515,5 @@ impl DefDefinitions {
   /// instances of [DrgElement]).
   pub fn input_data_by_id(&self, id: &str) -> Option<&DefInputData> {
     self.input_data.get(id)
-  }
-
-  /// Returns an optional reference to [KnowledgeSource] with specified identifier
-  /// or [None] when such [KnowledgeSource] was not found among instances of [DrgElements](DrgElement)).
-  pub fn knowledge_source_by_id(&self, id: &str) -> Option<&KnowledgeSource> {
-    self.knowledge_sources.get(id)
   }
 }
