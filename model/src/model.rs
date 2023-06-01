@@ -262,13 +262,13 @@ pub struct Definitions {
   /// of this [Definitions]. The _Default_ is FEEL.
   /// This value **MAY** be overridden on each individual [LiteralExpression].
   /// The language **SHALL** be specified in a URI format.
-  pub(crate) expression_language: Option<String>,
+  pub(crate) expression_language: Option<Uri>,
   /// This attribute identifies the type language used in
   /// [LiteralExpressions](LiteralExpression) within the scope
   /// of this [Definitions]. The _Default_ is FEEL.
   /// This value **MAY** be overridden on each individual [ItemDefinition].
   /// The language **SHALL** be specified in a URI format.
-  pub(crate) type_language: Option<String>,
+  pub(crate) type_language: Option<Uri>,
   /// Name of the tool used to export the XML serialization.
   pub(crate) exporter: Option<String>,
   /// Version of the tool used to export the XML serialization.
@@ -289,7 +289,7 @@ pub struct Definitions {
 impl Definitions {
   /// Returns the reference to the namespace associated with this [Definitions].
   pub fn namespace(&self) -> &str {
-    (&self.namespace).into()
+    &self.namespace
   }
 
   /// Returns the reference to optional expression language used within the scope of this [Definitions].

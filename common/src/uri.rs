@@ -33,42 +33,22 @@
 //! # URI
 
 use self::errors::*;
-use crate::DmntkError;
+use crate::Result;
 use std::convert::TryFrom;
 use uriparse::{URIReference, URI};
 
-/// URI.
-#[derive(Debug, Clone)]
-pub struct Uri(String);
+pub type Uri = String;
 
-impl TryFrom<&str> for Uri {
-  type Error = DmntkError;
-  /// Converts [Uri] from string.
-  fn try_from(value: &str) -> Result<Self, Self::Error> {
-    if let Ok(uri_reference) = URIReference::try_from(value) {
-      if let Ok(uri) = URI::try_from(uri_reference) {
-        if uri.has_query() || uri.has_fragment() {
-          return Err(err_invalid_uri(value));
-        }
-        return Ok(Self(uri.to_string()));
+pub fn to_uri(value: &str) -> Result<Uri> {
+  if let Ok(uri_reference) = URIReference::try_from(value) {
+    if let Ok(uri) = URI::try_from(uri_reference) {
+      if uri.has_query() || uri.has_fragment() {
+        return Err(err_invalid_uri(value));
       }
+      return Ok(uri.to_string());
     }
-    Err(err_invalid_uri(value))
   }
-}
-
-impl<'a> From<&'a Uri> for &'a str {
-  /// Converts a reference to [Uri] into reference to string.
-  fn from(value: &'a Uri) -> Self {
-    &value.0
-  }
-}
-
-impl From<Uri> for String {
-  /// Converts [Uri] into string.
-  fn from(value: Uri) -> Self {
-    value.0
-  }
+  Err(err_invalid_uri(value))
 }
 
 mod errors {

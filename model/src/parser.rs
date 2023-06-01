@@ -35,7 +35,7 @@
 use crate::errors::*;
 use crate::model::*;
 use crate::xml_utils::*;
-use dmntk_common::{gen_id, HRef, Result, Uri};
+use dmntk_common::{gen_id, to_uri, HRef, Result, Uri};
 use dmntk_feel::{Name, FEEL_TYPE_NAME_ANY};
 use roxmltree::Node;
 
@@ -183,7 +183,7 @@ impl ModelParser {
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
       namespace: required_uri(node, ATTR_NAMESPACE)?,
-      expression_language: optional_attribute(node, ATTR_EXPRESSION_LANGUAGE),
+      expression_language: optional_uri(node, ATTR_EXPRESSION_LANGUAGE)?,
       type_language: optional_attribute(node, ATTR_TYPE_LANGUAGE),
       exporter: optional_attribute(node, ATTR_EXPORTER),
       exporter_version: optional_attribute(node, ATTR_EXPORTER_VERSION),
@@ -1141,7 +1141,16 @@ pub fn required_href(node: &Node) -> Result<HRef> {
 
 /// Returns the required URI attribute.
 pub fn required_uri(node: &Node, attr_name: &str) -> Result<Uri> {
-  Uri::try_from(required_attribute(node, attr_name)?.as_str())
+  to_uri(required_attribute(node, attr_name)?.as_str())
+}
+
+/// Returns an optional URI attribute.
+pub fn optional_uri(node: &Node, attr_name: &str) -> Result<Option<Uri>> {
+  if let Some(value) = optional_attribute(node, attr_name) {
+    Ok(Some(to_uri(value.as_str())?))
+  } else {
+    Ok(None)
+  }
 }
 
 /// Returns the required `href` attribute taken from required child node.
