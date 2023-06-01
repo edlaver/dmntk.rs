@@ -121,7 +121,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   for information_requirement in decision.information_requirements() {
     // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
-      if let Some(required_decision) = definitions.decision_by_id(href.id()) {
+      if let Some(required_decision) = definitions.decision_by_key(href.namespace(), href.id()) {
         let variable_name = required_decision.variable().name();
         let variable_type_ref = required_decision.variable().type_ref();
         let variable_type = item_definition_context_evaluator.eval(variable_type_ref, variable_name, &mut requirements_ctx);
