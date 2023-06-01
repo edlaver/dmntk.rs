@@ -976,13 +976,6 @@ impl KnowledgeSource {
   }
 }
 
-/// Instances of `Invocable` interface.
-#[derive(Debug, Clone)]
-pub enum InvocableInstance {
-  BusinessKnowledgeModel(Box<BusinessKnowledgeModel>),
-  DecisionService,
-}
-
 /// A business knowledge model has an abstract part, representing reusable,
 /// invocable decision logic, and a concrete part, which mandates that the decision logic
 /// must be a single FEEL boxed function definition.
