@@ -35,7 +35,7 @@ use crate::item_definition_type::ItemDefinitionTypeEvaluator;
 use crate::model_definitions::DefInformationItem;
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
-use dmntk_feel::{value_null, FeelType, Name, FEEL_TYPE_NAME_ANY};
+use dmntk_feel::{value_null, FeelType, Name};
 
 /// Type of closure that evaluates values from variable definition.
 pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (Name, Value) + Send + Sync>;
@@ -86,20 +86,8 @@ impl Variable {
 
   ///
   pub fn build_evaluator(&self) -> VariableEvaluatorFn {
-    // prepare the variable name
     let variable_name = self.name.clone();
     let variable_type_ref = self.type_ref.clone();
-    // if there is no type reference defined, the value is just returned as is
-    if variable_type_ref == FEEL_TYPE_NAME_ANY {
-      return Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
-        if let Value::Context(ctx) = value {
-          if let Some(v) = ctx.get_entry(&variable_name) {
-            return (variable_name.clone(), v.clone());
-          }
-        }
-        (variable_name.clone(), value_null!())
-      });
-    }
     match variable_type_ref.as_str() {
       "Any" => Box::new(move |value: &Value, _: &ItemDefinitionEvaluator| {
         if let Value::Context(ctx) = value {
