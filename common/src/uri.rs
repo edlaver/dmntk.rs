@@ -30,27 +30,56 @@
  * limitations under the License.
  */
 
-//! # Common definitions used by components of **DMNTK** project
+//! # URI
 
-#[macro_use]
-extern crate dmntk_macros;
+use self::errors::*;
+use crate::DmntkError;
+use std::convert::TryFrom;
+use uriparse::{URIReference, URI};
 
-mod ascii_ctrl;
-mod ascii_tree;
-mod errors;
-mod href;
-mod href1;
-mod idents;
-mod jsonify;
-mod namespace;
-mod uri;
+/// URI.
+#[derive(Debug, Clone)]
+pub struct Uri(String);
 
-pub use ascii_ctrl::*;
-pub use ascii_tree::*;
-pub use errors::{DmntkError, Result, ToErrorMessage};
-pub use href::HRef;
-pub use href1::HRef as Href1;
-pub use idents::gen_id;
-pub use jsonify::Jsonify;
-pub use namespace::to_rdnn;
-pub use uri::Uri;
+impl TryFrom<&str> for Uri {
+  type Error = DmntkError;
+  /// Converts [Uri] from string.
+  fn try_from(value: &str) -> Result<Self, Self::Error> {
+    if let Ok(uri_reference) = URIReference::try_from(value) {
+      if let Ok(uri) = URI::try_from(uri_reference) {
+        if uri.has_query() || uri.has_fragment() {
+          return Err(err_invalid_uri(value));
+        }
+        return Ok(Self(uri.to_string()));
+      }
+    }
+    Err(err_invalid_uri(value))
+  }
+}
+
+impl<'a> From<&'a Uri> for &'a str {
+  /// Converts a reference to [Uri] into reference to string.
+  fn from(value: &'a Uri) -> Self {
+    &value.0
+  }
+}
+
+impl From<Uri> for String {
+  /// Converts [Uri] into string.
+  fn from(value: Uri) -> Self {
+    value.0
+  }
+}
+
+mod errors {
+  use crate::{DmntkError, ToErrorMessage};
+
+  /// Errors reported by [Uri](crate::uri::Uri).
+  #[derive(ToErrorMessage)]
+  struct UriError(String);
+
+  /// Creates an error indicating an invalid URI.
+  pub fn err_invalid_uri(s: &str) -> DmntkError {
+    UriError(format!("invalid reference: '{s}'")).into()
+  }
+}

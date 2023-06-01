@@ -36,7 +36,7 @@
 //! depicted in one or more Decision Requirements Diagrams (DRD).
 
 use crate::errors::*;
-use dmntk_common::{DmntkError, HRef, OptHRef, Result};
+use dmntk_common::{DmntkError, HRef, Result, Uri};
 use dmntk_feel::{FeelType, Name};
 use std::convert::TryFrom;
 use std::fmt;
@@ -169,7 +169,7 @@ pub struct PerformanceIndicator {
   pub(crate) feel_name: Name,
   /// The URI of this [PerformanceIndicator].
   pub(crate) uri: Option<String>,
-  /// Collection of [Decision] that impact this [Perform`anceIndicator].
+  /// Collection of [Decision] that impact this [PerformanceIndicator].
   /// This attribute stores references
   pub(crate) impacting_decisions: Vec<HRef>,
 }
@@ -256,7 +256,7 @@ pub struct Definitions {
   pub(crate) feel_name: Name,
   /// Identifies the namespace associated with this [Definitions]
   /// and follows the convention established by XML Schema.
-  pub(crate) namespace: String,
+  pub(crate) namespace: Uri,
   /// This attribute identifies the expression language used in
   /// [LiteralExpressions](LiteralExpression) within the scope
   /// of this [Definitions]. The _Default_ is FEEL.
@@ -289,7 +289,7 @@ pub struct Definitions {
 impl Definitions {
   /// Returns the reference to the namespace associated with this [Definitions].
   pub fn namespace(&self) -> &str {
-    &self.namespace
+    (&self.namespace).into()
   }
 
   /// Returns the reference to optional expression language used within the scope of this [Definitions].
@@ -863,20 +863,20 @@ pub struct InformationRequirement {
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// Reference to [Decision] that this [InformationRequirement] associates
   /// with its containing  [Decision] element.
-  pub(crate) required_decision: OptHRef,
+  pub(crate) required_decision: Option<HRef>,
   /// Reference to [InputData] that this [InformationRequirement] associates
   /// with its containing [Decision] element.
-  pub(crate) required_input: OptHRef,
+  pub(crate) required_input: Option<HRef>,
 }
 
 impl InformationRequirement {
   /// Returns reference to optional URI pointing a [Decision].
-  pub fn required_decision(&self) -> &OptHRef {
+  pub fn required_decision(&self) -> &Option<HRef> {
     &self.required_decision
   }
 
   /// Returns reference to optional URI pointing an [InputData].
-  pub fn required_input(&self) -> &OptHRef {
+  pub fn required_input(&self) -> &Option<HRef> {
     &self.required_input
   }
 }
@@ -923,26 +923,26 @@ pub struct AuthorityRequirement {
   pub(crate) extension_attributes: Vec<ExtensionAttribute>,
   /// The instance of [KnowledgeSource] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource], [Decision] or [BusinessKnowledgeModel] element.
-  pub(crate) required_authority: OptHRef,
+  pub(crate) required_authority: Option<HRef>,
   /// The instance of [Decision] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource] element.
-  pub(crate) required_decision: OptHRef,
+  pub(crate) required_decision: Option<HRef>,
   /// The instance of [InputData] that this [AuthorityRequirement] associates
   /// with its containing [KnowledgeSource] element.
-  pub(crate) required_input: OptHRef,
+  pub(crate) required_input: Option<HRef>,
 }
 
 impl AuthorityRequirement {
   /// Returns reference to optional [KnowledgeSource].
-  pub fn required_authority(&self) -> &OptHRef {
+  pub fn required_authority(&self) -> &Option<HRef> {
     &self.required_authority
   }
   /// Returns reference to optional [Decision].
-  pub fn required_decision(&self) -> &OptHRef {
+  pub fn required_decision(&self) -> &Option<HRef> {
     &self.required_decision
   }
   /// Returns reference to optional [InputData].
-  pub fn required_input(&self) -> &OptHRef {
+  pub fn required_input(&self) -> &Option<HRef> {
     &self.required_input
   }
 }

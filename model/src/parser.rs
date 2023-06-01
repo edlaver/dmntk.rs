@@ -35,7 +35,7 @@
 use crate::errors::*;
 use crate::model::*;
 use crate::xml_utils::*;
-use dmntk_common::{gen_id, HRef, OptHRef, Result};
+use dmntk_common::{gen_id, HRef, Result, Uri};
 use dmntk_feel::{Name, FEEL_TYPE_NAME_ANY};
 use roxmltree::Node;
 
@@ -182,7 +182,7 @@ impl ModelParser {
       label: optional_attribute(node, ATTR_LABEL),
       extension_elements: self.parse_extension_elements(node),
       extension_attributes: self.parse_extension_attributes(node),
-      namespace: required_attribute(node, ATTR_NAMESPACE)?,
+      namespace: required_uri(node, ATTR_NAMESPACE)?,
       expression_language: optional_attribute(node, ATTR_EXPRESSION_LANGUAGE),
       type_language: optional_attribute(node, ATTR_TYPE_LANGUAGE),
       exporter: optional_attribute(node, ATTR_EXPORTER),
@@ -1139,6 +1139,11 @@ pub fn required_href(node: &Node) -> Result<HRef> {
   HRef::try_from(required_attribute(node, ATTR_HREF)?.as_str())
 }
 
+/// Returns the required URI attribute.
+pub fn required_uri(node: &Node, attr_name: &str) -> Result<Uri> {
+  Uri::try_from(required_attribute(node, attr_name)?.as_str())
+}
+
 /// Returns the required `href` attribute taken from required child node.
 pub fn required_child_required_href(node: &Node, child_name: &str) -> Result<HRef> {
   let child_node = required_child(node, child_name)?;
@@ -1146,7 +1151,7 @@ pub fn required_child_required_href(node: &Node, child_name: &str) -> Result<HRe
 }
 
 /// Returns the required `href` attribute of the optional child node.
-pub fn optional_child_required_href(node: &Node, child_name: &str) -> Result<OptHRef> {
+pub fn optional_child_required_href(node: &Node, child_name: &str) -> Result<Option<HRef>> {
   if let Some(child_node) = optional_child(node, child_name) {
     Ok(Some(HRef::try_from(required_attribute(&child_node, ATTR_HREF)?.as_str())?))
   } else {

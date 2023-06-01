@@ -32,13 +32,16 @@
 
 //! # URI references
 
+//!
+//! by utilizing an href attribute whose value must be a valid URI reference
+//! [RFC 3986] where the path components may be absolute or relative,
+//! the reference has no query component, and
+//! the fragment consists of the value of the id of the referenced DMN element.
+
 use self::errors::*;
 use crate::DmntkError;
 use std::convert::TryFrom;
 use uriparse::{RelativeReference, URIReference, URI};
-
-/// Optional reference to an element.
-pub type OptHRef = Option<HRef>;
 
 /// Reference to an element using `href` attribute.
 #[derive(Debug, Clone)]
@@ -144,5 +147,18 @@ mod tests {
     let href_dst = href_src.clone();
     let actual: String = (&href_dst).into();
     assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
+  }
+
+  #[test]
+  fn a() {
+    println!("{:?}", uriparse::RelativeReference::try_from("https://dmntk.io"));
+    println!("{:?}", uriparse::RelativeReference::try_from("https://dmntk.io#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
+    println!("{:?}", uriparse::RelativeReference::try_from("#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
+    println!("{:?}", uriparse::RelativeReference::try_from("ala-ma-kota#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
+    println!("{:?}", URIReference::try_from("https://dmntk.io#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
+    println!("{:?}", URIReference::try_from("https://dmntk.io"));
+    // let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
+    // let actual: String = format!("{href:?}");
+    // assert_eq!(r#"HRef("_c03e81bf-a53d-47c5-9135-189935765fdc")"#, actual);
   }
 }
