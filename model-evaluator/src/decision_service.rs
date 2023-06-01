@@ -144,7 +144,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   let output_variable_type = output_variable.feel_type().clone();
 
   // prepare references to required input data
-  let input_data_references: Vec<String> = decision_service.input_data().iter().map(|href| href.id().to_string()).collect();
+  let input_data_references: Vec<DefKey> = decision_service.input_data().iter().map(|href| href.into()).collect();
 
   // prepare references to input decisions
   let input_decisions: Vec<DefKey> = decision_service.input_decisions().iter().map(|href| href.into()).collect();

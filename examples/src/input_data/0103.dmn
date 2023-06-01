@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions namespace="https://dmntk.io"
-             name="0103"
+<definitions namespace="https://dmntk.io/"
+             name="_0103"
              id="_c87418b3-a615-44f3-8745-14e055a5a576"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
     <description>Input data with reference type variable of simple type string.</description>

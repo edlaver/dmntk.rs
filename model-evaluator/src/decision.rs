@@ -160,7 +160,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   // prepare references to required knowledge, required decisions and required input data
   let mut required_knowledge_references: Vec<DefKey> = vec![];
   let mut required_decision_references: Vec<DefKey> = vec![];
-  let mut required_input_data_references: Vec<String> = vec![];
+  let mut required_input_data_references: Vec<DefKey> = vec![];
   for knowledge_requirement in decision.knowledge_requirements() {
     required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
   }
@@ -169,7 +169,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
       required_decision_references.push(DefKey::new(href.namespace(), href.id()))
     }
     if let Some(href) = information_requirement.required_input() {
-      required_input_data_references.push(href.id().to_string())
+      required_input_data_references.push(href.into())
     }
   }
 
