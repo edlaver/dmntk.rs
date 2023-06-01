@@ -32,7 +32,7 @@
 
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::item_definition_type::ItemDefinitionTypeEvaluator;
-use crate::model_definitions::DefInformationItem;
+use crate::model_definitions::{DefInformationItem, DefKey};
 use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
@@ -43,6 +43,8 @@ pub type VariableEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator) -> (
 /// Variable properties.
 #[derive(Clone)]
 pub struct Variable {
+  /// Variable's namespace.
+  namespace: String,
   /// Variable's name.
   name: Name,
   /// Variable's type reference.
@@ -56,6 +58,7 @@ impl TryFrom<&DefInformationItem> for Variable {
   ///
   fn try_from(value: &DefInformationItem) -> Result<Self, Self::Error> {
     Ok(Self {
+      namespace: value.namespace().to_string(),
       name: value.name().clone(),
       type_ref: value.type_ref().clone(),
       feel_type: FeelType::Any,
@@ -64,6 +67,11 @@ impl TryFrom<&DefInformationItem> for Variable {
 }
 
 impl Variable {
+  /// Returns variable's namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
   /// Returns variable's name.
   pub fn name(&self) -> &Name {
     &self.name
@@ -71,12 +79,16 @@ impl Variable {
 
   /// Resolves the FEEL type of the variable.
   pub fn resolve_feel_type(&self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) -> FeelType {
-    item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any)
+    item_definition_type_evaluator
+      .information_item_type(&self.namespace, &self.type_ref)
+      .unwrap_or(FeelType::Any)
   }
 
   /// Updates the FEEL type of the variable.
   pub fn update_feel_type(&mut self, item_definition_type_evaluator: &ItemDefinitionTypeEvaluator) {
-    self.feel_type = item_definition_type_evaluator.information_item_type(&self.type_ref).unwrap_or(FeelType::Any);
+    self.feel_type = item_definition_type_evaluator
+      .information_item_type(&self.namespace, &self.type_ref)
+      .unwrap_or(FeelType::Any);
   }
 
   /// Returns variable's FEEL type.
@@ -86,6 +98,7 @@ impl Variable {
 
   ///
   pub fn build_evaluator(&self) -> VariableEvaluatorFn {
+    let variable_namespace = self.namespace.clone();
     let variable_name = self.name.clone();
     let variable_type_ref = self.type_ref.clone();
     match variable_type_ref.as_str() {
@@ -209,7 +222,7 @@ impl Variable {
         if let Value::Context(ctx) = value {
           if let Some(entry_value) = ctx.get_entry(&variable_name) {
             let evaluated_value = item_definition_evaluator
-              .eval(&variable_type_ref, entry_value)
+              .eval(&DefKey::new(&variable_namespace, &variable_type_ref), entry_value)
               .unwrap_or_else(|| value_null!("input data evaluator: item definition evaluator '{}' not found", variable_type_ref));
             (variable_name.clone(), evaluated_value)
           } else {

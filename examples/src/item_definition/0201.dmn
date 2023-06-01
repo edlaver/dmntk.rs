@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions namespace="https://dmntk.io"
-             name="0201"
+<definitions namespace="https://dmntk.io/"
+             name="_0201"
              id="_de55d6aa-b440-486f-ba74-37772ced0f1b"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
     <description>Item definition with reference to simple string type.</description>

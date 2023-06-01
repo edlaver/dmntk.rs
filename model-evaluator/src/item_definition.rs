@@ -33,7 +33,7 @@
 //! Builder for item definition evaluators.
 
 use crate::errors::*;
-use crate::model_definitions::{DefDefinitions, DefItemDefinition};
+use crate::model_definitions::{DefDefinitions, DefItemDefinition, DefKey};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
@@ -48,7 +48,7 @@ pub type ItemDefinitionEvaluatorFn = Box<dyn Fn(&Value, &ItemDefinitionEvaluator
 
 /// Item definition evaluator.
 pub struct ItemDefinitionEvaluator {
-  evaluators: Arc<HashMap<String, ItemDefinitionEvaluatorFn>>,
+  evaluators: Arc<HashMap<DefKey, ItemDefinitionEvaluatorFn>>,
 }
 
 impl ItemDefinitionEvaluator {
@@ -64,15 +64,17 @@ impl ItemDefinitionEvaluator {
     let mut evaluators = HashMap::new();
     for item_definition in definitions.item_definitions() {
       let evaluator = build_item_definition_evaluator(item_definition)?;
-      let type_ref = item_definition.name().to_string();
-      evaluators.insert(type_ref, evaluator);
+      let namespace = item_definition.namespace();
+      let type_ref = item_definition.name();
+      let def_key = DefKey::new(namespace, type_ref);
+      evaluators.insert(def_key, evaluator);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }
 
   /// Evaluates item definition with specified type reference name.
-  pub fn eval(&self, type_ref: &str, value: &Value) -> Option<Value> {
-    self.evaluators.get(type_ref).map(|evaluator| evaluator(value, self))
+  pub fn eval(&self, def_key: &DefKey, value: &Value) -> Option<Value> {
+    self.evaluators.get(def_key).map(|evaluator| evaluator(value, self))
   }
 }
 
@@ -83,10 +85,10 @@ pub fn build_item_definition_evaluator(item_definition: &DefItemDefinition) -> R
   // build item definition evaluator
   match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => build_simple_type_evaluator(feel_type, av_evaluator),
-    ItemDefinitionType::ReferencedType(ref_type) => build_referenced_type_evaluator(ref_type),
+    ItemDefinitionType::ReferencedType(namespace, type_ref) => build_referenced_type_evaluator(DefKey::new(&namespace, &type_ref)),
     ItemDefinitionType::ComponentType => build_component_type_evaluator(item_definition),
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => build_collection_of_simple_type_evaluator(feel_type, av_evaluator),
-    ItemDefinitionType::CollectionOfReferencedType(ref_type) => build_collection_of_referenced_type_evaluator(ref_type, av_evaluator),
+    ItemDefinitionType::CollectionOfReferencedType(namespace, type_ref) => build_collection_of_referenced_type_evaluator(DefKey::new(&namespace, &type_ref), av_evaluator),
     ItemDefinitionType::CollectionOfComponentType => build_collection_of_component_type_evaluator(item_definition),
     ItemDefinitionType::FunctionType => build_function_type_evaluator(),
   }
@@ -201,9 +203,9 @@ fn build_simple_type_evaluator(feel_type: FeelType, av_evaluator: Option<Evaluat
 }
 
 ///
-fn build_referenced_type_evaluator(ref_type: String) -> Result<ItemDefinitionEvaluatorFn> {
+fn build_referenced_type_evaluator(def_key: DefKey) -> Result<ItemDefinitionEvaluatorFn> {
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
-    evaluators.eval(&ref_type, value).unwrap_or_else(|| value_null!("no evaluator"))
+    evaluators.eval(&def_key, value).unwrap_or_else(|| value_null!("no evaluator"))
   }))
 }
 
@@ -392,15 +394,15 @@ fn build_collection_of_simple_type_evaluator(feel_type: FeelType, av_evaluator: 
 }
 
 ///
-fn build_collection_of_referenced_type_evaluator(type_ref: String, av_evaluator: Option<Evaluator>) -> Result<ItemDefinitionEvaluatorFn> {
+fn build_collection_of_referenced_type_evaluator(def_key: DefKey, av_evaluator: Option<Evaluator>) -> Result<ItemDefinitionEvaluatorFn> {
   Ok(Box::new(move |value: &Value, evaluators: &ItemDefinitionEvaluator| {
     if let Value::List(values) = value {
       let mut evaluated_values = Values::default();
       for item_value in values {
-        if let Some(evaluated_value) = evaluators.eval(&type_ref, item_value) {
+        if let Some(evaluated_value) = evaluators.eval(&def_key, item_value) {
           evaluated_values.push(evaluated_value);
         } else {
-          return value_null!("no evaluator defined for type reference '{}'", type_ref);
+          return value_null!("no evaluator defined for type reference '{}'", def_key);
         }
       }
       check_allowed_values(Value::List(evaluated_values), av_evaluator.as_ref())
@@ -452,11 +454,14 @@ fn build_function_type_evaluator() -> Result<ItemDefinitionEvaluatorFn> {
 #[cfg(test)]
 mod tests {
   use crate::item_definition::ItemDefinitionEvaluator;
+  use crate::model_definitions::DefKey;
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_null, value_number, Name};
   use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
+
+  const NAMESPACE: &str = "https://dmntk.io/";
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
@@ -469,7 +474,10 @@ mod tests {
     let context_str = r#"{ Customer Name : "Whistler" }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Customer", "Name"])).unwrap();
-    assert_eq!(Value::String("Whistler".to_string()), evaluator.eval("tCustomerName", value).unwrap());
+    assert_eq!(
+      Value::String("Whistler".to_string()),
+      evaluator.eval(&DefKey::new(NAMESPACE, "tCustomerName"), value).unwrap()
+    );
   }
 
   #[test]
@@ -480,7 +488,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Customer", "Name"])).unwrap();
     assert_eq!(
       value_null!("expected type 'string', actual type is 'number' in value '12000'"),
-      evaluator.eval("tCustomerName", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tCustomerName"), value).unwrap()
     );
   }
 
@@ -490,7 +498,7 @@ mod tests {
     let context_str = r#"{ Monthly Salary : 12000.00 }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Monthly", "Salary"])).unwrap();
-    assert_eq!(value_number!(12_000), evaluator.eval("tMonthlySalary", value).unwrap());
+    assert_eq!(value_number!(12_000), evaluator.eval(&DefKey::new(NAMESPACE, "tMonthlySalary"), value).unwrap());
   }
 
   #[test]
@@ -501,7 +509,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Monthly", "Salary"])).unwrap();
     assert_eq!(
       value_null!("expected type 'number', actual type is 'boolean' in value 'true'"),
-      evaluator.eval("tMonthlySalary", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tMonthlySalary"), value).unwrap()
     );
   }
 
@@ -511,11 +519,11 @@ mod tests {
     let context_str = r#"{ Is Affordable : true }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Is", "Affordable"])).unwrap();
-    assert_eq!(Value::Boolean(true), evaluator.eval("tIsAffordable", value).unwrap());
+    assert_eq!(Value::Boolean(true), evaluator.eval(&DefKey::new(NAMESPACE, "tIsAffordable"), value).unwrap());
     let context_str = r#"{ Is Affordable : false }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Is", "Affordable"])).unwrap();
-    assert_eq!(Value::Boolean(false), evaluator.eval("tIsAffordable", value).unwrap());
+    assert_eq!(Value::Boolean(false), evaluator.eval(&DefKey::new(NAMESPACE, "tIsAffordable"), value).unwrap());
   }
 
   #[test]
@@ -526,7 +534,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Is", "Affordable"])).unwrap();
     assert_eq!(
       value_null!(r#"expected type 'boolean', actual type is 'string' in value '"Yes"'"#),
-      evaluator.eval("tIsAffordable", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tIsAffordable"), value).unwrap()
     );
   }
 
@@ -536,7 +544,10 @@ mod tests {
     let context_str = r#"{ Birthday : date("1982-04-12") }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Birthday"])).unwrap();
-    assert_eq!(Value::Date(FeelDate::new(1982, 4, 12)), evaluator.eval("tBirthday", value).unwrap());
+    assert_eq!(
+      Value::Date(FeelDate::new(1982, 4, 12)),
+      evaluator.eval(&DefKey::new(NAMESPACE, "tBirthday"), value).unwrap()
+    );
   }
 
   #[test]
@@ -545,7 +556,10 @@ mod tests {
     let context_str = r#"{ Delivery Time : time("18:35:23") }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Delivery", "Time"])).unwrap();
-    assert_eq!(Value::Time(FeelTime::local_opt(18, 35, 23, 0).unwrap()), evaluator.eval("tDeliveryTime", value).unwrap());
+    assert_eq!(
+      Value::Time(FeelTime::local_opt(18, 35, 23, 0).unwrap()),
+      evaluator.eval(&DefKey::new(NAMESPACE, "tDeliveryTime"), value).unwrap()
+    );
   }
 
   #[test]
@@ -556,7 +570,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Appointment"])).unwrap();
     assert_eq!(
       Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 12), FeelTime::local_opt(18, 35, 23, 0).unwrap())),
-      evaluator.eval("tAppointment", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tAppointment"), value).unwrap()
     );
   }
 
@@ -568,7 +582,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Course", "Duration"])).unwrap();
     assert_eq!(
       Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600)),
-      evaluator.eval("tCourseDuration", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tCourseDuration"), value).unwrap()
     );
   }
 
@@ -580,7 +594,7 @@ mod tests {
     let value = context.get_entry(&Name::new(&["Growth", "Duration"])).unwrap();
     assert_eq!(
       Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 5)),
-      evaluator.eval("tGrowthDuration", value).unwrap()
+      evaluator.eval(&DefKey::new(NAMESPACE, "tGrowthDuration"), value).unwrap()
     );
   }
 
@@ -590,7 +604,10 @@ mod tests {
     let context_str = r#"{ Customer Name : "Bloomberg" }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Customer", "Name"])).unwrap();
-    assert_eq!(Value::String("Bloomberg".to_string()), evaluator.eval("tCustomerName", value).unwrap());
+    assert_eq!(
+      Value::String("Bloomberg".to_string()),
+      evaluator.eval(&DefKey::new(NAMESPACE, "tCustomerName"), value).unwrap()
+    );
   }
 
   #[test]
@@ -599,7 +616,7 @@ mod tests {
     let context_str = r#"{ Monthly Salary : 12000.00 }"#;
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Monthly", "Salary"])).unwrap();
-    assert_eq!(value_number!(12_000), evaluator.eval("tMonthlySalary", value).unwrap());
+    assert_eq!(value_number!(12_000), evaluator.eval(&DefKey::new(NAMESPACE, "tMonthlySalary"), value).unwrap());
   }
 
   #[test]
@@ -613,7 +630,7 @@ mod tests {
     ctx.set_entry(&"rate".into(), value_number!(60));
     ctx.set_entry(&"termMonths".into(), value_number!(28));
     let expected = Value::Context(ctx);
-    assert_eq!(expected, evaluator.eval("tLoan", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tLoan"), value).unwrap());
   }
 
   #[test]
@@ -628,7 +645,7 @@ mod tests {
       Value::String("Earth".to_string()),
       Value::String("Mars".to_string()),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -644,7 +661,7 @@ mod tests {
       value_number!(12_000),
       value_number!(13_000),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -660,7 +677,7 @@ mod tests {
       Value::Boolean(true),
       Value::Boolean(true),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -674,7 +691,7 @@ mod tests {
       Value::Date(FeelDate::new(2021, 10, 11)),
       Value::Date(FeelDate::new(2021, 10, 12)),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -688,7 +705,7 @@ mod tests {
       Value::Time(FeelTime::local_opt(12, 21, 36, 0).unwrap()),
       Value::Time(FeelTime::local_opt(12, 21, 37, 0).unwrap()),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -701,7 +718,7 @@ mod tests {
       Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 10), FeelTime::local_opt(21, 23, 18, 0).unwrap())),
       Value::DateTime(FeelDateTime::new(FeelDate::new(2021, 10, 11), FeelTime::local_opt(12, 18, 59, 0).unwrap())),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -711,7 +728,7 @@ mod tests {
     let context = dmntk_feel_evaluator::evaluate_context(&Default::default(), context_str).unwrap();
     let value = context.get_entry(&Name::new(&["Items"])).unwrap();
     let expected = Value::List(vec![Value::DaysAndTimeDuration(FeelDaysAndTimeDuration::from_s(183600))]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -724,7 +741,7 @@ mod tests {
       Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 3)),
       Value::YearsAndMonthsDuration(FeelYearsAndMonthsDuration::from_ym(2, 4)),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -738,7 +755,7 @@ mod tests {
       Value::String("Venus".to_string()),
       Value::String("Earth".to_string()),
     ]);
-    assert_eq!(expected, evaluator.eval("tItems", value).unwrap());
+    assert_eq!(expected, evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value).unwrap());
   }
 
   #[test]
@@ -760,6 +777,6 @@ mod tests {
     ctx_3.set_entry(&"name".into(), Value::String("Three".to_string()));
     ctx_3.set_entry(&"manager".into(), Value::String("Bob".to_string()));
     let expected = Value::List(vec![Value::Context(ctx_1), Value::Context(ctx_2), Value::Context(ctx_3)]);
-    assert_eq!(Some(expected), evaluator.eval("tItems", value));
+    assert_eq!(Some(expected), evaluator.eval(&DefKey::new(NAMESPACE, "tItems"), value));
   }
 }

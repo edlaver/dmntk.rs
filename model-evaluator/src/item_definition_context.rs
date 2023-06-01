@@ -80,10 +80,10 @@ impl ItemDefinitionContextEvaluator {
 fn item_definition_context_evaluator(item_definition: &DefItemDefinition) -> Result<ItemDefinitionContextEvaluatorFn> {
   match item_definition.item_definition_type()? {
     ItemDefinitionType::SimpleType(feel_type) => simple_type_context_evaluator(feel_type),
-    ItemDefinitionType::ReferencedType(ref_type) => referenced_type_context_evaluator(ref_type),
+    ItemDefinitionType::ReferencedType(namespace, ref_type) => referenced_type_context_evaluator(ref_type),
     ItemDefinitionType::ComponentType => component_type_context_evaluator(item_definition),
     ItemDefinitionType::CollectionOfSimpleType(feel_type) => collection_of_simple_type_context_evaluator(feel_type),
-    ItemDefinitionType::CollectionOfReferencedType(ref_type) => collection_of_referenced_type_context_evaluator(ref_type),
+    ItemDefinitionType::CollectionOfReferencedType(namespace, ref_type) => collection_of_referenced_type_context_evaluator(ref_type),
     ItemDefinitionType::CollectionOfComponentType => collection_of_component_type_context_evaluator(item_definition),
     ItemDefinitionType::FunctionType => function_type_context_evaluator(item_definition),
   }

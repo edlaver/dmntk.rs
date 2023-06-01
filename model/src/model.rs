@@ -1087,10 +1087,10 @@ impl RequiredVariable for DecisionService {
 #[derive(Debug, Clone, PartialEq)]
 pub enum ItemDefinitionType {
   SimpleType(FeelType),
-  ReferencedType(String),
+  ReferencedType(String, String),
   ComponentType,
   CollectionOfSimpleType(FeelType),
-  CollectionOfReferencedType(String),
+  CollectionOfReferencedType(String, String),
   CollectionOfComponentType,
   FunctionType,
 }

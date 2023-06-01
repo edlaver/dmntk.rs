@@ -38,6 +38,7 @@ use dmntk_common::{HRef, Result};
 use dmntk_feel::Name;
 use dmntk_model::*;
 use std::collections::HashMap;
+use std::fmt;
 
 /// The key in hash maps for indexing definition artefacts by namespace and identifier.
 ///
@@ -54,6 +55,12 @@ impl DefKey {
   }
 }
 
+impl fmt::Display for DefKey {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{}#{}", self.0, self.1)
+  }
+}
+
 impl From<&DefHRef> for DefKey {
   ///
   fn from(value: &DefHRef) -> Self {
@@ -64,16 +71,19 @@ impl From<&DefHRef> for DefKey {
 /// Information item definition (variable properties).
 #[derive(Debug)]
 pub struct DefInformationItem {
+  /// Variable namespace.
+  namespace: String,
   /// Variable name.
   name: Name,
   /// Variable type reference.
   type_ref: String,
 }
 
-impl From<&InformationItem> for DefInformationItem {
-  ///
-  fn from(information_item: &InformationItem) -> Self {
+impl DefInformationItem {
+  /// Creates [DefInformationItem] from [InformationItem].
+  pub fn new(namespace: &str, information_item: &InformationItem) -> Self {
     Self {
+      namespace: namespace.to_string(),
       name: information_item.feel_name().clone(),
       type_ref: information_item.type_ref().clone(),
     }
@@ -81,6 +91,11 @@ impl From<&InformationItem> for DefInformationItem {
 }
 
 impl DefInformationItem {
+  /// Returns information item's namespace.
+  pub fn namespace(&self) -> &str {
+    &self.namespace
+  }
+
   /// Returns information item's name.
   pub fn name(&self) -> &Name {
     &self.name
@@ -107,7 +122,7 @@ impl DefInputData {
       namespace: namespace.to_string(),
       id: input_data.id().to_string(),
       name: input_data.name().to_string(),
-      variable: input_data.variable().into(),
+      variable: DefInformationItem::new(namespace, input_data.variable()),
     }
   }
 }
@@ -222,11 +237,14 @@ impl DefItemDefinition {
     );
     match condition {
       (_, true, false, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
-      (true, false, false, false, false) => Ok(ItemDefinitionType::ReferencedType(self.type_ref().as_ref().unwrap().clone())),
+      (true, false, false, false, false) => Ok(ItemDefinitionType::ReferencedType(self.namespace.clone(), self.type_ref().as_ref().unwrap().clone())),
       (false, false, true, false, false) => Ok(ItemDefinitionType::ComponentType),
       (_, true, false, true, false) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
       (false, false, true, true, false) => Ok(ItemDefinitionType::CollectionOfComponentType),
-      (true, false, false, true, false) => Ok(ItemDefinitionType::CollectionOfReferencedType(self.type_ref().as_ref().unwrap().clone())),
+      (true, false, false, true, false) => Ok(ItemDefinitionType::CollectionOfReferencedType(
+        self.namespace.clone(),
+        self.type_ref().as_ref().unwrap().clone(),
+      )),
       (false, false, false, false, true) => Ok(ItemDefinitionType::FunctionType),
       _ => Err(err_invalid_item_definition_type(self.name())),
     }
@@ -250,7 +268,7 @@ impl DefBusinessKnowledgeModel {
       namespace: namespace.to_string(),
       id: business_knowledge_model.id().to_string(),
       name: business_knowledge_model.name().to_string(),
-      variable: business_knowledge_model.variable().into(),
+      variable: DefInformationItem::new(namespace, business_knowledge_model.variable()),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
       knowledge_requirements: business_knowledge_model
         .knowledge_requirements()
@@ -374,7 +392,7 @@ impl DefDecision {
       namespace: namespace.to_string(),
       id: decision.id().to_string(),
       name: decision.name().to_string(),
-      variable: decision.variable().into(),
+      variable: DefInformationItem::new(namespace, decision.variable()),
       decision_logic: decision.decision_logic().clone(),
       information_requirements: decision
         .information_requirements()
@@ -446,7 +464,7 @@ impl DefDecisionService {
       namespace: namespace.to_string(),
       id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
-      variable: decision_service.variable().into(),
+      variable: DefInformationItem::new(namespace, decision_service.variable()),
       input_decisions: decision_service.input_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
       output_decisions: decision_service.output_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
       encapsulated_decisions: decision_service.encapsulated_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),

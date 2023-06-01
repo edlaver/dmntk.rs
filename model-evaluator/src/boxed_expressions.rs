@@ -83,7 +83,9 @@ pub fn build_context_evaluator(scope: &FeelScope, context: &Context, model_evalu
   for context_entry in context.context_entries() {
     if let Some(variable) = &context_entry.variable {
       let variable_name = variable.feel_name();
-      let variable_type = item_definition_type_evaluator.information_item_type(variable.type_ref()).ok_or_else(err_empty_feel_type)?;
+      let variable_type = item_definition_type_evaluator
+        .information_item_type("FAKE_NAMESPACE", variable.type_ref())
+        .ok_or_else(err_empty_feel_type)?;
       let (evaluator, _) = build_expression_instance_evaluator(scope, &context_entry.value, model_evaluator)?;
       scope.set_name(variable_name.clone());
       entry_evaluators.push((Some(variable_name.clone()), variable_type, evaluator));
@@ -126,13 +128,17 @@ pub fn build_function_definition_evaluator(scope: &FeelScope, function_definitio
   let mut parameters_ctx = FeelContext::default();
   for parameter in function_definition.formal_parameters() {
     let parameter_name = parameter.feel_name().clone();
-    let parameter_type = item_definition_type_evaluator.information_item_type(parameter.type_ref()).ok_or_else(err_empty_feel_type)?;
+    let parameter_type = item_definition_type_evaluator
+      .information_item_type("FAKE_NAMESPACE", parameter.type_ref())
+      .ok_or_else(err_empty_feel_type)?;
     parameters_ctx.set_entry(&parameter_name, Value::FeelType(parameter_type.clone()));
     parameters.push((parameter_name, parameter_type));
   }
   // resolve function definition's result type
   let result_type = if let Some(type_ref) = function_definition.type_ref() {
-    item_definition_type_evaluator.information_item_type(type_ref).ok_or_else(err_empty_feel_type)?
+    item_definition_type_evaluator
+      .information_item_type("FAKE_NAMESPACE", type_ref)
+      .ok_or_else(err_empty_feel_type)?
   } else {
     FeelType::Any
   };
@@ -228,7 +234,7 @@ pub fn build_invocation_evaluator(scope: &FeelScope, invocation: &Invocation, mo
     if let Some(binding_formula) = binding.binding_formula() {
       let param_name = binding.parameter().feel_name().clone();
       let param_type = item_definition_type_evaluator
-        .information_item_type(binding.parameter().type_ref())
+        .information_item_type("FAKE_NAMESPACE", binding.parameter().type_ref())
         .ok_or_else(err_empty_feel_type)?;
       let (evaluator, _) = build_expression_instance_evaluator(scope, binding_formula, model_evaluator)?;
       bindings.push((param_name, param_type, evaluator));
