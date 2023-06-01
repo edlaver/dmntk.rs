@@ -494,7 +494,7 @@ pub struct DefDefinitions {
   /// Item definitions.
   item_definitions: Vec<DefItemDefinition>,
   /// Map of input data definitions indexed by identifier.
-  input_data: HashMap<String, DefInputData>,
+  input_data: HashMap<DefKey, DefInputData>,
   /// Map of business_knowledge models indexed by identifier.
   business_knowledge_models: HashMap<DefKey, DefBusinessKnowledgeModel>,
   /// Map of decisions indexed by identifier.
@@ -531,7 +531,7 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
       for drg_element in definitions.drg_elements() {
         match drg_element {
           DrgElement::InputData(inner) => {
-            input_data.insert(inner.id().to_string(), DefInputData::new(namespace, inner));
+            input_data.insert(DefKey::new(namespace, inner.id()), DefInputData::new(namespace, inner));
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
             business_knowledge_models.insert(DefKey::new(namespace, inner.id()), DefBusinessKnowledgeModel::new(namespace, inner));
@@ -603,7 +603,7 @@ impl DefDefinitions {
   /// Returns an optional reference to [InputData] with specified identifier
   /// or [None] when such [InputData] was not found among
   /// instances of [DrgElement]).
-  pub fn input_data_by_id(&self, id: &str) -> Option<&DefInputData> {
-    self.input_data.get(id)
+  pub fn input_data_by_key(&self, namespace: &str, id: &str) -> Option<&DefInputData> {
+    self.input_data.get(&DefKey::new(namespace, id))
   }
 }

@@ -130,7 +130,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     }
     // bring into context the variable from required input
     if let Some(href) = information_requirement.required_input() {
-      if let Some(required_input) = definitions.input_data_by_id(href.id()) {
+      if let Some(required_input) = definitions.input_data_by_key(href.id()) {
         let variable_name = required_input.variable().name();
         let variable_type = input_data_context_evaluator.eval(href.id(), &mut input_requirements_ctx, item_definition_context_evaluator);
         input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
