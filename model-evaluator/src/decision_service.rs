@@ -147,16 +147,16 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   let output_variable_type = output_variable.feel_type().clone();
 
   // prepare references to required input data
-  let input_data_references: Vec<String> = decision_service.input_data().iter().map(|href| href.into()).collect();
+  let input_data_references: Vec<String> = decision_service.input_data().iter().map(|href| href.id().to_string()).collect();
 
   // prepare references to input decisions
-  let input_decisions: Vec<String> = decision_service.input_decisions().iter().map(|href| href.into()).collect();
+  let input_decisions: Vec<String> = decision_service.input_decisions().iter().map(|href| href.id().to_string()).collect();
 
   // prepare references to encapsulated decisions
-  let encapsulated_decisions: Vec<String> = decision_service.encapsulated_decisions().iter().map(|href| href.into()).collect();
+  let encapsulated_decisions: Vec<String> = decision_service.encapsulated_decisions().iter().map(|href| href.id().to_string()).collect();
 
   // prepare references to output decisions
-  let output_decisions: Vec<String> = decision_service.output_decisions().iter().map(|href| href.into()).collect();
+  let output_decisions: Vec<String> = decision_service.output_decisions().iter().map(|href| href.id().to_string()).collect();
 
   // prepare a container for formal parameters accepted by this decision service
   let mut formal_parameters: Vec<(Name, FeelType)> = vec![];

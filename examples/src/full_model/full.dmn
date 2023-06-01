@@ -60,13 +60,13 @@
             This is an example of the first
             organisation unit.
         </description>
-        <decisionMade href="a"/>
-        <decisionMade href="b"/>
-        <decisionMade href="c"/>
-        <decisionOwned href="A"/>
-        <decisionOwned href="B"/>
-        <decisionOwned href="C"/>
-        <decisionOwned href="D"/>
+        <decisionMade href="#a"/>
+        <decisionMade href="#b"/>
+        <decisionMade href="#c"/>
+        <decisionOwned href="#A"/>
+        <decisionOwned href="#B"/>
+        <decisionOwned href="#C"/>
+        <decisionOwned href="#D"/>
     </organizationUnit>
 
 </definitions>

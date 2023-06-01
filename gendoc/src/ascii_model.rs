@@ -32,7 +32,7 @@
 
 //! # ASCII report of the DMN model
 
-use dmntk_common::{color_256, write_indented, AsciiLine, AsciiNode, AsciiNodeBuilder, ColorMode};
+use dmntk_common::{color_256, write_indented, AsciiLine, AsciiNode, AsciiNodeBuilder, ColorMode, HRef};
 
 use dmntk_feel::Name;
 use dmntk_model::model::*;
@@ -290,7 +290,7 @@ fn write_performance_indicators(w: &mut dyn Write, definitions: &Definitions, co
     // prepare a node with impacting decisions
     let mut impacting_decisions_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_IMPACTING_DECISIONS).colon().build());
     for impacting_decision in performance_indicator.impacting_decisions() {
-      impacting_decisions_builder.add_child(build_href(impacting_decision.into(), colors));
+      impacting_decisions_builder.add_child(build_href(impacting_decision, colors));
     }
     let node_impacting_decisions = impacting_decisions_builder.build();
     let node_performance_indicator = builder_name(performance_indicator.name(), colors)
@@ -318,13 +318,13 @@ fn write_organisation_units(w: &mut dyn Write, definitions: &Definitions, colors
     // prepare a node with decisions made
     let mut decisions_made_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS_MADE).colon().build());
     for decision_made in organisation_units.decisions_made() {
-      decisions_made_builder.add_child(build_href(decision_made.into(), colors));
+      decisions_made_builder.add_child(build_href(decision_made, colors));
     }
     let node_decisions_made = decisions_made_builder.build();
     // prepare a node with decisions owned
     let mut decisions_made_builder = AsciiNode::node_builder(AsciiLine::builder().text(LABEL_DECISIONS_OWNED).colon().build());
     for decision_owned in organisation_units.decisions_owned() {
-      decisions_made_builder.add_child(build_href(decision_owned.into(), colors));
+      decisions_made_builder.add_child(build_href(decision_owned, colors));
     }
     let node_decisions_owned = decisions_made_builder.build();
     let node_organisation_unit = builder_name(organisation_units.name(), colors)
@@ -374,7 +374,8 @@ fn build_label(opt_text: &Option<String>, colors: &Colors) -> Option<AsciiNode> 
 }
 
 /// Builds a leaf node containing a label.
-fn build_href(text: &str, colors: &Colors) -> AsciiNode {
+fn build_href(href: &HRef, colors: &Colors) -> AsciiNode {
+  let text = href.id();
   AsciiNode::leaf_builder()
     .line(AsciiLine::builder().with_color("#", colors.href()).with_color(text, colors.href()).build())
     .build()

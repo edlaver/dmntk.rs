@@ -30,48 +30,61 @@
  * limitations under the License.
  */
 
-//! # URI references
-
+//! # URI reference
 //!
-//! by utilizing an href attribute whose value must be a valid URI reference
-//! [RFC 3986] where the path components may be absolute or relative,
-//! the reference has no query component, and
-//! the fragment consists of the value of the id of the referenced DMN element.
+//! This [HRef] struct utilizes an **href** attribute whose value must be a valid URI reference
+//! [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986), where the path components
+//! may be absolute or relative, the reference has no query component,
+//! and the fragment consists of the value of the **id** of the referenced DMN element.
 
 use self::errors::*;
 use crate::DmntkError;
 use std::convert::TryFrom;
 use uriparse::{RelativeReference, URIReference, URI};
 
-/// Reference to an element using `href` attribute.
+/// URI reference used for utilizing `href` attribute.
 #[derive(Debug, Clone)]
-pub struct HRef(String);
-
-impl<'a> From<&'a HRef> for &'a str {
-  /// Converts a reference to [HRef] into reference to str.
-  fn from(value: &'a HRef) -> Self {
-    &value.0
-  }
+pub struct HRef {
+  /// Namespace built from URI's path components.
+  namespace: Option<String>,
+  /// DMN element's identifier built from URI's fragment.
+  id: String,
 }
 
-impl<'a> From<&'a HRef> for String {
-  /// Converts a reference to [HRef] into string
-  fn from(value: &'a HRef) -> Self {
-    value.0.clone()
+impl HRef {
+  /// Returns the optional namespace.
+  pub fn namespace(&self) -> Option<&String> {
+    self.namespace.as_ref()
+  }
+
+  /// Returns the identifier.
+  pub fn id(&self) -> &str {
+    &self.id
   }
 }
 
 impl TryFrom<&str> for HRef {
   type Error = DmntkError;
-  /// Tries to convert string into [HRef].
+  /// Converts [HRef] from string.
   fn try_from(value: &str) -> Result<Self, Self::Error> {
-    if let Ok(relative_reference) = RelativeReference::try_from(value) {
-      let s = relative_reference.to_string();
-      return Ok(Self(if s.starts_with('#') { s.strip_prefix('#').unwrap().to_string() } else { s }));
+    if let Ok(reference) = RelativeReference::try_from(value) {
+      if reference.has_query() {
+        return Err(err_invalid_reference(value));
+      }
+      let id = reference.fragment().ok_or_else(|| err_invalid_reference_no_fragment(value))?.to_string();
+      let path = reference.path().to_string().trim().to_string();
+      let namespace = if path.is_empty() { None } else { Some(path) };
+      return Ok(Self { namespace, id });
     }
     if let Ok(uri_reference) = URIReference::try_from(value) {
       if let Ok(uri) = URI::try_from(uri_reference) {
-        return Ok(Self(uri.to_string()));
+        if uri.has_query() {
+          return Err(err_invalid_reference(value));
+        }
+        let id = uri.fragment().ok_or_else(|| err_invalid_reference_no_fragment(value))?.to_string();
+        let path = uri.into_base_uri().to_string().trim().to_string();
+        let namespace = if path.is_empty() { None } else { Some(path) };
+        return Ok(Self { namespace, id });
       }
     }
     Err(err_invalid_reference(value))
@@ -85,80 +98,60 @@ mod errors {
   #[derive(ToErrorMessage)]
   struct HRefError(String);
 
-  /// Creates an invalid reference error.
+  /// Creates an error indicating an invalid reference.
   pub fn err_invalid_reference(s: &str) -> DmntkError {
-    HRefError(format!("invalid reference '{s}'")).into()
+    HRefError(format!("invalid reference: '{s}'")).into()
+  }
+
+  /// Creates an error indicating the missing fragment.
+  pub fn err_invalid_reference_no_fragment(s: &str) -> DmntkError {
+    HRefError(format!("no fragment in reference: '{s}'")).into()
   }
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
-  use std::convert::TryFrom;
 
-  fn assert_href(expected: &str, uri: &str) {
-    let href = &HRef::try_from(uri).unwrap();
-    let actual: &str = href.into();
-    assert_eq!(expected, actual);
+  #[test]
+  fn test_relative_references() {
+    assert_eq!(r#"Err(DmntkError("<HRefError> no fragment in reference: ''"))"#, format!("{:?}", HRef::try_from("")));
+    assert_eq!(
+      r#"Err(DmntkError("<HRefError> no fragment in reference: 'documents'"))"#,
+      format!("{:?}", HRef::try_from("documents"))
+    );
+    assert_eq!(
+      r#"Ok(HRef { namespace: Some("documents"), id: "_b51ac78b-fd76-42fc-a12d-aad7150c9278" })"#,
+      format!("{:?}", HRef::try_from("documents#_b51ac78b-fd76-42fc-a12d-aad7150c9278"))
+    );
+    assert_eq!(
+      r#"Ok(HRef { namespace: None, id: "_b51ac78b-fd76-42fc-a12d-aad7150c9278" })"#,
+      format!("{:?}", HRef::try_from("#_b51ac78b-fd76-42fc-a12d-aad7150c9278"))
+    );
+    assert_eq!(
+      r#"Err(DmntkError("<HRefError> invalid reference: 'documents?name=Introduction#_b51ac78b-fd76-42fc-a12d-aad7150c9278'"))"#,
+      format!("{:?}", HRef::try_from("documents?name=Introduction#_b51ac78b-fd76-42fc-a12d-aad7150c9278"))
+    );
   }
 
   #[test]
-  fn test_valid_references() {
-    assert_href("", "");
-    assert_href("ref", "#ref");
-    assert_href("//beta/gamma", "//beta/gamma");
-    assert_href("ee412cf7-4dc9-4555-ab90-61907cb5b10e", "#ee412cf7-4dc9-4555-ab90-61907cb5b10e");
-    assert_href("_82032dc2-36a7-4477-9392-9921353c4b44", "#_82032dc2-36a7-4477-9392-9921353c4b44");
-    assert_href("https://dmntk.io/examples/example1#model2", "https://dmntk.io/examples/example1#model2");
-  }
-
-  #[test]
-  fn test_invalid_references() {
-    assert!(HRef::try_from("##").is_err());
-    assert!(HRef::try_from(":alfa").is_err());
-    assert_eq!("<HRefError> invalid reference '##'", HRef::try_from("##").err().unwrap().to_string());
-  }
-
-  #[test]
-  fn test_href_into_str() {
-    let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    let actual: &str = href.into();
-    assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
-  }
-
-  #[test]
-  fn test_href_into_string() {
-    let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    let actual: String = href.into();
-    assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
-  }
-
-  #[test]
-  fn test_href_debug() {
-    let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    let actual: String = format!("{href:?}");
-    assert_eq!(r#"HRef("_c03e81bf-a53d-47c5-9135-189935765fdc")"#, actual);
-  }
-
-  #[test]
-  #[allow(clippy::redundant_clone)]
-  fn test_href_clone() {
-    let href_src = HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    let href_dst = href_src.clone();
-    let actual: String = (&href_dst).into();
-    assert_eq!("_c03e81bf-a53d-47c5-9135-189935765fdc", actual);
-  }
-
-  #[test]
-  fn a() {
-    println!("{:?}", uriparse::RelativeReference::try_from("https://dmntk.io"));
-    println!("{:?}", uriparse::RelativeReference::try_from("https://dmntk.io#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
-    println!("{:?}", uriparse::RelativeReference::try_from("#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
-    println!("{:?}", uriparse::RelativeReference::try_from("ala-ma-kota#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
-    println!("{:?}", URIReference::try_from("https://dmntk.io#_6cc3eeee-922f-4e08-b970-3132d94975b2"));
-    println!("{:?}", URIReference::try_from("https://dmntk.io"));
-    // let href = &HRef::try_from("#_c03e81bf-a53d-47c5-9135-189935765fdc").unwrap();
-    // let actual: String = format!("{href:?}");
-    // assert_eq!(r#"HRef("_c03e81bf-a53d-47c5-9135-189935765fdc")"#, actual);
+  fn test_absolute_references() {
+    assert_eq!(r#"Err(DmntkError("<HRefError> no fragment in reference: ''"))"#, format!("{:?}", HRef::try_from("")));
+    assert_eq!(
+      r#"Err(DmntkError("<HRefError> invalid reference: '                                               '"))"#,
+      format!("{:?}", HRef::try_from("                                               "))
+    );
+    assert_eq!(
+      r#"Ok(HRef { namespace: Some("https://dmntk.io/documents"), id: "_b51ac78b-fd76-42fc-a12d-aad7150c9278" })"#,
+      format!("{:?}", HRef::try_from("https://dmntk.io/documents#_b51ac78b-fd76-42fc-a12d-aad7150c9278"))
+    );
+    assert_eq!(
+      r#"Err(DmntkError("<HRefError> no fragment in reference: 'https://dmntk.io/documents'"))"#,
+      format!("{:?}", HRef::try_from("https://dmntk.io/documents"))
+    );
+    assert_eq!(
+      r#"Err(DmntkError("<HRefError> invalid reference: 'https::\\/dmntk.io/documents#id'"))"#,
+      format!("{:?}", HRef::try_from("https::\\/dmntk.io/documents#id"))
+    );
   }
 }

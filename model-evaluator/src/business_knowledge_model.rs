@@ -112,7 +112,7 @@ fn build_bkm_evaluator(
     .unwrap_or(FeelType::Any);
   let mut knowledge_requirements = vec![];
   for knowledge_requirement in business_knowledge_model.knowledge_requirements() {
-    knowledge_requirements.push(knowledge_requirement.required_knowledge().into());
+    knowledge_requirements.push(knowledge_requirement.required_knowledge().id().to_string());
   }
   // bring into context the variables from knowledge requirements
   bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), &mut local_context)?;

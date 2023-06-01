@@ -121,7 +121,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   for information_requirement in decision.information_requirements() {
     // bring into context the variable from required decision
     if let Some(href) = information_requirement.required_decision() {
-      if let Some(required_decision) = definitions.decision_by_id(href.into()) {
+      if let Some(required_decision) = definitions.decision_by_id(href.id()) {
         let variable_name = required_decision.variable().name();
         let variable_type_ref = required_decision.variable().type_ref();
         let variable_type = item_definition_context_evaluator.eval(variable_type_ref, variable_name, &mut requirements_ctx);
@@ -130,9 +130,9 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     }
     // bring into context the variable from required input
     if let Some(href) = information_requirement.required_input() {
-      if let Some(required_input) = definitions.input_data_by_id(href.into()) {
+      if let Some(required_input) = definitions.input_data_by_id(href.id()) {
         let variable_name = required_input.variable().name();
-        let variable_type = input_data_context_evaluator.eval(href.into(), &mut input_requirements_ctx, item_definition_context_evaluator);
+        let variable_type = input_data_context_evaluator.eval(href.id(), &mut input_requirements_ctx, item_definition_context_evaluator);
         input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
       }
     }
@@ -155,14 +155,14 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   let mut required_decision_references: Vec<String> = vec![];
   let mut required_input_data_references: Vec<String> = vec![];
   for knowledge_requirement in decision.knowledge_requirements() {
-    required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
+    required_knowledge_references.push(knowledge_requirement.required_knowledge().id().to_string());
   }
   for information_requirement in decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {
-      required_decision_references.push(href.into())
+      required_decision_references.push(href.id().to_string())
     }
     if let Some(href) = information_requirement.required_input() {
-      required_input_data_references.push(href.into())
+      required_input_data_references.push(href.id().to_string())
     }
   }
 
