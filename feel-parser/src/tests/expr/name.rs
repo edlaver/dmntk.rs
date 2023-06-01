@@ -242,3 +242,19 @@ fn _0012() {
     false,
   );
 }
+
+#[test]
+fn _0013() {
+  let scope = scope!();
+  scope.set_name("_0001-input-data-string".into());
+  accept(
+    &scope,
+    StartExpression,
+    "_0001-input-data-string",
+    r#"
+       Name
+       └─ `_0001-input-data-string`
+    "#,
+    false,
+  );
+}

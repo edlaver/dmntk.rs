@@ -1128,8 +1128,10 @@ fn optional_id(node: &Node) -> DmnId {
 
 /// Returns FEEL name for specified node.
 fn required_feel_name(node: &Node) -> Result<Name> {
-  let name = required_name(node)?;
-  Ok(dmntk_feel_parser::parse_longest_name(&name).unwrap_or(name.into()))
+  let input = required_name(node)?;
+  Ok(dmntk_feel_parser::parse_longest_name(&input).unwrap_or(input.into()))
+  //TODO change to properly verified FEEL name, as shown below
+  //  dmntk_feel_parser::parse_longest_name(&input)
 }
 
 /// Returns the required `href` attribute.

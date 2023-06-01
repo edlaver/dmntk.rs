@@ -807,13 +807,13 @@ pub struct Decision {
   pub(crate) knowledge_requirements: Vec<KnowledgeRequirement>,
   /// Collection of the instances of [AuthorityRequirement] that compose this [Decision].
   pub(crate) authority_requirements: Vec<AuthorityRequirement>,
-  // TODO add the following:
-  // supported_objectives
-  // impacted_performance_indicator
-  // decision_maker
-  // decision_owner
-  // using_processes
-  // using_tasks
+  //TODO add the following:
+  //  supported_objectives
+  //  impacted_performance_indicator
+  //  decision_maker
+  //  decision_owner
+  //  using_processes
+  //  using_tasks
 }
 
 impl Decision {

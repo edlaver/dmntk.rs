@@ -86,7 +86,7 @@ pub fn parse_name(scope: &FeelScope, input: &str, trace: bool) -> Result<Name> {
   }
 }
 
-/// Parses the `longest name` as defined in grammar rule `25`.
+/// Parses the longest valid name as defined in grammar rule `25`.
 pub fn parse_longest_name(input: &str) -> Result<Name> {
   parse_name(&Default::default(), input, false)
 }
