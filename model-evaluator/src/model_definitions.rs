@@ -500,7 +500,7 @@ pub struct DefDefinitions {
   /// Map of decisions indexed by identifier.
   decisions: HashMap<DefKey, DefDecision>,
   /// Map of decision services indexed by identifier.
-  decision_services: HashMap<String, DefDecisionService>,
+  decision_services: HashMap<DefKey, DefDecisionService>,
 }
 
 impl From<Definitions> for DefDefinitions {
@@ -540,7 +540,7 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
             decisions.insert(DefKey::new(namespace, inner.id()), DefDecision::new(namespace, inner));
           }
           DrgElement::DecisionService(inner) => {
-            decision_services.insert(inner.id().to_string(), DefDecisionService::new(namespace, inner));
+            decision_services.insert(DefKey::new(namespace, inner.id()), DefDecisionService::new(namespace, inner));
           }
           _ => {}
         }
@@ -591,8 +591,8 @@ impl DefDefinitions {
 
   /// Returns an optional reference to [DecisionService] with specified identifier
   /// or [None] when such [DecisionService] was not found among instances of [DrgElement].
-  pub fn decision_service_by_id(&self, id: &str) -> Option<&DefDecisionService> {
-    self.decision_services.get(id)
+  pub fn decision_service_by_id(&self, namespace: &str, id: &str) -> Option<&DefDecisionService> {
+    self.decision_services.get(&DefKey::new(namespace, id))
   }
 
   /// Returns references to input data instances.

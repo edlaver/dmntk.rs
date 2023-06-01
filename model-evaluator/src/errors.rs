@@ -37,8 +37,8 @@ use dmntk_feel::FeelType;
 #[derive(ToErrorMessage)]
 struct ModelEvaluatorError(String);
 
-pub fn err_business_knowledge_model_with_reference_not_found(s: &str) -> DmntkError {
-  ModelEvaluatorError(format!("business knowledge model with reference '{s}' was not found")).into()
+pub fn err_business_knowledge_model_with_reference_not_found(namespace: &str, id: &str) -> DmntkError {
+  ModelEvaluatorError(format!("no business knowledge model with reference: '{namespace}#{id}'")).into()
 }
 
 pub fn err_empty_literal_expression() -> DmntkError {
