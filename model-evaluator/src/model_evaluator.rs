@@ -49,19 +49,19 @@ use std::sync::Arc;
 
 /// Types of invocables in DMN model.
 pub enum InvocableType {
-  /// Decision.
+  /// Decision invocable.
   Decision(
     /// A key uniquely identifying a decision, see [DefKey] for details.
     DefKey,
   ),
-  /// Business knowledge model.
+  /// Business knowledge model invocable.
   BusinessKnowledgeModel(
     /// A key uniquely identifying a business knowledge model, see [DefKey] for details.
     DefKey,
     /// Name of the output variable.
     Name,
   ),
-  /// Decision service.
+  /// Decision service invocable.
   DecisionService(
     /// A key uniquely identifying a decision service, see [DefKey] for details.
     DefKey,
