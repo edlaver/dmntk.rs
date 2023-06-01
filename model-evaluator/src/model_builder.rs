@@ -38,7 +38,7 @@ use crate::input_data_context::InputDataContextEvaluator;
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
 use crate::item_definition_type::ItemDefinitionTypeEvaluator;
-use crate::model_definitions::DefDefinitions;
+use crate::model_definitions::{DefDefinitions, DefKey};
 use crate::model_evaluator::InvocableType;
 use dmntk_common::Result;
 use dmntk_feel::Name;
@@ -136,8 +136,8 @@ impl ModelBuilder {
   }
 
   ///
-  pub fn add_decision_invocable(&self, name: String, id: String) {
-    self.invocables.borrow_mut().insert(name, InvocableType::Decision(id));
+  pub fn add_decision_invocable(&self, name: String, def_key: DefKey) {
+    self.invocables.borrow_mut().insert(name, InvocableType::Decision(def_key));
   }
 
   ///

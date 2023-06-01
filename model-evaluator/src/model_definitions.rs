@@ -44,13 +44,20 @@ use std::collections::HashMap;
 /// [DefKey].0 = namespace
 /// [DefKey].1 = identifier
 ///
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct DefKey(String, String);
 
 impl DefKey {
   /// Creates new definition key based on namespace and identifier.
   pub fn new(namespace: &str, id: &str) -> Self {
     Self(namespace.to_string(), id.to_string())
+  }
+}
+
+impl From<&DefHRef> for DefKey {
+  ///
+  fn from(value: &DefHRef) -> Self {
+    Self(value.namespace.to_string(), value.id.to_string())
   }
 }
 
@@ -426,10 +433,10 @@ pub struct DefDecisionService {
   id: String,
   name: String,
   variable: DefInformationItem,
-  input_decisions: Vec<HRef>,
-  output_decisions: Vec<HRef>,
-  encapsulated_decisions: Vec<HRef>,
-  input_data: Vec<HRef>,
+  input_decisions: Vec<DefHRef>,
+  output_decisions: Vec<DefHRef>,
+  encapsulated_decisions: Vec<DefHRef>,
+  input_data: Vec<DefHRef>,
 }
 
 impl DefDecisionService {
@@ -440,10 +447,10 @@ impl DefDecisionService {
       id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
       variable: decision_service.variable().into(),
-      input_decisions: decision_service.input_decisions().clone(),
-      output_decisions: decision_service.output_decisions().clone(),
-      encapsulated_decisions: decision_service.encapsulated_decisions().clone(),
-      input_data: decision_service.input_data().clone(),
+      input_decisions: decision_service.input_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
+      output_decisions: decision_service.output_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
+      encapsulated_decisions: decision_service.encapsulated_decisions().iter().map(|href| DefHRef::new(namespace, href)).collect(),
+      input_data: decision_service.input_data().iter().map(|href| DefHRef::new(namespace, href)).collect(),
     }
   }
 }
@@ -469,22 +476,22 @@ impl DefDecisionService {
     &self.variable
   }
 
-  /// Returns a reference to collection of references to input [Decision]s for this [DecisionService].
-  pub fn input_decisions(&self) -> &Vec<HRef> {
+  /// Returns a collection of input [Decision]s for this [DecisionService].
+  pub fn input_decisions(&self) -> &Vec<DefHRef> {
     &self.input_decisions
   }
 
-  /// Returns a reference to collection of references to encapsulated [Decision]s for this [DecisionService].
-  pub fn encapsulated_decisions(&self) -> &Vec<HRef> {
+  /// Returns a collection of encapsulated [Decision]s for this [DecisionService].
+  pub fn encapsulated_decisions(&self) -> &Vec<DefHRef> {
     &self.encapsulated_decisions
   }
-  /// Returns a reference to collection of references to output [Decision]s for this [DecisionService].
-  pub fn output_decisions(&self) -> &Vec<HRef> {
+  /// Returns a collection of output [Decision]s for this [DecisionService].
+  pub fn output_decisions(&self) -> &Vec<DefHRef> {
     &self.output_decisions
   }
 
-  /// Returns a reference to collection of references to [InputData] for this [DecisionService].
-  pub fn input_data(&self) -> &Vec<HRef> {
+  /// Returns a collection of [InputData] for this [DecisionService].
+  pub fn input_data(&self) -> &Vec<DefHRef> {
     &self.input_data
   }
 }

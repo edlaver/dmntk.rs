@@ -33,7 +33,7 @@
 //! Builder for decision service evaluators.
 
 use crate::model_builder::ModelBuilder;
-use crate::model_definitions::{DefDecisionService, DefDefinitions};
+use crate::model_definitions::{DefDecisionService, DefDefinitions, DefKey};
 use crate::model_evaluator::ModelEvaluator;
 use crate::variable::Variable;
 use dmntk_common::Result;
@@ -150,13 +150,13 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   let input_data_references: Vec<String> = decision_service.input_data().iter().map(|href| href.id().to_string()).collect();
 
   // prepare references to input decisions
-  let input_decisions: Vec<String> = decision_service.input_decisions().iter().map(|href| href.id().to_string()).collect();
+  let input_decisions: Vec<DefKey> = decision_service.input_decisions().iter().map(|href| href.into()).collect();
 
   // prepare references to encapsulated decisions
-  let encapsulated_decisions: Vec<String> = decision_service.encapsulated_decisions().iter().map(|href| href.id().to_string()).collect();
+  let encapsulated_decisions: Vec<DefKey> = decision_service.encapsulated_decisions().iter().map(|href| href.into()).collect();
 
   // prepare references to output decisions
-  let output_decisions: Vec<String> = decision_service.output_decisions().iter().map(|href| href.id().to_string()).collect();
+  let output_decisions: Vec<DefKey> = decision_service.output_decisions().iter().map(|href| href.into()).collect();
 
   // prepare a container for formal parameters accepted by this decision service
   let mut formal_parameters: Vec<(Name, FeelType)> = vec![];
@@ -175,8 +175,8 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   // these evaluators will evaluate results from input decisions and values from input data
   // simultaneously, fills the list of formal parameters based on output variables of input decisions
   let mut input_decision_results_evaluators = vec![];
-  for decision_id in &input_decisions {
-    if let Some(decision_output_variable) = decision_evaluator.get_variable(decision_id) {
+  for def_key in &input_decisions {
+    if let Some(decision_output_variable) = decision_evaluator.get_variable(def_key) {
       let parameter_name = decision_output_variable.name().clone();
       let parameter_type = decision_output_variable.resolve_feel_type(item_definition_type_evaluator);
       formal_parameters.push((parameter_name, parameter_type));
@@ -193,8 +193,8 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
     let decision_evaluator = model_evaluator.decision_evaluator();
     // evaluate input decisions and store the results in separate context
     let mut input_decisions_results = FeelContext::default();
-    input_decisions.iter().for_each(|id| {
-      decision_evaluator.evaluate(id, input_data, model_evaluator, &mut input_decisions_results);
+    input_decisions.iter().for_each(|def_key| {
+      decision_evaluator.evaluate(def_key, input_data, model_evaluator, &mut input_decisions_results);
     });
     // now evaluate input data for encapsulated and output decisions and store them in separate context
     let mut evaluated_input_data = FeelContext::default();
@@ -219,13 +219,13 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
     // prepare context for evaluated result data for this decision service
     let mut evaluated_ctx = FeelContext::default();
     // evaluate encapsulated decisions
-    encapsulated_decisions.iter().for_each(|id| {
-      decision_evaluator.evaluate(id, &evaluated_input_data, model_evaluator, &mut evaluated_ctx);
+    encapsulated_decisions.iter().for_each(|def_key| {
+      decision_evaluator.evaluate(def_key, &evaluated_input_data, model_evaluator, &mut evaluated_ctx);
     });
     // evaluate output decisions
     let mut output_names = vec![];
-    output_decisions.iter().for_each(|id| {
-      if let Some(output_name) = decision_evaluator.evaluate(id, &evaluated_input_data, model_evaluator, &mut evaluated_ctx) {
+    output_decisions.iter().for_each(|def_key| {
+      if let Some(output_name) = decision_evaluator.evaluate(def_key, &evaluated_input_data, model_evaluator, &mut evaluated_ctx) {
         output_names.push(output_name);
       }
     });

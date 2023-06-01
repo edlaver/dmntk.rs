@@ -38,6 +38,7 @@ use crate::decision_service::DecisionServiceEvaluator;
 use crate::input_data::InputDataEvaluator;
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::model_builder::{Invocables, ModelBuilder};
+use crate::model_definitions::DefKey;
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -49,7 +50,7 @@ use std::sync::Arc;
 /// Types of invocables in DMN model.
 pub enum InvocableType {
   /// Decision.
-  Decision(String),
+  Decision(DefKey),
   /// Business knowledge model.
   BusinessKnowledgeModel(String, Name),
   /// Decision service.
@@ -168,9 +169,9 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision identified by specified `id`.
-  fn evaluate_decision(&self, id: &str, input_data: &FeelContext) -> Value {
+  fn evaluate_decision(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
-    if let Some(output_variable_name) = self.decision_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
+    if let Some(output_variable_name) = self.decision_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
         output_value.clone()
       } else {

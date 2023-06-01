@@ -32,9 +32,9 @@
 
 //! # Builder for decision evaluators
 
-use crate::boxed_expressions::{bring_knowledge_requirements_into_context, build_expression_instance_evaluator};
+use crate::boxed_expressions::*;
 use crate::model_builder::ModelBuilder;
-use crate::model_definitions::{DefDecision, DefDefinitions};
+use crate::model_definitions::*;
 use crate::model_evaluator::ModelEvaluator;
 use crate::variable::Variable;
 use dmntk_common::Result;
@@ -53,7 +53,7 @@ type DecisionEvaluatorEntry = (Variable, DecisionEvaluatorFn);
 
 /// Decision evaluator.
 pub struct DecisionEvaluator {
-  evaluators: Arc<HashMap<String, DecisionEvaluatorEntry>>,
+  evaluators: Arc<HashMap<DefKey, DecisionEvaluatorEntry>>,
 }
 
 impl DecisionEvaluator {
@@ -69,25 +69,27 @@ impl DecisionEvaluator {
     let mut evaluators = HashMap::new();
     for decision in definitions.decisions() {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
-      let decision_id = decision.id().to_string();
+      let decision_namespace = decision.namespace();
+      let decision_id = decision.id();
       let decision_name = decision.name().to_string();
-      evaluators.insert(decision_id.clone(), evaluator_entry);
-      model_builder.add_decision_invocable(decision_name, decision_id);
+      let def_key = DefKey::new(decision_namespace, decision_id);
+      evaluators.insert(def_key.clone(), evaluator_entry);
+      model_builder.add_decision_invocable(decision_name, def_key);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }
 
   /// Evaluates a decision identified by specified `decision_id`.
-  pub fn evaluate(&self, decision_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
+  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, evaluated_ctx: &mut FeelContext) -> Option<Name> {
     self
       .evaluators
-      .get(decision_id)
+      .get(def_key)
       .map(|evaluator_entry| evaluator_entry.1(input_data, model_evaluator, evaluated_ctx))
   }
 
-  /// Returns the variable for decision identified by provided identifier..
-  pub fn get_variable(&self, id: &str) -> Option<&Variable> {
-    self.evaluators.get(id).map(|entry| &entry.0)
+  /// Returns the variable for specified decision.
+  pub fn get_variable(&self, def_key: &DefKey) -> Option<&Variable> {
+    self.evaluators.get(def_key).map(|entry| &entry.0)
   }
 }
 
@@ -152,14 +154,14 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
 
   // prepare references to required knowledge, required decisions and required input data
   let mut required_knowledge_references: Vec<String> = vec![];
-  let mut required_decision_references: Vec<String> = vec![];
+  let mut required_decision_references: Vec<DefKey> = vec![];
   let mut required_input_data_references: Vec<String> = vec![];
   for knowledge_requirement in decision.knowledge_requirements() {
     required_knowledge_references.push(knowledge_requirement.required_knowledge().id().to_string());
   }
   for information_requirement in decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {
-      required_decision_references.push(href.id().to_string())
+      required_decision_references.push(DefKey::new(href.namespace(), href.id()))
     }
     if let Some(href) = information_requirement.required_input() {
       required_input_data_references.push(href.id().to_string())
