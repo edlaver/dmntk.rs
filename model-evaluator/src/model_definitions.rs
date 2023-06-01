@@ -233,7 +233,7 @@ pub struct DefBusinessKnowledgeModel {
   name: String,
   variable: DefInformationItem,
   encapsulated_logic: Option<FunctionDefinition>,
-  knowledge_requirements: Vec<KnowledgeRequirement>,
+  knowledge_requirements: Vec<DefKnowledgeRequirement>,
 }
 
 impl DefBusinessKnowledgeModel {
@@ -245,7 +245,11 @@ impl DefBusinessKnowledgeModel {
       name: business_knowledge_model.name().to_string(),
       variable: business_knowledge_model.variable().into(),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
-      knowledge_requirements: business_knowledge_model.knowledge_requirements().clone(),
+      knowledge_requirements: business_knowledge_model
+        .knowledge_requirements()
+        .iter()
+        .map(|knowledge_requirement| DefKnowledgeRequirement::new(namespace, knowledge_requirement))
+        .collect(),
     }
   }
 }
@@ -277,7 +281,7 @@ impl DefBusinessKnowledgeModel {
   }
 
   /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+  pub fn knowledge_requirements(&self) -> &Vec<DefKnowledgeRequirement> {
     &self.knowledge_requirements
   }
 }
@@ -329,6 +333,23 @@ impl DefInformationRequirement {
 }
 
 #[derive(Debug)]
+pub struct DefKnowledgeRequirement {
+  required_knowledge: DefHRef,
+}
+
+impl DefKnowledgeRequirement {
+  pub fn new(namespace: &str, knowledge_requirement: &KnowledgeRequirement) -> Self {
+    Self {
+      required_knowledge: DefHRef::new(namespace, knowledge_requirement.required_knowledge()),
+    }
+  }
+
+  pub fn required_knowledge(&self) -> &DefHRef {
+    &self.required_knowledge
+  }
+}
+
+#[derive(Debug)]
 pub struct DefDecision {
   namespace: String,
   id: String,
@@ -336,7 +357,7 @@ pub struct DefDecision {
   variable: DefInformationItem,
   decision_logic: Option<ExpressionInstance>,
   information_requirements: Vec<DefInformationRequirement>,
-  knowledge_requirements: Vec<KnowledgeRequirement>,
+  knowledge_requirements: Vec<DefKnowledgeRequirement>,
 }
 
 impl DefDecision {
@@ -353,7 +374,11 @@ impl DefDecision {
         .iter()
         .map(|information_requirement| DefInformationRequirement::new(namespace, information_requirement))
         .collect(),
-      knowledge_requirements: decision.knowledge_requirements().clone(),
+      knowledge_requirements: decision
+        .knowledge_requirements()
+        .iter()
+        .map(|knowledge_requirement| DefKnowledgeRequirement::new(namespace, knowledge_requirement))
+        .collect(),
     }
   }
 }
@@ -390,7 +415,7 @@ impl DefDecision {
   }
 
   /// Returns reference to the collection of instances of [KnowledgeRequirement] that compose this [BusinessKnowledgeModel].
-  pub fn knowledge_requirements(&self) -> &Vec<KnowledgeRequirement> {
+  pub fn knowledge_requirements(&self) -> &Vec<DefKnowledgeRequirement> {
     &self.knowledge_requirements
   }
 }
@@ -471,7 +496,7 @@ pub struct DefDefinitions {
   /// Map of input data definitions indexed by identifier.
   input_data: HashMap<String, DefInputData>,
   /// Map of business_knowledge models indexed by identifier.
-  business_knowledge_models: HashMap<String, DefBusinessKnowledgeModel>,
+  business_knowledge_models: HashMap<DefKey, DefBusinessKnowledgeModel>,
   /// Map of decisions indexed by identifier.
   decisions: HashMap<DefKey, DefDecision>,
   /// Map of decision services indexed by identifier.
@@ -509,7 +534,7 @@ impl From<&Vec<&Definitions>> for DefDefinitions {
             input_data.insert(inner.id().to_string(), DefInputData::new(namespace, inner));
           }
           DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(inner.id().to_string(), DefBusinessKnowledgeModel::new(namespace, inner));
+            business_knowledge_models.insert(DefKey::new(namespace, inner.id()), DefBusinessKnowledgeModel::new(namespace, inner));
           }
           DrgElement::Decision(inner) => {
             decisions.insert(DefKey::new(namespace, inner.id()), DefDecision::new(namespace, inner));
@@ -555,8 +580,8 @@ impl DefDefinitions {
 
   /// Returns an optional reference to [BusinessKnowledgeModel] with specified identifier
   /// or [None] when such [BusinessKnowledgeModel] was not found among instances of [DrgElement].
-  pub fn business_knowledge_model_by_id(&self, id: &str) -> Option<&DefBusinessKnowledgeModel> {
-    self.business_knowledge_models.get(id)
+  pub fn business_knowledge_model_by_key(&self, namespace: &str, id: &str) -> Option<&DefBusinessKnowledgeModel> {
+    self.business_knowledge_models.get(&DefKey::new(namespace, id))
   }
 
   /// Returns references to decision services.

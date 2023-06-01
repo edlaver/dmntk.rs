@@ -35,7 +35,7 @@
 use crate::decision_table;
 use crate::errors::*;
 use crate::model_builder::ModelBuilder;
-use crate::model_definitions::DefDefinitions;
+use crate::model_definitions::*;
 use dmntk_common::Result;
 use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
@@ -46,11 +46,11 @@ use dmntk_model::model::*;
 use std::sync::Arc;
 
 ///
-pub fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowledge_requirements: &[KnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
+pub fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowledge_requirements: &[DefKnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
   for knowledge_requirement in knowledge_requirements {
     let href = knowledge_requirement.required_knowledge();
     let required_knowledge_id = href.id();
-    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_id(required_knowledge_id) {
+    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_key(href.namespace(), href.id()) {
       let output_variable_name = business_knowledge_model.variable().name();
       ctx.set_entry(output_variable_name, value_null!());
       bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
