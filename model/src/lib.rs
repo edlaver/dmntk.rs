@@ -33,18 +33,17 @@
 #[macro_use]
 extern crate dmntk_macros;
 
-use crate::model::Definitions;
-use dmntk_common::Result;
-
 mod errors;
-pub mod model;
+mod model;
 mod parser;
 mod xml_utils;
 
 #[cfg(test)]
 mod tests;
 
+pub use model::*;
+
 /// Parses the XML document containing [Definitions] serialized to interchange format.
-pub fn parse(xml: &str) -> Result<Definitions> {
+pub fn parse(xml: &str) -> dmntk_common::Result<Definitions> {
   parser::ModelParser::default().parse(xml)
 }

@@ -37,7 +37,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, Name};
 use dmntk_feel_parser::AstNode;
-use dmntk_model::model::{BuiltinAggregator, DecisionTable, HitPolicy};
+use dmntk_model::{BuiltinAggregator, DecisionTable, HitPolicy};
 use std::cmp::Ordering;
 
 /// Parsed rule of the decision table.

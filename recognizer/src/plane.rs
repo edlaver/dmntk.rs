@@ -36,7 +36,7 @@ use crate::errors::*;
 use crate::point::Point;
 use crate::rect::{Rect, RECT_ZERO};
 use dmntk_common::Result;
-use dmntk_model::model::HitPolicy;
+use dmntk_model::HitPolicy;
 use std::collections::HashSet;
 use std::convert::TryFrom;
 use std::fmt;

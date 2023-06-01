@@ -42,7 +42,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, FunctionBody};
 use dmntk_feel_parser::ClosureBuilder;
-use dmntk_model::model::*;
+use dmntk_model::*;
 use std::sync::Arc;
 
 ///

@@ -35,7 +35,7 @@
 use dmntk_common::{color_256, write_indented, AsciiLine, AsciiNode, AsciiNodeBuilder, ColorMode, HRef};
 
 use dmntk_feel::Name;
-use dmntk_model::model::*;
+use dmntk_model::*;
 use std::fmt::Write;
 
 const LABEL_ALLOWED_ANSWERS: &str = "allowed answers";

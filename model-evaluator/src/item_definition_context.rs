@@ -38,7 +38,7 @@ use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelType, Name};
-use dmntk_model::model::ItemDefinitionType;
+use dmntk_model::ItemDefinitionType;
 use std::collections::{BTreeMap, HashMap};
 
 /// Type of closure that evaluates the item definition context.

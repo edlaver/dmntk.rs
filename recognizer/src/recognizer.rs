@@ -39,7 +39,7 @@ use crate::canvas::Canvas;
 use crate::errors::*;
 use crate::plane::{HitPolicyPlacement, Plane, RuleNumbersPlacement};
 use dmntk_common::Result;
-use dmntk_model::model::{DecisionTableOrientation, HitPolicy};
+use dmntk_model::{DecisionTableOrientation, HitPolicy};
 
 /// Decision table recognizer.
 pub struct Recognizer {

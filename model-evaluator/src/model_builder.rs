@@ -42,7 +42,7 @@ use crate::model_definitions::DefDefinitions;
 use crate::model_evaluator::InvocableType;
 use dmntk_common::Result;
 use dmntk_feel::Name;
-use dmntk_model::model::Definitions;
+use dmntk_model::Definitions;
 use std::cell::RefCell;
 use std::collections::HashMap;
 

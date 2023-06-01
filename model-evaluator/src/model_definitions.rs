@@ -36,7 +36,7 @@ use crate::errors::err_invalid_item_definition_type;
 use crate::type_ref::type_ref_to_feel_type;
 use dmntk_common::{HRef, Result};
 use dmntk_feel::Name;
-use dmntk_model::model::*;
+use dmntk_model::*;
 use std::collections::HashMap;
 
 /// The key in hash maps for indexing definition artefacts by namespace and identifier.

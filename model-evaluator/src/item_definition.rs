@@ -39,7 +39,7 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::{Value, Values};
 use dmntk_feel::{value_null, Evaluator, FeelScope, FeelType, Name};
 use dmntk_feel_parser::AstNode;
-use dmntk_model::model::ItemDefinitionType;
+use dmntk_model::ItemDefinitionType;
 use std::collections::HashMap;
 use std::sync::Arc;
 

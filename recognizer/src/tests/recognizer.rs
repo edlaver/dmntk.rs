@@ -33,7 +33,7 @@
 use super::*;
 use crate::recognizer::Recognizer;
 use dmntk_examples::decision_tables::H_110010;
-use dmntk_model::model::{BuiltinAggregator, DecisionTableOrientation, HitPolicy};
+use dmntk_model::{BuiltinAggregator, DecisionTableOrientation, HitPolicy};
 
 const EMPTY_VECTOR: &[&str] = &[];
 const EMPTY_OPT_VECTOR: &[Option<&str>] = &[];

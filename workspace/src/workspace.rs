@@ -36,7 +36,7 @@ use crate::errors::*;
 use dmntk_common::{color_blue, color_green, color_magenta, color_red, color_reset, to_rdnn, ColorMode, Result};
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
-use dmntk_model::model::{Definitions, NamedElement};
+use dmntk_model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
 use std::collections::HashMap;
 use std::fs;

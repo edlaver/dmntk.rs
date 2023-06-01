@@ -34,7 +34,7 @@
 
 use crate::defs::*;
 use crate::horizontal_decision_table::create_horizontal_decision_table_elements;
-use dmntk_model::model::*;
+use dmntk_model::*;
 use domrs::*;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Formatter};

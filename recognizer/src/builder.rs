@@ -35,7 +35,7 @@
 use crate::errors::*;
 use crate::recognizer::Recognizer;
 use dmntk_common::Result;
-use dmntk_model::model::*;
+use dmntk_model::*;
 
 struct Size {
   input_clauses_count: usize,

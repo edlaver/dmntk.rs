@@ -42,7 +42,7 @@ use dmntk_feel::closure::Closure;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{FeelScope, FeelType, FunctionBody, Name};
-use dmntk_model::model::*;
+use dmntk_model::*;
 use std::collections::HashMap;
 use std::sync::Arc;
 
