@@ -141,13 +141,16 @@ impl ModelBuilder {
   }
 
   ///
-  pub fn add_bkm_invocable(&self, name: String, id: String, output_variable_name: Name) {
-    self.invocables.borrow_mut().insert(name, InvocableType::BusinessKnowledgeModel(id, output_variable_name));
+  pub fn add_bkm_invocable(&self, name: String, def_key: DefKey, output_variable_name: Name) {
+    self
+      .invocables
+      .borrow_mut()
+      .insert(name, InvocableType::BusinessKnowledgeModel(def_key, output_variable_name));
   }
 
   ///
-  pub fn add_decision_service_invocable(&self, name: String, id: String) {
-    self.invocables.borrow_mut().insert(name, InvocableType::DecisionService(id));
+  pub fn add_decision_service_invocable(&self, name: String, def_key: DefKey) {
+    self.invocables.borrow_mut().insert(name, InvocableType::DecisionService(def_key));
   }
 }
 

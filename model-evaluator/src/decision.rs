@@ -158,11 +158,11 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   };
 
   // prepare references to required knowledge, required decisions and required input data
-  let mut required_knowledge_references: Vec<String> = vec![];
+  let mut required_knowledge_references: Vec<DefKey> = vec![];
   let mut required_decision_references: Vec<DefKey> = vec![];
   let mut required_input_data_references: Vec<String> = vec![];
   for knowledge_requirement in decision.knowledge_requirements() {
-    required_knowledge_references.push(knowledge_requirement.required_knowledge().id().to_string());
+    required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
   }
   for information_requirement in decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {
@@ -190,8 +190,8 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     });
 
     // evaluate required knowledge as decision service function definitions
-    required_knowledge_references.iter().for_each(|id| {
-      decision_service_evaluator.evaluate_fd(id, input_data_ctx, &mut required_knowledge_ctx);
+    required_knowledge_references.iter().for_each(|def_key| {
+      decision_service_evaluator.evaluate_fd(def_key, input_data_ctx, &mut required_knowledge_ctx);
     });
 
     // evaluate required decisions as values from decisions

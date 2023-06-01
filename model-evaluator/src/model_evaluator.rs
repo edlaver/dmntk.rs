@@ -50,11 +50,22 @@ use std::sync::Arc;
 /// Types of invocables in DMN model.
 pub enum InvocableType {
   /// Decision.
-  Decision(DefKey),
+  Decision(
+    /// A key uniquely identifying a decision, see [DefKey] for details.
+    DefKey,
+  ),
   /// Business knowledge model.
-  BusinessKnowledgeModel(String, Name),
+  BusinessKnowledgeModel(
+    /// A key uniquely identifying a business knowledge model, see [DefKey] for details.
+    DefKey,
+    /// Name of the output variable.
+    Name,
+  ),
   /// Decision service.
-  DecisionService(String),
+  DecisionService(
+    /// A key uniquely identifying a decision service, see [DefKey] for details.
+    DefKey,
+  ),
 }
 
 /// Model evaluator.
@@ -135,22 +146,22 @@ impl ModelEvaluator {
         // evaluate decision
         self.evaluate_decision(id, input_data)
       }
-      Some(InvocableType::BusinessKnowledgeModel(id, output_variable_name)) => {
+      Some(InvocableType::BusinessKnowledgeModel(def_key, output_variable_name)) => {
         // evaluate business knowledge model
-        self.evaluate_bkm(id, input_data, output_variable_name)
+        self.evaluate_bkm(def_key, input_data, output_variable_name)
       }
-      Some(InvocableType::DecisionService(id)) => {
+      Some(InvocableType::DecisionService(def_key)) => {
         // evaluate decision service
-        self.evaluate_decision_service(id, input_data)
+        self.evaluate_decision_service(def_key, input_data)
       }
       None => value_null!("invocable with name '{}' not found", invocable_name),
     }
   }
 
   /// Evaluates a business knowledge model identified by specified `id`.
-  fn evaluate_bkm(&self, id: &str, input_data: &FeelContext, output_variable_name: &Name) -> Value {
+  fn evaluate_bkm(&self, def_key: &DefKey, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
-    self.business_knowledge_model_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx);
+    self.business_knowledge_model_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx);
     if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
       //TODO Handle external functions.
       let mut parameters_ctx = FeelContext::default();
@@ -183,9 +194,9 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision service identified by specified `id`.
-  fn evaluate_decision_service(&self, id: &str, input_data: &FeelContext) -> Value {
+  fn evaluate_decision_service(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
-    if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(id, input_data, self, &mut evaluated_ctx) {
+    if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
         output_value.clone()
       } else {

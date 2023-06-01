@@ -53,7 +53,7 @@ type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionS
 
 /// Decision service evaluator.
 pub struct DecisionServiceEvaluator {
-  evaluators: RwLock<HashMap<String, DecisionServiceEvaluatorEntry>>,
+  evaluators: RwLock<HashMap<DefKey, DecisionServiceEvaluatorEntry>>,
 }
 
 impl DecisionServiceEvaluator {
@@ -68,11 +68,13 @@ impl DecisionServiceEvaluator {
   pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
     let mut evaluators = HashMap::new();
     for decision_service in definitions.decision_services() {
-      let decision_service_id = decision_service.id().to_string();
+      let decision_service_namespace = decision_service.namespace();
+      let decision_service_id = decision_service.id();
       let decision_service_name = decision_service.name().to_string();
       let evaluator = build_decision_service_evaluator(decision_service, model_builder)?;
-      evaluators.insert(decision_service_id.to_owned(), evaluator);
-      model_builder.add_decision_service_invocable(decision_service_name, decision_service_id);
+      let def_key = DefKey::new(decision_service_namespace, decision_service_id);
+      evaluators.insert(def_key.clone(), evaluator);
+      model_builder.add_decision_service_invocable(decision_service_name, def_key);
     }
     Ok(Self {
       evaluators: RwLock::new(evaluators),
@@ -82,7 +84,7 @@ impl DecisionServiceEvaluator {
   /// Creates function definition evaluators for all decision service evaluators.
   pub fn build_function_definitions(&self, model_evaluator: &Arc<ModelEvaluator>) {
     if let Ok(mut evaluators) = self.evaluators.write() {
-      let identifiers = evaluators.keys().cloned().collect::<Vec<String>>();
+      let identifiers = evaluators.keys().cloned().collect::<Vec<DefKey>>();
       for decision_service_id in identifiers {
         let evaluator = Arc::clone(model_evaluator);
         evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
@@ -109,19 +111,14 @@ impl DecisionServiceEvaluator {
   }
 
   /// Evaluates a decision service with specified identifier.
-  pub fn evaluate(&self, decision_service_id: &str, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
-    self
-      .evaluators
-      .read()
-      .ok()?
-      .get(decision_service_id)
-      .map(|entry| entry.2(input_data, model_evaluator, output_data))
+  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
+    self.evaluators.read().ok()?.get(def_key).map(|entry| entry.2(input_data, model_evaluator, output_data))
   }
 
   /// Returns a decision service as function definition with specified identifier.
-  pub fn evaluate_fd(&self, decision_service_id: &str, input_data: &FeelContext, output_data: &mut FeelContext) {
+  pub fn evaluate_fd(&self, def_key: &DefKey, input_data: &FeelContext, output_data: &mut FeelContext) {
     if let Ok(evaluators) = self.evaluators.read() {
-      if let Some((variable, _, _, Some(evaluator))) = evaluators.get(decision_service_id) {
+      if let Some((variable, _, _, Some(evaluator))) = evaluators.get(def_key) {
         let scope: FeelScope = input_data.clone().into();
         let function_definition = evaluator(&scope) as Value;
         let output_variable_name = variable.name().clone();
