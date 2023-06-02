@@ -70,32 +70,29 @@ pub struct Invocables {
 
 impl Invocables {
   pub fn add_decision(&mut self, namespace: String, name: String, id: String, def_key: DefKey) {
-    let a = InvocableType::Decision(def_key);
-    self.by_name.insert((namespace.clone(), name), a.clone());
-    self.by_id.insert((namespace, id), a);
+    let invocable_type = InvocableType::Decision(def_key);
+    self.by_name.insert((namespace.clone(), name), invocable_type.clone());
+    self.by_id.insert((namespace, id), invocable_type);
   }
 
   pub fn add_bkm(&mut self, namespace: String, name: String, id: String, def_key: DefKey, output_variable_name: Name) {
-    self.by_name.insert(
-      (namespace.clone(), name),
-      InvocableType::BusinessKnowledgeModel(def_key.clone(), output_variable_name.clone()),
-    );
-    self
-      .by_id
-      .insert((namespace, id), InvocableType::BusinessKnowledgeModel(def_key.to_owned(), output_variable_name));
+    let invocable_type = InvocableType::BusinessKnowledgeModel(def_key, output_variable_name);
+    self.by_name.insert((namespace.clone(), name), invocable_type.clone());
+    self.by_id.insert((namespace, id), invocable_type);
   }
 
   pub fn add_decision_service(&mut self, namespace: String, name: String, id: String, def_key: DefKey) {
-    self.by_name.insert((namespace.clone(), name), InvocableType::DecisionService(def_key.to_owned()));
-    self.by_id.insert((namespace, id), InvocableType::DecisionService(def_key.to_owned()));
+    let invocable_type = InvocableType::DecisionService(def_key);
+    self.by_name.insert((namespace.clone(), name), invocable_type.clone());
+    self.by_id.insert((namespace, id), invocable_type);
   }
 
-  pub fn get_by_name(&self, namespace: &str, name: &str) -> Option<&InvocableType> {
+  pub fn by_name(&self, namespace: &str, name: &str) -> Option<&InvocableType> {
     self.by_name.get(&(namespace.to_string(), name.to_string()))
   }
 
-  pub fn get_by_id(&self, namespace: String, id: String) -> Option<&InvocableType> {
-    self.by_id.get(&(namespace, id))
+  pub fn by_id(&self, namespace: &str, id: &str) -> Option<&InvocableType> {
+    self.by_id.get(&(namespace.to_string(), id.to_string()))
   }
 }
 

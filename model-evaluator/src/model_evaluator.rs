@@ -115,7 +115,7 @@ impl ModelEvaluator {
 
   /// Evaluates an invocable identified by specified `invocable_name`.
   pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &FeelContext) -> Value {
-    let Some(invocable) = self.invocables.get_by_name(namespace, invocable_name) else {
+    let Some(invocable) = self.invocables.by_name(namespace, invocable_name) else {
       return value_null!("invocable '{}' not found in namespace '{}'", invocable_name, namespace);
     };
     match invocable {
