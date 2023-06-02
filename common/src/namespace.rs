@@ -64,7 +64,7 @@ pub fn to_rdnn(input: &str) -> Option<String> {
   let Some(path_segments) = url.path_segments() else {
     return None;
   };
-  let segments = path_segments.collect::<Vec<&str>>().join(".");
+  let segments = path_segments.filter(|s| !s.trim().is_empty()).collect::<Vec<&str>>().join(".");
   let Some(domain) = url.domain() else {
     return None;
   };

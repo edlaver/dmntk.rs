@@ -39,7 +39,7 @@ fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{Age: 16,Years of Service: 1}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"27"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -47,7 +47,7 @@ fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{Age: 25,Years of Service: 5}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"22"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -55,7 +55,7 @@ fn _0003(b: &mut Bencher) {
   let ctx = context(r#"{Age: 25,Years of Service: 20}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"24"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -63,7 +63,7 @@ fn _0004(b: &mut Bencher) {
   let ctx = context(r#"{Age: 44,Years of Service: 30}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"30"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -71,7 +71,7 @@ fn _0005(b: &mut Bencher) {
   let ctx = context(r#"{Age: 50,Years of Service: 20}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"24"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -79,7 +79,7 @@ fn _0006(b: &mut Bencher) {
   let ctx = context(r#"{Age: 50,Years of Service: 30}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"30"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -87,5 +87,5 @@ fn _0007(b: &mut Bencher) {
   let ctx = context(r#"{Age: 60,Years of Service: 20}"#);
   let invocable_name = "Total Vacation Days";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"30"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

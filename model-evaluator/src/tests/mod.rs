@@ -77,7 +77,8 @@ pub fn context(input: &str) -> FeelContext {
 
 /// Utility function that builds a model evaluator from single XML model definitions.
 fn build_model_evaluator(model_content: &str) -> Arc<ModelEvaluator> {
-  ModelEvaluator::new(&dmntk_model::parse(model_content).unwrap()).unwrap()
+  let definitions = dmntk_model::parse(model_content).unwrap();
+  ModelEvaluator::new(&[definitions]).unwrap()
 }
 
 /// Utility function that builds a model evaluator from multiple XML model definitions.
@@ -86,30 +87,30 @@ fn build_model_evaluators(model_content: &[&str]) -> Arc<ModelEvaluator> {
   for content in model_content {
     definitions.push(dmntk_model::parse(content).unwrap());
   }
-  ModelEvaluator::new(&definitions[0]).unwrap()
+  ModelEvaluator::new(&definitions).unwrap()
 }
 
-/// Utility function that evaluates a `Decision` specified by name and compares the result.
-fn assert_decision(model_evaluator: &ModelEvaluator, name: &str, input_data: &FeelContext, expected: &str) {
-  let actual = model_evaluator.evaluate_invocable(name, input_data).to_string();
+/// Utility function that evaluates a [Decision] specified by name and compares the result.
+fn assert_decision(model_evaluator: &ModelEvaluator, namespace: &str, name: &str, input_data: &FeelContext, expected: &str) {
+  let actual = model_evaluator.evaluate_invocable_by_name(namespace, name, input_data).to_string();
   assert_eq!(
     expected, actual,
     "Assertion error, actual value of the decision does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
   );
 }
 
-/// Utility function that evaluates a `BusinessKnowledgeModel` specified by name and compares the result.
-fn assert_business_knowledge_model(model_evaluator: &ModelEvaluator, name: &str, input_data: &FeelContext, expected: &str) {
-  let actual = model_evaluator.evaluate_invocable(name, input_data).to_string();
+/// Utility function that evaluates a [BusinessKnowledgeModel] specified by name and compares the result.
+fn assert_business_knowledge_model(model_evaluator: &ModelEvaluator, namespace: &str, name: &str, input_data: &FeelContext, expected: &str) {
+  let actual = model_evaluator.evaluate_invocable_by_name(namespace, name, input_data).to_string();
   assert_eq!(
     expected, actual,
     "Assertion error, actual value of the business knowledge model does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
   );
 }
 
-/// Utility function that evaluates a `DecisionService` specified by name and compares the result with expected value.
-fn assert_decision_service(model_evaluator: &ModelEvaluator, name: &str, input: &str, expected: &str) {
-  let actual = model_evaluator.evaluate_invocable(name, &context(input)).to_string();
+/// Utility function that evaluates a [DecisionService] specified by name and compares the result with expected value.
+fn assert_decision_service(model_evaluator: &ModelEvaluator, namespace: &str, name: &str, input: &str, expected: &str) {
+  let actual = model_evaluator.evaluate_invocable_by_name(namespace, name, &context(input)).to_string();
   assert_eq!(
     expected, actual,
     "Assertion error, actual value of the decision service does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"

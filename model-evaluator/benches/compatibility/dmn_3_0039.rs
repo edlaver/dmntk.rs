@@ -44,7 +44,7 @@ fn _0001(b: &mut Bencher) {
     &ctx,
     r#"["cough is in the list of Cold symptoms", "cough is in the list of Flu symptoms"]"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -52,5 +52,5 @@ fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{Flu Symtoms: ["fever","cough","sore throat","runny nose"],Symptom: "fever"}"#);
   let invocable_name = "Symptom Analysis";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"["fever is in the list of Flu symptoms"]"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

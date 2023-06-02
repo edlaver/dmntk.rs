@@ -63,13 +63,13 @@ impl BusinessKnowledgeModelEvaluator {
     for business_knowledge_model in definitions.business_knowledge_models() {
       let function_definition = business_knowledge_model.encapsulated_logic().as_ref().ok_or_else(err_empty_encapsulated_logic)?;
       let evaluator = build_bkm_evaluator(definitions, business_knowledge_model, function_definition, model_builder)?;
-      let business_knowledge_model_namespace = business_knowledge_model.namespace();
-      let business_knowledge_model_id = business_knowledge_model.id();
-      let business_knowledge_model_name = business_knowledge_model.name().to_string();
+      let namespace = business_knowledge_model.namespace();
+      let id = business_knowledge_model.id();
+      let name = business_knowledge_model.name().to_string();
       let output_variable_name = business_knowledge_model.variable().name().to_owned();
-      let def_key = DefKey::new(business_knowledge_model_namespace, business_knowledge_model_id);
+      let def_key = DefKey::new(namespace, id);
       evaluators.insert(def_key.clone(), evaluator);
-      model_builder.add_bkm_invocable(business_knowledge_model_name, def_key, output_variable_name);
+      model_builder.add_bkm_invocable(namespace.to_string(), name, id.to_string(), def_key, output_variable_name);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }

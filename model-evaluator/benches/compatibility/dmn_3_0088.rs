@@ -45,5 +45,5 @@ fn _0001(b: &mut Bencher) {
     input_data,
     r#""John Doe is Graduated with merit with grade: A and evaluation: A very motivated, hard-working student!""#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

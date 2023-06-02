@@ -44,7 +44,6 @@ use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, Name};
 use dmntk_model::Definitions;
-use std::collections::hash_map::Keys;
 use std::sync::Arc;
 
 /// Model evaluator.
@@ -80,9 +79,9 @@ impl From<ModelBuilder> for ModelEvaluator {
 
 impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator] from parsed [Definitions].
-  pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
+  pub fn new(definitions: &[Definitions]) -> Result<Arc<Self>> {
     let mut model_builder = ModelBuilder::default();
-    model_builder.add_model(definitions);
+    definitions.iter().for_each(|definitions| model_builder.add_model(definitions));
     model_builder.build()?;
     let model_evaluator: Arc<ModelEvaluator> = Arc::new(model_builder.into());
     model_evaluator.decision_service_evaluator.build_function_definitions(&Arc::clone(&model_evaluator));
@@ -114,28 +113,24 @@ impl ModelEvaluator {
     &self.decision_service_evaluator
   }
 
-  /// Returns invocable names available in this model.
-  pub fn invocable_names(&self) -> Keys<'_, String, InvocableType> {
-    self.invocables.keys()
-  }
-
   /// Evaluates an invocable identified by specified `invocable_name`.
-  pub fn evaluate_invocable(&self, invocable_name: &str, input_data: &FeelContext) -> Value {
-    let invocable = self.invocables.get(invocable_name);
+  pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &FeelContext) -> Value {
+    let Some(invocable) = self.invocables.get_by_name(namespace, invocable_name) else {
+      return value_null!("invocable '{}' not found in namespace '{}'", invocable_name, namespace);
+    };
     match invocable {
-      Some(InvocableType::Decision(def_key)) => {
-        // evaluate decision
+      InvocableType::Decision(def_key) => {
+        // evaluate a decision
         self.evaluate_decision(def_key, input_data)
       }
-      Some(InvocableType::BusinessKnowledgeModel(def_key, output_variable_name)) => {
-        // evaluate business knowledge model
+      InvocableType::BusinessKnowledgeModel(def_key, output_variable_name) => {
+        // evaluate a business knowledge model
         self.evaluate_bkm(def_key, input_data, output_variable_name)
       }
-      Some(InvocableType::DecisionService(def_key)) => {
-        // evaluate decision service
+      InvocableType::DecisionService(def_key) => {
+        // evaluate a decision service
         self.evaluate_decision_service(def_key, input_data)
       }
-      None => value_null!("invocable with name '{}' not found", invocable_name),
     }
   }
 

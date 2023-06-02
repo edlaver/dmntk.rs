@@ -39,5 +39,5 @@ fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{list1: ["a","b","c"],list2: ["x","y","z"]}"#);
   let invocable_name = "listContainsList";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"false"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

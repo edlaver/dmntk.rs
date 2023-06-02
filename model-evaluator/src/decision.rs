@@ -68,12 +68,12 @@ impl DecisionEvaluator {
     let mut evaluators = HashMap::new();
     for decision in definitions.decisions() {
       let evaluator_entry = build_decision_evaluator(definitions, decision, model_builder)?;
-      let decision_namespace = decision.namespace();
-      let decision_id = decision.id();
-      let decision_name = decision.name().to_string();
-      let def_key = DefKey::new(decision_namespace, decision_id);
+      let namespace = decision.namespace();
+      let id = decision.id();
+      let name = decision.name().to_string();
+      let def_key = DefKey::new(namespace, id);
       evaluators.insert(def_key.clone(), evaluator_entry);
-      model_builder.add_decision_invocable(decision_name, def_key);
+      model_builder.add_decision_invocable(namespace.to_string(), name, id.to_string(), def_key);
     }
     Ok(Self { evaluators: Arc::new(evaluators) })
   }

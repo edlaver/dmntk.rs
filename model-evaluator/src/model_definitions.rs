@@ -41,6 +41,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 /// Types of invocables in DMN model.
+#[derive(Clone)]
 pub enum InvocableType {
   /// Decision invocable.
   Decision(
@@ -61,7 +62,42 @@ pub enum InvocableType {
   ),
 }
 
-pub type Invocables = HashMap<String, InvocableType>;
+#[derive(Default)]
+pub struct Invocables {
+  by_name: HashMap<(String, String), InvocableType>,
+  by_id: HashMap<(String, String), InvocableType>,
+}
+
+impl Invocables {
+  pub fn add_decision(&mut self, namespace: String, name: String, id: String, def_key: DefKey) {
+    let a = InvocableType::Decision(def_key);
+    self.by_name.insert((namespace.clone(), name), a.clone());
+    self.by_id.insert((namespace, id), a);
+  }
+
+  pub fn add_bkm(&mut self, namespace: String, name: String, id: String, def_key: DefKey, output_variable_name: Name) {
+    self.by_name.insert(
+      (namespace.clone(), name),
+      InvocableType::BusinessKnowledgeModel(def_key.clone(), output_variable_name.clone()),
+    );
+    self
+      .by_id
+      .insert((namespace, id), InvocableType::BusinessKnowledgeModel(def_key.to_owned(), output_variable_name));
+  }
+
+  pub fn add_decision_service(&mut self, namespace: String, name: String, id: String, def_key: DefKey) {
+    self.by_name.insert((namespace.clone(), name), InvocableType::DecisionService(def_key.to_owned()));
+    self.by_id.insert((namespace, id), InvocableType::DecisionService(def_key.to_owned()));
+  }
+
+  pub fn get_by_name(&self, namespace: &str, name: &str) -> Option<&InvocableType> {
+    self.by_name.get(&(namespace.to_string(), name.to_string()))
+  }
+
+  pub fn get_by_id(&self, namespace: String, id: String) -> Option<&InvocableType> {
+    self.by_id.get(&(namespace, id))
+  }
+}
 
 /// The key in hash maps for indexing definition artefacts by namespace and identifier.
 ///

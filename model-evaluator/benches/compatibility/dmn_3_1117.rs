@@ -44,7 +44,7 @@ fn _0001(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected string, actual type is Null)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -57,7 +57,7 @@ fn _0002(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected date and time or date, actual type is Null)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -70,7 +70,7 @@ fn _0003(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected time, actual type is Null)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -83,7 +83,7 @@ fn _0004(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected time, actual type is Null)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -96,7 +96,7 @@ fn _0005(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected date and time or date, actual type is Null)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -104,7 +104,7 @@ fn _0006(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_ErrorCase_006_8c794da0bb";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null(expected 1,2 parameters, actual number of parameters is 0)"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -112,7 +112,7 @@ fn _0007(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_007_59863d1b57";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2012-12-24T00:00:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -120,7 +120,7 @@ fn _0008(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_008_83eb9a93ba";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T00:00:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -128,7 +128,7 @@ fn _0009(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_009_1982fa549c";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -136,7 +136,7 @@ fn _0010(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_010_59f5b47012";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"-2017-12-31T11:22:33"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -144,7 +144,7 @@ fn _0011(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_011_eec2d5bdcd";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""99999-12-31T11:22:33""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -152,7 +152,7 @@ fn _0012(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_012_225a105eef";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""-99999-12-31T11:22:33""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -160,7 +160,7 @@ fn _0013(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_013_c4fd0a0e8d";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33.345"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -168,7 +168,7 @@ fn _0014(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_014_ded0e5fe2f";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33.123456789"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -176,7 +176,7 @@ fn _0015(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_015_9e27148afd";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -184,7 +184,7 @@ fn _0016(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_016_c08e4d417a";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33.567Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -192,7 +192,7 @@ fn _0017(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_017_47816add0e";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33+01:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -200,7 +200,7 @@ fn _0018(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_018_0614e473e7";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33-02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -208,7 +208,7 @@ fn _0019(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_019_c312e3dfe3";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33+01:35"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -216,7 +216,7 @@ fn _0020(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_020_29e0585b6f";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33-01:35"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -224,7 +224,7 @@ fn _0021(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_021_99f0215b60";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-12-31T11:22:33.456+01:35"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -232,7 +232,7 @@ fn _0022(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_022_b8b20f0328";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"-2017-12-31T11:22:33.456+01:35"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -240,7 +240,7 @@ fn _0023(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_023_2e41497673";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2011-12-31T10:15:30@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -248,7 +248,7 @@ fn _0024(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_024_b4d1fb8735";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2011-12-31T10:15:30@Etc/UTC""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -256,7 +256,7 @@ fn _0025(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_025_0cb7f83ec6";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2011-12-31T10:15:30.987@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -264,7 +264,7 @@ fn _0026(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_026_5ba081cd5f";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2011-12-31T10:15:30.123456789@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -272,7 +272,7 @@ fn _0027(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_027_ae365197dd";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""999999999-12-31T23:59:59.999999999@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -280,7 +280,7 @@ fn _0028(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_028_1c3d56275f";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""-999999999-12-31T23:59:59.999999999+02:00""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -288,7 +288,7 @@ fn _0029(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_029_e3a5e786a0";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-01-01T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -296,7 +296,7 @@ fn _0030(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_030_2f97bff606";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-01-01T23:59:01Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -304,7 +304,7 @@ fn _0031(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_031_61e70c285f";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-01-01T23:59:01+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -312,7 +312,7 @@ fn _0032(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_032_1e95e8726e";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2017-01-01T23:59:01@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -320,7 +320,7 @@ fn _0033(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_033_2fac4d6807";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2017-01-01T23:59:01.123456789@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -328,7 +328,7 @@ fn _0034(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_034_75580be3aa";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -336,7 +336,7 @@ fn _0035(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_035_831b1ad0c5";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01.987654321"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -344,7 +344,7 @@ fn _0036(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_036_189e1c3095";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -352,7 +352,7 @@ fn _0037(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_037_c7aec7ecf7";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -360,7 +360,7 @@ fn _0038(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_038_1493e6d873";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.987654321+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -368,7 +368,7 @@ fn _0039(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_039_593292b25c";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.123456Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -376,7 +376,7 @@ fn _0040(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_040_d9116e1daa";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2017-09-05T09:15:30.987654321@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -384,7 +384,7 @@ fn _0041(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_041_c6decfe6a3";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -392,7 +392,7 @@ fn _0042(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_042_0cbcc3d1dc";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01.987654321"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -400,7 +400,7 @@ fn _0043(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_043_2e4177d00c";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -408,7 +408,7 @@ fn _0044(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_044_9404547f9d";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -416,7 +416,7 @@ fn _0045(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_045_5d93a541eb";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.987654321+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -424,7 +424,7 @@ fn _0046(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_046_89c1cd8daa";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.123456Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -432,7 +432,7 @@ fn _0047(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_047_60ea7838ce";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2017-09-05T09:15:30.987654321@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -440,7 +440,7 @@ fn _0048(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_048_e387922273";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -448,7 +448,7 @@ fn _0049(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_049_eb9cd1f777";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-08-10T23:59:01.987654321"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -456,7 +456,7 @@ fn _0050(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_050_2d960354af";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -464,7 +464,7 @@ fn _0051(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_051_46bdaa00b0";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -472,7 +472,7 @@ fn _0052(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_052_911dbd0a24";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.987654321+02:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -480,7 +480,7 @@ fn _0053(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_053_283c083df9";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-09-05T09:15:30.123456Z"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -488,7 +488,7 @@ fn _0054(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_054_2561a406fc";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""2017-09-05T09:15:30.987654321@Europe/Paris""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -501,7 +501,7 @@ fn _0055(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected string, actual type is number)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -514,7 +514,7 @@ fn _0056(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid argument type, expected string, actual type is list<Null>)"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -522,7 +522,7 @@ fn _0057(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_ErrorCase_057_0452ca8719";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null([core::date and time] invalid date or date and time '')"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -535,7 +535,7 @@ fn _0058(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '11:00:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -548,7 +548,7 @@ fn _0059(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2011-12-0310:15:30')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -561,7 +561,7 @@ fn _0060(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2011-12-03T10:15:30+01:00@Europe/Paris')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -574,7 +574,7 @@ fn _0061(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '9999999999-12-27T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -587,7 +587,7 @@ fn _0062(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-13-10T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -600,7 +600,7 @@ fn _0063(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-00-10T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -613,7 +613,7 @@ fn _0064(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-13-32T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -626,7 +626,7 @@ fn _0065(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-13-0T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -639,7 +639,7 @@ fn _0066(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '998-12-31T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -652,7 +652,7 @@ fn _0067(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '01211-12-31T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -665,7 +665,7 @@ fn _0068(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '+99999-12-01T11:22:33')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -678,7 +678,7 @@ fn _0069(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T24:00:01')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -691,7 +691,7 @@ fn _0070(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T24:01:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -704,7 +704,7 @@ fn _0071(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T25:00:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -717,7 +717,7 @@ fn _0072(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T00:60:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -730,7 +730,7 @@ fn _0073(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T00:00:61')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -743,7 +743,7 @@ fn _0074(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T7:00:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -756,7 +756,7 @@ fn _0075(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T07:1:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -769,7 +769,7 @@ fn _0076(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T07:01:2')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -782,7 +782,7 @@ fn _0077(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00@xyz/abc')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -795,7 +795,7 @@ fn _0078(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00+19:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -808,7 +808,7 @@ fn _0079(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00-19:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -821,7 +821,7 @@ fn _0080(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00+05:0')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -834,7 +834,7 @@ fn _0081(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00+5:00')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -847,7 +847,7 @@ fn _0082(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00+5')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -860,7 +860,7 @@ fn _0083(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T13:20:00+02:00@Europe/Paris')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -873,7 +873,7 @@ fn _0084(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T7:20')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -886,7 +886,7 @@ fn _0085(b: &mut Bencher) {
     &ctx,
     r#"null([core::date and time] invalid date or date and time '2017-12-31T07:2')"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -894,7 +894,7 @@ fn _0086(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_086_12ca8ac1d3";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2012-12-24T23:59:00"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -902,7 +902,7 @@ fn _0087(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_087_e9fd32063a";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-01-01T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -910,5 +910,5 @@ fn _0088(b: &mut Bencher) {
   let ctx = context(r#"{}"#);
   let invocable_name = "feel-date-and-time-function_088_1db0287718";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"2017-01-01T23:59:01"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

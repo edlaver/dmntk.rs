@@ -818,13 +818,16 @@ fn evaluate_dmn_model(input_file_name: &str, dmn_file_name: &str, invocable_name
     Ok(dmn_file_content) => match fs::read_to_string(input_file_name) {
       Ok(input_file_content) => match dmntk_evaluator::evaluate_context(&FeelScope::default(), &input_file_content) {
         Ok(input_data) => match dmntk_model::parse(&dmn_file_content) {
-          Ok(definitions) => match dmntk_evaluator::ModelEvaluator::new(&definitions) {
-            Ok(model_evaluator) => {
-              let result = model_evaluator.evaluate_invocable(invocable_name, &input_data);
-              println!("{}", result.jsonify())
+          Ok(definitions) => {
+            let namespace = definitions.namespace().to_string();
+            match dmntk_evaluator::ModelEvaluator::new(&[definitions]) {
+              Ok(model_evaluator) => {
+                let result = model_evaluator.evaluate_invocable_by_name(&namespace, invocable_name, &input_data);
+                println!("{}", result.jsonify())
+              }
+              Err(reason) => eprintln!("building model evaluator failed with reason: {reason}"),
             }
-            Err(reason) => eprintln!("building model evaluator failed with reason: {reason}"),
-          },
+          }
           Err(reason) => eprintln!("parsing model failed with reason: {reason}"),
         },
         Err(reason) => eprintln!("evaluating input data failed with reason: {reason}"),
@@ -851,7 +854,8 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
       return;
     }
   };
-  let model_evaluator = match dmntk_evaluator::ModelEvaluator::new(&definitions) {
+  let namespace = definitions.namespace().to_string();
+  let model_evaluator = match dmntk_evaluator::ModelEvaluator::new(&[definitions]) {
     Ok(model_evaluator) => model_evaluator,
     Err(reason) => {
       eprintln!("building model evaluator failed with reason: {reason}");
@@ -875,7 +879,7 @@ fn test_dmn_model(test_file_name: &str, dmn_file_name: &str, invocable_name: &st
   let mut passed = 0_usize;
   let mut failed = 0_usize;
   for (test_no, (input_data, expected)) in test_cases.iter().enumerate() {
-    let actual = model_evaluator.evaluate_invocable(invocable_name, input_data);
+    let actual = model_evaluator.evaluate_invocable_by_name(&namespace, invocable_name, input_data);
     display_test_case_result(&actual, expected, &test_no, &mut passed, &mut failed, summary_only, color_mode);
   }
   display_test_summary(passed, failed, summary_only, color_mode);

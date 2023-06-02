@@ -42,14 +42,10 @@ pub fn err_evaluator_rdnn_not_found(rdnn: &str) -> DmntkError {
   WorkspaceError(format!("evaluator with namespace '{rdnn}' not found")).into()
 }
 
-pub fn err_evaluator_name_not_found(rdnn: &str, name: &str) -> DmntkError {
-  WorkspaceError(format!("evaluator with name '{rdnn}/{name}' not found")).into()
-}
-
 pub fn err_invalid_namespace(namespace: &str) -> DmntkError {
   WorkspaceError(format!("invalid namespace {namespace}")).into()
 }
 
-pub fn err_definitions_already_exists(rdnn: &str, name: &str) -> DmntkError {
-  WorkspaceError(format!("definitions {name} already exist in {rdnn}")).into()
+pub fn err_x(s: &str) -> DmntkError {
+  WorkspaceError(format!("x {s}")).into()
 }

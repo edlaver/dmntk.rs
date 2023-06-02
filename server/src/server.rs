@@ -49,17 +49,27 @@ const DMNTK_PORT_VARIABLE: &str = "DMNTK_PORT";
 const DMNTK_DIR_VARIABLE: &str = "DMNTK_DIR";
 const CONTENT_TYPE: &str = "application/json";
 
-/// Handler for evaluating invocable in DMN model.
-///
-/// Input data may be provided in `JSON` format or `FEEL` context format.
-/// The result value is always converted to JSON format.
-///
-#[post("/evaluate/{rdnn}/{model}/{invocable}")]
-async fn post_evaluate(params: web::Path<(String, String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
+/// Handler for evaluating invocable identified
+/// by unique name in namespace represented by RDNN.
+#[post("/evn/{rdnn}/{name}")]
+async fn evaluate_by_name(params: web::Path<(String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace: &Workspace = data.workspace.borrow();
-  let (model_rdnn, model_name, invocable_name) = params.into_inner();
-  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body)
-    .and_then(|input_data| workspace.evaluate_invocable(&model_rdnn, &model_name, &invocable_name, &input_data));
+  let (rdnn, invocable_name) = params.into_inner();
+  let result =
+    dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body).and_then(|input_data| workspace.evaluate_invocable_by_name(rdnn, invocable_name, input_data));
+  match result {
+    Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
+    Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),
+  }
+}
+
+/// Handler for evaluating invocable identified
+/// by unique identified in namespace represented by RDNN.
+#[post("/evi/{rdnn}/{id}")]
+async fn evaluate_by_id(params: web::Path<(String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
+  let workspace: &Workspace = data.workspace.borrow();
+  let (rdnn, invocable_id) = params.into_inner();
+  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body).and_then(|input_data| workspace.evaluate_invocable_by_id(rdnn, invocable_id, input_data));
   match result {
     Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
     Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),
@@ -78,7 +88,8 @@ fn config(cfg: &mut web::ServiceConfig) {
 
 #[cfg(not(feature = "tck"))]
 fn config(cfg: &mut web::ServiceConfig) {
-  cfg.service(post_evaluate);
+  cfg.service(evaluate_by_name);
+  cfg.service(evaluate_by_id);
 }
 
 /// Starts the server.
@@ -86,7 +97,10 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
   let color_blue = color_blue!(color_mode);
   let color_yellow = color_yellow!(color_mode);
   let color_reset = color_reset!(color_mode);
-  let workspace = Workspace::new(get_workspace_dir(opt_dir), color_mode, verbose);
+  let Ok(workspace) = Workspace::new(get_workspace_dir(opt_dir), color_mode, verbose) else {
+    eprintln!("buuu");
+    return Ok(());
+  };
   let application_data = web::Data::new(ApplicationData { workspace: Arc::new(workspace) });
   let address = get_server_address(opt_host, opt_port);
   println!("{1}dmntk{0} {2}{address}{0}", color_reset, color_blue, color_yellow);

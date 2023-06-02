@@ -39,7 +39,7 @@ fn _0001(b: &mut Bencher) {
   let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
   let invocable_name = "simple function invocation";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r##""feel#feel#""##);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -47,5 +47,5 @@ fn _0002(b: &mut Bencher) {
   let ctx = context(r##"{ stringInputA:  "feel", stringInputB:  "#" }"##);
   let invocable_name = "named function invocation";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r##""#feel#feel""##);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

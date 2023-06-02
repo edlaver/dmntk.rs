@@ -89,5 +89,5 @@ fn _0001(b: &mut Bencher) {
   let ctx = context(INPUT_DATA);
   let invocable_name = "Join";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""Smith""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

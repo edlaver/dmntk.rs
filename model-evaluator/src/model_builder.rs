@@ -38,7 +38,7 @@ use crate::input_data_context::InputDataContextEvaluator;
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
 use crate::item_definition_type::ItemDefinitionTypeEvaluator;
-use crate::model_definitions::{DefDefinitions, DefKey, InvocableType, Invocables};
+use crate::model_definitions::{DefDefinitions, DefKey, Invocables};
 use dmntk_common::Result;
 use dmntk_feel::Name;
 use dmntk_model::Definitions;
@@ -128,21 +128,18 @@ impl ModelBuilder {
   }
 
   ///
-  pub fn add_decision_invocable(&self, name: String, def_key: DefKey) {
-    self.invocables.borrow_mut().insert(name, InvocableType::Decision(def_key));
+  pub fn add_decision_invocable(&self, namespace: String, name: String, id: String, def_key: DefKey) {
+    self.invocables.borrow_mut().add_decision(namespace, name, id, def_key);
   }
 
   ///
-  pub fn add_bkm_invocable(&self, name: String, def_key: DefKey, output_variable_name: Name) {
-    self
-      .invocables
-      .borrow_mut()
-      .insert(name, InvocableType::BusinessKnowledgeModel(def_key, output_variable_name));
+  pub fn add_bkm_invocable(&self, namespace: String, name: String, id: String, def_key: DefKey, output_variable_name: Name) {
+    self.invocables.borrow_mut().add_bkm(namespace, name, id, def_key, output_variable_name);
   }
 
   ///
-  pub fn add_decision_service_invocable(&self, name: String, def_key: DefKey) {
-    self.invocables.borrow_mut().insert(name, InvocableType::DecisionService(def_key));
+  pub fn add_decision_service_invocable(&self, namespace: String, name: String, id: String, def_key: DefKey) {
+    self.invocables.borrow_mut().add_decision_service(namespace, name, id, def_key);
   }
 }
 

@@ -44,7 +44,7 @@ fn _0001(b: &mut Bencher) {
     &ctx,
     r#"[{Approved/Declined: "Declined", Rate: "Standard"}, {Approved/Declined: "Approved", Rate: "Standard"}]"#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -52,7 +52,7 @@ fn _0002(b: &mut Bencher) {
   let ctx = context(r#"{Age: 19,RiskCategory: "Low",isAffordable: true}"#);
   let invocable_name = "Approval Status";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"[{Approved/Declined: "Approved", Rate: "Basic"}]"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
 
 #[bench]
@@ -60,5 +60,5 @@ fn _0003(b: &mut Bencher) {
   let ctx = context(r#"{Age: 10,RiskCategory: "Low",isAffordable: true}"#);
   let invocable_name = "Approval Status";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"[{Approved/Declined: "Declined", Rate: "Standard"}]"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }

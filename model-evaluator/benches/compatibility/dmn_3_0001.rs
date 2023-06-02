@@ -41,5 +41,5 @@ fn _0001(b: &mut Bencher) {
   );
   let invocable_name = "Filter0001";
   assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"["Adams", "Ford"]"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
 }
