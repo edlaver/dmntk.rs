@@ -509,73 +509,48 @@ impl DefDecisionService {
   }
 }
 
-/// All definitions needed to build complete model evaluator from DMN models.
+/// All definitions needed to build complete model evaluator from DMN model.
+#[derive(Default)]
 pub struct DefDefinitions {
   /// Item definitions.
   item_definitions: Vec<DefItemDefinition>,
-  /// Map of input data definitions indexed by identifier.
+  /// Input data definitions.
   input_data: HashMap<DefKey, DefInputData>,
-  /// Map of business_knowledge models indexed by identifier.
+  /// Business knowledge models.
   business_knowledge_models: HashMap<DefKey, DefBusinessKnowledgeModel>,
-  /// Map of decisions indexed by identifier.
+  /// Decisions.
   decisions: HashMap<DefKey, DefDecision>,
-  /// Map of decision services indexed by identifier.
+  /// Decision services.
   decision_services: HashMap<DefKey, DefDecisionService>,
 }
 
-impl From<Definitions> for DefDefinitions {
-  ///
-  fn from(definitions: Definitions) -> Self {
-    Self::from(&definitions)
-  }
-}
-
-impl From<&Definitions> for DefDefinitions {
-  ///
-  fn from(definitions: &Definitions) -> Self {
-    Self::from(&vec![definitions])
-  }
-}
-
-impl From<&Vec<&Definitions>> for DefDefinitions {
-  ///
-  fn from(defs: &Vec<&Definitions>) -> Self {
-    let mut item_definitions = vec![];
-    let mut input_data = HashMap::new();
-    let mut business_knowledge_models = HashMap::new();
-    let mut decisions = HashMap::new();
-    let mut decision_services = HashMap::new();
-    for definitions in defs {
-      item_definitions.append(&mut definitions.item_definitions().iter().map(DefItemDefinition::new).collect());
-      for drg_element in definitions.drg_elements() {
-        match drg_element {
-          DrgElement::InputData(inner) => {
-            input_data.insert(DefKey::new(inner.namespace(), inner.id()), DefInputData::new(inner));
-          }
-          DrgElement::BusinessKnowledgeModel(inner) => {
-            business_knowledge_models.insert(DefKey::new(inner.namespace(), inner.id()), DefBusinessKnowledgeModel::new(inner));
-          }
-          DrgElement::Decision(inner) => {
-            decisions.insert(DefKey::new(inner.namespace(), inner.id()), DefDecision::new(inner));
-          }
-          DrgElement::DecisionService(inner) => {
-            decision_services.insert(DefKey::new(inner.namespace(), inner.id()), DefDecisionService::new(inner));
-          }
-          _ => {}
+impl DefDefinitions {
+  /// Adds definitions from specified model.
+  pub fn add_model(&mut self, definitions: &Definitions) {
+    self
+      .item_definitions
+      .append(&mut definitions.item_definitions().iter().map(DefItemDefinition::new).collect());
+    for drg_element in definitions.drg_elements() {
+      match drg_element {
+        DrgElement::InputData(inner) => {
+          self.input_data.insert(DefKey::new(inner.namespace(), inner.id()), DefInputData::new(inner));
         }
+        DrgElement::BusinessKnowledgeModel(inner) => {
+          self
+            .business_knowledge_models
+            .insert(DefKey::new(inner.namespace(), inner.id()), DefBusinessKnowledgeModel::new(inner));
+        }
+        DrgElement::Decision(inner) => {
+          self.decisions.insert(DefKey::new(inner.namespace(), inner.id()), DefDecision::new(inner));
+        }
+        DrgElement::DecisionService(inner) => {
+          self.decision_services.insert(DefKey::new(inner.namespace(), inner.id()), DefDecisionService::new(inner));
+        }
+        _ => {}
       }
     }
-    Self {
-      item_definitions,
-      input_data,
-      business_knowledge_models,
-      decisions,
-      decision_services,
-    }
   }
-}
 
-impl DefDefinitions {
   /// Returns item definitions.
   pub fn item_definitions(&self) -> &Vec<DefItemDefinition> {
     &self.item_definitions

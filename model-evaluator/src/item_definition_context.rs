@@ -203,7 +203,7 @@ fn function_type_context_evaluator(_item_definition: &DefItemDefinition) -> Resu
 #[cfg(test)]
 mod tests {
   use crate::item_definition_context::ItemDefinitionContextEvaluator;
-  use crate::model_definitions::DefKey;
+  use crate::model_definitions::{DefDefinitions, DefKey};
   use dmntk_examples::item_definition::*;
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::values::Value;
@@ -213,7 +213,10 @@ mod tests {
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionContextEvaluator {
-    ItemDefinitionContextEvaluator::new(&dmntk_model::parse(xml).unwrap().into()).unwrap()
+    let definitions = dmntk_model::parse(xml).unwrap();
+    let mut def_definitions = DefDefinitions::default();
+    def_definitions.add_model(&definitions);
+    ItemDefinitionContextEvaluator::new(&def_definitions).unwrap()
   }
 
   #[test]

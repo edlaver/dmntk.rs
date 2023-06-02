@@ -221,7 +221,7 @@ fn function_type(item_definition: &DefItemDefinition) -> Result<ItemDefinitionTy
 #[cfg(test)]
 mod tests {
   use crate::item_definition_type::ItemDefinitionTypeEvaluator;
-  use crate::model_definitions::DefKey;
+  use crate::model_definitions::{DefDefinitions, DefKey};
   use dmntk_examples::item_definition::*;
   use dmntk_feel::{FeelType, Name};
 
@@ -229,7 +229,10 @@ mod tests {
 
   /// Utility function for building item definition type evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionTypeEvaluator {
-    ItemDefinitionTypeEvaluator::new(&dmntk_model::parse(xml).unwrap().into()).unwrap()
+    let definitions = dmntk_model::parse(xml).unwrap();
+    let mut def_definitions = DefDefinitions::default();
+    def_definitions.add_model(&definitions);
+    ItemDefinitionTypeEvaluator::new(&def_definitions).unwrap()
   }
 
   #[test]

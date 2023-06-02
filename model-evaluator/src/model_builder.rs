@@ -82,7 +82,9 @@ pub struct ModelBuilder {
 impl ModelBuilder {
   ///
   pub fn new(definitions: &Definitions) -> Result<Self> {
-    let definitions: DefDefinitions = definitions.into();
+    let mut def_definitions = DefDefinitions::default();
+    def_definitions.add_model(definitions);
+    //let definitions: DefDefinitions = definitions.into();
     let mut model_builder = ModelBuilder {
       input_data_evaluator: InputDataEvaluator::empty(),
       input_data_context_evaluator: InputDataContextEvaluator::empty(),
@@ -94,14 +96,14 @@ impl ModelBuilder {
       decision_service_evaluator: DecisionServiceEvaluator::empty(),
       invocables: RefCell::new(Default::default()),
     };
-    model_builder.input_data_evaluator = InputDataEvaluator::new(&definitions)?;
-    model_builder.input_data_context_evaluator = InputDataContextEvaluator::new(&definitions)?;
-    model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&definitions)?;
-    model_builder.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&definitions)?;
-    model_builder.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&definitions)?;
-    model_builder.business_knowledge_model_evaluator = BusinessKnowledgeModelEvaluator::new(&definitions, &model_builder)?;
-    model_builder.decision_evaluator = DecisionEvaluator::new(&definitions, &model_builder)?;
-    model_builder.decision_service_evaluator = DecisionServiceEvaluator::new(&definitions, &model_builder)?;
+    model_builder.input_data_evaluator = InputDataEvaluator::new(&def_definitions)?;
+    model_builder.input_data_context_evaluator = InputDataContextEvaluator::new(&def_definitions)?;
+    model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&def_definitions)?;
+    model_builder.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&def_definitions)?;
+    model_builder.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&def_definitions)?;
+    model_builder.business_knowledge_model_evaluator = BusinessKnowledgeModelEvaluator::new(&def_definitions, &model_builder)?;
+    model_builder.decision_evaluator = DecisionEvaluator::new(&def_definitions, &model_builder)?;
+    model_builder.decision_service_evaluator = DecisionServiceEvaluator::new(&def_definitions, &model_builder)?;
     Ok(model_builder)
   }
 
