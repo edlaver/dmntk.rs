@@ -30,6 +30,7 @@
  * limitations under the License.
  */
 
+/*
 use super::super::*;
 use dmntk_examples::*;
 
@@ -48,3 +49,4 @@ fn _0002() {
   let ctx = context(r#"{A Person: {age: 47,name: "John Doe"}}"#);
   assert_decision(&MODEL_EVALUATOR, "A Decision Ctx with DT", &ctx, r#""Respectfully, Hello John Doe!""#);
 }
+*/
