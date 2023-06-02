@@ -38,13 +38,11 @@ use crate::input_data_context::InputDataContextEvaluator;
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
 use crate::item_definition_type::ItemDefinitionTypeEvaluator;
-use crate::model_definitions::{DefDefinitions, DefKey};
-use crate::model_evaluator::InvocableType;
+use crate::model_definitions::{DefDefinitions, DefKey, InvocableType, Invocables};
 use dmntk_common::Result;
 use dmntk_feel::Name;
 use dmntk_model::Definitions;
 use std::cell::RefCell;
-use std::collections::HashMap;
 
 pub type EvaluatorBuilders = (
   InputDataEvaluator,
@@ -54,8 +52,6 @@ pub type EvaluatorBuilders = (
   DecisionServiceEvaluator,
   Invocables,
 );
-
-pub type Invocables = HashMap<String, InvocableType>;
 
 /// Model builder.
 #[derive(Default)]

@@ -37,8 +37,8 @@ use crate::decision::DecisionEvaluator;
 use crate::decision_service::DecisionServiceEvaluator;
 use crate::input_data::InputDataEvaluator;
 use crate::item_definition::ItemDefinitionEvaluator;
-use crate::model_builder::{Invocables, ModelBuilder};
-use crate::model_definitions::DefKey;
+use crate::model_builder::ModelBuilder;
+use crate::model_definitions::{DefKey, InvocableType, Invocables};
 use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
@@ -46,27 +46,6 @@ use dmntk_feel::{value_null, Name};
 use dmntk_model::Definitions;
 use std::collections::hash_map::Keys;
 use std::sync::Arc;
-
-/// Types of invocables in DMN model.
-pub enum InvocableType {
-  /// Decision invocable.
-  Decision(
-    /// A key uniquely identifying a decision, see [DefKey] for details.
-    DefKey,
-  ),
-  /// Business knowledge model invocable.
-  BusinessKnowledgeModel(
-    /// A key uniquely identifying a business knowledge model, see [DefKey] for details.
-    DefKey,
-    /// Name of the output variable.
-    Name,
-  ),
-  /// Decision service invocable.
-  DecisionService(
-    /// A key uniquely identifying a decision service, see [DefKey] for details.
-    DefKey,
-  ),
-}
 
 /// Model evaluator.
 pub struct ModelEvaluator {

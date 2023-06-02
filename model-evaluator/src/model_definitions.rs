@@ -40,6 +40,29 @@ use dmntk_model::*;
 use std::collections::HashMap;
 use std::fmt;
 
+/// Types of invocables in DMN model.
+pub enum InvocableType {
+  /// Decision invocable.
+  Decision(
+    /// A key uniquely identifying a decision, see [DefKey] for details.
+    DefKey,
+  ),
+  /// Business knowledge model invocable.
+  BusinessKnowledgeModel(
+    /// A key uniquely identifying a business knowledge model, see [DefKey] for details.
+    DefKey,
+    /// Name of the output variable.
+    Name,
+  ),
+  /// Decision service invocable.
+  DecisionService(
+    /// A key uniquely identifying a decision service, see [DefKey] for details.
+    DefKey,
+  ),
+}
+
+pub type Invocables = HashMap<String, InvocableType>;
+
 /// The key in hash maps for indexing definition artefacts by namespace and identifier.
 ///
 /// [DefKey].0 = namespace
