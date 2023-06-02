@@ -102,7 +102,9 @@ impl From<ModelBuilder> for ModelEvaluator {
 impl ModelEvaluator {
   /// Creates an instance of [ModelEvaluator] from parsed [Definitions].
   pub fn new(definitions: &Definitions) -> Result<Arc<Self>> {
-    let model_builder = ModelBuilder::new(definitions)?;
+    let mut model_builder = ModelBuilder::default();
+    model_builder.add_model(definitions);
+    model_builder.build()?;
     let model_evaluator: Arc<ModelEvaluator> = Arc::new(model_builder.into());
     model_evaluator.decision_service_evaluator.build_function_definitions(&Arc::clone(&model_evaluator));
     Ok(model_evaluator)

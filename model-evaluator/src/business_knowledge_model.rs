@@ -51,18 +51,12 @@ use std::sync::Arc;
 type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
 
 /// Business knowledge model evaluator.
+#[derive(Default)]
 pub struct BusinessKnowledgeModelEvaluator {
   evaluators: Arc<HashMap<DefKey, BusinessKnowledgeModelEvaluatorFn>>,
 }
 
 impl BusinessKnowledgeModelEvaluator {
-  /// Creates an empty business knowledge model evaluator.
-  pub fn empty() -> Self {
-    Self {
-      evaluators: Arc::new(HashMap::new()),
-    }
-  }
-
   /// Creates a new business knowledge model evaluator.
   pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
     let mut evaluators = HashMap::new();

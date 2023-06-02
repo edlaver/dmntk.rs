@@ -50,11 +50,6 @@ pub struct ItemDefinitionTypeEvaluator {
 }
 
 impl ItemDefinitionTypeEvaluator {
-  /// Creates an empty item definition context evaluator.
-  pub fn empty() -> Self {
-    Self { evaluators: HashMap::new() }
-  }
-
   /// Creates item definition type evaluators.
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();

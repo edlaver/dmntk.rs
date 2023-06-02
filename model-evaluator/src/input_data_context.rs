@@ -46,16 +46,12 @@ use std::collections::HashMap;
 type InputDataContextEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ItemDefinitionContextEvaluator) -> FeelType + Send + Sync>;
 
 /// Input data context evaluator.
+#[derive(Default)]
 pub struct InputDataContextEvaluator {
   evaluators: HashMap<DefKey, InputDataContextEvaluatorFn>,
 }
 
 impl InputDataContextEvaluator {
-  /// Creates an empty input data context evaluator.
-  pub fn empty() -> Self {
-    Self { evaluators: HashMap::new() }
-  }
-
   /// Creates a new input data context evaluator based on provided definitions.
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();

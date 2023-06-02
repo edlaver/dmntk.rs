@@ -52,18 +52,12 @@ type DecisionServiceEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut
 type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionServiceEvaluatorFn, Option<Evaluator>);
 
 /// Decision service evaluator.
+#[derive(Default)]
 pub struct DecisionServiceEvaluator {
   evaluators: RwLock<HashMap<DefKey, DecisionServiceEvaluatorEntry>>,
 }
 
 impl DecisionServiceEvaluator {
-  /// Creates an empty decision service evaluator.
-  pub fn empty() -> Self {
-    Self {
-      evaluators: RwLock::new(HashMap::new()),
-    }
-  }
-
   /// Creates a new decision service evaluator.
   pub fn new(definitions: &DefDefinitions, model_builder: &ModelBuilder) -> Result<Self> {
     let mut evaluators = HashMap::new();

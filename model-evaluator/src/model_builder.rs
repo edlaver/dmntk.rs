@@ -58,7 +58,10 @@ pub type EvaluatorBuilders = (
 pub type Invocables = HashMap<String, InvocableType>;
 
 /// Model builder.
+#[derive(Default)]
 pub struct ModelBuilder {
+  /// Model definitions.
+  model_definitions: DefDefinitions,
   /// Input data evaluator builder.
   input_data_evaluator: InputDataEvaluator,
   /// Input data context evaluator builder.
@@ -80,31 +83,22 @@ pub struct ModelBuilder {
 }
 
 impl ModelBuilder {
-  ///
-  pub fn new(definitions: &Definitions) -> Result<Self> {
-    let mut def_definitions = DefDefinitions::default();
-    def_definitions.add_model(definitions);
-    //let definitions: DefDefinitions = definitions.into();
-    let mut model_builder = ModelBuilder {
-      input_data_evaluator: InputDataEvaluator::empty(),
-      input_data_context_evaluator: InputDataContextEvaluator::empty(),
-      item_definition_evaluator: ItemDefinitionEvaluator::empty(),
-      item_definition_context_evaluator: ItemDefinitionContextEvaluator::empty(),
-      item_definition_type_evaluator: ItemDefinitionTypeEvaluator::empty(),
-      business_knowledge_model_evaluator: BusinessKnowledgeModelEvaluator::empty(),
-      decision_evaluator: DecisionEvaluator::empty(),
-      decision_service_evaluator: DecisionServiceEvaluator::empty(),
-      invocables: RefCell::new(Default::default()),
-    };
-    model_builder.input_data_evaluator = InputDataEvaluator::new(&def_definitions)?;
-    model_builder.input_data_context_evaluator = InputDataContextEvaluator::new(&def_definitions)?;
-    model_builder.item_definition_evaluator = ItemDefinitionEvaluator::new(&def_definitions)?;
-    model_builder.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&def_definitions)?;
-    model_builder.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&def_definitions)?;
-    model_builder.business_knowledge_model_evaluator = BusinessKnowledgeModelEvaluator::new(&def_definitions, &model_builder)?;
-    model_builder.decision_evaluator = DecisionEvaluator::new(&def_definitions, &model_builder)?;
-    model_builder.decision_service_evaluator = DecisionServiceEvaluator::new(&def_definitions, &model_builder)?;
-    Ok(model_builder)
+  /// Adds definitions from specified model.
+  pub fn add_model(&mut self, definitions: &Definitions) {
+    self.model_definitions.add_model(definitions);
+  }
+
+  /// Builds a model based on model definitions.
+  pub fn build(&mut self) -> Result<()> {
+    self.input_data_evaluator = InputDataEvaluator::new(&self.model_definitions)?;
+    self.input_data_context_evaluator = InputDataContextEvaluator::new(&self.model_definitions)?;
+    self.item_definition_evaluator = ItemDefinitionEvaluator::new(&self.model_definitions)?;
+    self.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&self.model_definitions)?;
+    self.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&self.model_definitions)?;
+    self.business_knowledge_model_evaluator = BusinessKnowledgeModelEvaluator::new(&self.model_definitions, self)?;
+    self.decision_evaluator = DecisionEvaluator::new(&self.model_definitions, self)?;
+    self.decision_service_evaluator = DecisionServiceEvaluator::new(&self.model_definitions, self)?;
+    Ok(())
   }
 
   ///

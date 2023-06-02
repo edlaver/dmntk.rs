@@ -45,16 +45,12 @@ use std::collections::{BTreeMap, HashMap};
 type ItemDefinitionContextEvaluatorFn = Box<dyn Fn(&Name, &mut FeelContext, &ItemDefinitionContextEvaluator) -> FeelType + Send + Sync>;
 
 /// Item definition type evaluators.
+#[derive(Default)]
 pub struct ItemDefinitionContextEvaluator {
   evaluators: HashMap<DefKey, ItemDefinitionContextEvaluatorFn>,
 }
 
 impl ItemDefinitionContextEvaluator {
-  /// Creates an empty item definition context evaluator.
-  pub fn empty() -> Self {
-    Self { evaluators: HashMap::new() }
-  }
-
   /// Creates item definition type evaluators.
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();

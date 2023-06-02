@@ -45,18 +45,12 @@ use std::sync::Arc;
 pub type InputDataEvaluatorEntry = (Variable, VariableEvaluatorFn);
 
 /// Input data evaluator.
+#[derive(Default)]
 pub struct InputDataEvaluator {
   evaluators: Arc<HashMap<DefKey, InputDataEvaluatorEntry>>,
 }
 
 impl InputDataEvaluator {
-  /// Creates an empty input data evaluator.
-  pub fn empty() -> Self {
-    Self {
-      evaluators: Arc::new(HashMap::new()),
-    }
-  }
-
   /// Builds a new input data evaluator.
   pub fn new(definitions: &DefDefinitions) -> Result<Self> {
     let mut evaluators = HashMap::new();
