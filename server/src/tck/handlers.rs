@@ -136,7 +136,7 @@ fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<
           // convert input values into FEEL context
           let input_data = FeelContext::try_from(WrappedValue::try_from(input_values)?.0)?;
           // evaluate artifact with specified name
-          workspace.evaluate_invocable_by_name(model_namespace, model_name, invocable_name, &input_data)?.try_into()
+          workspace.evaluate_invocable_by_name(model_namespace, invocable_name, &input_data)?.try_into()
         } else {
           Err(err_missing_parameter("input"))
         }

@@ -69,7 +69,6 @@ impl Workspace {
           };
           namespaces.insert(rdnn, namespace);
         }
-        println!("{:?}", namespaces);
         return Ok(Self { evaluator, namespaces });
       }
     }
@@ -77,11 +76,11 @@ impl Workspace {
   }
 
   /// Evaluates invocable identified by its name in model namespace.
-  pub fn evaluate_invocable_by_name(&self, rdnn: String, invocable_name: String, input_data: FeelContext) -> Result<Value> {
-    if let Some(namespace) = self.namespaces.get(&rdnn) {
-      Ok(self.evaluator.evaluate_invocable_by_name(namespace, &invocable_name, &input_data))
+  pub fn evaluate_invocable_by_name(&self, rdnn: &str, invocable_name: &str, input_data: &FeelContext) -> Result<Value> {
+    if let Some(namespace) = self.namespaces.get(rdnn) {
+      Ok(self.evaluator.evaluate_invocable_by_name(namespace, invocable_name, input_data))
     } else {
-      Err(err_evaluator_rdnn_not_found(&rdnn))
+      Err(err_evaluator_rdnn_not_found(rdnn))
     }
   }
 
