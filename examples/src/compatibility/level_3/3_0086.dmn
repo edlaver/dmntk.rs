@@ -89,8 +89,6 @@
                 <dmndi:DMNLabel sharedStyle="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"/>
             </dmndi:DMNEdge>
         </dmndi:DMNDiagram>
-        <dmndi:DMNStyle id="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0"
-                        fontFamily="arial,helvetica,sans-serif" fontSize="11"
-                        fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+        <dmndi:DMNStyle id="LS_c3e08836-7973-4e4d-af2b-d46b23725c13_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
     </dmndi:DMNDI>
 </definitions>
