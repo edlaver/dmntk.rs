@@ -102,6 +102,15 @@ fn assert_decision(model_evaluator: &T, name: &str, input_data: &FeelContext, ex
   );
 }
 
+/// Utility function that evaluates a [Decision] specified by name and compares the result.
+fn assert_decision_1(model_evaluator: &ModelEvaluator, namespace: &str, name: &str, input_data: &FeelContext, expected: &str) {
+  let actual = model_evaluator.evaluate_invocable_by_name(namespace, name, input_data).to_string();
+  assert_eq!(
+    expected, actual,
+    "Assertion error, actual value of the decision does not match the expected value:\n  expected: {expected}\n    actual: {actual}\n"
+  );
+}
+
 /// Utility function that evaluates a [BusinessKnowledgeModel] specified by name and compares the result.
 fn assert_business_knowledge_model(model_evaluator: &T, name: &str, input_data: &FeelContext, expected: &str) {
   let actual = model_evaluator.0.evaluate_invocable_by_name(&model_evaluator.1, name, input_data).to_string();

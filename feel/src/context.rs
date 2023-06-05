@@ -30,7 +30,7 @@
  * limitations under the License.
  */
 
-//! `FEEL` context.
+//! FEEL context.
 
 use crate::errors::*;
 use crate::names::Name;
@@ -48,7 +48,7 @@ use std::ops::Deref;
 /// Type alias for context entries.
 type FeelContextEntries = BTreeMap<Name, Value>;
 
-/// The `FEEL` context.
+/// The FEEL context.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct FeelContext(FeelContextEntries);
 
@@ -61,7 +61,7 @@ impl Deref for FeelContext {
 
 impl TryFrom<Value> for FeelContext {
   type Error = DmntkError;
-  /// Tries to convert a [Value] to its [FeelContext] representation.
+  /// Converts [Value] to [FeelContext].
   fn try_from(value: Value) -> Result<Self, Self::Error> {
     if let Value::Context(ctx) = value {
       Ok(ctx)
@@ -72,14 +72,14 @@ impl TryFrom<Value> for FeelContext {
 }
 
 impl From<FeelContext> for Value {
-  /// Converts this [FeelContext] to its [Value] representation.
+  /// Converts [FeelContext] to [Value].
   fn from(ctx: FeelContext) -> Self {
     Value::Context(ctx)
   }
 }
 
 impl fmt::Display for FeelContext {
-  ///
+  /// Convert [FeelContext] to string.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(
       f,
@@ -90,7 +90,7 @@ impl fmt::Display for FeelContext {
 }
 
 impl ToFeelString for FeelContext {
-  /// Converts [FeelContext] into `FEEL` string.
+  /// Converts [FeelContext] to FEEL string.
   fn to_feel_string(&self) -> String {
     format!(
       "{{{}}}",
@@ -113,7 +113,7 @@ impl ToFeelString for FeelContext {
 }
 
 impl Jsonify for FeelContext {
-  /// Converts this [FeelContext] into its `JSON` representation.
+  /// Converts [FeelContext] to JSON string.
   fn jsonify(&self) -> String {
     format!(
       "{{{}}}",
@@ -128,7 +128,7 @@ impl Jsonify for FeelContext {
 }
 
 impl FeelContext {
-  /// Checks if this [FeelContext] contains an entry pointed by [Name].
+  /// Returns `true` if the [FeelContext] contains an entry with specified [Name].
   pub fn contains_entry(&self, name: &Name) -> bool {
     self.0.contains_key(name)
   }
@@ -153,11 +153,12 @@ impl FeelContext {
     self.0.get(name)
   }
 
-  /// Returns a list of key-value pairs.
+  /// Returns a list of all [FeelContext] entries.
   pub fn get_entries(&self) -> Vec<(&Name, &Value)> {
     self.0.iter().collect::<Vec<(&Name, &Value)>>()
   }
 
+  /// Returns an iterator over all entries in [FeelContext].
   pub fn iter(&self) -> Iter<Name, Value> {
     self.0.iter()
   }
@@ -167,12 +168,12 @@ impl FeelContext {
     self.0.values().take(1).next()
   }
 
-  /// Returns the number of entries in this context.
+  /// Returns the number of entries in [FeelContext].
   pub fn len(&self) -> usize {
     self.0.len()
   }
 
-  /// Returns `true` when this context is empty.
+  /// Returns `true` if [FeelContext] is empty.
   pub fn is_empty(&self) -> bool {
     self.0.is_empty()
   }
@@ -193,10 +194,16 @@ impl FeelContext {
     }
   }
 
+  pub fn move_entry(&mut self, name: Name, parent: Name) {
+    if let Some(value) = self.0.remove(&name) {
+      self.create_entries(&[parent, name], value);
+    }
+  }
+
   /// Creates an entry with a value for specified [QualifiedName].
   /// All non existing intermediary contexts will be created.
   pub fn create_entry(&mut self, qname: &QualifiedName, value: Value) {
-    self.create_deep(qname.as_slice(), value);
+    self.create_entries(qname.as_slice(), value);
   }
 
   /// Searches for a value of an entry pointed by specified qualified name.
@@ -221,8 +228,8 @@ impl FeelContext {
     false
   }
 
-  /// Creates intermediary contexts when needed.
-  pub fn create_deep(&mut self, names: &[Name], value: Value) {
+  /// Creates entries with intermediary contexts when needed.
+  pub fn create_entries(&mut self, names: &[Name], value: Value) {
     // if there are no names, then return
     if names.is_empty() {
       return;
@@ -238,13 +245,13 @@ impl FeelContext {
     // if there is a context under the specified key,
     // then insert value to this context and return
     if let Some(Value::Context(sub_ctx)) = self.0.get_mut(&key) {
-      sub_ctx.create_deep(tail, value);
+      sub_ctx.create_entries(tail, value);
       return;
     }
     // finally, when got to this point, insert a value
     // to newly created context
     let mut sub_ctx = FeelContext::default();
-    sub_ctx.create_deep(tail, value);
+    sub_ctx.create_entries(tail, value);
     self.0.insert(key, sub_ctx.into());
   }
 
