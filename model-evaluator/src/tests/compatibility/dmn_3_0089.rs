@@ -33,14 +33,22 @@
 use super::super::*;
 use dmntk_examples::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089, DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_B2]));
 static MODEL_EVALUATOR_A: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A]));
 static MODEL_EVALUATOR_B1: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1]));
 static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
 
 #[test]
 fn _0001() {
-  let ctx = context(r#" { Person name: "Jenny" } "#);
+  let ctx = context(
+    r#"
+   { 
+     Person name: "Jenny", Model B1: {}
+     /* ,
+     Model B2: {} */ 
+   } 
+   "#,
+  );
   assert_decision_1(
     &MODEL_EVALUATOR,
     "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",

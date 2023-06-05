@@ -194,6 +194,7 @@ impl FeelContext {
     }
   }
 
+  //TODO refactor the name, this operation is not moving, it is like prefixing
   pub fn move_entry(&mut self, name: Name, parent: Name) {
     if let Some(value) = self.0.remove(&name) {
       self.create_entries(&[parent, name], value);

@@ -45,8 +45,10 @@ use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
 /// Type of closure that evaluates a decision service.
-/// Fn(input_data, model evaluator, output data)
-type DecisionServiceEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
+///
+/// (input_data, model evaluator, output data) -> output variable name
+///
+type DecisionServiceEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 ///
 type DecisionServiceEvaluatorEntry = (Variable, Vec<(Name, FeelType)>, DecisionServiceEvaluatorFn, Option<Evaluator>);
@@ -84,10 +86,10 @@ impl DecisionServiceEvaluator {
         evaluators.entry(decision_service_id.clone()).and_modify(|entry| {
           let output_variable_type = entry.0.feel_type().clone();
           let body_evaluator = Box::new(move |scope: &FeelScope| {
-            let input_data = scope.peek().unwrap_or_default();
+            let mut input_data = scope.peek().unwrap_or_default();
             let mut output_data = FeelContext::default();
             let decision_service_evaluator = evaluator.decision_service_evaluator();
-            let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &input_data, &evaluator, &mut output_data);
+            let opt_out_variable_name = decision_service_evaluator.evaluate(&decision_service_id, &mut input_data, &evaluator, &mut output_data);
             if let Some(out_variable_name) = opt_out_variable_name {
               if let Some(result_value) = output_data.get_entry(&out_variable_name) {
                 return result_value.clone();
@@ -105,7 +107,7 @@ impl DecisionServiceEvaluator {
   }
 
   /// Evaluates a decision service with specified identifier.
-  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
+  pub fn evaluate(&self, def_key: &DefKey, input_data: &mut FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
     self.evaluators.read().ok()?.get(def_key).map(|entry| entry.2(input_data, model_evaluator, output_data))
   }
 
@@ -177,7 +179,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   }
 
   // build decision service evaluator closure
-  let decision_service_evaluator = Box::new(move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
+  let decision_service_evaluator = Box::new(move |input_data: &mut FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
     // acquire all evaluators needed
     let item_definition_evaluator = model_evaluator.item_definition_evaluator();
     let input_data_evaluator = model_evaluator.input_data_evaluator();
@@ -211,12 +213,12 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
     let mut evaluated_ctx = FeelContext::default();
     // evaluate encapsulated decisions
     encapsulated_decisions.iter().for_each(|def_key| {
-      decision_evaluator.evaluate(def_key, &evaluated_input_data, model_evaluator, &mut evaluated_ctx);
+      decision_evaluator.evaluate(def_key, &mut evaluated_input_data, model_evaluator, &mut evaluated_ctx);
     });
     // evaluate output decisions
     let mut output_names = vec![];
     output_decisions.iter().for_each(|def_key| {
-      if let Some(output_name) = decision_evaluator.evaluate(def_key, &evaluated_input_data, model_evaluator, &mut evaluated_ctx) {
+      if let Some(output_name) = decision_evaluator.evaluate(def_key, &mut evaluated_input_data, model_evaluator, &mut evaluated_ctx) {
         output_names.push(output_name);
       }
     });

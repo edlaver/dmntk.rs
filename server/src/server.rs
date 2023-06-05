@@ -55,8 +55,8 @@ const CONTENT_TYPE: &str = "application/json";
 async fn evaluate_by_name(params: web::Path<(String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace: &Workspace = data.workspace.borrow();
   let (rdnn, invocable_name) = params.into_inner();
-  let result =
-    dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body).and_then(|input_data| workspace.evaluate_invocable_by_name(&rdnn, &invocable_name, &input_data));
+  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body)
+    .and_then(|mut input_data| workspace.evaluate_invocable_by_name(&rdnn, &invocable_name, &mut input_data));
   match result {
     Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
     Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),

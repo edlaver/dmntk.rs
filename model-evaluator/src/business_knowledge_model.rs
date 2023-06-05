@@ -47,8 +47,10 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 /// Type of closure that evaluates business knowledge model.
-/// Fn(input data, model evaluator, output data)
-type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
+///
+/// (input data, model evaluator, output data)
+///
+type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&mut FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
 
 /// Business knowledge model evaluator.
 #[derive(Default)]
@@ -77,7 +79,7 @@ impl BusinessKnowledgeModelEvaluator {
   /// Evaluates a business knowledge model with specified identifier.
   /// When a required business knowledge model is found, then its evaluator
   /// is executed, and the result is stored in `evaluated_ctx`.
-  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
+  pub fn evaluate(&self, def_key: &DefKey, input_data: &mut FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
     if let Some(evaluator) = self.evaluators.get(def_key) {
       evaluator(input_data, model_evaluator, output_data);
     }
@@ -125,7 +127,7 @@ fn build_bkm_evaluator(
       model_builder,
     )
   } else {
-    Ok(Box::new(move |_: &FeelContext, _: &ModelEvaluator, _: &mut FeelContext| ()))
+    Ok(Box::new(move |_: &mut FeelContext, _: &ModelEvaluator, _: &mut FeelContext| ()))
   }
 }
 
@@ -362,7 +364,7 @@ fn build_bkm_evaluator_from_function_definition(
   knowledge_requirements: Vec<DefKey>,
 ) -> Result<BusinessKnowledgeModelEvaluatorFn> {
   Ok(Box::new(
-    move |input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
+    move |input_data: &mut FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext| {
       let business_knowledge_model_evaluator = model_evaluator.business_knowledge_model_evaluator();
       let decision_service_evaluator = model_evaluator.decision_service_evaluator();
       knowledge_requirements.iter().for_each(|def_key| {
