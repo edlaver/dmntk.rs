@@ -64,10 +64,10 @@ impl ItemDefinitionContextEvaluator {
     Ok(Self { evaluators })
   }
 
-  /// Evaluates a context from item definition with specified type reference name.
-  pub fn eval(&self, def_key: &DefKey, name: &Name, ctx: &mut FeelContext) -> FeelType {
+  /// Evaluates a type from item definition with specified type reference name.
+  pub fn eval(&self, def_key: &DefKey, type_reference_name: &Name, ctx: &mut FeelContext) -> FeelType {
     if let Some(evaluator) = self.evaluators.get(def_key) {
-      evaluator(name, ctx, self)
+      evaluator(type_reference_name, ctx, self)
     } else {
       FeelType::Any
     }

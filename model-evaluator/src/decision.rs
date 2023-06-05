@@ -93,14 +93,14 @@ impl DecisionEvaluator {
 }
 
 /// Builds and returns decision evaluator.
-fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision, model_builder: &ModelBuilder) -> Result<DecisionEvaluatorEntry> {
+fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &DefDecision, model_builder: &ModelBuilder) -> Result<DecisionEvaluatorEntry> {
   // acquire all needed intermediary evaluators
   let item_definition_type_evaluator = model_builder.item_definition_type_evaluator();
   let item_definition_context_evaluator = model_builder.item_definition_context_evaluator();
   let input_data_context_evaluator = model_builder.input_data_context_evaluator();
 
   // get the output variable properties
-  let mut output_variable = Variable::try_from(decision.variable())?;
+  let mut output_variable = Variable::try_from(def_decision.variable())?;
   output_variable.update_feel_type(item_definition_type_evaluator);
 
   // prepare output variable name for processed decision
@@ -116,34 +116,27 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   let mut input_requirements_ctx = FeelContext::default();
 
   // bring into context the variables from this decision's knowledge requirements
-  bring_knowledge_requirements_into_context(definitions, decision.knowledge_requirements(), &mut build_requirements_ctx)?;
+  bring_knowledge_requirements_into_context(def_definitions, def_decision.knowledge_requirements(), &mut build_requirements_ctx)?;
 
   // bring into context the variables from information requirements
-  for information_requirement in decision.information_requirements() {
-    println!("DDD: decision_namespace = {:?}", decision.namespace());
+  for information_requirement in def_decision.information_requirements() {
     // bring into context the variable from required decision
     if let Some(def_href) = information_requirement.required_decision() {
-      println!("DDD: import_name = {:?}", def_href.import_name());
-      if let Some(required_decision) = definitions.decision_by_key(def_href.namespace(), def_href.id()) {
-        println!("DDD: def_href = {:?}", def_href);
-        let variable_name = required_decision.variable().name().clone();
-        let variable_namespace = required_decision.variable().namespace();
-        println!("DDD: variable_namespace = {:?}", variable_namespace);
-        let variable_type_ref = required_decision.variable().type_ref();
-        println!("DDD: variable_type_ref = {:?}", variable_type_ref);
+      if let Some(required_def_decision) = def_definitions.decision_by_key(def_href.namespace(), def_href.id()) {
+        let variable_name = required_def_decision.variable().name().clone();
+        let variable_namespace = required_def_decision.variable().namespace();
+        let variable_type_ref = required_def_decision.variable().type_ref();
         let variable_type = item_definition_context_evaluator.eval(&DefKey::new(variable_namespace, variable_type_ref), &variable_name, &mut build_requirements_ctx);
-        println!("DDD: variable_type = {:?}", variable_type);
         if let Some(import_name) = def_href.import_name() {
           build_requirements_ctx.create_entries(&[import_name.clone(), variable_name], Value::FeelType(variable_type));
         } else {
           build_requirements_ctx.set_entry(&variable_name, Value::FeelType(variable_type));
         }
-        println!("DDD: build_requirements_ctx = {}", build_requirements_ctx);
       }
     }
     // bring into context the variable from required input
     if let Some(href) = information_requirement.required_input() {
-      if let Some(required_input) = definitions.input_data_by_key(href.namespace(), href.id()) {
+      if let Some(required_input) = def_definitions.input_data_by_key(href.namespace(), href.id()) {
         let variable_name = required_input.variable().name();
         let variable_type = input_data_context_evaluator.eval(&href.into(), &mut input_requirements_ctx, item_definition_context_evaluator);
         input_requirements_ctx.set_entry(variable_name, Value::FeelType(variable_type));
@@ -156,7 +149,7 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   scope.push(input_requirements_ctx.clone());
 
   // prepare expression instance for this decision
-  let evaluator = if let Some(expression_instance) = decision.decision_logic().as_ref() {
+  let evaluator = if let Some(expression_instance) = def_decision.decision_logic().as_ref() {
     let (evaluator, _) = build_expression_instance_evaluator(&scope, expression_instance, model_builder)?;
     evaluator
   } else {
@@ -168,11 +161,11 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
   let mut required_decision_references: Vec<(Option<Name>, DefKey)> = vec![];
   let mut required_input_data_references: Vec<DefKey> = vec![];
   // required business knowledge models and decision services
-  for knowledge_requirement in decision.knowledge_requirements() {
+  for knowledge_requirement in def_decision.knowledge_requirements() {
     required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
   }
   // required decisions and required input data
-  for information_requirement in decision.information_requirements() {
+  for information_requirement in def_decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {
       required_decision_references.push((href.import_name().cloned(), href.into()))
     }
@@ -205,13 +198,11 @@ fn build_decision_evaluator(definitions: &DefDefinitions, decision: &DefDecision
     // evaluate required decisions as values from decisions
     required_decision_references.iter().for_each(|(import_name, def_key)| {
       if let Some(name) = decision_evaluator.evaluate(def_key, input_data_ctx, model_evaluator, &mut requirements_ctx) {
-        if let Some(parent) = import_name.clone() {
-          requirements_ctx.move_entry(name, parent);
+        if let Some(import_name_parent) = import_name.clone() {
+          requirements_ctx.move_entry(name, import_name_parent);
         }
       }
     });
-
-    println!("DDD: requirements_ctx = {}", requirements_ctx);
 
     // values from required knowledge may be overridden by input data
     requirements_ctx.overwrite(input_data_ctx);
