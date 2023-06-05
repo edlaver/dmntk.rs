@@ -36,6 +36,7 @@ use dmntk_examples::*;
 static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
 static MODEL_EVALUATOR_A: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A]));
 static MODEL_EVALUATOR_B: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1]));
+static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
 
 #[test]
 #[ignore]
@@ -57,24 +58,36 @@ fn _0001() {
 
 #[test]
 fn _0002() {
-  let ctx = context(r#" { Person name: "Darius" } "#);
+  let ctx = context(r#" { Person name: "Jenny" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_A,
     "http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9",
     "Greet the Person",
     &ctx,
-    r#""Hello, Darius""#,
+    r#""Hello, Jenny""#,
   );
 }
 
 #[test]
 fn _0003() {
-  let ctx = context(r#" { Person name: "Darius" } "#);
+  let ctx = context(r#" { Person name: "Jenny" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_B,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
     &ctx,
-    r#""Evaluating Say Hello to: Hello, Darius""#,
+    r#""Evaluating Say Hello to: Hello, Jenny""#,
+  );
+}
+
+#[test]
+fn _0004() {
+  let ctx = context(r#" { Person name: "Cecil" } "#);
+  assert_decision_1(
+    &MODEL_EVALUATOR_B2,
+    "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
+    "Evaluating B2 Say Hello",
+    &ctx,
+    r#""Evaluating Say Hello to: Hello, Cecil""#,
   );
 }
