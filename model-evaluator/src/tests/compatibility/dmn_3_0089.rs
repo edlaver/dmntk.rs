@@ -35,7 +35,7 @@ use dmntk_examples::*;
 
 static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
 static MODEL_EVALUATOR_A: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A]));
-static MODEL_EVALUATOR_B: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1]));
+static MODEL_EVALUATOR_B1: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1]));
 static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
 
 #[test]
@@ -66,7 +66,7 @@ fn _0002() {
 fn _0003() {
   let ctx = context(r#" { Person name: "Jenny" } "#);
   assert_decision_1(
-    &MODEL_EVALUATOR_B,
+    &MODEL_EVALUATOR_B1,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
     &ctx,
