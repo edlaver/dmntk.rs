@@ -37,7 +37,7 @@ use dmntk_common::{color_blue, color_green, color_red, color_reset, to_rdnn, Col
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::value_null;
 use dmntk_feel::values::Value;
-use dmntk_model::Definitions;
+use dmntk_model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
 use std::collections::HashMap;
 use std::fs;
@@ -60,17 +60,26 @@ impl Workspace {
   pub fn new(opt_dir: Option<PathBuf>, color_mode: ColorMode, _verbose: bool) -> Result<Self> {
     if let Some(dir) = opt_dir {
       let loaded_definitions = Self::load(dir, color_mode);
-      if let Ok(evaluator) = ModelEvaluator::new(&loaded_definitions) {
-        let mut namespaces = HashMap::new();
-        for definitions in loaded_definitions {
-          let namespace = definitions.namespace().to_string();
-          let Some(rdnn) = to_rdnn(&namespace) else {
-            return Err(err_invalid_namespace(&namespace));
-          };
-          namespaces.insert(rdnn, namespace);
+      return match ModelEvaluator::new(&loaded_definitions) {
+        Ok(evaluator) => {
+          let mut namespaces: HashMap<String, String> = HashMap::new();
+          let mut loaded_namespaces: HashMap<String, String> = HashMap::new();
+          for definitions in loaded_definitions {
+            let name = definitions.name();
+            let namespace = definitions.namespace();
+            if let Some(existing_name) = loaded_namespaces.get(namespace) {
+              return Err(err_duplicated_namespace(namespace, name, existing_name));
+            }
+            loaded_namespaces.insert(namespace.to_string(), name.to_string());
+            let Some(rdnn) = to_rdnn(&namespace) else {
+              return Err(err_invalid_namespace(&namespace));
+            };
+            namespaces.insert(rdnn, namespace.to_string());
+          }
+          Ok(Self { evaluator, namespaces })
         }
-        return Ok(Self { evaluator, namespaces });
-      }
+        Err(reason) => Err(reason),
+      };
     }
     Err(err_x("y"))
   }

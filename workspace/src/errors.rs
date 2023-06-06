@@ -43,7 +43,11 @@ pub fn err_evaluator_rdnn_not_found(rdnn: &str) -> DmntkError {
 }
 
 pub fn err_invalid_namespace(namespace: &str) -> DmntkError {
-  WorkspaceError(format!("invalid namespace {namespace}")).into()
+  WorkspaceError(format!("invalid namespace '{namespace}'")).into()
+}
+
+pub fn err_duplicated_namespace(namespace: &str, name: &str, existing_name: &str) -> DmntkError {
+  WorkspaceError(format!("duplicated namespace '{namespace}' in model '{name}', already used in model '{existing_name}'")).into()
 }
 
 pub fn err_x(s: &str) -> DmntkError {

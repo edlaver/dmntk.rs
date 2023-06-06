@@ -130,7 +130,7 @@ pub async fn post_tck_evaluate(params: Json<TckEvaluateParams>, data: web::Data<
 /// [Technology Compatibility Kit for DMN standard](https://github.com/dmn-tck/tck).
 fn do_evaluate_tck(workspace: &Workspace, params: &TckEvaluateParams) -> Result<OutputNodeDto, DmntkError> {
   if let Some(model_namespace) = &params.model_namespace {
-    if let Some(model_name) = &params.model_name {
+    if let Some(_model_name) = &params.model_name {
       if let Some(invocable_name) = &params.invocable_name {
         if let Some(input_values) = &params.input_values {
           // convert input values into FEEL context

@@ -97,23 +97,27 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
   let color_blue = color_blue!(color_mode);
   let color_yellow = color_yellow!(color_mode);
   let color_reset = color_reset!(color_mode);
-  let Ok(workspace) = Workspace::new(get_workspace_dir(opt_dir), color_mode, verbose) else {
-    eprintln!("buuu");
-    return Ok(());
-  };
-  let application_data = web::Data::new(ApplicationData { workspace: Arc::new(workspace) });
-  let address = get_server_address(opt_host, opt_port);
-  println!("{1}dmntk{0} {2}{address}{0}", color_reset, color_blue, color_yellow);
-  HttpServer::new(move || {
-    App::new()
-      .app_data(application_data.clone())
-      .app_data(web::PayloadConfig::new(4 * 1024 * 1024))
-      .configure(config)
-      .default_service(web::route().to(not_found))
-  })
-  .bind(address)?
-  .run()
-  .await
+  match Workspace::new(get_workspace_dir(opt_dir), color_mode, verbose) {
+    Ok(workspace) => {
+      let application_data = web::Data::new(ApplicationData { workspace: Arc::new(workspace) });
+      let address = get_server_address(opt_host, opt_port);
+      println!("{1}dmntk{0} {2}{address}{0}", color_reset, color_blue, color_yellow);
+      HttpServer::new(move || {
+        App::new()
+          .app_data(application_data.clone())
+          .app_data(web::PayloadConfig::new(4 * 1024 * 1024))
+          .configure(config)
+          .default_service(web::route().to(not_found))
+      })
+      .bind(address)?
+      .run()
+      .await
+    }
+    Err(reason) => {
+      eprintln!("{}", reason);
+      return Ok(());
+    }
+  }
 }
 
 /// Returns the host address and the port number, the server will start to listen on.

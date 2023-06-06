@@ -30,12 +30,12 @@
  * limitations under the License.
  */
 
-//! `DMNTK` - Decision Model and Notation Toolkit project.
+//! # **DMNTK** | Decision Model and Notation Toolkit
 
 mod actions;
 mod examples;
 
-/// Main entrypoint of `DMNTK`.
+/// Main entrypoint of **DMNTK**.
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
   actions::do_action().await
