@@ -2,10 +2,10 @@
 <definitions namespace="https://dmntk.io/3_0086"
              name="Import BKM and have a Decision Ctx with DT"
              id="_25a9c1b8-ee39-4c1e-906f-56c11677925a"
+             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
-             xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/">
     <import namespace="https://dmntk.io/3_0086/imported"
             name="myimport"
             importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>
