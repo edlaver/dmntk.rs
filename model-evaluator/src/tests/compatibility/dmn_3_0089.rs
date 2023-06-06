@@ -41,20 +41,17 @@ static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_
 #[test]
 fn _0001() {
   let ctx = context(
-    r#"
-   { 
-     Person name: "Jenny", Model B1: {}
-     /* ,
-     Model B2: {} */ 
-   } 
-   "#,
+    r#"{ 
+      Model B:  { Model A: { Person name: "Bob" }},
+      Model B2: { Model A: { Person name: "John" }} 
+    }"#,
   );
   assert_decision_1(
     &MODEL_EVALUATOR,
     "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
     "Model C Decision based on Bs",
     &ctx,
-    r#""B: Evaluating Say Hello to: Hello, Jenny; B2: Evaluating Say Hello to: Hello, Jenny""#,
+    r#""B: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
   );
 }
 

@@ -128,29 +128,34 @@ impl Jsonify for FeelContext {
 }
 
 impl FeelContext {
-  /// Returns `true` if the [FeelContext] contains an entry with specified [Name].
+  /// Returns `true` if context contains an entry specified by **name**.
   pub fn contains_entry(&self, name: &Name) -> bool {
     self.0.contains_key(name)
   }
 
-  /// Checks if this [FeelContext] contains an entry pointed by [QualifiedName].
+  /// Returns `true` if this [FeelContext] contains an entry specified by [QualifiedName].
   pub fn contains_entries(&self, qname: &QualifiedName) -> bool {
     self.contains_deep(qname.as_slice())
   }
 
-  /// Sets a single value for specified entry name in this [FeelContext].
+  /// Returns a value of an entry with specified name.
+  pub fn get_entry(&self, name: &Name) -> Option<&Value> {
+    self.0.get(name)
+  }
+
+  /// Sets a value for specified entry name.
   pub fn set_entry(&mut self, name: &Name, value: Value) {
     self.0.insert(name.clone(), value);
   }
 
-  /// Sets a null value for specified entry name in this [FeelContext].
-  pub fn set_null(&mut self, name: Name) {
-    self.0.insert(name, value_null!());
+  /// Removes a value of an entry with specified name.
+  pub fn remove_entry(&mut self, name: &Name) -> Option<Value> {
+    self.0.remove(name)
   }
 
-  /// Returns a value of an entry specified by name.
-  pub fn get_entry(&self, name: &Name) -> Option<&Value> {
-    self.0.get(name)
+  /// Sets a null value for specified entry.
+  pub fn set_null(&mut self, name: Name) {
+    self.0.insert(name, value_null!());
   }
 
   /// Returns a list of all [FeelContext] entries.
@@ -165,7 +170,7 @@ impl FeelContext {
 
   /// Returns a first value contained by context.
   pub fn get_first(&self) -> Option<&Value> {
-    self.0.values().take(1).next()
+    self.0.values().next()
   }
 
   /// Returns the number of entries in [FeelContext].
@@ -176,6 +181,15 @@ impl FeelContext {
   /// Returns `true` if [FeelContext] is empty.
   pub fn is_empty(&self) -> bool {
     self.0.is_empty()
+  }
+
+  /// Returns `true` if [FeelContext] contains an entry with specified name, and the value is context.
+  pub fn is_context(&self, name: &Name) -> bool {
+    if let Some(Value::Context(_)) = self.0.get(name) {
+      true
+    } else {
+      false
+    }
   }
 
   ///

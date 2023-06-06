@@ -176,9 +176,6 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
 
   // build decision evaluator closure
   let decision_evaluator = Box::new(move |input_data_ctx: &FeelContext, model_evaluator: &ModelEvaluator, output_data_ctx: &mut FeelContext| {
-    // make the input data locally mutable
-    let mut input_data = input_data_ctx.clone();
-
     let business_knowledge_model_evaluator = model_evaluator.business_knowledge_model_evaluator();
     let decision_service_evaluator = model_evaluator.decision_service_evaluator();
     let decision_evaluator = model_evaluator.decision_evaluator();
@@ -187,6 +184,9 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
 
     // prepare context containing values from required knowledge, required decision services and required decisions
     let mut requirements_ctx: FeelContext = Default::default();
+
+    // make a locally mutable copy of the input data
+    let mut input_data = input_data_ctx.clone();
 
     // evaluate required knowledge as values from business knowledge models
     required_knowledge_references.iter().for_each(|id| {
@@ -200,20 +200,24 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
 
     // evaluate required decisions as values from decisions
     required_decision_references.iter().for_each(|(import_name, def_key)| {
-      if let Some(name) = decision_evaluator.evaluate(def_key, &input_data, model_evaluator, &mut requirements_ctx) {
-        if let Some(import_name_parent) = import_name.clone() {
+      if let Some(import_name_parent) = import_name.clone() {
+        let mut import_input_data = input_data.clone();
+        if import_input_data.is_context(&import_name_parent) {
+          if let Some(Value::Context(ctx)) = import_input_data.remove_entry(&import_name_parent) {
+            import_input_data.zip(&ctx);
+          }
+          input_data.remove_entry(&import_name_parent);
+        }
+        if let Some(name) = decision_evaluator.evaluate(def_key, &import_input_data, model_evaluator, &mut requirements_ctx) {
           requirements_ctx.move_entry(name, import_name_parent);
         }
+      } else {
+        decision_evaluator.evaluate(def_key, &input_data, model_evaluator, &mut requirements_ctx);
       }
     });
 
-    println!("DDD: input_data_ctx = {}", input_data);
-    println!("DDD: requirements_ctx (1) = {}", requirements_ctx);
-
     // values from required knowledge may be overridden by input data
     requirements_ctx.overwrite(&input_data);
-
-    println!("DDD: requirements_ctx (2) = {}", requirements_ctx);
 
     // prepare context containing values from required input data
     let mut required_input_ctx: FeelContext = Default::default();
