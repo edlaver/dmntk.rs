@@ -115,7 +115,7 @@ pub async fn start_server(opt_host: Option<String>, opt_port: Option<String>, op
     }
     Err(reason) => {
       eprintln!("{}", reason);
-      return Ok(());
+      Ok(())
     }
   }
 }

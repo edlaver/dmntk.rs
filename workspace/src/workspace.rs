@@ -71,8 +71,8 @@ impl Workspace {
               return Err(err_duplicated_namespace(namespace, name, existing_name));
             }
             loaded_namespaces.insert(namespace.to_string(), name.to_string());
-            let Some(rdnn) = to_rdnn(&namespace) else {
-              return Err(err_invalid_namespace(&namespace));
+            let Some(rdnn) = to_rdnn(namespace) else {
+              return Err(err_invalid_namespace(namespace));
             };
             namespaces.insert(rdnn, namespace.to_string());
           }
