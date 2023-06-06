@@ -52,18 +52,47 @@ fn _0001() {
 
 #[test]
 fn _0002() {
-  let ctx = context(r#" { Person name: "Jenny" } "#);
+  let ctx = context(r#" { Person name: "Waldy" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_B1,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
     &ctx,
-    r#""Evaluating Say Hello to: Hello, Jenny""#,
+    r#""Evaluating Say Hello to: Hello, Waldy""#,
   );
 }
 
 #[test]
 fn _0003() {
+  let ctx = context(r#" { Model A: { Person name: "John" }} "#);
+  assert_decision_1(
+    &MODEL_EVALUATOR_B1,
+    "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
+    "Evaluating Say Hello",
+    &ctx,
+    r#""Evaluating Say Hello to: Hello, John""#,
+  );
+}
+
+#[test]
+fn _0004() {
+  let ctx = context(
+    r#"{
+      Person name: "Johnny", 
+      Model A: { Person name: "John" }
+    } "#,
+  );
+  assert_decision_1(
+    &MODEL_EVALUATOR_B1,
+    "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
+    "Evaluating Say Hello",
+    &ctx,
+    r#""Evaluating Say Hello to: Hello, John""#,
+  );
+}
+
+#[test]
+fn _0005() {
   let ctx = context(r#" { Person name: "Cecil" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_B2,
@@ -75,10 +104,39 @@ fn _0003() {
 }
 
 #[test]
-fn _0004() {
+fn _0006() {
+  let ctx = context(r#" { Model A: { Person name: "Peter" }} "#);
+  assert_decision_1(
+    &MODEL_EVALUATOR_B2,
+    "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
+    "Evaluating B2 Say Hello",
+    &ctx,
+    r#""Evaluating Say Hello to: Hello, Peter""#,
+  );
+}
+
+#[test]
+fn _0007() {
+  let ctx = context(
+    r#"{
+       Person name: "Patricia",
+       Model A: { Person name: "Peter" }
+     }"#,
+  );
+  assert_decision_1(
+    &MODEL_EVALUATOR_B2,
+    "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
+    "Evaluating B2 Say Hello",
+    &ctx,
+    r#""Evaluating Say Hello to: Hello, Peter""#,
+  );
+}
+
+#[test]
+fn _0008() {
   let ctx = context(
     r#"{ 
-      Model B:  { Model A: { Person name: "Bob" }},
+      Model B1: { Model A: { Person name: "Bob" }},
       Model B2: { Model A: { Person name: "John" }} 
     }"#,
   );
@@ -87,6 +145,30 @@ fn _0004() {
     "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
     "Model C Decision based on Bs",
     &ctx,
-    r#""B: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
+    r#""B1: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
+  );
+}
+
+#[test]
+fn _0009() {
+  let ctx = context(
+    r#"{ 
+      Person name: "Janusz Biznesu",
+      Model B1: {
+        Person name: "Bobby",
+        Model A: { Person name: "Bob" }
+      },
+      Model B2: {
+        Person name: "Johnny",
+        Model A: { Person name: "John" }
+      } 
+    }"#,
+  );
+  assert_decision_1(
+    &MODEL_EVALUATOR_C,
+    "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
+    "Model C Decision based on Bs",
+    &ctx,
+    r#""B1: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
   );
 }
