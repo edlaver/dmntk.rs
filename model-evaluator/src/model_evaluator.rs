@@ -114,7 +114,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates an invocable identified by specified `invocable_name`.
-  pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &mut FeelContext) -> Value {
+  pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &FeelContext) -> Value {
     let Some(invocable) = self.invocables.by_name(namespace, invocable_name) else {
       return value_null!("invocable '{}' not found in namespace '{}'", invocable_name, namespace);
     };
@@ -135,7 +135,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision.
-  fn evaluate_decision(&self, def_key: &DefKey, input_data: &mut FeelContext) -> Value {
+  fn evaluate_decision(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
@@ -149,7 +149,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a business knowledge model.
-  fn evaluate_bkm(&self, def_key: &DefKey, input_data: &mut FeelContext, output_variable_name: &Name) -> Value {
+  fn evaluate_bkm(&self, def_key: &DefKey, input_data: &FeelContext, output_variable_name: &Name) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     self.business_knowledge_model_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx);
     if let Some(Value::FunctionDefinition(parameters, body, _external, _, closure_ctx, result_type)) = evaluated_ctx.get_entry(output_variable_name) {
@@ -170,7 +170,7 @@ impl ModelEvaluator {
   }
 
   /// Evaluates a decision service.
-  fn evaluate_decision_service(&self, def_key: &DefKey, input_data: &mut FeelContext) -> Value {
+  fn evaluate_decision_service(&self, def_key: &DefKey, input_data: &FeelContext) -> Value {
     let mut evaluated_ctx = FeelContext::default();
     if let Some(output_variable_name) = self.decision_service_evaluator.evaluate(def_key, input_data, self, &mut evaluated_ctx) {
       if let Some(output_value) = evaluated_ctx.get_entry(&output_variable_name) {
