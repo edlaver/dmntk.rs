@@ -32,13 +32,13 @@
 
 use super::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0089_MODEL_C));
+from_examples!(DMN_3_0089_MODEL_C);
 
 #[bench]
 #[ignore]
 fn _0001(b: &mut Bencher) {
   let ctx = context(r#"{Model B: {modelA: {Person name: "B.A.John"}},Model B2: {modelA: {Person name: "B2.A.John2"}}}"#);
   let invocable_name = "Evaluation DS";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"null"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#"null"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }

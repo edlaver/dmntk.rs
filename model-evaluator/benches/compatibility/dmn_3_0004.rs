@@ -32,7 +32,7 @@
 
 use super::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0004));
+from_examples!(DMN_3_0004);
 
 const APPLICANT_DATA: &str = r#"
   {
@@ -65,86 +65,86 @@ const APPLICANT_DATA: &str = r#"
 fn _0001(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Adjudication";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""ACCEPT""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""ACCEPT""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0002(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "ApplicationRiskScore";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"130"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#"130"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0003(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Pre-bureauRiskCategory";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""LOW""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""LOW""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0004(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "BureauCallType";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""MINI""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""MINI""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0005(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Post-bureauRiskCategory";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""LOW""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""LOW""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0006(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "RequiredMonthlyInstallment";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"1680.8803256086347968"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#"1680.8803256086347968"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0007(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Pre-bureauAffordability";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"true"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#"true"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0008(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Eligibility";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""ELIGIBLE""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""ELIGIBLE""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0009(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Strategy";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""BUREAU""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""BUREAU""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0010(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Post-bureauAffordability";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#"true"#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#"true"#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
 
 #[bench]
 fn _0011(b: &mut Bencher) {
   let ctx = context(APPLICANT_DATA);
   let invocable_name = "Routing";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""ACCEPT""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""ACCEPT""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }

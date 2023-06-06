@@ -32,7 +32,7 @@
 
 use super::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0006));
+from_examples!(DMN_3_0006);
 
 const INPUT_DATA: &str = r#"
   {
@@ -88,6 +88,6 @@ const INPUT_DATA: &str = r#"
 fn _0001(b: &mut Bencher) {
   let ctx = context(INPUT_DATA);
   let invocable_name = "Join";
-  assert_decision(&MODEL_EVALUATOR, invocable_name, &ctx, r#""Smith""#);
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, invocable_name, &ctx, r#""Smith""#);
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }

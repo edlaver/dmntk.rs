@@ -32,7 +32,7 @@
 
 use super::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0088));
+from_examples!(DMN_3_0088);
 
 #[bench]
 fn _0001(b: &mut Bencher) {
@@ -41,9 +41,10 @@ fn _0001(b: &mut Bencher) {
   let invocable_name = "Evaluation DS";
   assert_decision_service(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     invocable_name,
     input_data,
     r#""John Doe is Graduated with merit with grade: A and evaluation: A very motivated, hard-working student!""#,
   );
-  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(invocable_name, &ctx));
+  b.iter(|| MODEL_EVALUATOR.evaluate_invocable_by_name(&MODEL_NAMESPACE, invocable_name, &ctx));
 }
