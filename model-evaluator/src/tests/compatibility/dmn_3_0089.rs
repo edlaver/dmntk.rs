@@ -33,30 +33,13 @@
 use super::super::*;
 use dmntk_examples::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089, DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_B2]));
 static MODEL_EVALUATOR_A: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A]));
-static MODEL_EVALUATOR_B1: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B1]));
-static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_A, DMN_3_0089_MODEL_B2]));
+static MODEL_EVALUATOR_B1: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_A]));
+static MODEL_EVALUATOR_B2: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_B2, DMN_3_0089_MODEL_A]));
+static MODEL_EVALUATOR_C: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluators(&[DMN_3_0089_MODEL_C, DMN_3_0089_MODEL_B1, DMN_3_0089_MODEL_B2, DMN_3_0089_MODEL_A]));
 
 #[test]
 fn _0001() {
-  let ctx = context(
-    r#"{ 
-      Model B:  { Model A: { Person name: "Bob" }},
-      Model B2: { Model A: { Person name: "John" }} 
-    }"#,
-  );
-  assert_decision_1(
-    &MODEL_EVALUATOR,
-    "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
-    "Model C Decision based on Bs",
-    &ctx,
-    r#""B: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
-  );
-}
-
-#[test]
-fn _0002() {
   let ctx = context(r#" { Person name: "Jenny" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_A,
@@ -68,7 +51,7 @@ fn _0002() {
 }
 
 #[test]
-fn _0003() {
+fn _0002() {
   let ctx = context(r#" { Person name: "Jenny" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_B1,
@@ -80,7 +63,7 @@ fn _0003() {
 }
 
 #[test]
-fn _0004() {
+fn _0003() {
   let ctx = context(r#" { Person name: "Cecil" } "#);
   assert_decision_1(
     &MODEL_EVALUATOR_B2,
@@ -88,5 +71,22 @@ fn _0004() {
     "Evaluating B2 Say Hello",
     &ctx,
     r#""Evaluating Say Hello to: Hello, Cecil""#,
+  );
+}
+
+#[test]
+fn _0004() {
+  let ctx = context(
+    r#"{ 
+      Model B:  { Model A: { Person name: "Bob" }},
+      Model B2: { Model A: { Person name: "John" }} 
+    }"#,
+  );
+  assert_decision_1(
+    &MODEL_EVALUATOR_C,
+    "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
+    "Model C Decision based on Bs",
+    &ctx,
+    r#""B: Evaluating Say Hello to: Hello, Bob; B2: Evaluating Say Hello to: Hello, John""#,
   );
 }

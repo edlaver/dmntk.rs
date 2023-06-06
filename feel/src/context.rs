@@ -185,11 +185,7 @@ impl FeelContext {
 
   /// Returns `true` if [FeelContext] contains an entry with specified name, and the value is context.
   pub fn is_context(&self, name: &Name) -> bool {
-    if let Some(Value::Context(_)) = self.0.get(name) {
-      true
-    } else {
-      false
-    }
+    matches!(self.0.get(name), Some(Value::Context(_)))
   }
 
   ///

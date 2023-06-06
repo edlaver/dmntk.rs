@@ -32,7 +32,7 @@
 
 use super::*;
 
-static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0089));
+static MODEL_EVALUATOR: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_evaluator(dmntk_examples::DMN_3_0089_MODEL_C));
 
 #[bench]
 #[ignore]
