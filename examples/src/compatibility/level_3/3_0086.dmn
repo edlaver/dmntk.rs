@@ -11,17 +11,8 @@
             name="myimport"
             importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>
 
-    <itemDefinition name="tPerson" label="tPerson">
-        <itemComponent name="name" id="_9bb0759c-b3c1-482f-87f5-c047dc65cef0">
-            <typeRef>string</typeRef>
-        </itemComponent>
-        <itemComponent name="age" id="_929acc15-101c-4e49-9b11-494fff411e50">
-            <typeRef>number</typeRef>
-        </itemComponent>
-    </itemDefinition>
-    
     <inputData id="_9df2ca89-d100-4ba3-9a44-6a71cae5c001" name="A Person">
-        <variable name="A Person" id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" typeRef="tPerson"/>
+        <variable name="A Person" id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" typeRef="myimport.tPerson"/>
     </inputData>
     
     <decision id="_2d131943-c513-416b-acc6-6efe8fe01ba4" name="A Decision Ctx with DT">

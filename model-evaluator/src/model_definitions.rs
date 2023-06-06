@@ -35,7 +35,7 @@
 use crate::errors::err_invalid_item_definition_type;
 use crate::type_ref::type_ref_to_feel_type;
 use dmntk_common::{HRef, Result};
-use dmntk_feel::Name;
+use dmntk_feel::{Name, QualifiedName};
 use dmntk_model::*;
 use std::collections::HashMap;
 use std::fmt;
@@ -138,11 +138,22 @@ pub struct DefInformationItem {
 
 impl DefInformationItem {
   /// Creates [DefInformationItem] from [InformationItem].
-  pub fn new(information_item: &InformationItem) -> Self {
-    Self {
-      namespace: information_item.namespace().to_string(),
-      name: information_item.feel_name().clone(),
-      type_ref: information_item.type_ref().clone(),
+  pub fn new(information_item: &InformationItem, imports: &[DefImport]) -> Self {
+    let type_ref_name = Name::from(information_item.type_ref().clone());
+    let qname = QualifiedName::from(type_ref_name);
+    if qname.len() == 2 {
+      // type reference is prefixed with the import name
+      let import_name = qname.get(0).unwrap(); // unwrap is safe
+      let namespace = get_import_namespace(import_name, imports).unwrap_or(information_item.namespace().to_string());
+      let name = information_item.feel_name().clone();
+      let type_ref = qname.get(1).unwrap().to_string(); // unwrap is safe
+      Self { namespace, name, type_ref }
+    } else {
+      // type reference has no import prefix
+      let namespace = information_item.namespace().to_string();
+      let type_ref = information_item.type_ref().clone();
+      let name = information_item.feel_name().clone();
+      Self { namespace, name, type_ref }
     }
   }
 }
@@ -174,12 +185,12 @@ pub struct DefInputData {
 
 impl DefInputData {
   /// Creates [DefInputData] from [InputData].
-  pub fn new(input_data: &InputData) -> Self {
+  pub fn new(input_data: &InputData, imports: &[DefImport]) -> Self {
     Self {
       namespace: input_data.namespace().to_string(),
       id: input_data.id().to_string(),
       name: input_data.name().to_string(),
-      variable: DefInformationItem::new(input_data.variable()),
+      variable: DefInformationItem::new(input_data.variable(), imports),
     }
   }
 }
@@ -325,7 +336,7 @@ impl DefBusinessKnowledgeModel {
       namespace: business_knowledge_model.namespace().to_string(),
       id: business_knowledge_model.id().to_string(),
       name: business_knowledge_model.name().to_string(),
-      variable: DefInformationItem::new(business_knowledge_model.variable()),
+      variable: DefInformationItem::new(business_knowledge_model.variable(), imports),
       encapsulated_logic: business_knowledge_model.encapsulated_logic().clone(),
       knowledge_requirements: business_knowledge_model
         .knowledge_requirements()
@@ -381,12 +392,7 @@ pub struct DefHRef {
 impl DefHRef {
   pub fn new(namespace: &str, href: &HRef, imports: &[DefImport]) -> Self {
     let namespace = href.namespace().cloned().unwrap_or(namespace.to_string());
-    let import_name = imports
-      .iter()
-      .filter_map(|def_import| if def_import.namespace == namespace { Some(def_import.name.clone()) } else { None })
-      .collect::<Vec<Name>>()
-      .get(0)
-      .cloned();
+    let import_name = get_import_name(&namespace, imports);
     Self {
       namespace,
       id: href.id().to_string(),
@@ -471,7 +477,7 @@ impl DefDecision {
       namespace: decision.namespace().to_string(),
       id: decision.id().to_string(),
       name: decision.name().to_string(),
-      variable: DefInformationItem::new(decision.variable()),
+      variable: DefInformationItem::new(decision.variable(), imports),
       decision_logic: decision.decision_logic().clone(),
       information_requirements: decision
         .information_requirements()
@@ -544,7 +550,7 @@ impl DefDecisionService {
       namespace: namespace.to_string(),
       id: decision_service.id().to_string(),
       name: decision_service.name().to_string(),
-      variable: DefInformationItem::new(decision_service.variable()),
+      variable: DefInformationItem::new(decision_service.variable(), imports),
       input_decisions: decision_service.input_decisions().iter().map(|href| DefHRef::new(namespace, href, imports)).collect(),
       output_decisions: decision_service.output_decisions().iter().map(|href| DefHRef::new(namespace, href, imports)).collect(),
       encapsulated_decisions: decision_service
@@ -641,7 +647,7 @@ impl DefDefinitions {
     for drg_element in definitions.drg_elements() {
       match drg_element {
         DrgElement::InputData(inner) => {
-          self.input_data.insert(DefKey::new(inner.namespace(), inner.id()), DefInputData::new(inner));
+          self.input_data.insert(DefKey::new(inner.namespace(), inner.id()), DefInputData::new(inner, &self.imports));
         }
         DrgElement::BusinessKnowledgeModel(inner) => {
           self
@@ -710,4 +716,24 @@ impl DefDefinitions {
   pub fn input_data_by_key(&self, namespace: &str, id: &str) -> Option<&DefInputData> {
     self.input_data.get(&DefKey::new(namespace, id))
   }
+}
+
+/// Returns a name of the import for specified namespace.
+fn get_import_name(namespace: &str, imports: &[DefImport]) -> Option<Name> {
+  imports
+    .iter()
+    .filter_map(|def_import| if def_import.namespace == namespace { Some(def_import.name.clone()) } else { None })
+    .collect::<Vec<Name>>()
+    .get(0)
+    .cloned()
+}
+
+/// Returns a namespace of the import for specified name.
+fn get_import_namespace(name: &Name, imports: &[DefImport]) -> Option<String> {
+  imports
+    .iter()
+    .filter_map(|def_import| if &def_import.name == name { Some(def_import.namespace.clone()) } else { None })
+    .collect::<Vec<String>>()
+    .get(0)
+    .cloned()
 }
