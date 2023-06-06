@@ -30,16 +30,9 @@
  * limitations under the License.
  */
 
-//! Test files containing decision model definitions.
-//! File names begin with the compatibility level, followed by the number of the test.
-//! Test examples are based on examples contained in
-//! [DMN™ Technology Compatibility Kit](https://dmn-tck.github.io/tck/) project.
-//! The content of each test file is modified and differs from the original.
+//! # DMN models for non-compliant tests
 
-mod level_2;
-mod level_3;
-mod non_compliant;
-
-pub use level_2::*;
-pub use level_3::*;
-pub use non_compliant::*;
+pub const DMN_N_0015: &str = include_str!("N_0015.dmn");
+pub const DMN_N_0019: &str = include_str!("N_0019.dmn");
+pub const DMN_N_0079: &str = include_str!("N_0079.dmn");
+pub const DMN_N_0088: &str = include_str!("N_0088.dmn");
