@@ -493,7 +493,7 @@ impl ModelParser {
         feel_name: required_feel_name(child_node)?,
         import_type: required_attribute(child_node, ATTR_IMPORT_TYPE)?,
         location_uri: optional_attribute(child_node, ATTR_LOCATION_URI),
-        namespace: required_attribute(child_node, ATTR_NAMESPACE)?,
+        namespace: required_uri(child_node, ATTR_NAMESPACE)?,
       };
       imports.push(import);
     }

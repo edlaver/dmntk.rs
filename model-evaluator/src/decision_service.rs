@@ -112,15 +112,17 @@ impl DecisionServiceEvaluator {
   }
 
   /// Returns a decision service as function definition with specified identifier.
-  pub fn evaluate_fd(&self, def_key: &DefKey, input_data: &FeelContext, output_data: &mut FeelContext) {
+  pub fn evaluate_fd(&self, def_key: &DefKey, input_data: &FeelContext, output_data: &mut FeelContext) -> Option<Name> {
     if let Ok(evaluators) = self.evaluators.read() {
       if let Some((variable, _, _, Some(evaluator))) = evaluators.get(def_key) {
         let scope: FeelScope = input_data.clone().into();
         let function_definition = evaluator(&scope) as Value;
         let output_variable_name = variable.name().clone();
         output_data.set_entry(&output_variable_name, function_definition);
+        return Some(output_variable_name);
       }
     }
+    None
   }
 }
 

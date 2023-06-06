@@ -72,7 +72,7 @@ impl TryFrom<&str> for HRef {
         return Err(err_invalid_reference(value));
       }
       let id = reference.fragment().ok_or_else(|| err_invalid_reference_no_fragment(value))?.to_string();
-      let path = reference.path().to_string().trim().to_string();
+      let path = reference.path().to_string().trim().trim_end_matches('/').to_string();
       let namespace = if path.is_empty() { None } else { Some(path) };
       return Ok(Self { namespace, id });
     }
@@ -82,7 +82,7 @@ impl TryFrom<&str> for HRef {
           return Err(err_invalid_reference(value));
         }
         let id = uri.fragment().ok_or_else(|| err_invalid_reference_no_fragment(value))?.to_string();
-        let path = uri.into_base_uri().to_string().trim().to_string();
+        let path = uri.into_base_uri().to_string().trim().trim_end_matches('/').to_string();
         let namespace = if path.is_empty() { None } else { Some(path) };
         return Ok(Self { namespace, id });
       }

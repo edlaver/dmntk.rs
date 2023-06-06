@@ -220,7 +220,7 @@ mod tests {
   use dmntk_examples::item_definition::*;
   use dmntk_feel::{FeelType, Name};
 
-  const NAMESPACE: &str = "https://dmntk.io/";
+  const NAMESPACE: &str = "https://dmntk.io";
 
   /// Utility function for building item definition type evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionTypeEvaluator {

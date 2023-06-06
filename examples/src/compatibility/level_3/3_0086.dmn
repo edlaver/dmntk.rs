@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<definitions namespace="https://dmntk.io/3_0086"
+<definitions namespace="https://dmntk.io/3_0086/"
              name="Import BKM and have a Decision Ctx with DT"
              id="_25a9c1b8-ee39-4c1e-906f-56c11677925a"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
              xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/">
-    <import namespace="https://dmntk.io/3_0086/imported"
+    
+    <import namespace="https://dmntk.io/3_0086/imported/"
             name="myimport"
             importType="https://www.omg.org/spec/DMN/20191111/MODEL/"/>
+
+    <itemDefinition name="tPerson" label="tPerson">
+        <itemComponent name="name" id="_9bb0759c-b3c1-482f-87f5-c047dc65cef0">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="age" id="_929acc15-101c-4e49-9b11-494fff411e50">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    
     <inputData id="_9df2ca89-d100-4ba3-9a44-6a71cae5c001" name="A Person">
-        <variable name="A Person" id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" typeRef="myimport.tPerson"/>
+        <variable name="A Person" id="_9e1f6cbc-584f-41f6-8748-97f579a3df43" typeRef="tPerson"/>
     </inputData>
+    
     <decision id="_2d131943-c513-416b-acc6-6efe8fe01ba4" name="A Decision Ctx with DT">
         <variable name="A Decision Ctx with DT" id="_1a9b6949-afac-4c9e-afcd-178d9f720f29" typeRef="Any"/>
         <informationRequirement id="_01a9f8c0-6333-45cf-a693-e2e67b23fa13">
@@ -61,6 +73,7 @@
             </contextEntry>
         </context>
     </decision>
+    
     <dmndi:DMNDI>
         <dmndi:DMNDiagram id="_c3e08836-7973-4e4d-af2b-d46b23725c13_D1" name="Page 1">
             <dmndi:Size height="650" width="650"/>

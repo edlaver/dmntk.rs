@@ -101,7 +101,7 @@ impl Invocables {
 /// [DefKey].0 = namespace
 /// [DefKey].1 = identifier
 ///
-#[derive(Clone, Hash, PartialEq, Eq)]
+#[derive(Clone, Hash, PartialEq, Eq, Debug)]
 pub struct DefKey(String, String);
 
 impl DefKey {
@@ -121,7 +121,7 @@ impl fmt::Display for DefKey {
 impl From<&DefHRef> for DefKey {
   ///
   fn from(value: &DefHRef) -> Self {
-    Self(value.namespace.to_string(), value.id.to_string())
+    Self::new(value.namespace(), value.id())
   }
 }
 
@@ -598,7 +598,7 @@ impl DefDecisionService {
   }
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct DefImport {
   namespace: String,
   name: Name,

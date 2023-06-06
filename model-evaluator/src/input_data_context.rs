@@ -115,7 +115,7 @@ mod tests {
   use dmntk_feel::context::FeelContext;
   use dmntk_feel::FeelType;
 
-  const NAMESPACE: &str = "https://dmntk.io/";
+  const NAMESPACE: &str = "https://dmntk.io";
 
   /// Utility function for building input data context evaluator from definitions,
   /// and item definition context evaluator from definitions.

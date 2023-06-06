@@ -85,7 +85,7 @@ mod tests {
   use dmntk_feel::values::Value;
   use dmntk_feel::{value_number, FeelNumber, Name};
 
-  const NAMESPACE: &str = "https://dmntk.io/";
+  const NAMESPACE: &str = "https://dmntk.io";
 
   /// Utility function for building input data evaluator from definitions,
   /// and item definition evaluator from definitions.

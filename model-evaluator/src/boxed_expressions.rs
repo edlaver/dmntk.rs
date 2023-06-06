@@ -46,18 +46,26 @@ use dmntk_model::*;
 use std::sync::Arc;
 
 ///
-pub fn bring_knowledge_requirements_into_context(definitions: &DefDefinitions, knowledge_requirements: &[DefKnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
+pub fn bring_knowledge_requirements_into_context(def_definitions: &DefDefinitions, knowledge_requirements: &[DefKnowledgeRequirement], ctx: &mut FeelContext) -> Result<()> {
   for knowledge_requirement in knowledge_requirements {
-    let href = knowledge_requirement.required_knowledge();
-    if let Some(business_knowledge_model) = definitions.business_knowledge_model_by_key(href.namespace(), href.id()) {
+    let def_href = knowledge_requirement.required_knowledge();
+    if let Some(business_knowledge_model) = def_definitions.business_knowledge_model_by_key(def_href.namespace(), def_href.id()) {
       let output_variable_name = business_knowledge_model.variable().name();
-      ctx.set_entry(output_variable_name, value_null!());
-      bring_knowledge_requirements_into_context(definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
-    } else if let Some(decision_service) = definitions.decision_service_by_id(href.namespace(), href.id()) {
+      if let Some(import_name) = def_href.import_name() {
+        ctx.create_entries(&[import_name.clone(), output_variable_name.clone()], value_null!());
+      } else {
+        ctx.set_entry(output_variable_name, value_null!());
+      }
+      bring_knowledge_requirements_into_context(def_definitions, business_knowledge_model.knowledge_requirements(), ctx)?;
+    } else if let Some(decision_service) = def_definitions.decision_service_by_id(def_href.namespace(), def_href.id()) {
       let output_variable_name = decision_service.variable().name();
-      ctx.set_entry(output_variable_name, value_null!());
+      if let Some(import_name) = def_href.import_name() {
+        ctx.create_entries(&[import_name.clone(), output_variable_name.clone()], value_null!());
+      } else {
+        ctx.set_entry(output_variable_name, value_null!());
+      }
     } else {
-      return Err(err_business_knowledge_model_with_reference_not_found(href.namespace(), href.id()));
+      return Err(err_business_knowledge_model_with_reference_not_found(def_href.namespace(), def_href.id()));
     }
   }
   Ok(())

@@ -157,13 +157,16 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
   };
 
   // prepare required knowledge, required decisions and required input data references
-  let mut required_knowledge_references: Vec<DefKey> = vec![];
+  let mut required_knowledge_references: Vec<(Option<Name>, DefKey)> = vec![];
   let mut required_decision_references: Vec<(Option<Name>, DefKey)> = vec![];
   let mut required_input_data_references: Vec<DefKey> = vec![];
+
   // required business knowledge models and decision services
   for knowledge_requirement in def_decision.knowledge_requirements() {
-    required_knowledge_references.push(knowledge_requirement.required_knowledge().into());
+    let required_knowledge = knowledge_requirement.required_knowledge();
+    required_knowledge_references.push((required_knowledge.import_name().cloned(), required_knowledge.into()));
   }
+
   // required decisions and required input data
   for information_requirement in def_decision.information_requirements() {
     if let Some(href) = information_requirement.required_decision() {
@@ -188,17 +191,29 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
     // make a locally mutable copy of the input data
     let mut input_data = input_data_ctx.clone();
 
-    // evaluate required knowledge as values from business knowledge models
-    required_knowledge_references.iter().for_each(|id| {
-      business_knowledge_model_evaluator.evaluate(id, &input_data, model_evaluator, &mut requirements_ctx);
+    // evaluate required knowledge given as value from business knowledge models
+    required_knowledge_references.iter().for_each(|(import_name, def_key)| {
+      if let Some(import_name_parent) = import_name.clone() {
+        if let Some(name) = business_knowledge_model_evaluator.evaluate(def_key, &input_data, model_evaluator, &mut requirements_ctx) {
+          requirements_ctx.move_entry(name, import_name_parent);
+        }
+      } else {
+        business_knowledge_model_evaluator.evaluate(def_key, &input_data, model_evaluator, &mut requirements_ctx);
+      }
     });
 
-    // evaluate required knowledge as decision service function definitions
-    required_knowledge_references.iter().for_each(|def_key| {
-      decision_service_evaluator.evaluate_fd(def_key, &input_data, &mut requirements_ctx);
+    // evaluate required knowledge given as value from decision service function definitions
+    required_knowledge_references.iter().for_each(|(import_name, def_key)| {
+      if let Some(import_name_parent) = import_name.clone() {
+        if let Some(name) = decision_service_evaluator.evaluate_fd(def_key, &input_data, &mut requirements_ctx) {
+          requirements_ctx.move_entry(name, import_name_parent);
+        }
+      } else {
+        decision_service_evaluator.evaluate_fd(def_key, &input_data, &mut requirements_ctx);
+      }
     });
 
-    // evaluate required decisions as values from decisions
+    // evaluate required decisions given as values from decisions
     required_decision_references.iter().for_each(|(import_name, def_key)| {
       if let Some(import_name_parent) = import_name.clone() {
         let mut import_input_data = input_data.clone();

@@ -50,7 +50,7 @@ use std::sync::Arc;
 ///
 /// (input data, model evaluator, output data)
 ///
-type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) + Send + Sync>;
+type BusinessKnowledgeModelEvaluatorFn = Box<dyn Fn(&FeelContext, &ModelEvaluator, &mut FeelContext) -> Name + Send + Sync>;
 
 /// Business knowledge model evaluator.
 #[derive(Default)]
@@ -79,10 +79,11 @@ impl BusinessKnowledgeModelEvaluator {
   /// Evaluates a business knowledge model with specified identifier.
   /// When a required business knowledge model is found, then its evaluator
   /// is executed, and the result is stored in `evaluated_ctx`.
-  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) {
-    if let Some(evaluator) = self.evaluators.get(def_key) {
-      evaluator(input_data, model_evaluator, output_data);
-    }
+  pub fn evaluate(&self, def_key: &DefKey, input_data: &FeelContext, model_evaluator: &ModelEvaluator, output_data: &mut FeelContext) -> Option<Name> {
+    self
+      .evaluators
+      .get(def_key)
+      .map(|evaluator_entry| evaluator_entry(input_data, model_evaluator, output_data))
   }
 }
 
@@ -127,7 +128,8 @@ fn build_bkm_evaluator(
       model_builder,
     )
   } else {
-    Ok(Box::new(move |_: &FeelContext, _: &ModelEvaluator, _: &mut FeelContext| ()))
+    let output_variable_name = business_knowledge_model.variable().name().clone();
+    Ok(Box::new(move |_: &FeelContext, _: &ModelEvaluator, _: &mut FeelContext| output_variable_name.clone()))
   }
 }
 
@@ -374,7 +376,8 @@ fn build_bkm_evaluator_from_function_definition(
         business_knowledge_model_evaluator.evaluate(def_key, input_data, model_evaluator, output_data);
         decision_service_evaluator.evaluate(def_key, input_data, model_evaluator, output_data);
       });
-      output_data.set_entry(&output_variable_name, function_definition.clone())
+      output_data.set_entry(&output_variable_name, function_definition.clone());
+      output_variable_name.clone()
     },
   ))
 }

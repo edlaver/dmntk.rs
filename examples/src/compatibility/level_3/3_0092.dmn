@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions namespace="https://dmntk.io"
+<definitions namespace="https://dmntk.io/"
              name="compliance-level-3-test-0092"
              id="_65c7b4cc-a125-4e92-8e7c-6057a6dc275c"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">

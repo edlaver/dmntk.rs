@@ -45,7 +45,7 @@ pub fn to_uri(value: &str) -> Result<Uri> {
       if uri.has_query() || uri.has_fragment() {
         return Err(err_invalid_uri(value));
       }
-      return Ok(uri.to_string());
+      return Ok(uri.to_string().trim().trim_end_matches('/').to_string());
     }
   }
   Err(err_invalid_uri(value))

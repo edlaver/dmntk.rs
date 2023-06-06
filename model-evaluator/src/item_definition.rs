@@ -455,7 +455,7 @@ mod tests {
   use dmntk_feel::{value_null, value_number, Name};
   use dmntk_feel_temporal::{FeelDate, FeelDateTime, FeelDaysAndTimeDuration, FeelTime, FeelYearsAndMonthsDuration};
 
-  const NAMESPACE: &str = "https://dmntk.io/";
+  const NAMESPACE: &str = "https://dmntk.io";
 
   /// Utility function for building item definition evaluator from definitions.
   fn build_evaluator(xml: &str) -> ItemDefinitionEvaluator {
