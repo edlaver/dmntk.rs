@@ -45,6 +45,6 @@ fn _0001() {
 
 #[test]
 fn _0002() {
-  let ctx = context(r#"{A Person: {age: 47,name: "John Doe"}}"#);
+  let ctx = context(r#" { A Person: {age: 47,name: "John Doe"}} "#);
   assert_decision(&MODEL_EVALUATOR, NAMESPACE, "A Decision Ctx with DT", &ctx, r#""Respectfully, Hello John Doe!""#);
 }
