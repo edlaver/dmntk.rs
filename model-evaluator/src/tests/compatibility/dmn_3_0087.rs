@@ -32,7 +32,7 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0087);
+from_examples!(DMN_3_0087);
 
 static_context!(
   CTX,
@@ -64,45 +64,45 @@ static_context!(
 
 #[test]
 fn _0001() {
-  assert_decision(&MODEL_EVALUATOR, "Strategy", &CTX, r#""THROUGH""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Strategy", &CTX, r#""THROUGH""#);
 }
 
 #[test]
 fn _0002() {
-  assert_decision(&MODEL_EVALUATOR, "Routing", &CTX, r#""ACCEPT""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Routing", &CTX, r#""ACCEPT""#);
 }
 
 #[test]
 fn _0003() {
-  assert_decision(&MODEL_EVALUATOR, "Application risk score", &CTX, r#"138"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Application risk score", &CTX, r#"138"#);
 }
 
 #[test]
 fn _0004() {
-  assert_decision(&MODEL_EVALUATOR, "Pre-bureau risk category", &CTX, r#""VERY LOW""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Pre-bureau risk category", &CTX, r#""VERY LOW""#);
 }
 
 #[test]
 fn _0005() {
-  assert_decision(&MODEL_EVALUATOR, "Bureau call type", &CTX, r#""NONE""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Bureau call type", &CTX, r#""NONE""#);
 }
 
 #[test]
 fn _0006() {
-  assert_decision(&MODEL_EVALUATOR, "Eligibility", &CTX, r#""ELIGIBLE""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Eligibility", &CTX, r#""ELIGIBLE""#);
 }
 
 #[test]
 fn _0007() {
-  assert_decision(&MODEL_EVALUATOR, "Post-bureau affordability", &CTX, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Post-bureau affordability", &CTX, r#"true"#);
 }
 
 #[test]
 fn _0008() {
-  assert_decision(&MODEL_EVALUATOR, "Strategy", &CTX, r#""THROUGH""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Strategy", &CTX, r#""THROUGH""#);
 }
 
 #[test]
 fn _0009() {
-  assert_decision(&MODEL_EVALUATOR, "Routing", &CTX, r#""ACCEPT""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Routing", &CTX, r#""ACCEPT""#);
 }

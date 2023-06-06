@@ -32,18 +32,30 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0081);
+from_examples!(DMN_3_0081);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_001", &ctx, r#"null(expected 1 parameters, actual number of parameters is 0)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision_001",
+    &ctx,
+    r#"null(expected 1 parameters, actual number of parameters is 0)"#,
+  );
 }
 
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_002", &ctx, r#"null(expected 1 parameters, actual number of parameters is 2)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision_002",
+    &ctx,
+    r#"null(expected 1 parameters, actual number of parameters is 2)"#,
+  );
 }
 
 #[test]
@@ -51,6 +63,7 @@ fn _0003() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision_003",
     &ctx,
     r#"null([core::get entries] invalid argument type, expected context, actual type is Null)"#,
@@ -60,19 +73,31 @@ fn _0003() {
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_004", &ctx, r#"[{key: "a", value: "foo"}, {key: "b", value: "bar"}]"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision_004",
+    &ctx,
+    r#"[{key: "a", value: "foo"}, {key: "b", value: "bar"}]"#,
+  );
 }
 
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_005", &ctx, r#"[{key: "a", value: "foo"}, {key: "b", value: "bar"}]"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision_005",
+    &ctx,
+    r#"[{key: "a", value: "foo"}, {key: "b", value: "bar"}]"#,
+  );
 }
 
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_006", &ctx, r#"null(parameter 'm' not found)"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision_006", &ctx, r#"null(parameter 'm' not found)"#);
 }
 
 #[test]
@@ -80,6 +105,7 @@ fn _0007() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision_007",
     &ctx,
     r#"null([core::get entries] invalid argument type, expected context, actual type is number)"#,
@@ -91,6 +117,7 @@ fn _0008() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision_008",
     &ctx,
     r#"null([core::get entries] invalid argument type, expected context, actual type is list<number>)"#,
@@ -100,5 +127,5 @@ fn _0008() {
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_009", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision_009", &ctx, r#"[]"#);
 }

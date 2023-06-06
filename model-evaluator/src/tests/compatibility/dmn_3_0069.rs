@@ -32,54 +32,66 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0069);
+from_examples!(DMN_3_0069);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision001", &ctx, r#"[1, 2, 3]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision001", &ctx, r#"[1, 2, 3]"#);
 }
 
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision001_a", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision001_a", &ctx, r#"[]"#);
 }
 
 #[test]
 fn _0003() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision002", &ctx, r#"null(index in filter is out of range [1..3], actual index is 0)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision002",
+    &ctx,
+    r#"null(index in filter is out of range [1..3], actual index is 0)"#,
+  );
 }
 
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision003", &ctx, r#"null(index in filter is out of range [1..3], actual index is 4)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision003",
+    &ctx,
+    r#"null(index in filter is out of range [1..3], actual index is 4)"#,
+  );
 }
 
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision004", &ctx, r#"1"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision004", &ctx, r#"1"#);
 }
 
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision005", &ctx, r#"3"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision005", &ctx, r#"3"#);
 }
 
 #[test]
 fn _0007() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision006", &ctx, r#"3"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision006", &ctx, r#"3"#);
 }
 
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision007", &ctx, r#"1"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision007", &ctx, r#"1"#);
 }
 
 #[test]
@@ -87,6 +99,7 @@ fn _0009() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision008",
     &ctx,
     r#"null(index in filter is out of range [-3..-1], actual index is -4)"#,
@@ -96,73 +109,73 @@ fn _0009() {
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision009", &ctx, r#"[1, 2, 3]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision009", &ctx, r#"[1, 2, 3]"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision010", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision010", &ctx, r#"[]"#);
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision011", &ctx, r#"[2, 3]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision011", &ctx, r#"[2, 3]"#);
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision012", &ctx, r#"[true]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision012", &ctx, r#"[true]"#);
 }
 
 #[test]
 fn _0014() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision013", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision013", &ctx, r#"[]"#);
 }
 
 #[test]
 fn _0015() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision014", &ctx, r#"[100]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision014", &ctx, r#"[100]"#);
 }
 
 #[test]
 fn _0016() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision015", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision015", &ctx, r#"[]"#);
 }
 
 #[test]
 fn _0017() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision016", &ctx, r#"["foo"]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision016", &ctx, r#"["foo"]"#);
 }
 
 #[test]
 fn _0018() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision017", &ctx, r#"[]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision017", &ctx, r#"[]"#);
 }
 
 #[test]
 fn _0019() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision018", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision018", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0020() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision019", &ctx, r#"100"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision019", &ctx, r#"100"#);
 }
 
 #[test]
 fn _0021() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision020", &ctx, r#""foo""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision020", &ctx, r#""foo""#);
 }
 
 #[test]
@@ -170,6 +183,7 @@ fn _0022() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision021",
     &ctx,
     r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
@@ -181,6 +195,7 @@ fn _0023() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision022",
     &ctx,
     r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
@@ -192,6 +207,7 @@ fn _0024() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision023",
     &ctx,
     r#"null(for singletons, only filter index with value 1 or -1 is accepted)"#,
@@ -201,17 +217,17 @@ fn _0024() {
 #[test]
 fn _0025() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision024", &ctx, r#"[{a: 2}, {a: 3}]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision024", &ctx, r#"[{a: 2}, {a: 3}]"#);
 }
 
 #[test]
 fn _0026() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision025", &ctx, r#"[{a: 2}, {a: 3}]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision025", &ctx, r#"[{a: 2}, {a: 3}]"#);
 }
 
 #[test]
 fn _0027() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision026", &ctx, r#"[{item: 2}, {item: 3}]"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision026", &ctx, r#"[{item: 2}, {item: 3}]"#);
 }

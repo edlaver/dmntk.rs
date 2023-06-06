@@ -32,249 +32,262 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0100);
+from_examples!(DMN_3_0100);
 
 static_context!(CTX, r#"{}"#);
 
 #[test]
 fn _0001() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_number_001", &CTX, r#"100"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_number_001", &CTX, r#"100"#);
 }
 
 #[test]
 fn _0002() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_number_002", &CTX, r#"-100"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_number_002", &CTX, r#"-100"#);
 }
 
 #[test]
 fn _0003() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_number_003", &CTX, r#"100"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_number_003", &CTX, r#"100"#);
 }
 
 #[test]
 fn _0004() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_number_004", &CTX, r#"0"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_number_004", &CTX, r#"0"#);
 }
 
 #[test]
 fn _0005() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_001", &CTX, r#"P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_001", &CTX, r#"P10D"#);
 }
 
 #[test]
 fn _0006() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_002", &CTX, r#"-P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_002", &CTX, r#"-P10D"#);
 }
 
 #[test]
 fn _0007() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_003", &CTX, r#"P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_003", &CTX, r#"P10D"#);
 }
 
 #[test]
 fn _0008() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_004", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_004", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0009() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_005", &CTX, r#"P1DT2H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_005", &CTX, r#"P1DT2H"#);
 }
 
 #[test]
 fn _0010() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_006", &CTX, r#"P0D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_006", &CTX, r#"P0D"#);
 }
 
 #[test]
 fn _0011() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_007", &CTX, r#"P6DT1H30M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_007", &CTX, r#"P6DT1H30M"#);
 }
 
 #[test]
 fn _0012() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_dtDuration_008", &CTX, r#"P2DT9H30M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_dtDuration_008", &CTX, r#"P2DT9H30M"#);
 }
 
 #[test]
 fn _0013() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_001", &CTX, r#"P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_001", &CTX, r#"P10D"#);
 }
 
 #[test]
 fn _0014() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_002", &CTX, r#"-P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_002", &CTX, r#"-P10D"#);
 }
 
 #[test]
 fn _0015() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_003", &CTX, r#"P10D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_003", &CTX, r#"P10D"#);
 }
 
 #[test]
 fn _0016() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_004", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_004", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0017() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_005", &CTX, r#"P1DT2H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_005", &CTX, r#"P1DT2H"#);
 }
 
 #[test]
 fn _0018() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_006", &CTX, r#"P0D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_006", &CTX, r#"P0D"#);
 }
 
 #[test]
 fn _0019() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_007", &CTX, r#"P6DT1H30M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_007", &CTX, r#"P6DT1H30M"#);
 }
 
 #[test]
 fn _0020() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_dtDuration_by_rhs_number_008", &CTX, r#"P2DT9H30M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_dtDuration_by_rhs_number_008", &CTX, r#"P2DT9H30M"#);
 }
 
 #[test]
 fn _0021() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_001", &CTX, r#"P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_001", &CTX, r#"P10Y"#);
 }
 
 #[test]
 fn _0022() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_002", &CTX, r#"-P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_002", &CTX, r#"-P10Y"#);
 }
 
 #[test]
 fn _0023() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_003", &CTX, r#"P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_003", &CTX, r#"P10Y"#);
 }
 
 #[test]
 fn _0024() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_004", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_004", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0025() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_005", &CTX, r#"P2Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_005", &CTX, r#"P2Y"#);
 }
 
 #[test]
 fn _0026() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_006", &CTX, r#"P2Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_006", &CTX, r#"P2Y2M"#);
 }
 
 #[test]
 fn _0027() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_007", &CTX, r#"P0Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_007", &CTX, r#"P0Y"#);
 }
 
 #[test]
 fn _0028() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_008", &CTX, r#"P3M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_008", &CTX, r#"P3M"#);
 }
 
 #[test]
 fn _0029() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_009", &CTX, r#"-P3M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_009", &CTX, r#"-P3M"#);
 }
 
 #[test]
 fn _0030() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_number_by_rhs_ymDuration_010", &CTX, r#"-P4Y9M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_number_by_rhs_ymDuration_010", &CTX, r#"-P4Y9M"#);
 }
 
 #[test]
 fn _0031() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_001", &CTX, r#"P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_001", &CTX, r#"P10Y"#);
 }
 
 #[test]
 fn _0032() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_002", &CTX, r#"-P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_002", &CTX, r#"-P10Y"#);
 }
 
 #[test]
 fn _0033() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_003", &CTX, r#"P10Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_003", &CTX, r#"P10Y"#);
 }
 
 #[test]
 fn _0034() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_004", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_004", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0035() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_005", &CTX, r#"P2Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_005", &CTX, r#"P2Y"#);
 }
 
 #[test]
 fn _0036() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_006", &CTX, r#"P2Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_006", &CTX, r#"P2Y2M"#);
 }
 
 #[test]
 fn _0037() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_007", &CTX, r#"P0Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_007", &CTX, r#"P0Y"#);
 }
 
 #[test]
 fn _0038() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_008", &CTX, r#"P3M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_008", &CTX, r#"P3M"#);
 }
 
 #[test]
 fn _0039() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_009", &CTX, r#"-P3M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_009", &CTX, r#"-P3M"#);
 }
 
 #[test]
 fn _0040() {
-  assert_decision(&MODEL_EVALUATOR, "multiply_lhs_ymDuration_by_rhs_number_010", &CTX, r#"-P4Y9M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "multiply_lhs_ymDuration_by_rhs_number_010", &CTX, r#"-P4Y9M"#);
 }
 
 #[test]
 fn _0041() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_number_by_rhs_number_001", &CTX, r#"10"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_number_by_rhs_number_001", &CTX, r#"10"#);
 }
 
 #[test]
 fn _0042() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_number_by_rhs_number_002", &CTX, r#"null([division] division by zero)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "divide_lhs_number_by_rhs_number_002",
+    &CTX,
+    r#"null([division] division by zero)"#,
+  );
 }
 
 #[test]
 fn _0043() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_ymDuration_by_rhs_number_001", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_ymDuration_by_rhs_number_001", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0044() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_ymDuration_by_rhs_number_002", &CTX, r#"null([division] division by zero)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "divide_lhs_ymDuration_by_rhs_number_002",
+    &CTX,
+    r#"null([division] division by zero)"#,
+  );
 }
 
 #[test]
 fn _0045() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_ymDuration_by_rhs_number_003", &CTX, r#"P4Y4M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_ymDuration_by_rhs_number_003", &CTX, r#"P4Y4M"#);
 }
 
 #[test]
 fn _0046() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_ymDuration_by_rhs_number_004", &CTX, r#"-P4Y4M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_ymDuration_by_rhs_number_004", &CTX, r#"-P4Y4M"#);
 }
 
 #[test]
 fn _0047() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_ymDuration_by_rhs_ymDuration_001", &CTX, r#"2"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_ymDuration_by_rhs_ymDuration_001", &CTX, r#"2"#);
 }
 
 #[test]
 fn _0048() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "divide_lhs_ymDuration_by_rhs_ymDuration_002",
     &CTX,
     r#"null([division] incompatible types: P10D / P0Y)"#,
@@ -283,28 +296,35 @@ fn _0048() {
 
 #[test]
 fn _0049() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_dtDuration_by_rhs_number_001", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_dtDuration_by_rhs_number_001", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0050() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_dtDuration_by_rhs_number_002", &CTX, r#"null([division] division by zero)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "divide_lhs_dtDuration_by_rhs_number_002",
+    &CTX,
+    r#"null([division] division by zero)"#,
+  );
 }
 
 #[test]
 fn _0051() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_dtDuration_by_rhs_number_003", &CTX, r#"P4DT9H12M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_dtDuration_by_rhs_number_003", &CTX, r#"P4DT9H12M"#);
 }
 
 #[test]
 fn _0052() {
-  assert_decision(&MODEL_EVALUATOR, "divide_lhs_dtDuration_by_rhs_dtDuration_001", &CTX, r#"2"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "divide_lhs_dtDuration_by_rhs_dtDuration_001", &CTX, r#"2"#);
 }
 
 #[test]
 fn _0053() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "divide_lhs_dtDuration_by_rhs_dtDuration_002",
     &CTX,
     r#"null([division] division by zero)"#,
@@ -313,73 +333,122 @@ fn _0053() {
 
 #[test]
 fn _0054() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_number_to_rhs_number_001", &CTX, r#"15"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_number_to_rhs_number_001", &CTX, r#"15"#);
 }
 
 #[test]
 fn _0055() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_number_to_rhs_number_002", &CTX, r#"5"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_number_to_rhs_number_002", &CTX, r#"5"#);
 }
 
 #[test]
 fn _0056() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_number_to_rhs_number_003", &CTX, r#"-5"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_number_to_rhs_number_003", &CTX, r#"-5"#);
 }
 
 #[test]
 fn _0057() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_number_to_rhs_number_004", &CTX, r#"-15"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_number_to_rhs_number_004", &CTX, r#"-15"#);
 }
 
 #[test]
 fn _0058() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_number_to_rhs_number_005", &CTX, r#"3.4685"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_number_to_rhs_number_005", &CTX, r#"3.4685"#);
 }
 
 #[test]
 fn _0059() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_001", &CTX, r#"2022-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_001",
+    &CTX,
+    r#"2022-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0060() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_002", &CTX, r#"2021-02-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_002",
+    &CTX,
+    r#"2021-02-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0061() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_003", &CTX, r#"2020-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_003",
+    &CTX,
+    r#"2020-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0062() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_004", &CTX, r#"2020-12-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_004",
+    &CTX,
+    r#"2020-12-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0063() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_005", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_005",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0064() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_006", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_006",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0065() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_007", &CTX, r#"2021-02-01T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_007",
+    &CTX,
+    r#"2021-02-01T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0066() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_008", &CTX, r#"2020-12-01T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_008",
+    &CTX,
+    r#"2020-12-01T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0067() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_ymDuration_009",
     &CTX,
     r#""2021-02-01T10:10:10@Australia/Melbourne""#,
@@ -388,28 +457,53 @@ fn _0067() {
 
 #[test]
 fn _0068() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_010", &CTX, r#""-2021-02-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_010",
+    &CTX,
+    r#""-2021-02-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0069() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_011", &CTX, r#""-2020-01-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_011",
+    &CTX,
+    r#""-2020-01-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0070() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_012", &CTX, r#""-2022-12-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_012",
+    &CTX,
+    r#""-2022-12-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0071() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_ymDuration_013", &CTX, r#""-2022-01-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_ymDuration_013",
+    &CTX,
+    r#""-2022-01-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0072() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_ymDuration_014",
     &CTX,
     r#""-2021-02-01T10:10:10@Australia/Melbourne""#,
@@ -420,6 +514,7 @@ fn _0072() {
 fn _0073() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_ymDuration_015",
     &CTX,
     r#""-2020-01-01T10:10:10@Australia/Melbourne""#,
@@ -430,6 +525,7 @@ fn _0073() {
 fn _0074() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_ymDuration_016",
     &CTX,
     r#""-2022-12-01T10:10:10@Australia/Melbourne""#,
@@ -440,6 +536,7 @@ fn _0074() {
 fn _0075() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_ymDuration_017",
     &CTX,
     r#""-2022-01-01T10:10:10@Australia/Melbourne""#,
@@ -448,48 +545,97 @@ fn _0075() {
 
 #[test]
 fn _0076() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_001", &CTX, r#"2022-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_001",
+    &CTX,
+    r#"2022-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0077() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_002", &CTX, r#"2021-02-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_002",
+    &CTX,
+    r#"2021-02-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0078() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_003", &CTX, r#"2020-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_003",
+    &CTX,
+    r#"2020-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0079() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_004", &CTX, r#"2020-12-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_004",
+    &CTX,
+    r#"2020-12-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0080() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_005", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_005",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0081() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_006", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_006",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0082() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_007", &CTX, r#"2021-02-01T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_007",
+    &CTX,
+    r#"2021-02-01T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0083() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_008", &CTX, r#"2020-12-01T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_008",
+    &CTX,
+    r#"2020-12-01T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0084() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_ymDuration_to_rhs_dateAndTime_009",
     &CTX,
     r#""2021-02-01T10:10:10@Australia/Melbourne""#,
@@ -498,28 +644,53 @@ fn _0084() {
 
 #[test]
 fn _0085() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_010", &CTX, r#""-2021-02-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_010",
+    &CTX,
+    r#""-2021-02-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0086() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_011", &CTX, r#""-2020-01-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_011",
+    &CTX,
+    r#""-2020-01-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0087() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_012", &CTX, r#""-2022-12-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_012",
+    &CTX,
+    r#""-2022-12-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0088() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_dateAndTime_013", &CTX, r#""-2022-01-01T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_ymDuration_to_rhs_dateAndTime_013",
+    &CTX,
+    r#""-2022-01-01T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0089() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_ymDuration_to_rhs_dateAndTime_014",
     &CTX,
     r#""-2021-02-01T10:10:10@Australia/Melbourne""#,
@@ -530,6 +701,7 @@ fn _0089() {
 fn _0090() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_ymDuration_to_rhs_dateAndTime_015",
     &CTX,
     r#""-2020-01-01T10:10:10@Australia/Melbourne""#,
@@ -540,6 +712,7 @@ fn _0090() {
 fn _0091() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_ymDuration_to_rhs_dateAndTime_016",
     &CTX,
     r#""-2022-12-01T10:10:10@Australia/Melbourne""#,
@@ -550,6 +723,7 @@ fn _0091() {
 fn _0092() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_ymDuration_to_rhs_dateAndTime_017",
     &CTX,
     r#""-2022-01-01T10:10:10@Australia/Melbourne""#,
@@ -558,68 +732,141 @@ fn _0092() {
 
 #[test]
 fn _0093() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_001", &CTX, r#"2021-01-13T11:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_001",
+    &CTX,
+    r#"2021-01-13T11:10:10"#,
+  );
 }
 
 #[test]
 fn _0094() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_002", &CTX, r#"2021-01-13T11:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_002",
+    &CTX,
+    r#"2021-01-13T11:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0095() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_003", &CTX, r#"2021-01-02T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_003",
+    &CTX,
+    r#"2021-01-02T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0096() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_004", &CTX, r#"2021-01-01T11:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_004",
+    &CTX,
+    r#"2021-01-01T11:10:10"#,
+  );
 }
 
 #[test]
 fn _0097() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_005", &CTX, r#"2020-12-31T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_005",
+    &CTX,
+    r#"2020-12-31T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0098() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_006", &CTX, r#"2021-01-01T09:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_006",
+    &CTX,
+    r#"2021-01-01T09:10:10"#,
+  );
 }
 
 #[test]
 fn _0099() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_007", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_007",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0100() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_008", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_008",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0101() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_009", &CTX, r#"2021-01-02T00:00:01"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_009",
+    &CTX,
+    r#"2021-01-02T00:00:01"#,
+  );
 }
 
 #[test]
 fn _0102() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_010", &CTX, r#"2021-01-01T23:59:59"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_010",
+    &CTX,
+    r#"2021-01-01T23:59:59"#,
+  );
 }
 
 #[test]
 fn _0103() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_011", &CTX, r#"2021-01-01T11:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_011",
+    &CTX,
+    r#"2021-01-01T11:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0104() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_012", &CTX, r#"2021-01-01T09:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_012",
+    &CTX,
+    r#"2021-01-01T09:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0105() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_dtDuration_013",
     &CTX,
     r#""2021-01-13T11:10:10@Australia/Melbourne""#,
@@ -628,28 +875,53 @@ fn _0105() {
 
 #[test]
 fn _0106() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_014", &CTX, r#""-2021-01-01T11:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_014",
+    &CTX,
+    r#""-2021-01-01T11:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0107() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_015", &CTX, r#""-2021-01-02T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_015",
+    &CTX,
+    r#""-2021-01-02T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0108() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_016", &CTX, r#""-2021-01-01T09:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_016",
+    &CTX,
+    r#""-2021-01-01T09:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0109() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dateAndTime_to_rhs_dtDuration_017", &CTX, r#""-2022-12-31T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dateAndTime_to_rhs_dtDuration_017",
+    &CTX,
+    r#""-2022-12-31T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0110() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_dtDuration_018",
     &CTX,
     r#""-2021-01-01T11:10:10@Australia/Melbourne""#,
@@ -660,6 +932,7 @@ fn _0110() {
 fn _0111() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_dtDuration_019",
     &CTX,
     r#""-2021-01-02T10:10:10@Australia/Melbourne""#,
@@ -670,6 +943,7 @@ fn _0111() {
 fn _0112() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_dtDuration_020",
     &CTX,
     r#""-2021-01-01T09:10:10@Australia/Melbourne""#,
@@ -680,6 +954,7 @@ fn _0112() {
 fn _0113() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dateAndTime_to_rhs_dtDuration_021",
     &CTX,
     r#""-2022-12-31T10:10:10@Australia/Melbourne""#,
@@ -688,68 +963,141 @@ fn _0113() {
 
 #[test]
 fn _0114() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_001", &CTX, r#"2021-01-13T11:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_001",
+    &CTX,
+    r#"2021-01-13T11:10:10"#,
+  );
 }
 
 #[test]
 fn _0115() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_002", &CTX, r#"2021-01-13T11:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_002",
+    &CTX,
+    r#"2021-01-13T11:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0116() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_003", &CTX, r#"2021-01-02T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_003",
+    &CTX,
+    r#"2021-01-02T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0117() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_004", &CTX, r#"2021-01-01T11:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_004",
+    &CTX,
+    r#"2021-01-01T11:10:10"#,
+  );
 }
 
 #[test]
 fn _0118() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_005", &CTX, r#"2020-12-31T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_005",
+    &CTX,
+    r#"2020-12-31T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0119() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_006", &CTX, r#"2021-01-01T09:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_006",
+    &CTX,
+    r#"2021-01-01T09:10:10"#,
+  );
 }
 
 #[test]
 fn _0120() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_007", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_007",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0121() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_008", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_008",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0122() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_009", &CTX, r#"2021-01-02T00:00:01"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_009",
+    &CTX,
+    r#"2021-01-02T00:00:01"#,
+  );
 }
 
 #[test]
 fn _0123() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_010", &CTX, r#"2021-01-01T23:59:59"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_010",
+    &CTX,
+    r#"2021-01-01T23:59:59"#,
+  );
 }
 
 #[test]
 fn _0124() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_011", &CTX, r#"2021-01-01T11:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_011",
+    &CTX,
+    r#"2021-01-01T11:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0125() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_012", &CTX, r#"2021-01-01T09:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_012",
+    &CTX,
+    r#"2021-01-01T09:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0126() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dtDuration_to_rhs_dateAndTime_013",
     &CTX,
     r#""2021-01-13T11:10:10@Australia/Melbourne""#,
@@ -758,28 +1106,53 @@ fn _0126() {
 
 #[test]
 fn _0127() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_014", &CTX, r#""-2021-01-01T11:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_014",
+    &CTX,
+    r#""-2021-01-01T11:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0128() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_015", &CTX, r#""-2021-01-02T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_015",
+    &CTX,
+    r#""-2021-01-02T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0129() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_016", &CTX, r#""-2021-01-01T09:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_016",
+    &CTX,
+    r#""-2021-01-01T09:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0130() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dateAndTime_017", &CTX, r#""-2022-12-31T10:10:10+11:00""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_dateAndTime_017",
+    &CTX,
+    r#""-2022-12-31T10:10:10+11:00""#,
+  );
 }
 
 #[test]
 fn _0131() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dtDuration_to_rhs_dateAndTime_018",
     &CTX,
     r#""-2021-01-01T11:10:10@Australia/Melbourne""#,
@@ -790,6 +1163,7 @@ fn _0131() {
 fn _0132() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dtDuration_to_rhs_dateAndTime_019",
     &CTX,
     r#""-2021-01-02T10:10:10@Australia/Melbourne""#,
@@ -800,6 +1174,7 @@ fn _0132() {
 fn _0133() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dtDuration_to_rhs_dateAndTime_020",
     &CTX,
     r#""-2021-01-01T09:10:10@Australia/Melbourne""#,
@@ -810,6 +1185,7 @@ fn _0133() {
 fn _0134() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "add_lhs_dtDuration_to_rhs_dateAndTime_021",
     &CTX,
     r#""-2022-12-31T10:10:10@Australia/Melbourne""#,
@@ -818,218 +1194,267 @@ fn _0134() {
 
 #[test]
 fn _0135() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_date_to_rhs_ymDuration_001", &CTX, r#"2022-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_date_to_rhs_ymDuration_001", &CTX, r#"2022-01-01"#);
 }
 
 #[test]
 fn _0136() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_date_to_rhs_ymDuration_002", &CTX, r#"2021-02-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_date_to_rhs_ymDuration_002", &CTX, r#"2021-02-01"#);
 }
 
 #[test]
 fn _0137() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_date_001", &CTX, r#"2022-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_date_001", &CTX, r#"2022-01-01"#);
 }
 
 #[test]
 fn _0138() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_date_002", &CTX, r#"2021-02-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_date_002", &CTX, r#"2021-02-01"#);
 }
 
 #[test]
 fn _0139() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_date_to_rhs_dtDuration_001", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_date_to_rhs_dtDuration_001", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0140() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_date_to_rhs_dtDuration_002", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_date_to_rhs_dtDuration_002", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0141() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_date_to_rhs_dtDuration_003", &CTX, r#"2021-01-03"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_date_to_rhs_dtDuration_003", &CTX, r#"2021-01-03"#);
 }
 
 #[test]
 fn _0142() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_date_001", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_date_001", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0143() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_date_002", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_date_002", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0144() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_date_003", &CTX, r#"2021-01-03"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_date_003", &CTX, r#"2021-01-03"#);
 }
 
 #[test]
 fn _0145() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_001", &CTX, r#"11:15:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_time_to_rhs_dtDuration_001", &CTX, r#"11:15:00"#);
 }
 
 #[test]
 fn _0146() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_002", &CTX, r#"10:15:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_time_to_rhs_dtDuration_002", &CTX, r#"10:15:00"#);
 }
 
 #[test]
 fn _0147() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_003", &CTX, r#"10:15:00+11:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_time_to_rhs_dtDuration_003", &CTX, r#"10:15:00+11:00"#);
 }
 
 #[test]
 fn _0148() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_004", &CTX, r#""10:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_time_to_rhs_dtDuration_004",
+    &CTX,
+    r#""10:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0149() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_005", &CTX, r#""10:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_time_to_rhs_dtDuration_005",
+    &CTX,
+    r#""10:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0150() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_006", &CTX, r#""11:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_time_to_rhs_dtDuration_006",
+    &CTX,
+    r#""11:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0151() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_time_to_rhs_dtDuration_007", &CTX, r#""09:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_time_to_rhs_dtDuration_007",
+    &CTX,
+    r#""09:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0152() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_001", &CTX, r#"11:15:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_time_001", &CTX, r#"11:15:00"#);
 }
 
 #[test]
 fn _0153() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_002", &CTX, r#"10:15:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_time_002", &CTX, r#"10:15:00"#);
 }
 
 #[test]
 fn _0154() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_003", &CTX, r#"10:15:00+11:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_time_003", &CTX, r#"10:15:00+11:00"#);
 }
 
 #[test]
 fn _0155() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_004", &CTX, r#""10:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_time_004",
+    &CTX,
+    r#""10:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0156() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_005", &CTX, r#""10:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_time_005",
+    &CTX,
+    r#""10:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0157() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_006", &CTX, r#""11:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_time_006",
+    &CTX,
+    r#""11:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0158() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_time_007", &CTX, r#""09:15:00@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "add_lhs_dtDuration_to_rhs_time_007",
+    &CTX,
+    r#""09:15:00@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0159() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_001", &CTX, r#"P1Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_001", &CTX, r#"P1Y2M"#);
 }
 
 #[test]
 fn _0160() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_002", &CTX, r#"P10M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_002", &CTX, r#"P10M"#);
 }
 
 #[test]
 fn _0161() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_003", &CTX, r#"-P10M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_003", &CTX, r#"-P10M"#);
 }
 
 #[test]
 fn _0162() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_004", &CTX, r#"-P1Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_004", &CTX, r#"-P1Y2M"#);
 }
 
 #[test]
 fn _0163() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_005", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_005", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0164() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_ymDuration_to_rhs_ymDuration_006", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_ymDuration_to_rhs_ymDuration_006", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0165() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dtDuration_001", &CTX, r#"P3D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_dtDuration_001", &CTX, r#"P3D"#);
 }
 
 #[test]
 fn _0166() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_dtDuration_to_rhs_dtDuration_002", &CTX, r#"P2D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_dtDuration_to_rhs_dtDuration_002", &CTX, r#"P2D"#);
 }
 
 #[test]
 fn _0167() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_string_to_rhs_string_001", &CTX, r#""foobar""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_string_to_rhs_string_001", &CTX, r#""foobar""#);
 }
 
 #[test]
 fn _0168() {
-  assert_decision(&MODEL_EVALUATOR, "add_lhs_string_to_rhs_string_002", &CTX, r#""11""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "add_lhs_string_to_rhs_string_002", &CTX, r#""11""#);
 }
 
 #[test]
 fn _0169() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_001", &CTX, r#"5"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_001", &CTX, r#"5"#);
 }
 
 #[test]
 fn _0170() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_002", &CTX, r#"15"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_002", &CTX, r#"15"#);
 }
 
 #[test]
 fn _0171() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_003", &CTX, r#"-15"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_003", &CTX, r#"-15"#);
 }
 
 #[test]
 fn _0172() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_004", &CTX, r#"-5"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_004", &CTX, r#"-5"#);
 }
 
 #[test]
 fn _0173() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_005", &CTX, r#"0.8889"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_005", &CTX, r#"0.8889"#);
 }
 
 #[test]
 fn _0174() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_006", &CTX, r#"1.3579"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_006", &CTX, r#"1.3579"#);
 }
 
 #[test]
 fn _0175() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_number_minus_rhs_number_007", &CTX, r#"-0.8889"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_number_minus_rhs_number_007", &CTX, r#"-0.8889"#);
 }
 
 #[test]
 fn _0176() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_001", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_001", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0177() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_002",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02T10:10:10@Europe/Paris - 2021-01-01T10:10:10)"#,
@@ -1040,6 +1465,7 @@ fn _0177() {
 fn _0178() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_003",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02T10:10:10 - 2021-01-01T10:10:10@Europe/Paris)"#,
@@ -1050,6 +1476,7 @@ fn _0178() {
 fn _0179() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_004",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02T10:10:10+02:00 - 2021-01-01T10:10:10)"#,
@@ -1060,6 +1487,7 @@ fn _0179() {
 fn _0180() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_005",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02T10:10:10 - 2021-01-01T10:10:10+02:00)"#,
@@ -1068,23 +1496,24 @@ fn _0180() {
 
 #[test]
 fn _0181() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_006", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_006", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0182() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_007", &CTX, r#"P1DT5H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_007", &CTX, r#"P1DT5H"#);
 }
 
 #[test]
 fn _0183() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_008", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_008", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0184() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_009",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02T10:10:10+01:00 - 2021-01-01T10:10:10)"#,
@@ -1093,58 +1522,107 @@ fn _0184() {
 
 #[test]
 fn _0185() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_010", &CTX, r#"P0D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_010", &CTX, r#"P0D"#);
 }
 
 #[test]
 fn _0186() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_011", &CTX, r#"P9498D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_011", &CTX, r#"P9498D"#);
 }
 
 #[test]
 fn _0187() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_012", &CTX, r#"P9498DT5H"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dateAndTime_012",
+    &CTX,
+    r#"P9498DT5H"#,
+  );
 }
 
 #[test]
 fn _0188() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_001", &CTX, r#"2020-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_001",
+    &CTX,
+    r#"2020-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0189() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_002", &CTX, r#"2020-12-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_002",
+    &CTX,
+    r#"2020-12-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0190() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_003", &CTX, r#"2022-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_003",
+    &CTX,
+    r#"2022-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0191() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_004", &CTX, r#"2021-02-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_004",
+    &CTX,
+    r#"2021-02-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0192() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_005", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_005",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0193() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_006", &CTX, r#"2021-01-01T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_006",
+    &CTX,
+    r#"2021-01-01T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0194() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_ymDuration_007", &CTX, r#"2020-01-01T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_ymDuration_007",
+    &CTX,
+    r#"2020-01-01T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0195() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_008",
     &CTX,
     r#""2020-01-01T10:10:10@Australia/Melbourne""#,
@@ -1155,6 +1633,7 @@ fn _0195() {
 fn _0196() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_009",
     &CTX,
     r#""-2022-12-01T10:10:10+11:00""#,
@@ -1165,6 +1644,7 @@ fn _0196() {
 fn _0197() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_010",
     &CTX,
     r#""-2022-01-01T10:10:10+11:00""#,
@@ -1175,6 +1655,7 @@ fn _0197() {
 fn _0198() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_011",
     &CTX,
     r#""-2021-02-01T10:10:10+11:00""#,
@@ -1185,6 +1666,7 @@ fn _0198() {
 fn _0199() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_012",
     &CTX,
     r#""-2020-01-01T10:10:10+11:00""#,
@@ -1195,6 +1677,7 @@ fn _0199() {
 fn _0200() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_013",
     &CTX,
     r#""-2022-12-01T10:10:10@Australia/Melbourne""#,
@@ -1205,6 +1688,7 @@ fn _0200() {
 fn _0201() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_014",
     &CTX,
     r#""-2022-01-01T10:10:10@Australia/Melbourne""#,
@@ -1215,6 +1699,7 @@ fn _0201() {
 fn _0202() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_015",
     &CTX,
     r#""-2021-02-01T10:10:10@Australia/Melbourne""#,
@@ -1225,6 +1710,7 @@ fn _0202() {
 fn _0203() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_ymDuration_016",
     &CTX,
     r#""-2020-01-01T10:10:10@Australia/Melbourne""#,
@@ -1235,6 +1721,7 @@ fn _0203() {
 fn _0204() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_date_001",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T00:00:00 - 2021-01-02)"#,
@@ -1243,58 +1730,107 @@ fn _0204() {
 
 #[test]
 fn _0205() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_date_002", &CTX, r#"P1DT9H10M10S"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_date_002", &CTX, r#"P1DT9H10M10S"#);
 }
 
 #[test]
 fn _0206() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_date_003", &CTX, r#"P1DT9H10M10S"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dateAndTime_minus_rhs_date_003", &CTX, r#"P1DT9H10M10S"#);
 }
 
 #[test]
 fn _0207() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_date_004", &CTX, r#"P9498DT9H10M10S"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_date_004",
+    &CTX,
+    r#"P9498DT9H10M10S"#,
+  );
 }
 
 #[test]
 fn _0208() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_date_005", &CTX, r#"P9498DT9H10M10S"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_date_005",
+    &CTX,
+    r#"P9498DT9H10M10S"#,
+  );
 }
 
 #[test]
 fn _0209() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_001", &CTX, r#"2020-12-31T10:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_001",
+    &CTX,
+    r#"2020-12-31T10:10:10"#,
+  );
 }
 
 #[test]
 fn _0210() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_002", &CTX, r#"2021-01-01T09:10:10"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_002",
+    &CTX,
+    r#"2021-01-01T09:10:10"#,
+  );
 }
 
 #[test]
 fn _0211() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_003", &CTX, r#"2021-01-01T23:00:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_003",
+    &CTX,
+    r#"2021-01-01T23:00:00"#,
+  );
 }
 
 #[test]
 fn _0212() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_004", &CTX, r#"2020-12-31T10:10:10+11:00"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_004",
+    &CTX,
+    r#"2020-12-31T10:10:10+11:00"#,
+  );
 }
 
 #[test]
 fn _0213() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_005", &CTX, r#"2021-01-01T23:59:59"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_005",
+    &CTX,
+    r#"2021-01-01T23:59:59"#,
+  );
 }
 
 #[test]
 fn _0214() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_006", &CTX, r#"2021-01-02T00:00:01"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_006",
+    &CTX,
+    r#"2021-01-02T00:00:01"#,
+  );
 }
 
 #[test]
 fn _0215() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_007",
     &CTX,
     r#""2020-12-31T10:10:10@Australia/Melbourne""#,
@@ -1303,18 +1839,31 @@ fn _0215() {
 
 #[test]
 fn _0216() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_008", &CTX, r#"2021-01-01T23:59:59"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_008",
+    &CTX,
+    r#"2021-01-01T23:59:59"#,
+  );
 }
 
 #[test]
 fn _0217() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dateAndTime_minus_rhs_dtDuration_009", &CTX, r#"2021-01-02T00:00:01"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_dateAndTime_minus_rhs_dtDuration_009",
+    &CTX,
+    r#"2021-01-02T00:00:01"#,
+  );
 }
 
 #[test]
 fn _0218() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_010",
     &CTX,
     r#""-2021-01-01T09:10:10+11:00""#,
@@ -1325,6 +1874,7 @@ fn _0218() {
 fn _0219() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_011",
     &CTX,
     r#""-2022-12-31T10:10:10+11:00""#,
@@ -1335,6 +1885,7 @@ fn _0219() {
 fn _0220() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_012",
     &CTX,
     r#""-2021-01-01T11:10:10+11:00""#,
@@ -1345,6 +1896,7 @@ fn _0220() {
 fn _0221() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_013",
     &CTX,
     r#""-2021-01-02T10:10:10+11:00""#,
@@ -1355,6 +1907,7 @@ fn _0221() {
 fn _0222() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_014",
     &CTX,
     r#""-2021-01-01T09:10:10@Australia/Melbourne""#,
@@ -1365,6 +1918,7 @@ fn _0222() {
 fn _0223() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_015",
     &CTX,
     r#""-2022-12-31T10:10:10@Australia/Melbourne""#,
@@ -1375,6 +1929,7 @@ fn _0223() {
 fn _0224() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_016",
     &CTX,
     r#""-2021-01-01T11:10:10@Australia/Melbourne""#,
@@ -1385,6 +1940,7 @@ fn _0224() {
 fn _0225() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_dateAndTime_minus_rhs_dtDuration_017",
     &CTX,
     r#""-2021-01-02T10:10:10@Australia/Melbourne""#,
@@ -1395,6 +1951,7 @@ fn _0225() {
 fn _0226() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "subtract_lhs_date_minus_rhs_dateAndTime_001",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-02 - 2021-01-01T10:10:10)"#,
@@ -1403,278 +1960,297 @@ fn _0226() {
 
 #[test]
 fn _0227() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dateAndTime_002", &CTX, r#"P1DT49M50S"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dateAndTime_002", &CTX, r#"P1DT49M50S"#);
 }
 
 #[test]
 fn _0228() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dateAndTime_003", &CTX, r#"P1DT49M50S"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dateAndTime_003", &CTX, r#"P1DT49M50S"#);
 }
 
 #[test]
 fn _0229() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dateAndTime_004", &CTX, r#"P0D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dateAndTime_004", &CTX, r#"P0D"#);
 }
 
 #[test]
 fn _0230() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dateAndTime_005", &CTX, r#"P9498DT49M50S"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dateAndTime_005", &CTX, r#"P9498DT49M50S"#);
 }
 
 #[test]
 fn _0231() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_date_001", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_date_001", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0232() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_date_002", &CTX, r#"P9498D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_date_002", &CTX, r#"P9498D"#);
 }
 
 #[test]
 fn _0233() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_date_003", &CTX, r#"P9498D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_date_003", &CTX, r#"P9498D"#);
 }
 
 #[test]
 fn _0234() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_ymDuration_001", &CTX, r#"2020-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_ymDuration_001", &CTX, r#"2020-01-02"#);
 }
 
 #[test]
 fn _0235() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_ymDuration_002", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_ymDuration_002", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0236() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_ymDuration_003", &CTX, r#"2020-12-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_ymDuration_003", &CTX, r#"2020-12-02"#);
 }
 
 #[test]
 fn _0237() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_ymDuration_004", &CTX, r#"2022-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_ymDuration_004", &CTX, r#"2022-01-02"#);
 }
 
 #[test]
 fn _0238() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_001", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_001", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0239() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_002", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_002", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0240() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_003", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_003", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0241() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_004", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_004", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0242() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_005", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_005", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0243() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_006", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_006", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0244() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_007", &CTX, r#"2021-01-02"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_007", &CTX, r#"2021-01-02"#);
 }
 
 #[test]
 fn _0245() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_008", &CTX, r#"2021-01-01"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_008", &CTX, r#"2021-01-01"#);
 }
 
 #[test]
 fn _0246() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_009", &CTX, r#"2020-12-31"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_009", &CTX, r#"2020-12-31"#);
 }
 
 #[test]
 fn _0247() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_010", &CTX, r#"2021-01-03"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_010", &CTX, r#"2021-01-03"#);
 }
 
 #[test]
 fn _0248() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_011", &CTX, r#"2021-01-03"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_011", &CTX, r#"2021-01-03"#);
 }
 
 #[test]
 fn _0249() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_date_minus_rhs_dtDuration_012", &CTX, r#"2020-02-29"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_date_minus_rhs_dtDuration_012", &CTX, r#"2020-02-29"#);
 }
 
 #[test]
 fn _0250() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_001", &CTX, r#"PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_001", &CTX, r#"PT1H"#);
 }
 
 #[test]
 fn _0251() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_002", &CTX, r#"-PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_002", &CTX, r#"-PT1H"#);
 }
 
 #[test]
 fn _0252() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_003", &CTX, r#"-PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_003", &CTX, r#"-PT1H"#);
 }
 
 #[test]
 fn _0253() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_004", &CTX, r#"PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_004", &CTX, r#"PT1H"#);
 }
 
 #[test]
 fn _0254() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_005", &CTX, r#"-PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_005", &CTX, r#"-PT1H"#);
 }
 
 #[test]
 fn _0255() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_time_006", &CTX, r#"PT1H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_time_006", &CTX, r#"PT1H"#);
 }
 
 #[test]
 fn _0256() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_001", &CTX, r#"09:10:10"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_dtDuration_001", &CTX, r#"09:10:10"#);
 }
 
 #[test]
 fn _0257() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_002", &CTX, r#"10:10:10"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_dtDuration_002", &CTX, r#"10:10:10"#);
 }
 
 #[test]
 fn _0258() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_003", &CTX, r#"10:10:10+11:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_dtDuration_003", &CTX, r#"10:10:10+11:00"#);
 }
 
 #[test]
 fn _0259() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_004", &CTX, r#""10:10:10@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_time_minus_rhs_dtDuration_004",
+    &CTX,
+    r#""10:10:10@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0260() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_005", &CTX, r#"09:10:10+11:00"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_time_minus_rhs_dtDuration_005", &CTX, r#"09:10:10+11:00"#);
 }
 
 #[test]
 fn _0261() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_time_minus_rhs_dtDuration_006", &CTX, r#""09:10:10@Australia/Melbourne""#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "subtract_lhs_time_minus_rhs_dtDuration_006",
+    &CTX,
+    r#""09:10:10@Australia/Melbourne""#,
+  );
 }
 
 #[test]
 fn _0262() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_001", &CTX, r#"P10M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_001", &CTX, r#"P10M"#);
 }
 
 #[test]
 fn _0263() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_002", &CTX, r#"-P1Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_002", &CTX, r#"-P1Y2M"#);
 }
 
 #[test]
 fn _0264() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_003", &CTX, r#"-P10M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_003", &CTX, r#"-P10M"#);
 }
 
 #[test]
 fn _0265() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_004", &CTX, r#"P1Y2M"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_004", &CTX, r#"P1Y2M"#);
 }
 
 #[test]
 fn _0266() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_005", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_005", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0267() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_ymDuration_minus_rhs_ymDuration_006", &CTX, r#"P1Y"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_ymDuration_minus_rhs_ymDuration_006", &CTX, r#"P1Y"#);
 }
 
 #[test]
 fn _0268() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_001", &CTX, r#"PT22H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_001", &CTX, r#"PT22H"#);
 }
 
 #[test]
 fn _0269() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_002", &CTX, r#"-P1DT2H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_002", &CTX, r#"-P1DT2H"#);
 }
 
 #[test]
 fn _0270() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_003", &CTX, r#"-PT22H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_003", &CTX, r#"-PT22H"#);
 }
 
 #[test]
 fn _0271() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_004", &CTX, r#"P1DT2H"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_004", &CTX, r#"P1DT2H"#);
 }
 
 #[test]
 fn _0272() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_005", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_005", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0273() {
-  assert_decision(&MODEL_EVALUATOR, "subtract_lhs_dtDuration_minus_rhs_dtDuration_006", &CTX, r#"P1D"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "subtract_lhs_dtDuration_minus_rhs_dtDuration_006", &CTX, r#"P1D"#);
 }
 
 #[test]
 fn _0274() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_001", &CTX, r#"25"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_001", &CTX, r#"25"#);
 }
 
 #[test]
 fn _0275() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_002", &CTX, r#"0.04"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_002", &CTX, r#"0.04"#);
 }
 
 #[test]
 fn _0276() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_003", &CTX, r#"3486784401"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_003", &CTX, r#"3486784401"#);
 }
 
 #[test]
 fn _0277() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_004", &CTX, r#"25"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_004", &CTX, r#"25"#);
 }
 
 #[test]
 fn _0278() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_005", &CTX, r#"60.58617166606633673745724928244261"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "exponent_lhs_number_exp_rhs_number_005",
+    &CTX,
+    r#"60.58617166606633673745724928244261"#,
+  );
 }
 
 #[test]
 fn _0279() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_006", &CTX, r#"25"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_006", &CTX, r#"25"#);
 }
 
 #[test]
 fn _0280() {
-  assert_decision(&MODEL_EVALUATOR, "exponent_lhs_number_exp_rhs_number_007", &CTX, r#"30.25"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "exponent_lhs_number_exp_rhs_number_007", &CTX, r#"30.25"#);
 }
 
 #[test]
 fn _0281() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_string",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * "10")"#,
@@ -1685,6 +2261,7 @@ fn _0281() {
 fn _0282() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_boolean",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * true)"#,
@@ -1695,6 +2272,7 @@ fn _0282() {
 fn _0283() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_date",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * 2021-01-01)"#,
@@ -1705,6 +2283,7 @@ fn _0283() {
 fn _0284() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_dateAndTime",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * 2021-01-01T10:10:10)"#,
@@ -1715,6 +2294,7 @@ fn _0284() {
 fn _0285() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_time",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * 10:10:10)"#,
@@ -1725,6 +2305,7 @@ fn _0285() {
 fn _0286() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_list",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * [10])"#,
@@ -1735,6 +2316,7 @@ fn _0286() {
 fn _0287() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_context",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * {a: 10})"#,
@@ -1745,6 +2327,7 @@ fn _0287() {
 fn _0288() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_range",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * [1..10])"#,
@@ -1755,6 +2338,7 @@ fn _0288() {
 fn _0289() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_function",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -1765,6 +2349,7 @@ fn _0289() {
 fn _0290() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_number_by_rhs_null",
     &CTX,
     r#"null([multiplication] incompatible types: 10 * null)"#,
@@ -1775,6 +2360,7 @@ fn _0290() {
 fn _0291() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1785,6 +2371,7 @@ fn _0291() {
 fn _0292() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1795,6 +2382,7 @@ fn _0292() {
 fn _0293() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1805,6 +2393,7 @@ fn _0293() {
 fn _0294() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1815,6 +2404,7 @@ fn _0294() {
 fn _0295() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1825,6 +2415,7 @@ fn _0295() {
 fn _0296() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1835,6 +2426,7 @@ fn _0296() {
 fn _0297() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1845,6 +2437,7 @@ fn _0297() {
 fn _0298() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1855,6 +2448,7 @@ fn _0298() {
 fn _0299() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1865,6 +2459,7 @@ fn _0299() {
 fn _0300() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1875,6 +2470,7 @@ fn _0300() {
 fn _0301() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1885,6 +2481,7 @@ fn _0301() {
 fn _0302() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1895,6 +2492,7 @@ fn _0302() {
 fn _0303() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_string_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: string)"#,
@@ -1905,6 +2503,7 @@ fn _0303() {
 fn _0304() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1915,6 +2514,7 @@ fn _0304() {
 fn _0305() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1925,6 +2525,7 @@ fn _0305() {
 fn _0306() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1935,6 +2536,7 @@ fn _0306() {
 fn _0307() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1945,6 +2547,7 @@ fn _0307() {
 fn _0308() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1955,6 +2558,7 @@ fn _0308() {
 fn _0309() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1965,6 +2569,7 @@ fn _0309() {
 fn _0310() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1975,6 +2580,7 @@ fn _0310() {
 fn _0311() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1985,6 +2591,7 @@ fn _0311() {
 fn _0312() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -1995,6 +2602,7 @@ fn _0312() {
 fn _0313() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -2005,6 +2613,7 @@ fn _0313() {
 fn _0314() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -2015,6 +2624,7 @@ fn _0314() {
 fn _0315() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -2025,6 +2635,7 @@ fn _0315() {
 fn _0316() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_boolean_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: boolean)"#,
@@ -2035,6 +2646,7 @@ fn _0316() {
 fn _0317() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2045,6 +2657,7 @@ fn _0317() {
 fn _0318() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2055,6 +2668,7 @@ fn _0318() {
 fn _0319() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2065,6 +2679,7 @@ fn _0319() {
 fn _0320() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2075,6 +2690,7 @@ fn _0320() {
 fn _0321() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2085,6 +2701,7 @@ fn _0321() {
 fn _0322() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2095,6 +2712,7 @@ fn _0322() {
 fn _0323() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2105,6 +2723,7 @@ fn _0323() {
 fn _0324() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2115,6 +2734,7 @@ fn _0324() {
 fn _0325() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2125,6 +2745,7 @@ fn _0325() {
 fn _0326() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2135,6 +2756,7 @@ fn _0326() {
 fn _0327() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2145,6 +2767,7 @@ fn _0327() {
 fn _0328() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2155,6 +2778,7 @@ fn _0328() {
 fn _0329() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_date_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: date)"#,
@@ -2165,6 +2789,7 @@ fn _0329() {
 fn _0330() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2175,6 +2800,7 @@ fn _0330() {
 fn _0331() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2185,6 +2811,7 @@ fn _0331() {
 fn _0332() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2195,6 +2822,7 @@ fn _0332() {
 fn _0333() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2205,6 +2833,7 @@ fn _0333() {
 fn _0334() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2215,6 +2844,7 @@ fn _0334() {
 fn _0335() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2225,6 +2855,7 @@ fn _0335() {
 fn _0336() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2235,6 +2866,7 @@ fn _0336() {
 fn _0337() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2245,6 +2877,7 @@ fn _0337() {
 fn _0338() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2255,6 +2888,7 @@ fn _0338() {
 fn _0339() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2265,6 +2899,7 @@ fn _0339() {
 fn _0340() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2275,6 +2910,7 @@ fn _0340() {
 fn _0341() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2285,6 +2921,7 @@ fn _0341() {
 fn _0342() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dateAndTime_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: date and time)"#,
@@ -2295,6 +2932,7 @@ fn _0342() {
 fn _0343() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2305,6 +2943,7 @@ fn _0343() {
 fn _0344() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2315,6 +2954,7 @@ fn _0344() {
 fn _0345() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2325,6 +2965,7 @@ fn _0345() {
 fn _0346() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2335,6 +2976,7 @@ fn _0346() {
 fn _0347() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2345,6 +2987,7 @@ fn _0347() {
 fn _0348() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2355,6 +2998,7 @@ fn _0348() {
 fn _0349() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2365,6 +3009,7 @@ fn _0349() {
 fn _0350() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2375,6 +3020,7 @@ fn _0350() {
 fn _0351() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2385,6 +3031,7 @@ fn _0351() {
 fn _0352() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2395,6 +3042,7 @@ fn _0352() {
 fn _0353() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2405,6 +3053,7 @@ fn _0353() {
 fn _0354() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2415,6 +3064,7 @@ fn _0354() {
 fn _0355() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_time_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: time)"#,
@@ -2425,6 +3075,7 @@ fn _0355() {
 fn _0356() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2435,6 +3086,7 @@ fn _0356() {
 fn _0357() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2445,6 +3097,7 @@ fn _0357() {
 fn _0358() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2455,6 +3108,7 @@ fn _0358() {
 fn _0359() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2465,6 +3119,7 @@ fn _0359() {
 fn _0360() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2475,6 +3130,7 @@ fn _0360() {
 fn _0361() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2485,6 +3141,7 @@ fn _0361() {
 fn _0362() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2495,6 +3152,7 @@ fn _0362() {
 fn _0363() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2505,6 +3163,7 @@ fn _0363() {
 fn _0364() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2515,6 +3174,7 @@ fn _0364() {
 fn _0365() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2525,6 +3185,7 @@ fn _0365() {
 fn _0366() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2535,6 +3196,7 @@ fn _0366() {
 fn _0367() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2545,6 +3207,7 @@ fn _0367() {
 fn _0368() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_list_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: list<number>)"#,
@@ -2555,6 +3218,7 @@ fn _0368() {
 fn _0369() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2565,6 +3229,7 @@ fn _0369() {
 fn _0370() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2575,6 +3240,7 @@ fn _0370() {
 fn _0371() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2585,6 +3251,7 @@ fn _0371() {
 fn _0372() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2595,6 +3262,7 @@ fn _0372() {
 fn _0373() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2605,6 +3273,7 @@ fn _0373() {
 fn _0374() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2615,6 +3284,7 @@ fn _0374() {
 fn _0375() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2625,6 +3295,7 @@ fn _0375() {
 fn _0376() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2635,6 +3306,7 @@ fn _0376() {
 fn _0377() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2645,6 +3317,7 @@ fn _0377() {
 fn _0378() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2655,6 +3328,7 @@ fn _0378() {
 fn _0379() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2665,6 +3339,7 @@ fn _0379() {
 fn _0380() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2675,6 +3350,7 @@ fn _0380() {
 fn _0381() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_context_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: context<a: number>)"#,
@@ -2685,6 +3361,7 @@ fn _0381() {
 fn _0382() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_string",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * "10")"#,
@@ -2695,6 +3372,7 @@ fn _0382() {
 fn _0383() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_boolean",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * true)"#,
@@ -2705,6 +3383,7 @@ fn _0383() {
 fn _0384() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_date",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * 2021-01-01)"#,
@@ -2715,6 +3394,7 @@ fn _0384() {
 fn _0385() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_dateAndTime",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * 2021-01-01T10:10:10)"#,
@@ -2725,6 +3405,7 @@ fn _0385() {
 fn _0386() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_time",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * 10:10:10)"#,
@@ -2735,6 +3416,7 @@ fn _0386() {
 fn _0387() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_list",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * [10])"#,
@@ -2745,6 +3427,7 @@ fn _0387() {
 fn _0388() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_context",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * {a: 10})"#,
@@ -2755,6 +3438,7 @@ fn _0388() {
 fn _0389() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_dtDuration",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * P1D)"#,
@@ -2765,6 +3449,7 @@ fn _0389() {
 fn _0390() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_ymDuration",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * P1Y)"#,
@@ -2775,6 +3460,7 @@ fn _0390() {
 fn _0391() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_range",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * [1..10])"#,
@@ -2785,6 +3471,7 @@ fn _0391() {
 fn _0392() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_function",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -2795,6 +3482,7 @@ fn _0392() {
 fn _0393() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_dtDuration_by_rhs_null",
     &CTX,
     r#"null([multiplication] incompatible types: P1D * null)"#,
@@ -2805,6 +3493,7 @@ fn _0393() {
 fn _0394() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_string",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * "10")"#,
@@ -2815,6 +3504,7 @@ fn _0394() {
 fn _0395() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_boolean",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * true)"#,
@@ -2825,6 +3515,7 @@ fn _0395() {
 fn _0396() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_date",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * 2021-01-01)"#,
@@ -2835,6 +3526,7 @@ fn _0396() {
 fn _0397() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_dateAndTime",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * 2021-01-01T10:10:10)"#,
@@ -2845,6 +3537,7 @@ fn _0397() {
 fn _0398() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_time",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * 10:10:10)"#,
@@ -2855,6 +3548,7 @@ fn _0398() {
 fn _0399() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_list",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * [10])"#,
@@ -2865,6 +3559,7 @@ fn _0399() {
 fn _0400() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_context",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * {a: 10})"#,
@@ -2875,6 +3570,7 @@ fn _0400() {
 fn _0401() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_dtDuration",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * P1D)"#,
@@ -2885,6 +3581,7 @@ fn _0401() {
 fn _0402() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_ymDuration",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * P1Y)"#,
@@ -2895,6 +3592,7 @@ fn _0402() {
 fn _0403() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_range",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * [1..10])"#,
@@ -2905,6 +3603,7 @@ fn _0403() {
 fn _0404() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_function",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -2915,6 +3614,7 @@ fn _0404() {
 fn _0405() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_ymDuration_by_rhs_null",
     &CTX,
     r#"null([multiplication] incompatible types: P1Y * null)"#,
@@ -2925,6 +3625,7 @@ fn _0405() {
 fn _0406() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2935,6 +3636,7 @@ fn _0406() {
 fn _0407() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2945,6 +3647,7 @@ fn _0407() {
 fn _0408() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2955,6 +3658,7 @@ fn _0408() {
 fn _0409() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2965,6 +3669,7 @@ fn _0409() {
 fn _0410() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2975,6 +3680,7 @@ fn _0410() {
 fn _0411() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2985,6 +3691,7 @@ fn _0411() {
 fn _0412() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -2995,6 +3702,7 @@ fn _0412() {
 fn _0413() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3005,6 +3713,7 @@ fn _0413() {
 fn _0414() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3015,6 +3724,7 @@ fn _0414() {
 fn _0415() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3025,6 +3735,7 @@ fn _0415() {
 fn _0416() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3035,6 +3746,7 @@ fn _0416() {
 fn _0417() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3045,6 +3757,7 @@ fn _0417() {
 fn _0418() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_range_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: range<number>)"#,
@@ -3055,6 +3768,7 @@ fn _0418() {
 fn _0419() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_number",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3065,6 +3779,7 @@ fn _0419() {
 fn _0420() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_string",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3075,6 +3790,7 @@ fn _0420() {
 fn _0421() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_boolean",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3085,6 +3801,7 @@ fn _0421() {
 fn _0422() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_date",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3095,6 +3812,7 @@ fn _0422() {
 fn _0423() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_dateAndTime",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3105,6 +3823,7 @@ fn _0423() {
 fn _0424() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_time",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3115,6 +3834,7 @@ fn _0424() {
 fn _0425() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_list",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3125,6 +3845,7 @@ fn _0425() {
 fn _0426() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_context",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3135,6 +3856,7 @@ fn _0426() {
 fn _0427() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_dtDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3145,6 +3867,7 @@ fn _0427() {
 fn _0428() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_ymDuration",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3155,6 +3878,7 @@ fn _0428() {
 fn _0429() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_range",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3165,6 +3889,7 @@ fn _0429() {
 fn _0430() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_function",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3175,6 +3900,7 @@ fn _0430() {
 fn _0431() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_multiply_lhs_function_by_rhs_null",
     &CTX,
     r#"null(unexpected value type in multiplication: function<Any>->Any)"#,
@@ -3183,73 +3909,74 @@ fn _0431() {
 
 #[test]
 fn _0432() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_number", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_number", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0433() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_string", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_string", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0434() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_boolean", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_boolean", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0435() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_date", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_date", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0436() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_dateAndTime", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_dateAndTime", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0437() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_time", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_time", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0438() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_list", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_list", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0439() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_context", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_context", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0440() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_dtDuration", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_dtDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0441() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_ymDuration", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_ymDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0442() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_range", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_range", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0443() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_function", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_function", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0444() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_multiply_lhs_null_by_rhs_null", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_multiply_lhs_null_by_rhs_null", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0445() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: 10 / "10")"#,
@@ -3260,6 +3987,7 @@ fn _0445() {
 fn _0446() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: 10 / true)"#,
@@ -3270,6 +3998,7 @@ fn _0446() {
 fn _0447() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: 10 / 2021-01-01)"#,
@@ -3280,6 +4009,7 @@ fn _0447() {
 fn _0448() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: 10 / 2021-01-01T10:10:10)"#,
@@ -3290,6 +4020,7 @@ fn _0448() {
 fn _0449() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: 10 / 10:10:10)"#,
@@ -3300,6 +4031,7 @@ fn _0449() {
 fn _0450() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: 10 / [10])"#,
@@ -3310,6 +4042,7 @@ fn _0450() {
 fn _0451() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: 10 / {a: 10})"#,
@@ -3320,6 +4053,7 @@ fn _0451() {
 fn _0452() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: 10 / P1D)"#,
@@ -3330,6 +4064,7 @@ fn _0452() {
 fn _0453() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: 10 / P1Y)"#,
@@ -3340,6 +4075,7 @@ fn _0453() {
 fn _0454() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: 10 / [1..10])"#,
@@ -3350,6 +4086,7 @@ fn _0454() {
 fn _0455() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: 10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -3360,6 +4097,7 @@ fn _0455() {
 fn _0456() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_number_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: 10 / null)"#,
@@ -3370,6 +4108,7 @@ fn _0456() {
 fn _0457() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: "10" / 10)"#,
@@ -3380,6 +4119,7 @@ fn _0457() {
 fn _0458() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: "10" / "10")"#,
@@ -3390,6 +4130,7 @@ fn _0458() {
 fn _0459() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: "10" / true)"#,
@@ -3400,6 +4141,7 @@ fn _0459() {
 fn _0460() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: "10" / 2021-01-01)"#,
@@ -3410,6 +4152,7 @@ fn _0460() {
 fn _0461() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: "10" / 2021-01-01T10:10:10)"#,
@@ -3420,6 +4163,7 @@ fn _0461() {
 fn _0462() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: "10" / 10:10:10)"#,
@@ -3430,6 +4174,7 @@ fn _0462() {
 fn _0463() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: "10" / [10])"#,
@@ -3440,6 +4185,7 @@ fn _0463() {
 fn _0464() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: "10" / {a: 10})"#,
@@ -3450,6 +4196,7 @@ fn _0464() {
 fn _0465() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: "10" / P1D)"#,
@@ -3460,6 +4207,7 @@ fn _0465() {
 fn _0466() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: "10" / P1Y)"#,
@@ -3470,6 +4218,7 @@ fn _0466() {
 fn _0467() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: "10" / [1..10])"#,
@@ -3480,6 +4229,7 @@ fn _0467() {
 fn _0468() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: "10" / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -3490,6 +4240,7 @@ fn _0468() {
 fn _0469() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_string_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: "10" / null)"#,
@@ -3500,6 +4251,7 @@ fn _0469() {
 fn _0470() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: true / 10)"#,
@@ -3510,6 +4262,7 @@ fn _0470() {
 fn _0471() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: true / "10")"#,
@@ -3520,6 +4273,7 @@ fn _0471() {
 fn _0472() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: true / true)"#,
@@ -3530,6 +4284,7 @@ fn _0472() {
 fn _0473() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: true / 2021-01-01)"#,
@@ -3540,6 +4295,7 @@ fn _0473() {
 fn _0474() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: true / 2021-01-01T10:10:10)"#,
@@ -3550,6 +4306,7 @@ fn _0474() {
 fn _0475() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: true / 10:10:10)"#,
@@ -3560,6 +4317,7 @@ fn _0475() {
 fn _0476() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: true / [10])"#,
@@ -3570,6 +4328,7 @@ fn _0476() {
 fn _0477() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: true / {a: 10})"#,
@@ -3580,6 +4339,7 @@ fn _0477() {
 fn _0478() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: true / P1D)"#,
@@ -3590,6 +4350,7 @@ fn _0478() {
 fn _0479() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: true / P1Y)"#,
@@ -3600,6 +4361,7 @@ fn _0479() {
 fn _0480() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: true / [1..10])"#,
@@ -3610,6 +4372,7 @@ fn _0480() {
 fn _0481() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: true / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -3620,6 +4383,7 @@ fn _0481() {
 fn _0482() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_boolean_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: true / null)"#,
@@ -3630,6 +4394,7 @@ fn _0482() {
 fn _0483() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / 10)"#,
@@ -3640,6 +4405,7 @@ fn _0483() {
 fn _0484() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / "10")"#,
@@ -3650,6 +4416,7 @@ fn _0484() {
 fn _0485() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / true)"#,
@@ -3660,6 +4427,7 @@ fn _0485() {
 fn _0486() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / 2021-01-01)"#,
@@ -3670,6 +4438,7 @@ fn _0486() {
 fn _0487() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / 2021-01-01T10:10:10)"#,
@@ -3680,6 +4449,7 @@ fn _0487() {
 fn _0488() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / 10:10:10)"#,
@@ -3690,6 +4460,7 @@ fn _0488() {
 fn _0489() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / [10])"#,
@@ -3700,6 +4471,7 @@ fn _0489() {
 fn _0490() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / {a: 10})"#,
@@ -3710,6 +4482,7 @@ fn _0490() {
 fn _0491() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / P1D)"#,
@@ -3720,6 +4493,7 @@ fn _0491() {
 fn _0492() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / P1Y)"#,
@@ -3730,6 +4504,7 @@ fn _0492() {
 fn _0493() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / [1..10])"#,
@@ -3740,6 +4515,7 @@ fn _0493() {
 fn _0494() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -3750,6 +4526,7 @@ fn _0494() {
 fn _0495() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_date_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01 / null)"#,
@@ -3760,6 +4537,7 @@ fn _0495() {
 fn _0496() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / 10)"#,
@@ -3770,6 +4548,7 @@ fn _0496() {
 fn _0497() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / "10")"#,
@@ -3780,6 +4559,7 @@ fn _0497() {
 fn _0498() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / true)"#,
@@ -3790,6 +4570,7 @@ fn _0498() {
 fn _0499() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / 2021-01-01)"#,
@@ -3800,6 +4581,7 @@ fn _0499() {
 fn _0500() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / 2021-01-01T10:10:10)"#,
@@ -3810,6 +4592,7 @@ fn _0500() {
 fn _0501() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / 10:10:10)"#,
@@ -3820,6 +4603,7 @@ fn _0501() {
 fn _0502() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / [10])"#,
@@ -3830,6 +4614,7 @@ fn _0502() {
 fn _0503() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / {a: 10})"#,
@@ -3840,6 +4625,7 @@ fn _0503() {
 fn _0504() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / P1D)"#,
@@ -3850,6 +4636,7 @@ fn _0504() {
 fn _0505() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / P1Y)"#,
@@ -3860,6 +4647,7 @@ fn _0505() {
 fn _0506() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / [1..10])"#,
@@ -3870,6 +4658,7 @@ fn _0506() {
 fn _0507() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -3880,6 +4669,7 @@ fn _0507() {
 fn _0508() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dateAndTime_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: 2021-01-01T10:10:10 / null)"#,
@@ -3890,6 +4680,7 @@ fn _0508() {
 fn _0509() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / 10)"#,
@@ -3900,6 +4691,7 @@ fn _0509() {
 fn _0510() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / "10")"#,
@@ -3910,6 +4702,7 @@ fn _0510() {
 fn _0511() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / true)"#,
@@ -3920,6 +4713,7 @@ fn _0511() {
 fn _0512() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / 2021-01-01)"#,
@@ -3930,6 +4724,7 @@ fn _0512() {
 fn _0513() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / 2021-01-01T10:10:10)"#,
@@ -3940,6 +4735,7 @@ fn _0513() {
 fn _0514() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / 10:10:10)"#,
@@ -3950,6 +4746,7 @@ fn _0514() {
 fn _0515() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / [10])"#,
@@ -3960,6 +4757,7 @@ fn _0515() {
 fn _0516() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / {a: 10})"#,
@@ -3970,6 +4768,7 @@ fn _0516() {
 fn _0517() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / P1D)"#,
@@ -3980,6 +4779,7 @@ fn _0517() {
 fn _0518() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / P1Y)"#,
@@ -3990,6 +4790,7 @@ fn _0518() {
 fn _0519() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / [1..10])"#,
@@ -4000,6 +4801,7 @@ fn _0519() {
 fn _0520() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4010,6 +4812,7 @@ fn _0520() {
 fn _0521() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_time_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: 10:10:10 / null)"#,
@@ -4020,6 +4823,7 @@ fn _0521() {
 fn _0522() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: [10] / 10)"#,
@@ -4030,6 +4834,7 @@ fn _0522() {
 fn _0523() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: [10] / "10")"#,
@@ -4040,6 +4845,7 @@ fn _0523() {
 fn _0524() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: [10] / true)"#,
@@ -4050,6 +4856,7 @@ fn _0524() {
 fn _0525() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: [10] / 2021-01-01)"#,
@@ -4060,6 +4867,7 @@ fn _0525() {
 fn _0526() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: [10] / 2021-01-01T10:10:10)"#,
@@ -4070,6 +4878,7 @@ fn _0526() {
 fn _0527() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: [10] / 10:10:10)"#,
@@ -4080,6 +4889,7 @@ fn _0527() {
 fn _0528() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: [10] / [10])"#,
@@ -4090,6 +4900,7 @@ fn _0528() {
 fn _0529() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: [10] / {a: 10})"#,
@@ -4100,6 +4911,7 @@ fn _0529() {
 fn _0530() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: [10] / P1D)"#,
@@ -4110,6 +4922,7 @@ fn _0530() {
 fn _0531() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: [10] / P1Y)"#,
@@ -4120,6 +4933,7 @@ fn _0531() {
 fn _0532() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: [10] / [1..10])"#,
@@ -4130,6 +4944,7 @@ fn _0532() {
 fn _0533() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: [10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4140,6 +4955,7 @@ fn _0533() {
 fn _0534() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_list_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: [10] / null)"#,
@@ -4150,6 +4966,7 @@ fn _0534() {
 fn _0535() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / 10)"#,
@@ -4160,6 +4977,7 @@ fn _0535() {
 fn _0536() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / "10")"#,
@@ -4170,6 +4988,7 @@ fn _0536() {
 fn _0537() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / true)"#,
@@ -4180,6 +4999,7 @@ fn _0537() {
 fn _0538() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / 2021-01-01)"#,
@@ -4190,6 +5010,7 @@ fn _0538() {
 fn _0539() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / 2021-01-01T10:10:10)"#,
@@ -4200,6 +5021,7 @@ fn _0539() {
 fn _0540() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / 10:10:10)"#,
@@ -4210,6 +5032,7 @@ fn _0540() {
 fn _0541() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / [10])"#,
@@ -4220,6 +5043,7 @@ fn _0541() {
 fn _0542() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / {a: 10})"#,
@@ -4230,6 +5054,7 @@ fn _0542() {
 fn _0543() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / P1D)"#,
@@ -4240,6 +5065,7 @@ fn _0543() {
 fn _0544() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / P1Y)"#,
@@ -4250,6 +5076,7 @@ fn _0544() {
 fn _0545() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / [1..10])"#,
@@ -4260,6 +5087,7 @@ fn _0545() {
 fn _0546() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4270,6 +5098,7 @@ fn _0546() {
 fn _0547() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_context_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: {a: 10} / null)"#,
@@ -4280,6 +5109,7 @@ fn _0547() {
 fn _0548() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: P1D / "10")"#,
@@ -4290,6 +5120,7 @@ fn _0548() {
 fn _0549() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: P1D / true)"#,
@@ -4300,6 +5131,7 @@ fn _0549() {
 fn _0550() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: P1D / 2021-01-01)"#,
@@ -4310,6 +5142,7 @@ fn _0550() {
 fn _0551() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: P1D / 2021-01-01T10:10:10)"#,
@@ -4320,6 +5153,7 @@ fn _0551() {
 fn _0552() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: P1D / 10:10:10)"#,
@@ -4330,6 +5164,7 @@ fn _0552() {
 fn _0553() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: P1D / [10])"#,
@@ -4340,6 +5175,7 @@ fn _0553() {
 fn _0554() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: P1D / {a: 10})"#,
@@ -4350,6 +5186,7 @@ fn _0554() {
 fn _0555() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: P1D / P1Y)"#,
@@ -4360,6 +5197,7 @@ fn _0555() {
 fn _0556() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: P1D / [1..10])"#,
@@ -4370,6 +5208,7 @@ fn _0556() {
 fn _0557() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: P1D / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4380,6 +5219,7 @@ fn _0557() {
 fn _0558() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_dtDuration_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: P1D / null)"#,
@@ -4390,6 +5230,7 @@ fn _0558() {
 fn _0559() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: P1Y / "10")"#,
@@ -4400,6 +5241,7 @@ fn _0559() {
 fn _0560() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: P1Y / true)"#,
@@ -4410,6 +5252,7 @@ fn _0560() {
 fn _0561() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: P1Y / 2021-01-01)"#,
@@ -4420,6 +5263,7 @@ fn _0561() {
 fn _0562() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: P1Y / 2021-01-01T10:10:10)"#,
@@ -4430,6 +5274,7 @@ fn _0562() {
 fn _0563() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: P1Y / 10:10:10)"#,
@@ -4440,6 +5285,7 @@ fn _0563() {
 fn _0564() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: P1Y / [10])"#,
@@ -4450,6 +5296,7 @@ fn _0564() {
 fn _0565() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: P1Y / {a: 10})"#,
@@ -4460,6 +5307,7 @@ fn _0565() {
 fn _0566() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: P1Y / P1D)"#,
@@ -4470,6 +5318,7 @@ fn _0566() {
 fn _0567() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: P1Y / [1..10])"#,
@@ -4480,6 +5329,7 @@ fn _0567() {
 fn _0568() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: P1Y / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4490,6 +5340,7 @@ fn _0568() {
 fn _0569() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_ymDuration_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: P1Y / null)"#,
@@ -4500,6 +5351,7 @@ fn _0569() {
 fn _0570() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: [1..10] / 10)"#,
@@ -4510,6 +5362,7 @@ fn _0570() {
 fn _0571() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: [1..10] / "10")"#,
@@ -4520,6 +5373,7 @@ fn _0571() {
 fn _0572() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: [1..10] / true)"#,
@@ -4530,6 +5384,7 @@ fn _0572() {
 fn _0573() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: [1..10] / 2021-01-01)"#,
@@ -4540,6 +5395,7 @@ fn _0573() {
 fn _0574() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: [1..10] / 2021-01-01T10:10:10)"#,
@@ -4550,6 +5406,7 @@ fn _0574() {
 fn _0575() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: [1..10] / 10:10:10)"#,
@@ -4560,6 +5417,7 @@ fn _0575() {
 fn _0576() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: [1..10] / [10])"#,
@@ -4570,6 +5428,7 @@ fn _0576() {
 fn _0577() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: [1..10] / {a: 10})"#,
@@ -4580,6 +5439,7 @@ fn _0577() {
 fn _0578() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: [1..10] / P1D)"#,
@@ -4590,6 +5450,7 @@ fn _0578() {
 fn _0579() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: [1..10] / P1Y)"#,
@@ -4600,6 +5461,7 @@ fn _0579() {
 fn _0580() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: [1..10] / [1..10])"#,
@@ -4610,6 +5472,7 @@ fn _0580() {
 fn _0581() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: [1..10] / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4620,6 +5483,7 @@ fn _0581() {
 fn _0582() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_range_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: [1..10] / null)"#,
@@ -4630,6 +5494,7 @@ fn _0582() {
 fn _0583() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 10)"#,
@@ -4640,6 +5505,7 @@ fn _0583() {
 fn _0584() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / "10")"#,
@@ -4650,6 +5516,7 @@ fn _0584() {
 fn _0585() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / true)"#,
@@ -4660,6 +5527,7 @@ fn _0585() {
 fn _0586() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 2021-01-01)"#,
@@ -4670,6 +5538,7 @@ fn _0586() {
 fn _0587() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 2021-01-01T10:10:10)"#,
@@ -4680,6 +5549,7 @@ fn _0587() {
 fn _0588() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / 10:10:10)"#,
@@ -4690,6 +5560,7 @@ fn _0588() {
 fn _0589() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / [10])"#,
@@ -4700,6 +5571,7 @@ fn _0589() {
 fn _0590() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / {a: 10})"#,
@@ -4710,6 +5582,7 @@ fn _0590() {
 fn _0591() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / P1D)"#,
@@ -4720,6 +5593,7 @@ fn _0591() {
 fn _0592() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / P1Y)"#,
@@ -4730,6 +5604,7 @@ fn _0592() {
 fn _0593() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / [1..10])"#,
@@ -4740,6 +5615,7 @@ fn _0593() {
 fn _0594() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4750,6 +5626,7 @@ fn _0594() {
 fn _0595() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_function_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) / null)"#,
@@ -4760,6 +5637,7 @@ fn _0595() {
 fn _0596() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_number",
     &CTX,
     r#"null([division] incompatible types: null / 10)"#,
@@ -4770,6 +5648,7 @@ fn _0596() {
 fn _0597() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_string",
     &CTX,
     r#"null([division] incompatible types: null / "10")"#,
@@ -4780,6 +5659,7 @@ fn _0597() {
 fn _0598() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_boolean",
     &CTX,
     r#"null([division] incompatible types: null / true)"#,
@@ -4790,6 +5670,7 @@ fn _0598() {
 fn _0599() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_date",
     &CTX,
     r#"null([division] incompatible types: null / 2021-01-01)"#,
@@ -4800,6 +5681,7 @@ fn _0599() {
 fn _0600() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_dateAndTime",
     &CTX,
     r#"null([division] incompatible types: null / 2021-01-01T10:10:10)"#,
@@ -4810,6 +5692,7 @@ fn _0600() {
 fn _0601() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_time",
     &CTX,
     r#"null([division] incompatible types: null / 10:10:10)"#,
@@ -4820,6 +5703,7 @@ fn _0601() {
 fn _0602() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_list",
     &CTX,
     r#"null([division] incompatible types: null / [10])"#,
@@ -4830,6 +5714,7 @@ fn _0602() {
 fn _0603() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_context",
     &CTX,
     r#"null([division] incompatible types: null / {a: 10})"#,
@@ -4840,6 +5725,7 @@ fn _0603() {
 fn _0604() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_dtDuration",
     &CTX,
     r#"null([division] incompatible types: null / P1D)"#,
@@ -4850,6 +5736,7 @@ fn _0604() {
 fn _0605() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_ymDuration",
     &CTX,
     r#"null([division] incompatible types: null / P1Y)"#,
@@ -4860,6 +5747,7 @@ fn _0605() {
 fn _0606() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_range",
     &CTX,
     r#"null([division] incompatible types: null / [1..10])"#,
@@ -4870,6 +5758,7 @@ fn _0606() {
 fn _0607() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_function",
     &CTX,
     r#"null([division] incompatible types: null / FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -4880,6 +5769,7 @@ fn _0607() {
 fn _0608() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_divide_lhs_null_by_rhs_null",
     &CTX,
     r#"null([division] incompatible types: null / null)"#,
@@ -4890,6 +5780,7 @@ fn _0608() {
 fn _0609() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_string",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + "10"(string))"#,
@@ -4900,6 +5791,7 @@ fn _0609() {
 fn _0610() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_boolean",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + true(boolean))"#,
@@ -4910,6 +5802,7 @@ fn _0610() {
 fn _0611() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_date",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + 2021-01-01(date))"#,
@@ -4920,6 +5813,7 @@ fn _0611() {
 fn _0612() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_dateAndTime",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + 2021-01-01T10:10:10(date and time))"#,
@@ -4930,6 +5824,7 @@ fn _0612() {
 fn _0613() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_time",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + 10:10:10(time))"#,
@@ -4940,6 +5835,7 @@ fn _0613() {
 fn _0614() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_list",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + [10](list<number>))"#,
@@ -4950,6 +5846,7 @@ fn _0614() {
 fn _0615() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_context",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + {a: 10}(context<a: number>))"#,
@@ -4960,6 +5857,7 @@ fn _0615() {
 fn _0616() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_dtDuration",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + P1D(days and time duration))"#,
@@ -4970,6 +5868,7 @@ fn _0616() {
 fn _0617() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_ymDuration",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + P1Y(years and months duration))"#,
@@ -4980,6 +5879,7 @@ fn _0617() {
 fn _0618() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_range",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + [1..10](range<number>))"#,
@@ -4990,6 +5890,7 @@ fn _0618() {
 fn _0619() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_number_to_rhs_function",
     &CTX,
     r#"null(incompatible types in addition: 10(number) + FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any)(function<Any>->Any))"#,
@@ -4998,13 +5899,14 @@ fn _0619() {
 
 #[test]
 fn _0620() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_number_to_rhs_null", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_number_to_rhs_null", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0621() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_number",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5015,6 +5917,7 @@ fn _0621() {
 fn _0622() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_boolean",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5025,6 +5928,7 @@ fn _0622() {
 fn _0623() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_date",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5035,6 +5939,7 @@ fn _0623() {
 fn _0624() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_dateAndTime",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5045,6 +5950,7 @@ fn _0624() {
 fn _0625() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_time",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5055,6 +5961,7 @@ fn _0625() {
 fn _0626() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_list",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5065,6 +5972,7 @@ fn _0626() {
 fn _0627() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_context",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5075,6 +5983,7 @@ fn _0627() {
 fn _0628() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_dtDuration",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5085,6 +5994,7 @@ fn _0628() {
 fn _0629() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_ymDuration",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5095,6 +6005,7 @@ fn _0629() {
 fn _0630() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_range",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5105,6 +6016,7 @@ fn _0630() {
 fn _0631() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_function",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5115,6 +6027,7 @@ fn _0631() {
 fn _0632() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_string_to_rhs_null",
     &CTX,
     r#"null(expected string as a second argument in addition)"#,
@@ -5125,6 +6038,7 @@ fn _0632() {
 fn _0633() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5135,6 +6049,7 @@ fn _0633() {
 fn _0634() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5145,6 +6060,7 @@ fn _0634() {
 fn _0635() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5155,6 +6071,7 @@ fn _0635() {
 fn _0636() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5165,6 +6082,7 @@ fn _0636() {
 fn _0637() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5175,6 +6093,7 @@ fn _0637() {
 fn _0638() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5185,6 +6104,7 @@ fn _0638() {
 fn _0639() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5195,6 +6115,7 @@ fn _0639() {
 fn _0640() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5205,6 +6126,7 @@ fn _0640() {
 fn _0641() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5215,6 +6137,7 @@ fn _0641() {
 fn _0642() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5225,6 +6148,7 @@ fn _0642() {
 fn _0643() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5235,6 +6159,7 @@ fn _0643() {
 fn _0644() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5245,6 +6170,7 @@ fn _0644() {
 fn _0645() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_boolean_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is boolean)"#,
@@ -5255,6 +6181,7 @@ fn _0645() {
 fn _0646() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is number)"#,
@@ -5265,6 +6192,7 @@ fn _0646() {
 fn _0647() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is string)"#,
@@ -5275,6 +6203,7 @@ fn _0647() {
 fn _0648() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is boolean)"#,
@@ -5285,6 +6214,7 @@ fn _0648() {
 fn _0649() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is date)"#,
@@ -5295,6 +6225,7 @@ fn _0649() {
 fn _0650() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is date and time)"#,
@@ -5305,6 +6236,7 @@ fn _0650() {
 fn _0651() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is time)"#,
@@ -5315,6 +6247,7 @@ fn _0651() {
 fn _0652() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is list<number>)"#,
@@ -5325,6 +6258,7 @@ fn _0652() {
 fn _0653() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is context<a: number>)"#,
@@ -5335,6 +6269,7 @@ fn _0653() {
 fn _0654() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is range<number>)"#,
@@ -5345,6 +6280,7 @@ fn _0654() {
 fn _0655() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is function<Any>->Any)"#,
@@ -5355,6 +6291,7 @@ fn _0655() {
 fn _0656() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_date_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, actual type is Null)"#,
@@ -5365,6 +6302,7 @@ fn _0656() {
 fn _0657() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is number)"#,
@@ -5375,6 +6313,7 @@ fn _0657() {
 fn _0658() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is string)"#,
@@ -5385,6 +6324,7 @@ fn _0658() {
 fn _0659() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is boolean)"#,
@@ -5395,6 +6335,7 @@ fn _0659() {
 fn _0660() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date)"#,
@@ -5405,6 +6346,7 @@ fn _0660() {
 fn _0661() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is date and time)"#,
@@ -5415,6 +6357,7 @@ fn _0661() {
 fn _0662() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is time)"#,
@@ -5425,6 +6368,7 @@ fn _0662() {
 fn _0663() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is list<number>)"#,
@@ -5435,6 +6379,7 @@ fn _0663() {
 fn _0664() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is context<a: number>)"#,
@@ -5445,6 +6390,7 @@ fn _0664() {
 fn _0665() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is range<number>)"#,
@@ -5455,6 +6401,7 @@ fn _0665() {
 fn _0666() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is function<Any>->Any)"#,
@@ -5465,6 +6412,7 @@ fn _0666() {
 fn _0667() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dateAndTime_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, years and months duration, actual type is Null)"#,
@@ -5475,6 +6423,7 @@ fn _0667() {
 fn _0668() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is number)"#,
@@ -5485,6 +6434,7 @@ fn _0668() {
 fn _0669() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is string)"#,
@@ -5495,6 +6445,7 @@ fn _0669() {
 fn _0670() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is boolean)"#,
@@ -5505,6 +6456,7 @@ fn _0670() {
 fn _0671() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is date)"#,
@@ -5515,6 +6467,7 @@ fn _0671() {
 fn _0672() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is date and time)"#,
@@ -5525,6 +6478,7 @@ fn _0672() {
 fn _0673() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is time)"#,
@@ -5535,6 +6489,7 @@ fn _0673() {
 fn _0674() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is list<number>)"#,
@@ -5545,6 +6500,7 @@ fn _0674() {
 fn _0675() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is context<a: number>)"#,
@@ -5555,6 +6511,7 @@ fn _0675() {
 fn _0676() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is years and months duration)"#,
@@ -5565,6 +6522,7 @@ fn _0676() {
 fn _0677() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is range<number>)"#,
@@ -5575,6 +6533,7 @@ fn _0677() {
 fn _0678() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is function<Any>->Any)"#,
@@ -5585,6 +6544,7 @@ fn _0678() {
 fn _0679() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_time_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, actual type is Null)"#,
@@ -5595,6 +6555,7 @@ fn _0679() {
 fn _0680() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5605,6 +6566,7 @@ fn _0680() {
 fn _0681() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5615,6 +6577,7 @@ fn _0681() {
 fn _0682() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5625,6 +6588,7 @@ fn _0682() {
 fn _0683() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5635,6 +6599,7 @@ fn _0683() {
 fn _0684() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5645,6 +6610,7 @@ fn _0684() {
 fn _0685() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5655,6 +6621,7 @@ fn _0685() {
 fn _0686() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5665,6 +6632,7 @@ fn _0686() {
 fn _0687() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5675,6 +6643,7 @@ fn _0687() {
 fn _0688() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5685,6 +6654,7 @@ fn _0688() {
 fn _0689() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5695,6 +6665,7 @@ fn _0689() {
 fn _0690() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5705,6 +6676,7 @@ fn _0690() {
 fn _0691() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5715,6 +6687,7 @@ fn _0691() {
 fn _0692() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_list_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is list<number>)"#,
@@ -5725,6 +6698,7 @@ fn _0692() {
 fn _0693() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5735,6 +6709,7 @@ fn _0693() {
 fn _0694() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5745,6 +6720,7 @@ fn _0694() {
 fn _0695() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5755,6 +6731,7 @@ fn _0695() {
 fn _0696() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5765,6 +6742,7 @@ fn _0696() {
 fn _0697() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5775,6 +6753,7 @@ fn _0697() {
 fn _0698() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5785,6 +6764,7 @@ fn _0698() {
 fn _0699() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5795,6 +6775,7 @@ fn _0699() {
 fn _0700() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5805,6 +6786,7 @@ fn _0700() {
 fn _0701() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5815,6 +6797,7 @@ fn _0701() {
 fn _0702() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5825,6 +6808,7 @@ fn _0702() {
 fn _0703() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5835,6 +6819,7 @@ fn _0703() {
 fn _0704() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5845,6 +6830,7 @@ fn _0704() {
 fn _0705() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_context_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is context<a: number>)"#,
@@ -5855,6 +6841,7 @@ fn _0705() {
 fn _0706() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is number)"#,
@@ -5865,6 +6852,7 @@ fn _0706() {
 fn _0707() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is string)"#,
@@ -5875,6 +6863,7 @@ fn _0707() {
 fn _0708() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is boolean)"#,
@@ -5885,6 +6874,7 @@ fn _0708() {
 fn _0709() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is list<number>)"#,
@@ -5895,6 +6885,7 @@ fn _0709() {
 fn _0710() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is context<a: number>)"#,
@@ -5905,6 +6896,7 @@ fn _0710() {
 fn _0711() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is years and months duration)"#,
@@ -5915,6 +6907,7 @@ fn _0711() {
 fn _0712() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is range<number>)"#,
@@ -5925,6 +6918,7 @@ fn _0712() {
 fn _0713() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is function<Any>->Any)"#,
@@ -5935,6 +6929,7 @@ fn _0713() {
 fn _0714() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_dtDuration_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected days and time duration, date and time, actual type is Null)"#,
@@ -5945,6 +6940,7 @@ fn _0714() {
 fn _0715() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is number)"#,
@@ -5955,6 +6951,7 @@ fn _0715() {
 fn _0716() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is string)"#,
@@ -5965,6 +6962,7 @@ fn _0716() {
 fn _0717() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is boolean)"#,
@@ -5975,6 +6973,7 @@ fn _0717() {
 fn _0718() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is time)"#,
@@ -5985,6 +6984,7 @@ fn _0718() {
 fn _0719() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is list<number>)"#,
@@ -5995,6 +6995,7 @@ fn _0719() {
 fn _0720() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is context<a: number>)"#,
@@ -6005,6 +7006,7 @@ fn _0720() {
 fn _0721() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is days and time duration)"#,
@@ -6015,6 +7017,7 @@ fn _0721() {
 fn _0722() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is range<number>)"#,
@@ -6025,6 +7028,7 @@ fn _0722() {
 fn _0723() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is function<Any>->Any)"#,
@@ -6035,6 +7039,7 @@ fn _0723() {
 fn _0724() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_ymDuration_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected years and months duration, date and time, actual type is Null)"#,
@@ -6045,6 +7050,7 @@ fn _0724() {
 fn _0725() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6055,6 +7061,7 @@ fn _0725() {
 fn _0726() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6065,6 +7072,7 @@ fn _0726() {
 fn _0727() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6075,6 +7083,7 @@ fn _0727() {
 fn _0728() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6085,6 +7094,7 @@ fn _0728() {
 fn _0729() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6095,6 +7105,7 @@ fn _0729() {
 fn _0730() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6105,6 +7116,7 @@ fn _0730() {
 fn _0731() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6115,6 +7127,7 @@ fn _0731() {
 fn _0732() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6125,6 +7138,7 @@ fn _0732() {
 fn _0733() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6135,6 +7149,7 @@ fn _0733() {
 fn _0734() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6145,6 +7160,7 @@ fn _0734() {
 fn _0735() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6155,6 +7171,7 @@ fn _0735() {
 fn _0736() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6165,6 +7182,7 @@ fn _0736() {
 fn _0737() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_range_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is range<number>)"#,
@@ -6175,6 +7193,7 @@ fn _0737() {
 fn _0738() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_number",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6185,6 +7204,7 @@ fn _0738() {
 fn _0739() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_string",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6195,6 +7215,7 @@ fn _0739() {
 fn _0740() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_boolean",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6205,6 +7226,7 @@ fn _0740() {
 fn _0741() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_date",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6215,6 +7237,7 @@ fn _0741() {
 fn _0742() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_dateAndTime",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6225,6 +7248,7 @@ fn _0742() {
 fn _0743() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_time",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6235,6 +7259,7 @@ fn _0743() {
 fn _0744() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_list",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6245,6 +7270,7 @@ fn _0744() {
 fn _0745() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_context",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6255,6 +7281,7 @@ fn _0745() {
 fn _0746() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_dtDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6265,6 +7292,7 @@ fn _0746() {
 fn _0747() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_ymDuration",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6275,6 +7303,7 @@ fn _0747() {
 fn _0748() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_range",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6285,6 +7314,7 @@ fn _0748() {
 fn _0749() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_function",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6295,6 +7325,7 @@ fn _0749() {
 fn _0750() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_add_lhs_function_to_rhs_null",
     &CTX,
     r#"null([builders::add] invalid argument type, expected number, string, date and time, days and time duration, years and months duration, null, actual type is function<Any>->Any)"#,
@@ -6303,73 +7334,74 @@ fn _0750() {
 
 #[test]
 fn _0751() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_number", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_number", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0752() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_string", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_string", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0753() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_boolean", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_boolean", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0754() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_date", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_date", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0755() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dateAndTime", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_dateAndTime", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0756() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_time", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_time", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0757() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_list", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_list", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0758() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_context", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_context", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0759() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_dtDuration", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_dtDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0760() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_ymDuration", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_ymDuration", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0761() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_range", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_range", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0762() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_function", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_function", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0763() {
-  assert_decision(&MODEL_EVALUATOR, "error_when_add_lhs_null_to_rhs_null", &CTX, r#"null"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "error_when_add_lhs_null_to_rhs_null", &CTX, r#"null"#);
 }
 
 #[test]
 fn _0764() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - "10")"#,
@@ -6380,6 +7412,7 @@ fn _0764() {
 fn _0765() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - true)"#,
@@ -6390,6 +7423,7 @@ fn _0765() {
 fn _0766() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - 2021-01-01)"#,
@@ -6400,6 +7434,7 @@ fn _0766() {
 fn _0767() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - 2021-01-01T10:10:10)"#,
@@ -6410,6 +7445,7 @@ fn _0767() {
 fn _0768() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - 10:10:10)"#,
@@ -6420,6 +7456,7 @@ fn _0768() {
 fn _0769() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - [10])"#,
@@ -6430,6 +7467,7 @@ fn _0769() {
 fn _0770() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - {a: 10})"#,
@@ -6440,6 +7478,7 @@ fn _0770() {
 fn _0771() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - P1D)"#,
@@ -6450,6 +7489,7 @@ fn _0771() {
 fn _0772() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - P1Y)"#,
@@ -6460,6 +7500,7 @@ fn _0772() {
 fn _0773() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - [1..10])"#,
@@ -6470,6 +7511,7 @@ fn _0773() {
 fn _0774() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -6480,6 +7522,7 @@ fn _0774() {
 fn _0775() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_number_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: 10 - null)"#,
@@ -6490,6 +7533,7 @@ fn _0775() {
 fn _0776() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - 10)"#,
@@ -6500,6 +7544,7 @@ fn _0776() {
 fn _0777() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - "10")"#,
@@ -6510,6 +7555,7 @@ fn _0777() {
 fn _0778() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - true)"#,
@@ -6520,6 +7566,7 @@ fn _0778() {
 fn _0779() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - 2021-01-01)"#,
@@ -6530,6 +7577,7 @@ fn _0779() {
 fn _0780() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - 2021-01-01T10:10:10)"#,
@@ -6540,6 +7588,7 @@ fn _0780() {
 fn _0781() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - 10:10:10)"#,
@@ -6550,6 +7599,7 @@ fn _0781() {
 fn _0782() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - [10])"#,
@@ -6560,6 +7610,7 @@ fn _0782() {
 fn _0783() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - {a: 10})"#,
@@ -6570,6 +7621,7 @@ fn _0783() {
 fn _0784() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - P1D)"#,
@@ -6580,6 +7632,7 @@ fn _0784() {
 fn _0785() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - P1Y)"#,
@@ -6590,6 +7643,7 @@ fn _0785() {
 fn _0786() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - [1..10])"#,
@@ -6600,6 +7654,7 @@ fn _0786() {
 fn _0787() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -6610,6 +7665,7 @@ fn _0787() {
 fn _0788() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_string_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: "10" - null)"#,
@@ -6620,6 +7676,7 @@ fn _0788() {
 fn _0789() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: true - 10)"#,
@@ -6630,6 +7687,7 @@ fn _0789() {
 fn _0790() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: true - "10")"#,
@@ -6640,6 +7698,7 @@ fn _0790() {
 fn _0791() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: true - true)"#,
@@ -6650,6 +7709,7 @@ fn _0791() {
 fn _0792() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: true - 2021-01-01)"#,
@@ -6660,6 +7720,7 @@ fn _0792() {
 fn _0793() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: true - 2021-01-01T10:10:10)"#,
@@ -6670,6 +7731,7 @@ fn _0793() {
 fn _0794() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: true - 10:10:10)"#,
@@ -6680,6 +7742,7 @@ fn _0794() {
 fn _0795() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: true - [10])"#,
@@ -6690,6 +7753,7 @@ fn _0795() {
 fn _0796() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: true - {a: 10})"#,
@@ -6700,6 +7764,7 @@ fn _0796() {
 fn _0797() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: true - P1D)"#,
@@ -6710,6 +7775,7 @@ fn _0797() {
 fn _0798() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: true - P1Y)"#,
@@ -6720,6 +7786,7 @@ fn _0798() {
 fn _0799() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: true - [1..10])"#,
@@ -6730,6 +7797,7 @@ fn _0799() {
 fn _0800() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: true - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -6740,6 +7808,7 @@ fn _0800() {
 fn _0801() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_boolean_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: true - null)"#,
@@ -6750,6 +7819,7 @@ fn _0801() {
 fn _0802() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - 10)"#,
@@ -6760,6 +7830,7 @@ fn _0802() {
 fn _0803() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - "10")"#,
@@ -6770,6 +7841,7 @@ fn _0803() {
 fn _0804() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - true)"#,
@@ -6780,6 +7852,7 @@ fn _0804() {
 fn _0805() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - 10:10:10)"#,
@@ -6790,6 +7863,7 @@ fn _0805() {
 fn _0806() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - [10])"#,
@@ -6800,6 +7874,7 @@ fn _0806() {
 fn _0807() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - {a: 10})"#,
@@ -6810,6 +7885,7 @@ fn _0807() {
 fn _0808() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - [1..10])"#,
@@ -6820,6 +7896,7 @@ fn _0808() {
 fn _0809() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -6830,6 +7907,7 @@ fn _0809() {
 fn _0810() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_date_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01 - null)"#,
@@ -6840,6 +7918,7 @@ fn _0810() {
 fn _0811() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10)"#,
@@ -6850,6 +7929,7 @@ fn _0811() {
 fn _0812() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - "10")"#,
@@ -6860,6 +7940,7 @@ fn _0812() {
 fn _0813() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - true)"#,
@@ -6870,6 +7951,7 @@ fn _0813() {
 fn _0814() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - 10:10:10)"#,
@@ -6880,6 +7962,7 @@ fn _0814() {
 fn _0815() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - [10])"#,
@@ -6890,6 +7973,7 @@ fn _0815() {
 fn _0816() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - {a: 10})"#,
@@ -6900,6 +7984,7 @@ fn _0816() {
 fn _0817() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - [1..10])"#,
@@ -6910,6 +7995,7 @@ fn _0817() {
 fn _0818() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -6920,6 +8006,7 @@ fn _0818() {
 fn _0819() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dateAndTime_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: 2021-01-01T10:10:10 - null)"#,
@@ -6930,6 +8017,7 @@ fn _0819() {
 fn _0820() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - 10)"#,
@@ -6940,6 +8028,7 @@ fn _0820() {
 fn _0821() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - "10")"#,
@@ -6950,6 +8039,7 @@ fn _0821() {
 fn _0822() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - true)"#,
@@ -6960,6 +8050,7 @@ fn _0822() {
 fn _0823() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - 2021-01-01)"#,
@@ -6970,6 +8061,7 @@ fn _0823() {
 fn _0824() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - 2021-01-01T10:10:10)"#,
@@ -6980,6 +8072,7 @@ fn _0824() {
 fn _0825() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - [10])"#,
@@ -6990,6 +8083,7 @@ fn _0825() {
 fn _0826() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - {a: 10})"#,
@@ -7000,6 +8094,7 @@ fn _0826() {
 fn _0827() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - P1Y)"#,
@@ -7010,6 +8105,7 @@ fn _0827() {
 fn _0828() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - [1..10])"#,
@@ -7020,6 +8116,7 @@ fn _0828() {
 fn _0829() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7030,6 +8127,7 @@ fn _0829() {
 fn _0830() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_time_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: 10:10:10 - null)"#,
@@ -7040,6 +8138,7 @@ fn _0830() {
 fn _0831() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - 10)"#,
@@ -7050,6 +8149,7 @@ fn _0831() {
 fn _0832() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - "10")"#,
@@ -7060,6 +8160,7 @@ fn _0832() {
 fn _0833() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - true)"#,
@@ -7070,6 +8171,7 @@ fn _0833() {
 fn _0834() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - 2021-01-01)"#,
@@ -7080,6 +8182,7 @@ fn _0834() {
 fn _0835() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - 2021-01-01T10:10:10)"#,
@@ -7090,6 +8193,7 @@ fn _0835() {
 fn _0836() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - 10:10:10)"#,
@@ -7100,6 +8204,7 @@ fn _0836() {
 fn _0837() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - [10])"#,
@@ -7110,6 +8215,7 @@ fn _0837() {
 fn _0838() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - {a: 10})"#,
@@ -7120,6 +8226,7 @@ fn _0838() {
 fn _0839() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - P1D)"#,
@@ -7130,6 +8237,7 @@ fn _0839() {
 fn _0840() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - P1Y)"#,
@@ -7140,6 +8248,7 @@ fn _0840() {
 fn _0841() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - [1..10])"#,
@@ -7150,6 +8259,7 @@ fn _0841() {
 fn _0842() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7160,6 +8270,7 @@ fn _0842() {
 fn _0843() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_list_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: [10] - null)"#,
@@ -7170,6 +8281,7 @@ fn _0843() {
 fn _0844() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - 10)"#,
@@ -7180,6 +8292,7 @@ fn _0844() {
 fn _0845() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - "10")"#,
@@ -7190,6 +8303,7 @@ fn _0845() {
 fn _0846() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - true)"#,
@@ -7200,6 +8314,7 @@ fn _0846() {
 fn _0847() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01)"#,
@@ -7210,6 +8325,7 @@ fn _0847() {
 fn _0848() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - 2021-01-01T10:10:10)"#,
@@ -7220,6 +8336,7 @@ fn _0848() {
 fn _0849() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - 10:10:10)"#,
@@ -7230,6 +8347,7 @@ fn _0849() {
 fn _0850() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - [10])"#,
@@ -7240,6 +8358,7 @@ fn _0850() {
 fn _0851() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - {a: 10})"#,
@@ -7250,6 +8369,7 @@ fn _0851() {
 fn _0852() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - P1D)"#,
@@ -7260,6 +8380,7 @@ fn _0852() {
 fn _0853() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - P1Y)"#,
@@ -7270,6 +8391,7 @@ fn _0853() {
 fn _0854() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - [1..10])"#,
@@ -7280,6 +8402,7 @@ fn _0854() {
 fn _0855() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7290,6 +8413,7 @@ fn _0855() {
 fn _0856() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_context_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: {a: 10} - null)"#,
@@ -7300,6 +8424,7 @@ fn _0856() {
 fn _0857() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - 10)"#,
@@ -7310,6 +8435,7 @@ fn _0857() {
 fn _0858() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - "10")"#,
@@ -7320,6 +8446,7 @@ fn _0858() {
 fn _0859() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - true)"#,
@@ -7330,6 +8457,7 @@ fn _0859() {
 fn _0860() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - 2021-01-01)"#,
@@ -7340,6 +8468,7 @@ fn _0860() {
 fn _0861() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - 2021-01-01T10:10:10)"#,
@@ -7350,6 +8479,7 @@ fn _0861() {
 fn _0862() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - 10:10:10)"#,
@@ -7360,6 +8490,7 @@ fn _0862() {
 fn _0863() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - [10])"#,
@@ -7370,6 +8501,7 @@ fn _0863() {
 fn _0864() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - {a: 10})"#,
@@ -7380,6 +8512,7 @@ fn _0864() {
 fn _0865() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - P1Y)"#,
@@ -7390,6 +8523,7 @@ fn _0865() {
 fn _0866() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - [1..10])"#,
@@ -7400,6 +8534,7 @@ fn _0866() {
 fn _0867() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7410,6 +8545,7 @@ fn _0867() {
 fn _0868() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_dtDuration_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: P1D - null)"#,
@@ -7420,6 +8556,7 @@ fn _0868() {
 fn _0869() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - 10)"#,
@@ -7430,6 +8567,7 @@ fn _0869() {
 fn _0870() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - "10")"#,
@@ -7440,6 +8578,7 @@ fn _0870() {
 fn _0871() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - true)"#,
@@ -7450,6 +8589,7 @@ fn _0871() {
 fn _0872() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - 2021-01-01)"#,
@@ -7460,6 +8600,7 @@ fn _0872() {
 fn _0873() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - 2021-01-01T10:10:10)"#,
@@ -7470,6 +8611,7 @@ fn _0873() {
 fn _0874() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - 10:10:10)"#,
@@ -7480,6 +8622,7 @@ fn _0874() {
 fn _0875() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - [10])"#,
@@ -7490,6 +8633,7 @@ fn _0875() {
 fn _0876() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - {a: 10})"#,
@@ -7500,6 +8644,7 @@ fn _0876() {
 fn _0877() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - P1D)"#,
@@ -7510,6 +8655,7 @@ fn _0877() {
 fn _0878() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - [1..10])"#,
@@ -7520,6 +8666,7 @@ fn _0878() {
 fn _0879() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7530,6 +8677,7 @@ fn _0879() {
 fn _0880() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_ymDuration_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: P1Y - null)"#,
@@ -7540,6 +8688,7 @@ fn _0880() {
 fn _0881() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - 10)"#,
@@ -7550,6 +8699,7 @@ fn _0881() {
 fn _0882() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - "10")"#,
@@ -7560,6 +8710,7 @@ fn _0882() {
 fn _0883() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - true)"#,
@@ -7570,6 +8721,7 @@ fn _0883() {
 fn _0884() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - 2021-01-01)"#,
@@ -7580,6 +8732,7 @@ fn _0884() {
 fn _0885() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - 2021-01-01T10:10:10)"#,
@@ -7590,6 +8743,7 @@ fn _0885() {
 fn _0886() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - 10:10:10)"#,
@@ -7600,6 +8754,7 @@ fn _0886() {
 fn _0887() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - [10])"#,
@@ -7610,6 +8765,7 @@ fn _0887() {
 fn _0888() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - {a: 10})"#,
@@ -7620,6 +8776,7 @@ fn _0888() {
 fn _0889() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - P1D)"#,
@@ -7630,6 +8787,7 @@ fn _0889() {
 fn _0890() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - P1Y)"#,
@@ -7640,6 +8798,7 @@ fn _0890() {
 fn _0891() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - [1..10])"#,
@@ -7650,6 +8809,7 @@ fn _0891() {
 fn _0892() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7660,6 +8820,7 @@ fn _0892() {
 fn _0893() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_range_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: [1..10] - null)"#,
@@ -7670,6 +8831,7 @@ fn _0893() {
 fn _0894() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10)"#,
@@ -7680,6 +8842,7 @@ fn _0894() {
 fn _0895() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - "10")"#,
@@ -7690,6 +8853,7 @@ fn _0895() {
 fn _0896() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - true)"#,
@@ -7700,6 +8864,7 @@ fn _0896() {
 fn _0897() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 2021-01-01)"#,
@@ -7710,6 +8875,7 @@ fn _0897() {
 fn _0898() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 2021-01-01T10:10:10)"#,
@@ -7720,6 +8886,7 @@ fn _0898() {
 fn _0899() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - 10:10:10)"#,
@@ -7730,6 +8897,7 @@ fn _0899() {
 fn _0900() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - [10])"#,
@@ -7740,6 +8908,7 @@ fn _0900() {
 fn _0901() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - {a: 10})"#,
@@ -7750,6 +8919,7 @@ fn _0901() {
 fn _0902() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - P1D)"#,
@@ -7760,6 +8930,7 @@ fn _0902() {
 fn _0903() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - P1Y)"#,
@@ -7770,6 +8941,7 @@ fn _0903() {
 fn _0904() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - [1..10])"#,
@@ -7780,6 +8952,7 @@ fn _0904() {
 fn _0905() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7790,6 +8963,7 @@ fn _0905() {
 fn _0906() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_function_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any) - null)"#,
@@ -7800,6 +8974,7 @@ fn _0906() {
 fn _0907() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_number",
     &CTX,
     r#"null([subtraction] incompatible types: null - 10)"#,
@@ -7810,6 +8985,7 @@ fn _0907() {
 fn _0908() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_string",
     &CTX,
     r#"null([subtraction] incompatible types: null - "10")"#,
@@ -7820,6 +8996,7 @@ fn _0908() {
 fn _0909() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_boolean",
     &CTX,
     r#"null([subtraction] incompatible types: null - true)"#,
@@ -7830,6 +9007,7 @@ fn _0909() {
 fn _0910() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_date",
     &CTX,
     r#"null([subtraction] incompatible types: null - 2021-01-01)"#,
@@ -7840,6 +9018,7 @@ fn _0910() {
 fn _0911() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_dateAndTime",
     &CTX,
     r#"null([subtraction] incompatible types: null - 2021-01-01T10:10:10)"#,
@@ -7850,6 +9029,7 @@ fn _0911() {
 fn _0912() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_time",
     &CTX,
     r#"null([subtraction] incompatible types: null - 10:10:10)"#,
@@ -7860,6 +9040,7 @@ fn _0912() {
 fn _0913() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_list",
     &CTX,
     r#"null([subtraction] incompatible types: null - [10])"#,
@@ -7870,6 +9051,7 @@ fn _0913() {
 fn _0914() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_context",
     &CTX,
     r#"null([subtraction] incompatible types: null - {a: 10})"#,
@@ -7880,6 +9062,7 @@ fn _0914() {
 fn _0915() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_dtDuration",
     &CTX,
     r#"null([subtraction] incompatible types: null - P1D)"#,
@@ -7890,6 +9073,7 @@ fn _0915() {
 fn _0916() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_ymDuration",
     &CTX,
     r#"null([subtraction] incompatible types: null - P1Y)"#,
@@ -7900,6 +9084,7 @@ fn _0916() {
 fn _0917() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_range",
     &CTX,
     r#"null([subtraction] incompatible types: null - [1..10])"#,
@@ -7910,6 +9095,7 @@ fn _0917() {
 fn _0918() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_function",
     &CTX,
     r#"null([subtraction] incompatible types: null - FunctionDefinition([(Name("a"), Any)],_,false,[],{},Any))"#,
@@ -7920,6 +9106,7 @@ fn _0918() {
 fn _0919() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_subtract_lhs_null_minus_rhs_null",
     &CTX,
     r#"null([subtraction] incompatible types: null - null)"#,
@@ -7930,6 +9117,7 @@ fn _0919() {
 fn _0920() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_string",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7940,6 +9128,7 @@ fn _0920() {
 fn _0921() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7950,6 +9139,7 @@ fn _0921() {
 fn _0922() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_date",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7960,6 +9150,7 @@ fn _0922() {
 fn _0923() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7970,6 +9161,7 @@ fn _0923() {
 fn _0924() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_time",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7980,6 +9172,7 @@ fn _0924() {
 fn _0925() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_list",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -7990,6 +9183,7 @@ fn _0925() {
 fn _0926() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_context",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8000,6 +9194,7 @@ fn _0926() {
 fn _0927() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8010,6 +9205,7 @@ fn _0927() {
 fn _0928() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8020,6 +9216,7 @@ fn _0928() {
 fn _0929() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_range",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8030,6 +9227,7 @@ fn _0929() {
 fn _0930() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_function",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8040,6 +9238,7 @@ fn _0930() {
 fn _0931() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_number_exp_rhs_null",
     &CTX,
     r#"null(exponentiation exponent is not a number)"#,
@@ -8050,6 +9249,7 @@ fn _0931() {
 fn _0932() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8060,6 +9260,7 @@ fn _0932() {
 fn _0933() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8070,6 +9271,7 @@ fn _0933() {
 fn _0934() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8080,6 +9282,7 @@ fn _0934() {
 fn _0935() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8090,6 +9293,7 @@ fn _0935() {
 fn _0936() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8100,6 +9304,7 @@ fn _0936() {
 fn _0937() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8110,6 +9315,7 @@ fn _0937() {
 fn _0938() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8120,6 +9326,7 @@ fn _0938() {
 fn _0939() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8130,6 +9337,7 @@ fn _0939() {
 fn _0940() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8140,6 +9348,7 @@ fn _0940() {
 fn _0941() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8150,6 +9359,7 @@ fn _0941() {
 fn _0942() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8160,6 +9370,7 @@ fn _0942() {
 fn _0943() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8170,6 +9381,7 @@ fn _0943() {
 fn _0944() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_string_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8180,6 +9392,7 @@ fn _0944() {
 fn _0945() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8190,6 +9403,7 @@ fn _0945() {
 fn _0946() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8200,6 +9414,7 @@ fn _0946() {
 fn _0947() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8210,6 +9425,7 @@ fn _0947() {
 fn _0948() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8220,6 +9436,7 @@ fn _0948() {
 fn _0949() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8230,6 +9447,7 @@ fn _0949() {
 fn _0950() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8240,6 +9458,7 @@ fn _0950() {
 fn _0951() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8250,6 +9469,7 @@ fn _0951() {
 fn _0952() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8260,6 +9480,7 @@ fn _0952() {
 fn _0953() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8270,6 +9491,7 @@ fn _0953() {
 fn _0954() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8280,6 +9502,7 @@ fn _0954() {
 fn _0955() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8290,6 +9513,7 @@ fn _0955() {
 fn _0956() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8300,6 +9524,7 @@ fn _0956() {
 fn _0957() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_boolean_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8310,6 +9535,7 @@ fn _0957() {
 fn _0958() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8320,6 +9546,7 @@ fn _0958() {
 fn _0959() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8330,6 +9557,7 @@ fn _0959() {
 fn _0960() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8340,6 +9568,7 @@ fn _0960() {
 fn _0961() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8350,6 +9579,7 @@ fn _0961() {
 fn _0962() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8360,6 +9590,7 @@ fn _0962() {
 fn _0963() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8370,6 +9601,7 @@ fn _0963() {
 fn _0964() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8380,6 +9612,7 @@ fn _0964() {
 fn _0965() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8390,6 +9623,7 @@ fn _0965() {
 fn _0966() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8400,6 +9634,7 @@ fn _0966() {
 fn _0967() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8410,6 +9645,7 @@ fn _0967() {
 fn _0968() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8420,6 +9656,7 @@ fn _0968() {
 fn _0969() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8430,6 +9667,7 @@ fn _0969() {
 fn _0970() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_date_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8440,6 +9678,7 @@ fn _0970() {
 fn _0971() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8450,6 +9689,7 @@ fn _0971() {
 fn _0972() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8460,6 +9700,7 @@ fn _0972() {
 fn _0973() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8470,6 +9711,7 @@ fn _0973() {
 fn _0974() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8480,6 +9722,7 @@ fn _0974() {
 fn _0975() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8490,6 +9733,7 @@ fn _0975() {
 fn _0976() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8500,6 +9744,7 @@ fn _0976() {
 fn _0977() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8510,6 +9755,7 @@ fn _0977() {
 fn _0978() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8520,6 +9766,7 @@ fn _0978() {
 fn _0979() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8530,6 +9777,7 @@ fn _0979() {
 fn _0980() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8540,6 +9788,7 @@ fn _0980() {
 fn _0981() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8550,6 +9799,7 @@ fn _0981() {
 fn _0982() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8560,6 +9810,7 @@ fn _0982() {
 fn _0983() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dateAndTime_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8570,6 +9821,7 @@ fn _0983() {
 fn _0984() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8580,6 +9832,7 @@ fn _0984() {
 fn _0985() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8590,6 +9843,7 @@ fn _0985() {
 fn _0986() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8600,6 +9854,7 @@ fn _0986() {
 fn _0987() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8610,6 +9865,7 @@ fn _0987() {
 fn _0988() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8620,6 +9876,7 @@ fn _0988() {
 fn _0989() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8630,6 +9887,7 @@ fn _0989() {
 fn _0990() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8640,6 +9898,7 @@ fn _0990() {
 fn _0991() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8650,6 +9909,7 @@ fn _0991() {
 fn _0992() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8660,6 +9920,7 @@ fn _0992() {
 fn _0993() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8670,6 +9931,7 @@ fn _0993() {
 fn _0994() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8680,6 +9942,7 @@ fn _0994() {
 fn _0995() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8690,6 +9953,7 @@ fn _0995() {
 fn _0996() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_time_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8700,6 +9964,7 @@ fn _0996() {
 fn _0997() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8710,6 +9975,7 @@ fn _0997() {
 fn _0998() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8720,6 +9986,7 @@ fn _0998() {
 fn _0999() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8730,6 +9997,7 @@ fn _0999() {
 fn _1000() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8740,6 +10008,7 @@ fn _1000() {
 fn _1001() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8750,6 +10019,7 @@ fn _1001() {
 fn _1002() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8760,6 +10030,7 @@ fn _1002() {
 fn _1003() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8770,6 +10041,7 @@ fn _1003() {
 fn _1004() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8780,6 +10052,7 @@ fn _1004() {
 fn _1005() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8790,6 +10063,7 @@ fn _1005() {
 fn _1006() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8800,6 +10074,7 @@ fn _1006() {
 fn _1007() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8810,6 +10085,7 @@ fn _1007() {
 fn _1008() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8820,6 +10096,7 @@ fn _1008() {
 fn _1009() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_list_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8830,6 +10107,7 @@ fn _1009() {
 fn _1010() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8840,6 +10118,7 @@ fn _1010() {
 fn _1011() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8850,6 +10129,7 @@ fn _1011() {
 fn _1012() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8860,6 +10140,7 @@ fn _1012() {
 fn _1013() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8870,6 +10151,7 @@ fn _1013() {
 fn _1014() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8880,6 +10162,7 @@ fn _1014() {
 fn _1015() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8890,6 +10173,7 @@ fn _1015() {
 fn _1016() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8900,6 +10184,7 @@ fn _1016() {
 fn _1017() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8910,6 +10195,7 @@ fn _1017() {
 fn _1018() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8920,6 +10206,7 @@ fn _1018() {
 fn _1019() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8930,6 +10217,7 @@ fn _1019() {
 fn _1020() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8940,6 +10228,7 @@ fn _1020() {
 fn _1021() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8950,6 +10239,7 @@ fn _1021() {
 fn _1022() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_context_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8960,6 +10250,7 @@ fn _1022() {
 fn _1023() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8970,6 +10261,7 @@ fn _1023() {
 fn _1024() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8980,6 +10272,7 @@ fn _1024() {
 fn _1025() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -8990,6 +10283,7 @@ fn _1025() {
 fn _1026() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9000,6 +10294,7 @@ fn _1026() {
 fn _1027() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9010,6 +10305,7 @@ fn _1027() {
 fn _1028() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9020,6 +10316,7 @@ fn _1028() {
 fn _1029() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9030,6 +10327,7 @@ fn _1029() {
 fn _1030() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9040,6 +10338,7 @@ fn _1030() {
 fn _1031() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9050,6 +10349,7 @@ fn _1031() {
 fn _1032() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9060,6 +10360,7 @@ fn _1032() {
 fn _1033() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9070,6 +10371,7 @@ fn _1033() {
 fn _1034() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9080,6 +10382,7 @@ fn _1034() {
 fn _1035() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_dtDuration_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9090,6 +10393,7 @@ fn _1035() {
 fn _1036() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9100,6 +10404,7 @@ fn _1036() {
 fn _1037() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9110,6 +10415,7 @@ fn _1037() {
 fn _1038() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9120,6 +10426,7 @@ fn _1038() {
 fn _1039() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9130,6 +10437,7 @@ fn _1039() {
 fn _1040() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9140,6 +10448,7 @@ fn _1040() {
 fn _1041() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9150,6 +10459,7 @@ fn _1041() {
 fn _1042() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9160,6 +10470,7 @@ fn _1042() {
 fn _1043() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9170,6 +10481,7 @@ fn _1043() {
 fn _1044() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9180,6 +10492,7 @@ fn _1044() {
 fn _1045() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9190,6 +10503,7 @@ fn _1045() {
 fn _1046() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9200,6 +10514,7 @@ fn _1046() {
 fn _1047() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9210,6 +10525,7 @@ fn _1047() {
 fn _1048() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_ymDuration_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9220,6 +10536,7 @@ fn _1048() {
 fn _1049() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9230,6 +10547,7 @@ fn _1049() {
 fn _1050() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9240,6 +10558,7 @@ fn _1050() {
 fn _1051() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9250,6 +10569,7 @@ fn _1051() {
 fn _1052() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9260,6 +10580,7 @@ fn _1052() {
 fn _1053() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9270,6 +10591,7 @@ fn _1053() {
 fn _1054() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9280,6 +10602,7 @@ fn _1054() {
 fn _1055() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9290,6 +10613,7 @@ fn _1055() {
 fn _1056() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9300,6 +10624,7 @@ fn _1056() {
 fn _1057() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9310,6 +10635,7 @@ fn _1057() {
 fn _1058() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9320,6 +10646,7 @@ fn _1058() {
 fn _1059() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9330,6 +10657,7 @@ fn _1059() {
 fn _1060() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9340,6 +10668,7 @@ fn _1060() {
 fn _1061() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_range_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9350,6 +10679,7 @@ fn _1061() {
 fn _1062() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9360,6 +10690,7 @@ fn _1062() {
 fn _1063() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9370,6 +10701,7 @@ fn _1063() {
 fn _1064() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9380,6 +10712,7 @@ fn _1064() {
 fn _1065() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9390,6 +10723,7 @@ fn _1065() {
 fn _1066() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9400,6 +10734,7 @@ fn _1066() {
 fn _1067() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9410,6 +10745,7 @@ fn _1067() {
 fn _1068() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9420,6 +10756,7 @@ fn _1068() {
 fn _1069() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9430,6 +10767,7 @@ fn _1069() {
 fn _1070() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9440,6 +10778,7 @@ fn _1070() {
 fn _1071() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9450,6 +10789,7 @@ fn _1071() {
 fn _1072() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9460,6 +10800,7 @@ fn _1072() {
 fn _1073() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9470,6 +10811,7 @@ fn _1073() {
 fn _1074() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_function_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9480,6 +10822,7 @@ fn _1074() {
 fn _1075() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_number",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9490,6 +10833,7 @@ fn _1075() {
 fn _1076() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_string",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9500,6 +10844,7 @@ fn _1076() {
 fn _1077() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_boolean",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9510,6 +10855,7 @@ fn _1077() {
 fn _1078() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_date",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9520,6 +10866,7 @@ fn _1078() {
 fn _1079() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_dateAndTime",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9530,6 +10877,7 @@ fn _1079() {
 fn _1080() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_time",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9540,6 +10888,7 @@ fn _1080() {
 fn _1081() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_list",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9550,6 +10899,7 @@ fn _1081() {
 fn _1082() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_context",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9560,6 +10910,7 @@ fn _1082() {
 fn _1083() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_dtDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9570,6 +10921,7 @@ fn _1083() {
 fn _1084() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_ymDuration",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9580,6 +10932,7 @@ fn _1084() {
 fn _1085() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_range",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9590,6 +10943,7 @@ fn _1085() {
 fn _1086() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_function",
     &CTX,
     r#"null(exponentiation base is not a number)"#,
@@ -9600,6 +10954,7 @@ fn _1086() {
 fn _1087() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "error_when_exponent_lhs_null_exp_rhs_null",
     &CTX,
     r#"null(exponentiation base is not a number)"#,

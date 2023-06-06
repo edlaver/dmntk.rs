@@ -41,7 +41,7 @@ static MODEL_EVALUATOR_C: Lazy<Arc<ModelEvaluator>> = Lazy::new(|| build_model_e
 #[test]
 fn _0001() {
   let ctx = context(r#" { Person name: "Jenny" } "#);
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_A,
     "http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9",
     "Greet the Person",
@@ -53,7 +53,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#" { Person name: "Waldy" } "#);
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B1,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
@@ -65,7 +65,7 @@ fn _0002() {
 #[test]
 fn _0003() {
   let ctx = context(r#" { Model A: { Person name: "John" }} "#);
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B1,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
@@ -82,7 +82,7 @@ fn _0004() {
       Model A: { Person name: "John" }
     } "#,
   );
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B1,
     "http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
     "Evaluating Say Hello",
@@ -94,7 +94,7 @@ fn _0004() {
 #[test]
 fn _0005() {
   let ctx = context(r#" { Person name: "Cecil" } "#);
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B2,
     "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
     "Evaluating B2 Say Hello",
@@ -106,7 +106,7 @@ fn _0005() {
 #[test]
 fn _0006() {
   let ctx = context(r#" { Model A: { Person name: "Peter" }} "#);
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B2,
     "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
     "Evaluating B2 Say Hello",
@@ -123,7 +123,7 @@ fn _0007() {
        Model A: { Person name: "Peter" }
      }"#,
   );
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_B2,
     "http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
     "Evaluating B2 Say Hello",
@@ -140,7 +140,7 @@ fn _0008() {
       Model B2: { Model A: { Person name: "John" }} 
     }"#,
   );
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_C,
     "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
     "Model C Decision based on Bs",
@@ -164,7 +164,7 @@ fn _0009() {
       } 
     }"#,
   );
-  assert_decision_1(
+  assert_decision(
     &MODEL_EVALUATOR_C,
     "http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
     "Model C Decision based on Bs",

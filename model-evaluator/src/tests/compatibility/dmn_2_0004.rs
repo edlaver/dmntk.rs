@@ -32,22 +32,22 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_2_0004);
+from_examples!(DMN_2_0004);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{Age: 18,RiskCategory: "Medium",isAffordable: true}"#);
-  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#""Approved""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Approval Status", &ctx, r#""Approved""#);
 }
 
 #[test]
 fn _0002() {
   let ctx = context(r#"{Age: 17,RiskCategory: "Medium",isAffordable: true}"#);
-  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#""Declined""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Approval Status", &ctx, r#""Declined""#);
 }
 
 #[test]
 fn _0003() {
   let ctx = context(r#"{Age: 18,RiskCategory: "High",isAffordable: true}"#);
-  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#""Declined""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Approval Status", &ctx, r#""Declined""#);
 }

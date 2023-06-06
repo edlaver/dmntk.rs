@@ -32,7 +32,7 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0006);
+from_examples!(DMN_3_0006);
 
 const INPUT_DATA: &str = r#"
   {
@@ -87,5 +87,5 @@ const INPUT_DATA: &str = r#"
 #[test]
 fn _0001() {
   let ctx = context(INPUT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Join", &ctx, r#""Smith""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Join", &ctx, r#""Smith""#);
 }

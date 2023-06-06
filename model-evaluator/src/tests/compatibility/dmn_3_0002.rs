@@ -32,13 +32,14 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0002);
+from_examples!(DMN_3_0002);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{A: "banana", B: "a", NumC: 2}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "Basic",
     &ctx,
     r#"{containsB: true, containsX: false, endsWithB: true, endsWithX: false, lowercase: "a", startsWithB: false, startsWithX: false, stringlength: 6, substringAfterB: "nana", substringBeforeB: "b", substringC1: "a", uppercase: "BANANA"}"#,
@@ -48,7 +49,7 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#"{A: "banana"}"#);
-  assert_decision(&MODEL_EVALUATOR, "Matches", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Matches", &ctx, r#"true"#);
 }
 
 #[test]
@@ -56,6 +57,7 @@ fn _0003() {
   let ctx = context(r#"{A: "banana"}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "Replace",
     &ctx,
     r#"{AanplusStarstar: "b**a", Aao: "bonono", encloseVowels: "b[a]n[a]n[a]"}"#,
@@ -65,5 +67,5 @@ fn _0003() {
 #[test]
 fn _0004() {
   let ctx = context(r#"{NumC: 2}"#);
-  assert_decision(&MODEL_EVALUATOR, "Constructor", &ctx, r#""2""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Constructor", &ctx, r#""2""#);
 }

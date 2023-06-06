@@ -32,214 +32,214 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0071);
+from_examples!(DMN_3_0071);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "number_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "number_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "number_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "number_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0003() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "number_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "number_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "number_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "number_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0005() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "number_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "number_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "string_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "string_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0007() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "string_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "string_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "string_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "string_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "string_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "string_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "string_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "string_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "date_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "date_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0012() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "date_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "date_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0013() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "date_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "date_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0014() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "date_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "date_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0015() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "date_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "date_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0016() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "time_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0017() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "time_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0018() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "time_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0019() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "time_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0020() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "time_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "time_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0021() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "datetime_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0022() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "datetime_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0023() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "datetime_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0024() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "datetime_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0025() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "datetime_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "datetime_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0026() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ym_duration_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0027() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ym_duration_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0028() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ym_duration_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0029() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ym_duration_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0030() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "ym_duration_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ym_duration_005", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0031() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_001", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "dt_duration_001", &ctx, r#"false"#);
 }
 
 #[test]
 fn _0032() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_002", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "dt_duration_002", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0033() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_003", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "dt_duration_003", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0034() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_004", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "dt_duration_004", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0035() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "dt_duration_005", &ctx, r#"false"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "dt_duration_005", &ctx, r#"false"#);
 }

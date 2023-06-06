@@ -32,7 +32,7 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0004);
+from_examples!(DMN_3_0004);
 
 const APPLICANT_DATA: &str = r#"
   {
@@ -64,65 +64,65 @@ const APPLICANT_DATA: &str = r#"
 #[test]
 fn _0001() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Adjudication", &ctx, r#""ACCEPT""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Adjudication", &ctx, r#""ACCEPT""#);
 }
 
 #[test]
 fn _0002() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "ApplicationRiskScore", &ctx, r#"130"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "ApplicationRiskScore", &ctx, r#"130"#);
 }
 
 #[test]
 fn _0003() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Pre-bureauRiskCategory", &ctx, r#""LOW""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Pre-bureauRiskCategory", &ctx, r#""LOW""#);
 }
 
 #[test]
 fn _0004() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "BureauCallType", &ctx, r#""MINI""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "BureauCallType", &ctx, r#""MINI""#);
 }
 
 #[test]
 fn _0005() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Post-bureauRiskCategory", &ctx, r#""LOW""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Post-bureauRiskCategory", &ctx, r#""LOW""#);
 }
 
 #[test]
 fn _0006() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "RequiredMonthlyInstallment", &ctx, r#"1680.8803256086347968"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "RequiredMonthlyInstallment", &ctx, r#"1680.8803256086347968"#);
 }
 
 #[test]
 fn _0007() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Pre-bureauAffordability", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Pre-bureauAffordability", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0008() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Eligibility", &ctx, r#""ELIGIBLE""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Eligibility", &ctx, r#""ELIGIBLE""#);
 }
 
 #[test]
 fn _0009() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Strategy", &ctx, r#""BUREAU""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Strategy", &ctx, r#""BUREAU""#);
 }
 
 #[test]
 fn _0010() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Post-bureauAffordability", &ctx, r#"true"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Post-bureauAffordability", &ctx, r#"true"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(APPLICANT_DATA);
-  assert_decision(&MODEL_EVALUATOR, "Routing", &ctx, r#""ACCEPT""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "Routing", &ctx, r#""ACCEPT""#);
 }

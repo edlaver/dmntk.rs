@@ -32,7 +32,7 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_N_0019);
+from_examples!(DMN_N_0019);
 
 static_context!(
   CTX,
@@ -58,6 +58,7 @@ static_context!(
 fn _0001() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "Rebooked Passengers",
     &CTX,
     r#"[{Flight Number: "UA456", Miles: 500000, Name: "Jenny", Status: "gold"}, {Flight Number: "UA456", Miles: 100000, Name: "Harry", Status: "gold"}, {Flight Number: "UA789", Miles: 50000, Name: "Igor", Status: "gold"}, {Flight Number: "UA789", Miles: 100, Name: "Dick", Status: "silver"}, {Flight Number: null, Miles: 10, Name: "Tom", Status: "bronze"}]"#,
@@ -68,6 +69,7 @@ fn _0001() {
 fn _0002() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "Prioritized Waiting List",
     &CTX,
     r#"[{Flight Number: "UA123", Miles: 500000, Name: "Jenny", Status: "gold"}, {Flight Number: "UA123", Miles: 100000, Name: "Harry", Status: "gold"}, {Flight Number: "UA123", Miles: 50000, Name: "Igor", Status: "gold"}, {Flight Number: "UA123", Miles: 100, Name: "Dick", Status: "silver"}, {Flight Number: "UA123", Miles: 10, Name: "Tom", Status: "bronze"}]"#,

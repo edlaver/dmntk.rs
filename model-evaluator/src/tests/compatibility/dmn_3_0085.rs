@@ -32,22 +32,23 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0085);
+from_examples!(DMN_3_0085);
 
 #[test]
 fn _0001() {
-  assert_decision_service(&MODEL_EVALUATOR, "decisionService_001", r#"{}"#, r#""foo""#);
+  assert_decision_service(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decisionService_001", r#"{}"#, r#""foo""#);
 }
 
 #[test]
 fn _0002() {
-  assert_decision_service(&MODEL_EVALUATOR, "decisionService_002", r#"{decision_002_input: "baz"}"#, r#""foo baz""#);
+  assert_decision_service(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decisionService_002", r#"{decision_002_input: "baz"}"#, r#""foo baz""#);
 }
 
 #[test]
 fn _0002_a() {
   assert_decision_service(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decisionService_002",
     r#"{}"#,
     r#"null(expected string as a second argument in addition)"#,
@@ -58,6 +59,7 @@ fn _0002_a() {
 fn _0002_b() {
   assert_decision_service(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decisionService_002",
     r#"{decision_002_input: null}"#,
     r#"null(expected string as a second argument in addition)"#,
@@ -68,6 +70,7 @@ fn _0002_b() {
 fn _0002_c() {
   assert_decision_service(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decisionService_002",
     r#"{decision_002_input: 1234}"#,
     r#"null(expected string as a second argument in addition)"#,
@@ -78,6 +81,7 @@ fn _0002_c() {
 fn _0003() {
   assert_decision_service(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decisionService_003",
     r#"{decision_003_input_1: "B", decision_003_input_2: "C", inputData_003: "D"}"#,
     r#""A B C D""#,
@@ -87,20 +91,20 @@ fn _0003() {
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision_004_1", &ctx, r#""foo""#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision_004_1", &ctx, r#""foo""#);
 }
 
 #[test]
 fn _0005() {
-  assert_decision_service(&MODEL_EVALUATOR, "decisionService_005", r#"{}"#, r#""foo""#);
+  assert_decision_service(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decisionService_005", r#"{}"#, r#""foo""#);
 }
 
 #[test]
 fn _0006() {
-  assert_decision_service(&MODEL_EVALUATOR, "decision_005_1", r#"{}"#, r#"null(invalid number of arguments)"#);
+  assert_decision_service(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision_005_1", r#"{}"#, r#"null(invalid number of arguments)"#);
 }
 
 #[test]
 fn _0007() {
-  assert_decision_service(&MODEL_EVALUATOR, "decision_005_2", r#"{}"#, r#""foo""#);
+  assert_decision_service(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision_005_2", r#"{}"#, r#""foo""#);
 }

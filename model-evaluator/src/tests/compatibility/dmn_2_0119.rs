@@ -32,13 +32,14 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_2_0119);
+from_examples!(DMN_2_0119);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{Age: 17,RiskCategory: "High",isAffordable: true}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "Approval Status",
     &ctx,
     r#"[{Approved/Declined: "Declined", Rate: "Standard"}, {Approved/Declined: "Approved", Rate: "Standard"}]"#,
@@ -48,11 +49,23 @@ fn _0001() {
 #[test]
 fn _0002() {
   let ctx = context(r#"{Age: 19,RiskCategory: "Low",isAffordable: true}"#);
-  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#"[{Approved/Declined: "Approved", Rate: "Basic"}]"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "Approval Status",
+    &ctx,
+    r#"[{Approved/Declined: "Approved", Rate: "Basic"}]"#,
+  );
 }
 
 #[test]
 fn _0003() {
   let ctx = context(r#"{Age: 10,RiskCategory: "Low",isAffordable: true}"#);
-  assert_decision(&MODEL_EVALUATOR, "Approval Status", &ctx, r#"[{Approved/Declined: "Declined", Rate: "Standard"}]"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "Approval Status",
+    &ctx,
+    r#"[{Approved/Declined: "Declined", Rate: "Standard"}]"#,
+  );
 }

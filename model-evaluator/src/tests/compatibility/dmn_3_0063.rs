@@ -32,18 +32,24 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0063);
+from_examples!(DMN_3_0063);
 
 #[test]
 fn _0001() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision001", &ctx, r#"2.0816659994661"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision001", &ctx, r#"2.0816659994661"#);
 }
 
 #[test]
 fn _0002() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision003", &ctx, r#"null(expected 1+ parameters, actual number of parameters is 0)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision003",
+    &ctx,
+    r#"null(expected 1+ parameters, actual number of parameters is 0)"#,
+  );
 }
 
 #[test]
@@ -51,6 +57,7 @@ fn _0003() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision003_a",
     &ctx,
     r#"null([positional::stddev] invalid argument type, expected list, actual type is Null)"#,
@@ -60,7 +67,13 @@ fn _0003() {
 #[test]
 fn _0004() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision004", &ctx, r#"null(expected 1+ parameters, actual number of parameters is 0)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision004",
+    &ctx,
+    r#"null(expected 1+ parameters, actual number of parameters is 0)"#,
+  );
 }
 
 #[test]
@@ -68,6 +81,7 @@ fn _0005() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision005",
     &ctx,
     r#"null(stddev: expected number, actual type is string with value "foo")"#,
@@ -77,7 +91,13 @@ fn _0005() {
 #[test]
 fn _0006() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision007", &ctx, r#"null(stddev: minimum two input arguments expected)"#);
+  assert_decision(
+    &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
+    "decision007",
+    &ctx,
+    r#"null(stddev: minimum two input arguments expected)"#,
+  );
 }
 
 #[test]
@@ -85,6 +105,7 @@ fn _0007() {
   let ctx = context(r#"{}"#);
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "decision008",
     &ctx,
     r#"null([positional::stddev] invalid argument type, expected list, actual type is number)"#,
@@ -94,23 +115,23 @@ fn _0007() {
 #[test]
 fn _0008() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision009", &ctx, r#"2.0816659994661"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision009", &ctx, r#"2.0816659994661"#);
 }
 
 #[test]
 fn _0009() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision011", &ctx, r#"2.0816659994661"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision011", &ctx, r#"2.0816659994661"#);
 }
 
 #[test]
 fn _0010() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision012", &ctx, r#"null(parameter 'list' not found)"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision012", &ctx, r#"null(parameter 'list' not found)"#);
 }
 
 #[test]
 fn _0011() {
   let ctx = context(r#"{}"#);
-  assert_decision(&MODEL_EVALUATOR, "decision013", &ctx, r#"null(parameter 'list' not found)"#);
+  assert_decision(&MODEL_EVALUATOR, &MODEL_NAMESPACE, "decision013", &ctx, r#"null(parameter 'list' not found)"#);
 }

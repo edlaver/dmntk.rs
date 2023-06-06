@@ -36,7 +36,9 @@ use super::super::*;
 
 const DMN_0002: &str = include_str!("_0002.dmn");
 
-static_model_evaluator!(DMN_0002);
+model_evaluator!(DMN_0002);
+
+const NAMESPACE: &str = "https://dmntk.io/coercion";
 
 #[test]
 fn _0001() {
@@ -47,7 +49,7 @@ fn _0001() {
     ]
   }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Echo", &ctx, r#"[{Max: 360, Min: 12}]"#);
+  assert_decision(&MODEL_EVALUATOR, NAMESPACE, "Echo", &ctx, r#"[{Max: 360, Min: 12}]"#);
 }
 
 #[test]
@@ -60,7 +62,7 @@ fn _0002() {
     ]
   }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Echo", &ctx, r#"[{Max: 360, Min: 102}, {Max: 267, Min: 108}]"#);
+  assert_decision(&MODEL_EVALUATOR, NAMESPACE, "Echo", &ctx, r#"[{Max: 360, Min: 102}, {Max: 267, Min: 108}]"#);
 }
 
 #[test]
@@ -73,7 +75,7 @@ fn _0003() {
     ]
   }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Echo", &ctx, r#"[{Max: 360, Min: 102}, {Max: 267, Min: null}]"#);
+  assert_decision(&MODEL_EVALUATOR, NAMESPACE, "Echo", &ctx, r#"[{Max: 360, Min: 102}, {Max: 267, Min: null}]"#);
 }
 
 #[test]
@@ -86,7 +88,7 @@ fn _0004() {
     ]
   }"#,
   );
-  assert_decision(&MODEL_EVALUATOR, "Echo", &ctx, r#"[{Max: null, Min: 102}, {Max: 267, Min: null}]"#);
+  assert_decision(&MODEL_EVALUATOR, NAMESPACE, "Echo", &ctx, r#"[{Max: null, Min: 102}, {Max: 267, Min: null}]"#);
 }
 
 #[test]
@@ -103,6 +105,7 @@ fn _0005() {
   );
   assert_decision(
     &MODEL_EVALUATOR,
+    NAMESPACE,
     "Echo",
     &ctx,
     r#"[{Max: null, Min: null}, {Max: 267, Min: null}, {Max: null, Min: 84}, {Max: 12, Min: 3}]"#,

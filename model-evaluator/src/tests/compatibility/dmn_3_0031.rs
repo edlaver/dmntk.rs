@@ -32,7 +32,7 @@
 
 use super::super::*;
 
-static_model_evaluator_examples!(DMN_3_0031);
+from_examples!(DMN_3_0031);
 
 static_context!(CTX, r#"{inputA: 10, inputB: 5}"#);
 
@@ -40,6 +40,7 @@ static_context!(CTX, r#"{inputA: 10, inputB: 5}"#);
 fn _0001() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "fn invocation positional parameters",
     &CTX,
     r#"{divisionResultPositional: 2, multiplicationResultPositional: 50, sumResult: 15}"#,
@@ -50,6 +51,7 @@ fn _0001() {
 fn _0002() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "fn invocation named parameters",
     &CTX,
     r#"{divisionResultNamed: 2, multiplicationResultNamed: 50, subResult: 5, subResultMixed: -5}"#,
@@ -60,6 +62,7 @@ fn _0002() {
 fn _0003() {
   assert_decision(
     &MODEL_EVALUATOR,
+    &MODEL_NAMESPACE,
     "fn invocation complex parameters",
     &CTX,
     r#"{circumference: 94.24776, functionInvocationInParameter: 200, functionInvocationLiteralExpressionInParameter: 500}"#,
