@@ -87,7 +87,7 @@ impl ModelBuilder {
   /// Builds a model based on model definitions.
   pub fn build(&mut self) -> Result<()> {
     self.input_data_evaluator = InputDataEvaluator::new(&self.model_definitions);
-    self.input_data_context_evaluator = InputDataContextEvaluator::new(&self.model_definitions)?;
+    self.input_data_context_evaluator = InputDataContextEvaluator::new(&self.model_definitions);
     self.item_definition_evaluator = ItemDefinitionEvaluator::new(&self.model_definitions)?;
     self.item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&self.model_definitions)?;
     self.item_definition_type_evaluator = ItemDefinitionTypeEvaluator::new(&self.model_definitions)?;

@@ -30,12 +30,11 @@
  * limitations under the License.
  */
 
-//! Builder for input data context evaluators.
+//! # Builder for input data context evaluators
 
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
 use crate::model_definitions::{DefDefinitions, DefInputData, DefKey};
 use crate::type_ref::type_ref_to_feel_type;
-use dmntk_common::Result;
 use dmntk_feel::context::FeelContext;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelType;
@@ -52,16 +51,16 @@ pub struct InputDataContextEvaluator {
 
 impl InputDataContextEvaluator {
   /// Creates a new input data context evaluator based on provided definitions.
-  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+  pub fn new(definitions: &DefDefinitions) -> Self {
     let mut evaluators = HashMap::new();
     for input_data in definitions.input_data() {
       let input_data_namespace = input_data.namespace();
       let input_data_id = input_data.id();
-      let evaluator = input_data_context_evaluator(input_data)?;
+      let evaluator = input_data_context_evaluator(input_data);
       let def_key = DefKey::new(input_data_namespace, input_data_id);
       evaluators.insert(def_key, evaluator);
     }
-    Ok(Self { evaluators })
+    Self { evaluators }
   }
 
   /// Evaluates input data context with specified identifier.
@@ -75,19 +74,17 @@ impl InputDataContextEvaluator {
 }
 
 ///
-pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDataContextEvaluatorFn> {
+pub fn input_data_context_evaluator(input_data: &DefInputData) -> InputDataContextEvaluatorFn {
   let namespace = input_data.variable().namespace().to_string();
   let type_ref = input_data.variable().type_ref().to_string();
   let name = input_data.variable().name().clone();
   if let Some(simple_type_ref) = type_ref_to_feel_type(&type_ref) {
-    Ok(Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
+    Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
       ctx.set_entry(&name, Value::FeelType(simple_type_ref.clone()));
       simple_type_ref.clone()
-    }))
+    })
   } else {
-    Ok(Box::new(move |ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
-      evaluator.eval(&DefKey::new(&namespace, &type_ref), &name, ctx)
-    }))
+    Box::new(move |ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| evaluator.eval(&DefKey::new(&namespace, &type_ref), &name, ctx))
   }
 }
 
@@ -108,7 +105,7 @@ mod tests {
     let definitions = dmntk_model::parse(xml).unwrap();
     let mut def_definitions = DefDefinitions::default();
     def_definitions.add_model(&definitions);
-    let input_data_context_evaluator = InputDataContextEvaluator::new(&def_definitions).unwrap();
+    let input_data_context_evaluator = InputDataContextEvaluator::new(&def_definitions);
     let item_definition_context_evaluator = ItemDefinitionContextEvaluator::new(&def_definitions).unwrap();
     (input_data_context_evaluator, item_definition_context_evaluator)
   }
