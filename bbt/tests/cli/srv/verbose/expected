@@ -1,5 +1,13 @@
 Found 1 model.
 Loaded 1 model.
-Deployed 1 model.
-  io.dmntk.2_0001/compliance-level-2-test-0001/Greeting%20Message
+Deployed 1 invocable.
+
+Deployed endpoints (invocable name):
+
+    io.dmntk.2_0001/Greeting%20Message
+
+Deployed endpoints (invocable identifier):
+
+    io.dmntk.2_0001/_75b3add2-4d36-4a19-a76c-268b49b2f436
+
 dmntk 127.0.0.1:11011

@@ -113,6 +113,11 @@ impl ModelEvaluator {
     &self.decision_service_evaluator
   }
 
+  /// Returns a reference to invocables in model evaluator.
+  pub fn invocables(&self) -> &Invocables {
+    &self.invocables
+  }
+
   /// Evaluates an invocable identified by specified _invocable_name_.
   pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &FeelContext) -> Value {
     let Some(invocable) = self.invocables.by_name(namespace, invocable_name) else {

@@ -94,6 +94,28 @@ impl Invocables {
   pub fn by_id(&self, namespace: &str, id: &str) -> Option<&InvocableType> {
     self.by_id.get(&(namespace.to_string(), id.to_string()))
   }
+
+  pub fn namespace_name(&self) -> Vec<(String, String)> {
+    let mut items = vec![];
+    for (namespace, name) in self.by_name.keys() {
+      items.push((namespace.clone(), name.clone()));
+    }
+    items.sort();
+    items
+  }
+
+  pub fn namespace_id(&self) -> Vec<(String, String)> {
+    let mut items = vec![];
+    for (namespace, id) in self.by_id.keys() {
+      items.push((namespace.clone(), id.clone()));
+    }
+    items.sort();
+    items
+  }
+
+  pub fn len(&self) -> usize {
+    self.by_name.len()
+  }
 }
 
 /// The key in hash maps for indexing definition artefacts by namespace and identifier.
