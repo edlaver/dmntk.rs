@@ -181,6 +181,7 @@ fn is_valid_ip_address(ip: &str) -> bool {
 
 /// Returns the root directory for workspace.
 fn get_workspace_dir(opt_dir: Option<String>) -> PathBuf {
+  let current_dir_path = env::current_dir().expect("failed to retrieve current directory");
   if let Ok(s) = env::var(DMNTK_DIR_VARIABLE) {
     let dir_path = Path::new(&s);
     if dir_path.exists() && dir_path.is_dir() {
@@ -197,8 +198,5 @@ fn get_workspace_dir(opt_dir: Option<String>) -> PathBuf {
       eprintln!("invalid directory specified as command option: {}", s);
     }
   }
-  // unwrap is intentional here,
-  // when accessing the current directory fails,
-  // the server should panic and exit
-  env::current_dir().unwrap()
+  current_dir_path
 }

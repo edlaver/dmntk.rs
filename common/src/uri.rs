@@ -63,3 +63,13 @@ mod errors {
     UriError(format!("invalid reference: '{s}'")).into()
   }
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::to_uri;
+
+  #[test]
+  fn test_empty_uri() {
+    assert!(to_uri("").is_err())
+  }
+}
