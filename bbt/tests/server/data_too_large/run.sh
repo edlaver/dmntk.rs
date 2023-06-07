@@ -10,7 +10,7 @@ echo -n '{"content":"' > data.json
 base64 --wrap=0 random.data >> data.json
 echo -n '"}' >> data.json
 
-curl -s -d '@data.json' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/evaluate/io.dmntk/compliance-level-2-test-0001/Greeting%20Message
+curl -s -d '@data.json' -H "Content-Type: application/json" -X POST http://0.0.0.0:22022/evn/io.dmntk/Greeting%20Message
 
 rm data.json
 rm random.data

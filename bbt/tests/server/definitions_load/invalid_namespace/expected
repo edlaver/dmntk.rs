@@ -1,4 +1,3 @@
-[error][./2_0001_invalid.dmn] <WorkspaceError> invalid namespace data:text/plain,HelloWorld
 Found 1 model.
-Failed to load 1 model.
-dmntk 0.0.0.0:22022
+Loaded 1 model.
+<WorkspaceError> invalid namespace 'data:text/plain,HelloWorld'
