@@ -314,19 +314,19 @@ impl DefItemDefinition {
 
   /// Returns the item definition type.
   pub fn item_definition_type(&self) -> Result<ItemDefinitionType> {
-    let feel_type = if let Some(type_ref) = self.type_ref() { type_ref_to_feel_type(type_ref) } else { None };
+    let simple_type_ref = if let Some(type_ref) = self.type_ref() { type_ref_to_feel_type(type_ref) } else { None };
     let condition = (
       self.type_ref().is_some(),
-      feel_type.is_some(),
+      simple_type_ref.is_some(),
       !self.item_components().is_empty(),
       self.is_collection(),
       self.function_item().is_some(),
     );
     match condition {
-      (_, true, false, false, false) => Ok(ItemDefinitionType::SimpleType(feel_type.unwrap())),
+      (_, true, false, false, false) => Ok(ItemDefinitionType::SimpleType(simple_type_ref.unwrap().clone())),
       (true, false, false, false, false) => Ok(ItemDefinitionType::ReferencedType(self.namespace.clone(), self.type_ref().as_ref().unwrap().clone())),
       (false, false, true, false, false) => Ok(ItemDefinitionType::ComponentType),
-      (_, true, false, true, false) => Ok(ItemDefinitionType::CollectionOfSimpleType(feel_type.unwrap())),
+      (_, true, false, true, false) => Ok(ItemDefinitionType::CollectionOfSimpleType(simple_type_ref.unwrap().clone())),
       (false, false, true, true, false) => Ok(ItemDefinitionType::CollectionOfComponentType),
       (true, false, false, true, false) => Ok(ItemDefinitionType::CollectionOfReferencedType(
         self.namespace.clone(),

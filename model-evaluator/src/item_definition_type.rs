@@ -77,18 +77,8 @@ impl ItemDefinitionTypeEvaluator {
     if type_ref == FEEL_TYPE_NAME_ANY {
       return Some(FeelType::Any);
     }
-    if let Some(feel_type) = type_ref_to_feel_type(type_ref) {
-      match feel_type {
-        FeelType::String => Some(FeelType::String),
-        FeelType::Number => Some(FeelType::Number),
-        FeelType::Boolean => Some(FeelType::Boolean),
-        FeelType::Date => Some(FeelType::Date),
-        FeelType::Time => Some(FeelType::Time),
-        FeelType::DateTime => Some(FeelType::DateTime),
-        FeelType::DaysAndTimeDuration => Some(FeelType::DaysAndTimeDuration),
-        FeelType::YearsAndMonthsDuration => Some(FeelType::YearsAndMonthsDuration),
-        _ => None,
-      }
+    if let Some(simple_type_ref) = type_ref_to_feel_type(type_ref) {
+      Some(simple_type_ref.clone())
     } else {
       self.eval(&DefKey::new(namespace, type_ref))
     }

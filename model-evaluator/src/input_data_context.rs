@@ -32,7 +32,6 @@
 
 //! Builder for input data context evaluators.
 
-use crate::errors::*;
 use crate::item_definition_context::ItemDefinitionContextEvaluator;
 use crate::model_definitions::{DefDefinitions, DefInputData, DefKey};
 use crate::type_ref::type_ref_to_feel_type;
@@ -80,25 +79,11 @@ pub fn input_data_context_evaluator(input_data: &DefInputData) -> Result<InputDa
   let namespace = input_data.variable().namespace().to_string();
   let type_ref = input_data.variable().type_ref().to_string();
   let name = input_data.variable().name().clone();
-  if let Some(feel_type) = type_ref_to_feel_type(&type_ref) {
-    if matches!(
-      feel_type,
-      FeelType::String
-        | FeelType::Number
-        | FeelType::Boolean
-        | FeelType::Date
-        | FeelType::Time
-        | FeelType::DateTime
-        | FeelType::DaysAndTimeDuration
-        | FeelType::YearsAndMonthsDuration
-    ) {
-      Ok(Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
-        ctx.set_entry(&name, Value::FeelType(feel_type.clone()));
-        feel_type.clone()
-      }))
-    } else {
-      Err(err_unsupported_feel_type(feel_type))
-    }
+  if let Some(simple_type_ref) = type_ref_to_feel_type(&type_ref) {
+    Ok(Box::new(move |ctx: &mut FeelContext, _: &ItemDefinitionContextEvaluator| {
+      ctx.set_entry(&name, Value::FeelType(simple_type_ref.clone()));
+      simple_type_ref.clone()
+    }))
   } else {
     Ok(Box::new(move |ctx: &mut FeelContext, evaluator: &ItemDefinitionContextEvaluator| {
       evaluator.eval(&DefKey::new(&namespace, &type_ref), &name, ctx)

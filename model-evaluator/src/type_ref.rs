@@ -31,19 +31,49 @@
  */
 
 use dmntk_feel::FeelType;
+use std::ops::Deref;
 
-///
-// TODO Create newtype named TypeRef, containing single string and implement conversion function.
-pub fn type_ref_to_feel_type(type_ref: &str) -> Option<FeelType> {
+/// Type reference enumeration for simple FEEL types.
+#[derive(Debug, PartialEq)]
+pub enum TypeRef {
+  String(FeelType),
+  Number(FeelType),
+  Boolean(FeelType),
+  Date(FeelType),
+  Time(FeelType),
+  DateTime(FeelType),
+  DayTimeDuration(FeelType),
+  YearMonthDuration(FeelType),
+}
+
+impl Deref for TypeRef {
+  type Target = FeelType;
+  /// Unwraps inner [FeelType].
+  fn deref(&self) -> &Self::Target {
+    match self {
+      TypeRef::String(feel_type) => feel_type,
+      TypeRef::Number(feel_type) => feel_type,
+      TypeRef::Boolean(feel_type) => feel_type,
+      TypeRef::Date(feel_type) => feel_type,
+      TypeRef::Time(feel_type) => feel_type,
+      TypeRef::DateTime(feel_type) => feel_type,
+      TypeRef::DayTimeDuration(feel_type) => feel_type,
+      TypeRef::YearMonthDuration(feel_type) => feel_type,
+    }
+  }
+}
+
+/// Converts simple FEEL type reference into [FeelType] wrapped with [TypeRef].
+pub fn type_ref_to_feel_type(type_ref: &str) -> Option<TypeRef> {
   match type_ref.trim() {
-    "string" => Some(FeelType::String),
-    "number" => Some(FeelType::Number),
-    "boolean" => Some(FeelType::Boolean),
-    "date" => Some(FeelType::Date),
-    "time" => Some(FeelType::Time),
-    "dateTime" => Some(FeelType::DateTime),
-    "dayTimeDuration" => Some(FeelType::DaysAndTimeDuration),
-    "yearMonthDuration" => Some(FeelType::YearsAndMonthsDuration),
+    "string" => Some(TypeRef::String(FeelType::String)),
+    "number" => Some(TypeRef::Number(FeelType::Number)),
+    "boolean" => Some(TypeRef::Boolean(FeelType::Boolean)),
+    "date" => Some(TypeRef::Date(FeelType::Date)),
+    "time" => Some(TypeRef::Time(FeelType::Time)),
+    "dateTime" => Some(TypeRef::DateTime(FeelType::DateTime)),
+    "dayTimeDuration" => Some(TypeRef::DayTimeDuration(FeelType::DaysAndTimeDuration)),
+    "yearMonthDuration" => Some(TypeRef::YearMonthDuration(FeelType::YearsAndMonthsDuration)),
     _ => None,
   }
 }
@@ -55,14 +85,17 @@ mod tests {
 
   #[test]
   fn test_type_ref_to_feel_type() {
-    assert_eq!(Some(FeelType::String), type_ref_to_feel_type("string"));
-    assert_eq!(Some(FeelType::Number), type_ref_to_feel_type("number"));
-    assert_eq!(Some(FeelType::Boolean), type_ref_to_feel_type("boolean"));
-    assert_eq!(Some(FeelType::Date), type_ref_to_feel_type("date"));
-    assert_eq!(Some(FeelType::Time), type_ref_to_feel_type("time"));
-    assert_eq!(Some(FeelType::DateTime), type_ref_to_feel_type("dateTime"));
-    assert_eq!(Some(FeelType::DaysAndTimeDuration), type_ref_to_feel_type("dayTimeDuration"));
-    assert_eq!(Some(FeelType::YearsAndMonthsDuration), type_ref_to_feel_type("yearMonthDuration"));
+    assert_eq!(Some(TypeRef::String(FeelType::String)), type_ref_to_feel_type("string"));
+    assert_eq!(Some(TypeRef::Number(FeelType::Number)), type_ref_to_feel_type("number"));
+    assert_eq!(Some(TypeRef::Boolean(FeelType::Boolean)), type_ref_to_feel_type("boolean"));
+    assert_eq!(Some(TypeRef::Date(FeelType::Date)), type_ref_to_feel_type("date"));
+    assert_eq!(Some(TypeRef::Time(FeelType::Time)), type_ref_to_feel_type("time"));
+    assert_eq!(Some(TypeRef::DateTime(FeelType::DateTime)), type_ref_to_feel_type("dateTime"));
+    assert_eq!(Some(TypeRef::DayTimeDuration(FeelType::DaysAndTimeDuration)), type_ref_to_feel_type("dayTimeDuration"));
+    assert_eq!(
+      Some(TypeRef::YearMonthDuration(FeelType::YearsAndMonthsDuration)),
+      type_ref_to_feel_type("yearMonthDuration")
+    );
     assert_eq!(None, type_ref_to_feel_type("date and time"));
     assert_eq!(None, type_ref_to_feel_type("days and time duration"));
     assert_eq!(None, type_ref_to_feel_type("years and months duration"));
