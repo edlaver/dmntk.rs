@@ -8,14 +8,18 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 See [Issues](https://github.com/dmntk/dmntk.rs/issues).
 
-## [v0.2.0 (1nd beta)] - tbd
+## [v0.2.0 (2nd beta)] - 2023-06-17
 
 ### Added
-- Tooling improvements.
+- Importing models, see [issue #35](https://github.com/dmntk/dmntk.rs/issues/35).
+- Added color switches in several commands, see [issue #24](https://github.com/dmntk/dmntk.rs/issues/24).
+- Refactored multiple components.
+- Improved code coverage.
+- Added more tests.
  
 ### Changed
-- Refactored parser tests, issue #8.
-- Model deployment path now contains also the namespace in RDNN format. (add issue).
+- Refactored parser tests, see [issue #8](https://github.com/dmntk/dmntk.rs/issues/8).
+- Invocable deployment path now contains the namespace in RDNN format and the invocable name (or identifier).
 
 ## [v0.1.2 (fixes to 1st beta)] - 2023-05-16
 
