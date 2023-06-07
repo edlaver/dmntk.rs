@@ -37,6 +37,7 @@ use super::feel_date::FeelDate;
 use super::feel_time::FeelTime;
 use super::feel_zone::FeelZone;
 use crate::defs::*;
+use crate::errors::err_date_time_conversion_failed;
 use crate::feel_ym_duration::FeelYearsAndMonthsDuration;
 use crate::FeelDaysAndTimeDuration;
 use chrono::{DateTime, Datelike, Duration, FixedOffset, Timelike};
@@ -317,7 +318,7 @@ impl TryFrom<FeelDateTime> for DateTime<FixedOffset> {
         return Ok(me_date);
       }
     }
-    Err(err_invalid_date_time_literal("TDB"))
+    Err(err_date_time_conversion_failed(&value.to_string()))
   }
 }
 

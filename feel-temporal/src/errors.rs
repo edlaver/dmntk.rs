@@ -60,6 +60,10 @@ pub fn err_invalid_date_time_literal(s: &str) -> DmntkError {
   TemporalError(format!("invalid date and time literal '{s}'")).into()
 }
 
+pub fn err_date_time_conversion_failed(s: &str) -> DmntkError {
+  TemporalError(format!("conversion from FEEL date '{s}' to DateTime<FixedOffset> failed, see issue #? for details")).into()
+}
+
 pub fn err_invalid_years_and_months_duration_literal(s: &str) -> DmntkError {
   TemporalError(format!("invalid years and months literal '{s}'")).into()
 }
