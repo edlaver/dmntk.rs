@@ -101,4 +101,30 @@ mod tests {
     assert_eq!(None, type_ref_to_feel_type("years and months duration"));
     assert_eq!(None, type_ref_to_feel_type("text"));
   }
+
+  #[test]
+  fn test_type_ref_equality() {
+    assert!((type_ref_to_feel_type("string") == type_ref_to_feel_type("string")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("number")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("boolean")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("date")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("time")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("dayTimeDuration")));
+    assert!(!(type_ref_to_feel_type("string") == type_ref_to_feel_type("yearMonthDuration")));
+  }
+
+  #[test]
+  fn test_type_ref_debug() {
+    assert_eq!("Some(String(String))", format!("{:?}", type_ref_to_feel_type("string")));
+    assert_eq!("Some(Number(Number))", format!("{:?}", type_ref_to_feel_type("number")));
+    assert_eq!("Some(Boolean(Boolean))", format!("{:?}", type_ref_to_feel_type("boolean")));
+    assert_eq!("Some(Date(Date))", format!("{:?}", type_ref_to_feel_type("date")));
+    assert_eq!("Some(Time(Time))", format!("{:?}", type_ref_to_feel_type("time")));
+    assert_eq!("Some(DateTime(DateTime))", format!("{:?}", type_ref_to_feel_type("dateTime")));
+    assert_eq!("Some(DayTimeDuration(DaysAndTimeDuration))", format!("{:?}", type_ref_to_feel_type("dayTimeDuration")));
+    assert_eq!(
+      "Some(YearMonthDuration(YearsAndMonthsDuration))",
+      format!("{:?}", type_ref_to_feel_type("yearMonthDuration"))
+    );
+  }
 }

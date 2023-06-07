@@ -64,3 +64,10 @@ fn _0004() {
     date_time.err().unwrap().to_string()
   );
 }
+
+#[test]
+fn _0005() {
+  let date_time_1: FeelDateTime = "2023-01-10T24:00:00".try_into().unwrap();
+  let date_time_2: FeelDateTime = "2023-01-10T24:00:00Z".try_into().unwrap();
+  assert!(!(date_time_1 == date_time_2));
+}

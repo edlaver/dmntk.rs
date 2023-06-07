@@ -130,7 +130,7 @@ impl PartialEq for FeelDateTime {
       (FeelZone::Offset(offset), FeelZone::Zone(zone_name)) | (FeelZone::Zone(zone_name), FeelZone::Offset(offset)) => *offset == 0 && zone_name == ETC_UTC,
       (FeelZone::Offset(_), FeelZone::Offset(_)) => true,
       (FeelZone::Zone(zone_name1), FeelZone::Zone(zone_name2)) => (zone_name1 == zone_name2) || (get_zone_offset(zone_name1) == get_zone_offset(zone_name2)),
-      _ => false,
+      _ => return false,
     };
     if !equal_zones {
       return false;
