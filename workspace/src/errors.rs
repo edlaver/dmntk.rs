@@ -49,7 +49,3 @@ pub fn err_invalid_namespace(namespace: &str) -> DmntkError {
 pub fn err_duplicated_namespace(namespace: &str, name: &str, existing_name: &str) -> DmntkError {
   WorkspaceError(format!("duplicated namespace '{namespace}' in model '{name}', already used in model '{existing_name}'")).into()
 }
-
-pub fn err_x(s: &str) -> DmntkError {
-  WorkspaceError(format!("x {s}")).into()
-}

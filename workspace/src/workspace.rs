@@ -35,7 +35,6 @@
 use crate::errors::*;
 use dmntk_common::{color_blue, color_green, color_red, color_reset, to_rdnn, ColorMode, Result};
 use dmntk_feel::context::FeelContext;
-use dmntk_feel::value_null;
 use dmntk_feel::values::Value;
 use dmntk_model::{Definitions, NamedElement};
 use dmntk_model_evaluator::ModelEvaluator;
@@ -57,31 +56,28 @@ pub struct Workspace {
 
 impl Workspace {
   /// Creates a new [Workspace] and loads DMN models from specified directory (recursive).
-  pub fn new(opt_dir: Option<PathBuf>, color_mode: ColorMode, _verbose: bool) -> Result<Self> {
-    if let Some(dir) = opt_dir {
-      let loaded_definitions = Self::load(dir, color_mode);
-      return match ModelEvaluator::new(&loaded_definitions) {
-        Ok(evaluator) => {
-          let mut namespaces: HashMap<String, String> = HashMap::new();
-          let mut loaded_namespaces: HashMap<String, String> = HashMap::new();
-          for definitions in loaded_definitions {
-            let name = definitions.name();
-            let namespace = definitions.namespace();
-            if let Some(existing_name) = loaded_namespaces.get(namespace) {
-              return Err(err_duplicated_namespace(namespace, name, existing_name));
-            }
-            loaded_namespaces.insert(namespace.to_string(), name.to_string());
-            let Some(rdnn) = to_rdnn(namespace) else {
+  pub fn new(dir: PathBuf, color_mode: ColorMode, _verbose: bool) -> Result<Self> {
+    let loaded_definitions = Self::load(dir, color_mode);
+    match ModelEvaluator::new(&loaded_definitions) {
+      Ok(evaluator) => {
+        let mut namespaces: HashMap<String, String> = HashMap::new();
+        let mut loaded_namespaces: HashMap<String, String> = HashMap::new();
+        for definitions in loaded_definitions {
+          let name = definitions.name();
+          let namespace = definitions.namespace();
+          if let Some(existing_name) = loaded_namespaces.get(namespace) {
+            return Err(err_duplicated_namespace(namespace, name, existing_name));
+          }
+          loaded_namespaces.insert(namespace.to_string(), name.to_string());
+          let Some(rdnn) = to_rdnn(namespace) else {
               return Err(err_invalid_namespace(namespace));
             };
-            namespaces.insert(rdnn, namespace.to_string());
-          }
-          Ok(Self { evaluator, namespaces })
+          namespaces.insert(rdnn, namespace.to_string());
         }
-        Err(reason) => Err(reason),
-      };
+        Ok(Self { evaluator, namespaces })
+      }
+      Err(reason) => Err(reason),
     }
-    Err(err_x("y"))
   }
 
   /// Evaluates invocable identified by its name in model namespace.
@@ -94,8 +90,12 @@ impl Workspace {
   }
 
   /// Evaluates invocable identified by its identifier in model namespace.
-  pub fn evaluate_invocable_by_id(&self, _rdnn: String, _invocable_id: String, _input_data: FeelContext) -> Result<Value> {
-    Ok(value_null!("not implemented yet"))
+  pub fn evaluate_invocable_by_id(&self, rdnn: &str, invocable_id: &str, input_data: &FeelContext) -> Result<Value> {
+    if let Some(namespace) = self.namespaces.get(rdnn) {
+      Ok(self.evaluator.evaluate_invocable_by_id(namespace, invocable_id, input_data))
+    } else {
+      Err(err_evaluator_rdnn_not_found(rdnn))
+    }
   }
 
   /// Loads DMN models from specified directory (recursive).

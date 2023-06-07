@@ -113,12 +113,39 @@ impl ModelEvaluator {
     &self.decision_service_evaluator
   }
 
-  /// Evaluates an invocable identified by specified `invocable_name`.
+  /// Evaluates an invocable identified by specified _invocable_name_.
   pub fn evaluate_invocable_by_name(&self, namespace: &str, invocable_name: &str, input_data: &FeelContext) -> Value {
     let Some(invocable) = self.invocables.by_name(namespace, invocable_name) else {
       return value_null!("invocable '{}' not found in namespace '{}'", invocable_name, namespace);
     };
     match invocable {
+      InvocableType::Decision(def_key) => {
+        // evaluate a decision
+        self.evaluate_decision(def_key, input_data)
+      }
+      InvocableType::BusinessKnowledgeModel(def_key, output_variable_name) => {
+        // evaluate a business knowledge model
+        self.evaluate_bkm(def_key, input_data, output_variable_name)
+      }
+      InvocableType::DecisionService(def_key) => {
+        // evaluate a decision service
+        self.evaluate_decision_service(def_key, input_data)
+      }
+    }
+  }
+
+  /// Evaluates an invocable identified by specified _invocable_id_.
+  pub fn evaluate_invocable_by_id(&self, namespace: &str, invocable_id: &str, input_data: &FeelContext) -> Value {
+    if let Some(invocable_type) = self.invocables.by_id(namespace, invocable_id) {
+      self.evaluate_invocable(invocable_type, input_data)
+    } else {
+      value_null!("invocable '{}' not found in namespace '{}'", invocable_id, namespace)
+    }
+  }
+
+  /// Evaluates an invocable.
+  fn evaluate_invocable(&self, invocable_type: &InvocableType, input_data: &FeelContext) -> Value {
+    match invocable_type {
       InvocableType::Decision(def_key) => {
         // evaluate a decision
         self.evaluate_decision(def_key, input_data)

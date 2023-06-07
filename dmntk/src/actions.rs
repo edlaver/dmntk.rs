@@ -39,7 +39,9 @@ use dmntk_common::*;
 use dmntk_feel::values::Value;
 use dmntk_feel::FeelScope;
 use dmntk_feel_parser::ast_tree;
+use once_cell::sync::Lazy;
 use std::fs;
+use std::string::ToString;
 
 /// Automatic color selection flag.
 const COLOR_MODE_AUTO: &str = "auto";
@@ -49,6 +51,27 @@ const COLOR_MODE_ALWAYS: &str = "always";
 
 /// Color off-switching flag.
 const COLOR_MODE_NEVER: &str = "never";
+
+///
+static DEFAULT_CTX: Lazy<String> = Lazy::new(|| "unknown.ctx".to_string());
+
+///
+static DEFAULT_FEEL: Lazy<String> = Lazy::new(|| "unknown.feel".to_string());
+
+///
+static DEFAULT_HTML: Lazy<String> = Lazy::new(|| "unknown.html".to_string());
+
+///
+static DEFAULT_DTB: Lazy<String> = Lazy::new(|| "unknown.dtb".to_string());
+
+///
+static DEFAULT_DMN: Lazy<String> = Lazy::new(|| "unknown.dmn".to_string());
+
+///
+static DEFAULT_INVOCABLE: Lazy<String> = Lazy::new(|| "unknown".to_string());
+
+///
+static DEFAULT_COLOR: Lazy<String> = Lazy::new(|| "auto".to_string());
 
 /// Command-line actions.
 enum Action {
@@ -468,107 +491,100 @@ fn get_matches() -> ArgMatches {
 /// Checks the list of arguments passed from the command line
 /// and returns an action related to valid argument.
 fn get_cli_action() -> Action {
-  let unknown_ctx = &"unknown.ctx".to_string();
-  let unknown_feel = &"unknown.feel".to_string();
-  let unknown_html = &"unknown.html".to_string();
-  let unknown_dtb = &"unknown.dtb".to_string();
-  let unknown_dmn = &"unknown.dmn".to_string();
-  let unknown = &"unknown".to_string();
-  let auto = &"auto".to_string();
   match get_matches().subcommand() {
     // parse FEEL expression subcommand
     Some(("pfe", matches)) => {
       return Action::ParseFeelExpression(
-        matches.get_one::<String>("CONTEXT_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("FEEL_FILE").unwrap_or(unknown_feel).to_string(),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("CONTEXT_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("FEEL_FILE").unwrap_or(&DEFAULT_FEEL).to_string(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
       );
     }
     // evaluate FEEL expression subcommand
     Some(("efe", matches)) => {
       return Action::EvaluateFeelExpression(
-        matches.get_one::<String>("INPUT_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("FEEL_FILE").unwrap_or(unknown_feel).to_string(),
+        matches.get_one::<String>("INPUT_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("FEEL_FILE").unwrap_or(&DEFAULT_FEEL).to_string(),
       );
     }
     // test FEEL expression subcommand
     Some(("tfe", matches)) => {
       return Action::TestFeelExpression(
-        matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("FEEL_FILE").unwrap_or(unknown_feel).to_string(),
+        matches.get_one::<String>("TEST_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("FEEL_FILE").unwrap_or(&DEFAULT_FEEL).to_string(),
         matches.get_flag("summary"),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
       );
     }
     // export FEEL expression subcommand
     Some(("xfe", matches)) => {
       return Action::ExportFeelExpression(
-        matches.get_one::<String>("INPUT_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("FEEL_FILE").unwrap_or(unknown_feel).to_string(),
-        matches.get_one::<String>("HTML_FILE").unwrap_or(unknown_html).to_string(),
+        matches.get_one::<String>("INPUT_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("FEEL_FILE").unwrap_or(&DEFAULT_FEEL).to_string(),
+        matches.get_one::<String>("HTML_FILE").unwrap_or(&DEFAULT_HTML).to_string(),
       );
     }
     // parse decision table subcommand
     Some(("pdt", matches)) => {
-      return Action::ParseDecisionTable(matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string());
+      return Action::ParseDecisionTable(matches.get_one::<String>("DECTAB_FILE").unwrap_or(&DEFAULT_DTB).to_string());
     }
     // evaluate decision table subcommand
     Some(("edt", matches)) => {
       return Action::EvaluateDecisionTable(
-        matches.get_one::<String>("INPUT_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string(),
+        matches.get_one::<String>("INPUT_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("DECTAB_FILE").unwrap_or(&DEFAULT_DTB).to_string(),
       );
     }
     // test decision table subcommand
     Some(("tdt", matches)) => {
       return Action::TestDecisionTable(
-        matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string(),
+        matches.get_one::<String>("TEST_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("DECTAB_FILE").unwrap_or(&DEFAULT_DTB).to_string(),
         matches.get_flag("summary"),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
       );
     }
     // export decision table subcommand
     Some(("xdt", matches)) => {
       return Action::ExportDecisionTable(
-        matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string(),
-        matches.get_one::<String>("HTML_FILE").unwrap_or(unknown_html).to_string(),
+        matches.get_one::<String>("DECTAB_FILE").unwrap_or(&DEFAULT_DTB).to_string(),
+        matches.get_one::<String>("HTML_FILE").unwrap_or(&DEFAULT_HTML).to_string(),
       );
     }
     // recognize decision table subcommand
     Some(("rdt", matches)) => {
-      return Action::RecognizeDecisionTable(matches.get_one::<String>("DECTAB_FILE").unwrap_or(unknown_dtb).to_string());
+      return Action::RecognizeDecisionTable(matches.get_one::<String>("DECTAB_FILE").unwrap_or(&DEFAULT_DTB).to_string());
     }
     // parse DMN model subcommand
     Some(("pdm", matches)) => {
       return Action::ParseDmnModel(
-        matches.get_one::<String>("DMN_FILE").unwrap_or(unknown_dmn).to_string(),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("DMN_FILE").unwrap_or(&DEFAULT_DMN).to_string(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
       );
     }
     // evaluate DMN model subcommand
     Some(("edm", matches)) => {
       return Action::EvaluateDmnModel(
-        matches.get_one::<String>("INPUT_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("DMN_FILE").unwrap_or(unknown_dmn).to_string(),
-        matches.get_one::<String>("invocable").unwrap_or(unknown).to_string(),
+        matches.get_one::<String>("INPUT_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("DMN_FILE").unwrap_or(&DEFAULT_DMN).to_string(),
+        matches.get_one::<String>("invocable").unwrap_or(&DEFAULT_INVOCABLE).to_string(),
       );
     }
     // test DMN model subcommand
     Some(("tdm", matches)) => {
       return Action::TestDmnModel(
-        matches.get_one::<String>("TEST_FILE").unwrap_or(unknown_ctx).to_string(),
-        matches.get_one::<String>("DMN_FILE").unwrap_or(unknown_dmn).to_string(),
-        matches.get_one::<String>("invocable").unwrap_or(unknown).to_string(),
+        matches.get_one::<String>("TEST_FILE").unwrap_or(&DEFAULT_CTX).to_string(),
+        matches.get_one::<String>("DMN_FILE").unwrap_or(&DEFAULT_DMN).to_string(),
+        matches.get_one::<String>("invocable").unwrap_or(&DEFAULT_INVOCABLE).to_string(),
         matches.get_flag("summary"),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
       );
     }
     // export DMN model subcommand
     Some(("xdm", matches)) => {
       return Action::ExportDmnModel(
-        matches.get_one::<String>("DMN_FILE").unwrap_or(unknown_dmn).to_string(),
-        matches.get_one::<String>("HTML_FILE").unwrap_or(unknown_html).to_string(),
+        matches.get_one::<String>("DMN_FILE").unwrap_or(&DEFAULT_DMN).to_string(),
+        matches.get_one::<String>("HTML_FILE").unwrap_or(&DEFAULT_HTML).to_string(),
       );
     }
     // start server subcommand
@@ -577,7 +593,7 @@ fn get_cli_action() -> Action {
         matches.get_one::<String>("host").map(|host| host.to_string()),
         matches.get_one::<String>("port").map(|port| port.to_string()),
         matches.get_one::<String>("dir").map(|dir| dir.to_string()),
-        matches.get_one::<String>("color").unwrap_or(auto).to_string().into(),
+        matches.get_one::<String>("color").unwrap_or(&DEFAULT_COLOR).to_string().into(),
         matches.get_flag("verbose"),
       );
     }

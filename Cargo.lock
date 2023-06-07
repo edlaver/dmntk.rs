@@ -566,6 +566,7 @@ dependencies = [
  "dmntk-recognizer",
  "dmntk-server",
  "dmntk-workspace",
+ "once_cell",
  "serde",
 ]
 

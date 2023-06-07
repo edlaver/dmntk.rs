@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions namespace="https://dmntk.io/2_0002/"
              name="compliance-level-2-test-0002"
-             id="_072005e3-2635-47c9-8dec-5aca4b869376"
+             id="_dc551fab-c977-4e69-aefc-c940e7f80b60"
              xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
              xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
              xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"

@@ -69,7 +69,7 @@ async fn evaluate_by_name(params: web::Path<(String, String)>, request_body: Str
 async fn evaluate_by_id(params: web::Path<(String, String)>, request_body: String, data: web::Data<ApplicationData>) -> HttpResponse {
   let workspace: &Workspace = data.workspace.borrow();
   let (rdnn, invocable_id) = params.into_inner();
-  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body).and_then(|input_data| workspace.evaluate_invocable_by_id(rdnn, invocable_id, input_data));
+  let result = dmntk_evaluator::evaluate_context(&FeelScope::default(), &request_body).and_then(|input_data| workspace.evaluate_invocable_by_id(&rdnn, &invocable_id, &input_data));
   match result {
     Ok(value) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"data":{}}}"#, value.jsonify())),
     Err(reason) => HttpResponse::Ok().content_type(CONTENT_TYPE).body(format!(r#"{{"errors":[{{"detail":"{reason}"}}]}}"#)),
@@ -180,11 +180,11 @@ fn is_valid_ip_address(ip: &str) -> bool {
 }
 
 /// Returns the root directory for workspace.
-fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
+fn get_workspace_dir(opt_dir: Option<String>) -> PathBuf {
   if let Ok(s) = env::var(DMNTK_DIR_VARIABLE) {
     let dir_path = Path::new(&s);
     if dir_path.exists() && dir_path.is_dir() {
-      return Some(dir_path.into());
+      return dir_path.into();
     } else {
       eprintln!("invalid directory specified in environment variable {}: {}", DMNTK_DIR_VARIABLE, s);
     }
@@ -192,12 +192,13 @@ fn get_workspace_dir(opt_dir: Option<String>) -> Option<PathBuf> {
   if let Some(s) = opt_dir {
     let dir_path = Path::new(&s);
     if dir_path.exists() && dir_path.is_dir() {
-      return Some(dir_path.into());
+      return dir_path.into();
     } else {
       eprintln!("invalid directory specified as command option: {}", s);
     }
   }
-  // unwrap is intentional, when reading current directory fails, server should panic
-  let path = env::current_dir().unwrap();
-  Some(path)
+  // unwrap is intentional here,
+  // when accessing the current directory fails,
+  // the server should panic and exit
+  env::current_dir().unwrap()
 }
