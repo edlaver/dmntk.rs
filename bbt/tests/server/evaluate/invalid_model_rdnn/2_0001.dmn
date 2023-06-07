@@ -7,7 +7,7 @@
              name="compliance-level-2-test-0001"
              id="_c910c9ba-c584-4ac9-a773-1e6de185cd85">
     <description>Compliance level 2. Test 0001.</description>
-    <decision name="Greeting Message" id="_75b3add2-4d36-4a19-a76c-268b49b2f436">
+    <decision name="Greeting Message" id="_654727a5-6dc8-42c3-94fc-ced55682c9ff">
         <variable typeRef="string" name="Greeting Message"/>
         <informationRequirement id="_8c935b50-10b7-426b-80a9-dddb4264b4a9">
             <requiredInput href="#_cba86e4d-e91c-46a2-9176-e9adf88e15db"/>
