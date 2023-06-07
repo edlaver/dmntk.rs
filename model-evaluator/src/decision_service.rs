@@ -132,7 +132,7 @@ fn build_decision_service_evaluator(decision_service: &DefDecisionService, model
   let input_data_evaluator = model_builder.input_data_evaluator();
   let decision_evaluator = model_builder.decision_evaluator();
 
-  let mut output_variable = Variable::try_from(decision_service.variable())?;
+  let mut output_variable: Variable = decision_service.variable().into();
   output_variable.update_feel_type(item_definition_type_evaluator);
 
   // prepare output variable name for this decision

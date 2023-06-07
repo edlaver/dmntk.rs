@@ -100,7 +100,7 @@ fn build_decision_evaluator(def_definitions: &DefDefinitions, def_decision: &Def
   let input_data_context_evaluator = model_builder.input_data_context_evaluator();
 
   // get the output variable properties
-  let mut output_variable = Variable::try_from(def_decision.variable())?;
+  let mut output_variable: Variable = def_decision.variable().into();
   output_variable.update_feel_type(item_definition_type_evaluator);
 
   // prepare output variable name for processed decision

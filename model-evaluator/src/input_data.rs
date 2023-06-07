@@ -30,12 +30,11 @@
  * limitations under the License.
  */
 
-//! Builder for input data evaluators.
+//! # Builder for input data evaluators
 
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::model_definitions::{DefDefinitions, DefKey};
 use crate::variable::{Variable, VariableEvaluatorFn};
-use dmntk_common::Result;
 use dmntk_feel::values::Value;
 use dmntk_feel::Name;
 use std::collections::HashMap;
@@ -52,17 +51,17 @@ pub struct InputDataEvaluator {
 
 impl InputDataEvaluator {
   /// Builds a new input data evaluator.
-  pub fn new(definitions: &DefDefinitions) -> Result<Self> {
+  pub fn new(definitions: &DefDefinitions) -> Self {
     let mut evaluators = HashMap::new();
     for input_data in definitions.input_data() {
       let input_data_namespace = input_data.namespace();
       let input_data_id = input_data.id();
-      let variable = Variable::try_from(input_data.variable())?;
+      let variable: Variable = input_data.variable().into();
       let evaluator = variable.build_evaluator();
       let def_key = DefKey::new(input_data_namespace, input_data_id);
       evaluators.insert(def_key, (variable, evaluator));
     }
-    Ok(Self { evaluators: Arc::new(evaluators) })
+    Self { evaluators: Arc::new(evaluators) }
   }
 
   /// Evaluates input data.
@@ -93,7 +92,7 @@ mod tests {
     let definitions = dmntk_model::parse(xml).unwrap();
     let mut def_definitions = DefDefinitions::default();
     def_definitions.add_model(&definitions);
-    (InputDataEvaluator::new(&def_definitions).unwrap(), ItemDefinitionEvaluator::new(&def_definitions).unwrap())
+    (InputDataEvaluator::new(&def_definitions), ItemDefinitionEvaluator::new(&def_definitions).unwrap())
   }
 
   #[test]

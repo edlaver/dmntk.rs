@@ -123,7 +123,7 @@ impl Invocables {
 /// [DefKey].0 = namespace
 /// [DefKey].1 = identifier
 ///
-#[derive(Clone, Hash, PartialEq, Eq, Debug)]
+#[derive(Clone, Hash, PartialEq, Eq)]
 pub struct DefKey(String, String);
 
 impl DefKey {
@@ -148,7 +148,6 @@ impl From<&DefHRef> for DefKey {
 }
 
 /// Information item definition (variable properties).
-#[derive(Debug)]
 pub struct DefInformationItem {
   /// Variable namespace.
   namespace: String,
@@ -197,7 +196,6 @@ impl DefInformationItem {
   }
 }
 
-#[derive(Debug)]
 pub struct DefInputData {
   namespace: String,
   id: String,
@@ -239,7 +237,6 @@ impl DefInputData {
   }
 }
 
-#[derive(Debug)]
 pub struct DefItemDefinition {
   namespace: String,
   id: String,
@@ -341,7 +338,6 @@ impl DefItemDefinition {
   }
 }
 
-#[derive(Debug)]
 pub struct DefBusinessKnowledgeModel {
   namespace: String,
   id: String,
@@ -401,7 +397,7 @@ impl DefBusinessKnowledgeModel {
   }
 }
 
-#[derive(Debug)]
+///
 pub struct DefHRef {
   /// Namespace of the reference, derived from definition or set explicitly.
   namespace: String,
@@ -435,7 +431,7 @@ impl DefHRef {
   }
 }
 
-#[derive(Debug)]
+///
 pub struct DefInformationRequirement {
   required_decision: Option<DefHRef>,
   required_input: Option<DefHRef>,
@@ -464,7 +460,7 @@ impl DefInformationRequirement {
   }
 }
 
-#[derive(Debug)]
+///
 pub struct DefKnowledgeRequirement {
   required_knowledge: DefHRef,
 }
@@ -481,7 +477,7 @@ impl DefKnowledgeRequirement {
   }
 }
 
-#[derive(Debug)]
+///
 pub struct DefDecision {
   namespace: String,
   id: String,
@@ -552,7 +548,7 @@ impl DefDecision {
   }
 }
 
-#[derive(Debug)]
+///
 pub struct DefDecisionService {
   namespace: String,
   id: String,
@@ -626,7 +622,7 @@ impl DefDecisionService {
   }
 }
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct DefImport {
   namespace: String,
   name: Name,

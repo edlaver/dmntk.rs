@@ -33,7 +33,6 @@
 use crate::item_definition::ItemDefinitionEvaluator;
 use crate::item_definition_type::ItemDefinitionTypeEvaluator;
 use crate::model_definitions::{DefInformationItem, DefKey};
-use dmntk_common::{DmntkError, Result};
 use dmntk_feel::values::Value;
 use dmntk_feel::{value_null, FeelType, Name};
 
@@ -53,16 +52,15 @@ pub struct Variable {
   feel_type: FeelType,
 }
 
-impl TryFrom<&DefInformationItem> for Variable {
-  type Error = DmntkError;
-  ///
-  fn try_from(value: &DefInformationItem) -> Result<Self, Self::Error> {
-    Ok(Self {
+impl From<&DefInformationItem> for Variable {
+  /// Converts [Variable] from [DefInformationItem].
+  fn from(value: &DefInformationItem) -> Self {
+    Self {
       namespace: value.namespace().to_string(),
       name: value.name().clone(),
       type_ref: value.type_ref().clone(),
       feel_type: FeelType::Any,
-    })
+    }
   }
 }
 
