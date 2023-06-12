@@ -8,7 +8,7 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 See [Issues](https://github.com/dmntk/dmntk.rs/issues).
 
-## [v0.2.0 (2nd beta)] - 2023-06-17
+## [v0.2.0 (2nd beta)] - 2023-06-12
 
 ### Added
 - Importing models, see [issue #35](https://github.com/dmntk/dmntk.rs/issues/35).
