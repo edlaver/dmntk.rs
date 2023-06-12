@@ -59,7 +59,7 @@ genhtml -t "$CARGO_NAME v$CARGO_VERSION" -q -o ./target/coverage ./target/lcov/l
 if [ "$PDF_REPORT" != "" ]; then
   echo ""
   echo "Generating PDF report..."
-  htop -b -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
+  htop -b -l -p A4 --margin=4mm single ./target/coverage/index.html ./target/coverage/coverage.pdf
 fi
 
 # display final message
