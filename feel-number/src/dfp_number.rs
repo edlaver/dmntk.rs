@@ -32,8 +32,9 @@
 
 //! `FEEL` number type.
 //!
-//! Implementation of the `FEEL` number based on
+//! Implementation of the `FEEL` number (not) based on
 //! **Intel(R) Decimal Floating-Point Math Library**.
+//! Based on rust_decimal instead!
 
 use crate::errors::*;
 use dfp_number_sys::*;
@@ -43,6 +44,8 @@ use std::fmt;
 use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign};
 use std::str::FromStr;
+
+use rust_decimal::Decimal;
 
 /// Flags for operation status.
 macro_rules! flags {
@@ -60,53 +63,54 @@ macro_rules! round {
 
 /// FEEL number.
 #[derive(Copy, Clone)]
-pub struct FeelNumber(BID128, bool);
+// pub struct FeelNumber(DEC128, bool);
+pub struct FeelNumber(Decimal, bool);
 
 impl FeelNumber {
   /// Returns [FeelNumber] value Inf (infinite).
   pub fn infinite() -> FeelNumber {
-    Self(bid128_inf(), false)
+    Self(dec128_inf().unwrap(), false)
   }
 
   /// Returns [FeelNumber] value 0 (zero).
   pub fn zero() -> FeelNumber {
-    Self(bid128_from_uint64(0), false)
+    Self(dec128_from_uint64(0), false)
   }
 
   /// Returns [FeelNumber] value 1 (one).
   pub fn one() -> FeelNumber {
-    Self(bid128_from_uint64(1), false)
+    Self(dec128_from_uint64(1), false)
   }
 
   /// Returns [FeelNumber] value 2 (two).
   pub fn two() -> FeelNumber {
-    Self(bid128_from_uint64(2), false)
+    Self(dec128_from_uint64(2), false)
   }
 
   /// Returns [FeelNumber] value 1000000000 (billion).
   pub fn billion() -> FeelNumber {
-    Self(bid128_from_uint64(1_000_000_000), false)
+    Self(dec128_from_uint64(1_000_000_000), false)
   }
 
   /// Creates a new [FeelNumber] from integer value and a scale.
   pub fn new(n: i64, s: i32) -> Self {
-    Self(bid128_scalbn(bid128_from_int64(n), -s), false)
+    Self(dec128_scalbn(dec128_from_int64(n), -s), false)
   }
 
   /// Creates a new [FeelNumber] from [isize].
   fn from_isize(n: isize) -> Self {
-    Self(bid128_from_string(&format!("{n}"), round!(), flags!()), false)
+    Self(dec128_from_string(&format!("{n}"), round!(), flags!()), false)
   }
 
   /// Returns an absolute value of this [FeelNumber].
   pub fn abs(&self) -> Self {
-    Self(bid128_abs(self.0), false)
+    Self(dec128_abs(self.0), false)
   }
 
   /// Returns a nearest integer greater than this [FeelNumber].
   pub fn ceiling(&self) -> Self {
-    let bid = bid128_round_integral_positive(self.0, flags!());
-    if bid128_is_zero(bid) {
+    let bid = dec128_round_integral_positive(self.0, flags!());
+    if dec128_is_zero(bid) {
       Self::zero()
     } else {
       Self(bid, false)
@@ -115,13 +119,13 @@ impl FeelNumber {
 
   ///
   pub fn even(&self) -> bool {
-    bid128_is_zero(bid128_rem(self.0, Self::two().0, flags!()))
+    dec128_is_zero(dec128_rem(self.0, Self::two().0, flags!()))
   }
 
   ///
   pub fn exp(&self) -> Option<Self> {
-    let n = bid128_exp(self.0, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_exp(self.0, round!(), flags!());
+    if dec128_is_finite(n) {
       Some(Self(n, true))
     } else {
       None
@@ -130,43 +134,43 @@ impl FeelNumber {
 
   ///
   pub fn floor(&self) -> Self {
-    Self(bid128_round_integral_negative(self.0, flags!()), false)
+    Self(dec128_round_integral_negative(self.0, flags!()), false)
   }
 
   ///
   pub fn frac(&self) -> Self {
-    Self(bid128_sub(self.0, bid128_round_integral_zero(self.0, flags!()), round!(), flags!()), true)
+    Self(dec128_sub(self.0, dec128_round_integral_zero(self.0, flags!()), round!(), flags!()), true)
   }
 
   ///
   pub fn is_integer(&self) -> bool {
-    bid128_quiet_equal(self.0, bid128_round_integral_zero(self.0, flags!()), flags!())
+    dec128_quiet_equal(self.0, dec128_round_integral_zero(self.0, flags!()), flags!())
   }
 
   ///
   pub fn is_zero(&self) -> bool {
-    bid128_quiet_equal(self.0, Self::zero().0, flags!())
+    dec128_quiet_equal(self.0, Self::zero().0, flags!())
   }
 
   ///
   pub fn is_one(&self) -> bool {
-    bid128_quiet_equal(self.0, Self::one().0, flags!())
+    dec128_quiet_equal(self.0, Self::one().0, flags!())
   }
 
   ///
   pub fn is_negative(&self) -> bool {
-    bid128_quiet_less(self.0, Self::zero().0, flags!())
+    dec128_quiet_less(self.0, Self::zero().0, flags!())
   }
 
   ///
   pub fn is_positive(&self) -> bool {
-    bid128_quiet_greater(self.0, Self::zero().0, flags!())
+    dec128_quiet_greater(self.0, Self::zero().0, flags!())
   }
 
   ///
   pub fn ln(&self) -> Option<Self> {
-    let n = bid128_log(self.0, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_log(self.0, round!(), flags!());
+    if dec128_is_finite(n) {
       Some(Self(n, true))
     } else {
       None
@@ -176,7 +180,7 @@ impl FeelNumber {
   ///
   pub fn odd(&self) -> bool {
     if self.is_integer() {
-      !bid128_is_zero(bid128_rem(self.0, Self::two().0, flags!()))
+      !dec128_is_zero(dec128_rem(self.0, Self::two().0, flags!()))
     } else {
       false
     }
@@ -184,8 +188,8 @@ impl FeelNumber {
 
   ///
   pub fn pow(&self, rhs: &FeelNumber) -> Option<Self> {
-    let n = bid128_pow(self.0, rhs.0, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_pow(self.0, rhs.0, round!(), flags!());
+    if dec128_is_finite(n) {
       Some(Self(n, true))
     } else {
       None
@@ -194,16 +198,16 @@ impl FeelNumber {
 
   ///
   pub fn round(&self, rhs: &FeelNumber) -> Self {
-    let r = bid128_negate(rhs.0);
-    let n = bid128_to_int32_int(r, flags!());
-    let q = bid128_scalbn(Self::one().0, n);
-    Self(bid128_quantize(self.0, q, round!(), flags!()), false)
+    let r = dec128_negate(rhs.0);
+    let n = dec128_to_int32_int(r, flags!());
+    let q = dec128_scalbn(Self::one().0, n);
+    Self(dec128_quantize(self.0, q, round!(), flags!()), false)
   }
 
   ///
   pub fn sqrt(&self) -> Option<Self> {
-    let n = bid128_sqrt(self.0, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_sqrt(self.0, round!(), flags!());
+    if dec128_is_finite(n) {
       Some(Self(n, true))
     } else {
       None
@@ -212,8 +216,8 @@ impl FeelNumber {
 
   ///
   pub fn square(&self) -> Option<Self> {
-    let n = bid128_pow(self.0, Self::two().0, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_pow(self.0, Self::two().0, round!(), flags!());
+    if dec128_is_finite(n) {
       Some(Self(n, true))
     } else {
       None
@@ -222,65 +226,65 @@ impl FeelNumber {
 
   ///
   pub fn trunc(&self) -> Self {
-    Self(bid128_round_integral_zero(self.0, flags!()), false)
+    Self(dec128_round_integral_zero(self.0, flags!()), false)
   }
 
   /// Calculates the remainder of the division.
-  fn remainder(&self, rhs: BID128) -> BID128 {
-    let mut n = bid128_div(self.0, rhs, round!(), flags!());
-    n = bid128_round_integral_negative(n, flags!());
-    n = bid128_mul(rhs, n, round!(), flags!());
-    bid128_sub(self.0, n, round!(), flags!())
+  fn remainder(&self, rhs: Decimal) -> Decimal {
+    let mut n = dec128_div(self.0, rhs, round!(), flags!());
+    n = dec128_round_integral_negative(n, flags!());
+    n = dec128_mul(rhs, n, round!(), flags!());
+    dec128_sub(self.0, n, round!(), flags!())
   }
 }
 
 impl PartialEq<FeelNumber> for FeelNumber {
   ///
   fn eq(&self, rhs: &Self) -> bool {
-    bid128_quiet_equal(self.0, rhs.0, flags!())
+    dec128_quiet_equal(self.0, rhs.0, flags!())
   }
 }
 
 impl PartialEq<FeelNumber> for isize {
   ///
   fn eq(&self, rhs: &FeelNumber) -> bool {
-    bid128_quiet_equal(FeelNumber::from_isize(*self).0, rhs.0, flags!())
+    dec128_quiet_equal(FeelNumber::from_isize(*self).0, rhs.0, flags!())
   }
 }
 
 impl PartialEq<isize> for FeelNumber {
   ///
   fn eq(&self, rhs: &isize) -> bool {
-    bid128_quiet_equal(self.0, FeelNumber::from_isize(*rhs).0, flags!())
+    dec128_quiet_equal(self.0, FeelNumber::from_isize(*rhs).0, flags!())
   }
 }
 
 impl PartialOrd<FeelNumber> for FeelNumber {
   ///
   fn partial_cmp(&self, rhs: &Self) -> Option<Ordering> {
-    if bid128_quiet_equal(self.0, rhs.0, flags!()) {
+    if dec128_quiet_equal(self.0, rhs.0, flags!()) {
       return Some(Ordering::Equal);
     }
-    if bid128_quiet_greater(self.0, rhs.0, flags!()) {
+    if dec128_quiet_greater(self.0, rhs.0, flags!()) {
       return Some(Ordering::Greater);
     }
     Some(Ordering::Less)
   }
   ///
   fn lt(&self, rhs: &FeelNumber) -> bool {
-    bid128_quiet_less(self.0, rhs.0, flags!())
+    dec128_quiet_less(self.0, rhs.0, flags!())
   }
   ///
   fn le(&self, rhs: &FeelNumber) -> bool {
-    bid128_quiet_less_equal(self.0, rhs.0, flags!())
+    dec128_quiet_less_equal(self.0, rhs.0, flags!())
   }
   ///
   fn gt(&self, rhs: &FeelNumber) -> bool {
-    bid128_quiet_greater(self.0, rhs.0, flags!())
+    dec128_quiet_greater(self.0, rhs.0, flags!())
   }
   ///
   fn ge(&self, rhs: &FeelNumber) -> bool {
-    bid128_quiet_greater_equal(self.0, rhs.0, flags!())
+    dec128_quiet_greater_equal(self.0, rhs.0, flags!())
   }
 }
 
@@ -288,10 +292,10 @@ impl PartialOrd<FeelNumber> for isize {
   ///
   fn partial_cmp(&self, rhs: &FeelNumber) -> Option<Ordering> {
     let n = FeelNumber::from_isize(*self).0;
-    if bid128_quiet_equal(n, rhs.0, flags!()) {
+    if dec128_quiet_equal(n, rhs.0, flags!()) {
       return Some(Ordering::Equal);
     }
-    if bid128_quiet_greater(n, rhs.0, flags!()) {
+    if dec128_quiet_greater(n, rhs.0, flags!()) {
       return Some(Ordering::Greater);
     }
     Some(Ordering::Less)
@@ -302,10 +306,10 @@ impl PartialOrd<isize> for FeelNumber {
   ///
   fn partial_cmp(&self, rhs: &isize) -> Option<Ordering> {
     let n = FeelNumber::from_isize(*rhs).0;
-    if bid128_quiet_equal(self.0, n, flags!()) {
+    if dec128_quiet_equal(self.0, n, flags!()) {
       return Some(Ordering::Equal);
     }
-    if bid128_quiet_greater(self.0, n, flags!()) {
+    if dec128_quiet_greater(self.0, n, flags!()) {
       return Some(Ordering::Greater);
     }
     Some(Ordering::Less)
@@ -316,14 +320,14 @@ impl Add<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn add(self, rhs: Self) -> Self::Output {
-    Self(bid128_add(self.0, rhs.0, round!(), flags!()), true)
+    Self(dec128_add(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
 impl AddAssign<FeelNumber> for FeelNumber {
   ///
   fn add_assign(&mut self, rhs: Self) {
-    self.0 = bid128_add(self.0, rhs.0, round!(), flags!());
+    self.0 = dec128_add(self.0, rhs.0, round!(), flags!());
     self.1 = true;
   }
 }
@@ -332,14 +336,14 @@ impl Sub<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn sub(self, rhs: Self) -> Self::Output {
-    Self(bid128_sub(self.0, rhs.0, round!(), flags!()), true)
+    Self(dec128_sub(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
 impl SubAssign<FeelNumber> for FeelNumber {
   ///
   fn sub_assign(&mut self, rhs: Self) {
-    self.0 = bid128_sub(self.0, rhs.0, round!(), flags!());
+    self.0 = dec128_sub(self.0, rhs.0, round!(), flags!());
     self.1 = true;
   }
 }
@@ -348,14 +352,14 @@ impl Mul<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn mul(self, rhs: Self) -> Self::Output {
-    Self(bid128_mul(self.0, rhs.0, round!(), flags!()), true)
+    Self(dec128_mul(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
 impl MulAssign<FeelNumber> for FeelNumber {
   ///
   fn mul_assign(&mut self, rhs: Self) {
-    self.0 = bid128_mul(self.0, rhs.0, round!(), flags!());
+    self.0 = dec128_mul(self.0, rhs.0, round!(), flags!());
     self.1 = true;
   }
 }
@@ -364,14 +368,14 @@ impl Div<FeelNumber> for FeelNumber {
   type Output = Self;
   ///
   fn div(self, rhs: Self) -> Self::Output {
-    Self(bid128_div(self.0, rhs.0, round!(), flags!()), true)
+    Self(dec128_div(self.0, rhs.0, round!(), flags!()), true)
   }
 }
 
 impl DivAssign<FeelNumber> for FeelNumber {
   ///
   fn div_assign(&mut self, rhs: Self) {
-    self.0 = bid128_div(self.0, rhs.0, round!(), flags!());
+    self.0 = dec128_div(self.0, rhs.0, round!(), flags!());
     self.1 = true;
   }
 }
@@ -396,21 +400,21 @@ impl Neg for FeelNumber {
   type Output = Self;
   ///
   fn neg(self) -> Self::Output {
-    Self(bid128_negate(self.0), true)
+    Self(dec128_negate(self.0), true)
   }
 }
 
 impl Debug for FeelNumber {
   ///
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "{}", bid128_to_string(self.0, flags!()))
+    write!(f, "{}", dec128_to_string(self.0, flags!()))
   }
 }
 
 impl Display for FeelNumber {
   /// Converts [FeelNumber] to human readable string.
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    let s = bid128_to_string(self.0, flags!());
+    let s = dec128_to_string(self.0, flags!());
     let negative = s.starts_with('-');
     let mut split = s[1..].split('E');
     let (sb, sa) = split.next().zip(split.next()).unwrap(); // unwrap is ok, there is always E present
@@ -468,8 +472,8 @@ impl FromStr for FeelNumber {
   type Err = DmntkError;
   ///
   fn from_str(s: &str) -> Result<Self, Self::Err> {
-    let n = bid128_from_string(s, round!(), flags!());
-    if bid128_is_finite(n) {
+    let n = dec128_from_string(s, round!(), flags!());
+    if dec128_is_finite(n) {
       Ok(Self(n, false))
     } else {
       Err(err_invalid_number_literal(s))
@@ -480,56 +484,56 @@ impl FromStr for FeelNumber {
 impl From<u8> for FeelNumber {
   ///
   fn from(value: u8) -> Self {
-    Self(bid128_from_uint32(value as u32), false)
+    Self(dec128_from_uint32(value as u32), false)
   }
 }
 
 impl From<i8> for FeelNumber {
   ///
   fn from(value: i8) -> Self {
-    Self(bid128_from_int32(value as i32), false)
+    Self(dec128_from_int32(value as i32), false)
   }
 }
 
 impl From<u16> for FeelNumber {
   ///
   fn from(value: u16) -> Self {
-    Self(bid128_from_uint32(value as u32), false)
+    Self(dec128_from_uint32(value as u32), false)
   }
 }
 
 impl From<i16> for FeelNumber {
   ///
   fn from(value: i16) -> Self {
-    Self(bid128_from_int32(value as i32), false)
+    Self(dec128_from_int32(value as i32), false)
   }
 }
 
 impl From<u32> for FeelNumber {
   ///
   fn from(value: u32) -> Self {
-    Self(bid128_from_uint32(value), false)
+    Self(dec128_from_uint32(value), false)
   }
 }
 
 impl From<i32> for FeelNumber {
   ///
   fn from(value: i32) -> Self {
-    Self(bid128_from_int32(value), false)
+    Self(dec128_from_int32(value), false)
   }
 }
 
 impl From<u64> for FeelNumber {
   ///
   fn from(value: u64) -> Self {
-    Self(bid128_from_uint64(value), false)
+    Self(dec128_from_uint64(value), false)
   }
 }
 
 impl From<i64> for FeelNumber {
   ///
   fn from(value: i64) -> Self {
-    Self(bid128_from_int64(value), false)
+    Self(dec128_from_int64(value), false)
   }
 }
 
@@ -537,12 +541,13 @@ impl From<isize> for FeelNumber {
   ///
   #[cfg(target_pointer_width = "64")]
   fn from(value: isize) -> Self {
-    Self(bid128_from_int64(value.try_into().unwrap()), false)
+    Self(dec128_from_int64(value.try_into().unwrap()), false)
   }
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: isize) -> Self {
-    compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    // compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    Self(dec128_from_int64(value.try_into().unwrap()), false)
   }
 }
 
@@ -550,12 +555,13 @@ impl From<usize> for FeelNumber {
   ///
   #[cfg(target_pointer_width = "64")]
   fn from(value: usize) -> Self {
-    Self(bid128_from_uint64(value.try_into().unwrap()), false)
+    Self(dec128_from_uint64(value.try_into().unwrap()), false)
   }
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn from(value: usize) -> Self {
-    compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    // compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    Self(dec128_from_uint64(value.try_into().unwrap()), false)
   }
 }
 
@@ -570,7 +576,7 @@ impl TryFrom<&FeelNumber> for u8 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_uint32_int(value.0, &mut flags);
+    let n = dec128_to_uint32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -589,7 +595,7 @@ impl TryFrom<&FeelNumber> for i8 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_int32_int(value.0, &mut flags);
+    let n = dec128_to_int32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -608,7 +614,7 @@ impl TryFrom<&FeelNumber> for u16 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_uint32_int(value.0, &mut flags);
+    let n = dec128_to_uint32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -627,7 +633,7 @@ impl TryFrom<&FeelNumber> for i16 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_int32_int(value.0, &mut flags);
+    let n = dec128_to_int32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -646,7 +652,7 @@ impl TryFrom<&FeelNumber> for u32 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_uint32_int(value.0, &mut flags);
+    let n = dec128_to_uint32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -665,7 +671,7 @@ impl TryFrom<&FeelNumber> for i32 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_int32_int(value.0, &mut flags);
+    let n = dec128_to_int32_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -684,7 +690,7 @@ impl TryFrom<&FeelNumber> for u64 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_uint64_int(value.0, &mut flags);
+    let n = dec128_to_uint64_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -703,7 +709,7 @@ impl TryFrom<&FeelNumber> for i64 {
   type Error = DmntkError;
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_int64_int(value.0, &mut flags);
+    let n = dec128_to_int64_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -725,7 +731,7 @@ impl TryFrom<&FeelNumber> for usize {
   #[cfg(target_pointer_width = "64")]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_uint64_int(value.0, &mut flags);
+    let n = dec128_to_uint64_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -734,7 +740,13 @@ impl TryFrom<&FeelNumber> for usize {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-    compile_error!("Implement conversion from usize for other architectures as 64-bit")
+    // compile_error!("Implement conversion from usize for other architectures as 64-bit")
+    let mut flags = FB_CLEAR;
+    let n = dec128_to_uint64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    Ok(n.try_into().unwrap())
   }
 }
 
@@ -752,7 +764,7 @@ impl TryFrom<&FeelNumber> for isize {
   #[cfg(target_pointer_width = "64")]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
     let mut flags = FB_CLEAR;
-    let n = bid128_to_int64_int(value.0, &mut flags);
+    let n = dec128_to_int64_int(value.0, &mut flags);
     if flags != FB_CLEAR {
       return Err(err_number_conversion_failed());
     }
@@ -761,6 +773,12 @@ impl TryFrom<&FeelNumber> for isize {
   ///
   #[cfg(not(target_pointer_width = "64"))]
   fn try_from(value: &FeelNumber) -> Result<Self, Self::Error> {
-    compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    // compile_error!("Implement conversion from isize for other architectures as 64-bit")
+    let mut flags = FB_CLEAR;
+    let n = dec128_to_int64_int(value.0, &mut flags);
+    if flags != FB_CLEAR {
+      return Err(err_number_conversion_failed());
+    }
+    Ok(n.try_into().unwrap())
   }
 }

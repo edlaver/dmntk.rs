@@ -14,3 +14,4 @@ edition.workspace = true
 dfp-number-sys.workspace = true
 dmntk-common.workspace = true
 dmntk-macros.workspace = true
+rust_decimal.workspace = true
